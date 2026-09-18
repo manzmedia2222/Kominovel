@@ -2,8 +2,8 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-  <meta name="google-site-verification" content="GvyTGbIx3Zov0CXr0f1voJ2LJnac-ppCl62NStzdY3E" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="google-site-verification" content="GvyTGbIx3Zov0CXr0f1voJ2LJnac-ppCl62NStzdY3E"
 <title>KomiNovel - Baca & Tulis Novel/Komik Online Gratis</title>
 <meta name="description" content="KomiNovel - Platform baca & tulis Novel dan Komik online gratis.">
 <link rel="icon" href="https://i.ibb.co.com/SDTthJ7m/Gemini-Generated-Image-fhupt4fhupt4fhup.jpg">
@@ -109,21 +109,30 @@ body{font-family:'Inter',sans-serif;background:#0f0f1a;color:#e2e8f0;overflow-x:
 .reply-preview{background:rgba(251,191,36,.1);border-left:2px solid #fbbf24;padding:4px 8px;border-radius:4px;font-size:11px;margin-bottom:4px}
 @keyframes notifSlideDown{from{opacity:0;transform:translate(-50%,-30px)}to{opacity:1;transform:translate(-50%,0)}}
 @keyframes notifSlideUp{from{opacity:1;transform:translate(-50%,0)}to{opacity:0;transform:translate(-50%,-30px)}}
-.img-preview{width:80px;height:80px;object-fit:cover;border-radius:8px;border:2px solid #3b3b5c;cursor:zoom-in}
-.img-preview-wrap{position:relative;display:inline-block;cursor:grab;transition:transform .15s}
-.img-preview-wrap:active{cursor:grabbing}
-.img-preview-wrap:hover{transform:scale(1.05)}
-.img-preview-wrap .remove-btn{position:absolute;top:-6px;right:-6px;background:#ef4444;color:white;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer;font-weight:900;border:2px solid #1a1a2e;z-index:3}
-.img-preview-wrap .zoom-badge{position:absolute;top:-6px;left:-6px;background:#3b82f6;color:white;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;cursor:pointer;border:2px solid #1a1a2e;z-index:3;transition:transform .2s}
+.img-preview{width:80px;height:80px;object-fit:cover;border-radius:8px;border:2px solid #3b3b5c;user-select:none;-webkit-user-drag:none;pointer-events:auto}
+.img-preview-wrap{position:relative;display:inline-block;transition:transform .15s,border-color .2s;border:2px solid transparent;border-radius:10px;padding:2px;user-select:none}
+.img-preview-wrap:hover{transform:scale(1.05);border-color:rgba(251,191,36,.5)}
+.img-preview-wrap.dragging{opacity:.4;transform:scale(.95)}
+.img-preview-wrap .remove-btn{position:absolute;top:-6px;right:-6px;background:#ef4444;color:white;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer;font-weight:900;border:2px solid #1a1a2e;z-index:5}
+.img-preview-wrap .zoom-badge{position:absolute;top:-6px;left:-6px;background:#3b82f6;color:white;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;cursor:pointer;border:2px solid #1a1a2e;z-index:5;transition:transform .2s}
 .img-preview-wrap .zoom-badge:hover{background:#2563eb;transform:scale(1.2)}
-.img-preview-wrap .order-num{position:absolute;bottom:2px;left:2px;background:rgba(0,0,0,.85);color:#fbbf24;font-size:11px;font-weight:900;padding:1px 6px;border-radius:4px}
-.img-preview-wrap.dragging{opacity:.4}
+.img-preview-wrap .order-num{position:absolute;bottom:2px;left:2px;background:rgba(0,0,0,.85);color:#fbbf24;font-size:11px;font-weight:900;padding:1px 6px;border-radius:4px;z-index:5}
+.img-preview-wrap .drag-handle{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(251,191,36,.9);color:#0f0f1a;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;cursor:grab!important;opacity:0;transition:opacity .2s;z-index:4;box-shadow:0 2px 8px rgba(0,0,0,.4)}
+.img-preview-wrap:hover .drag-handle{opacity:1}
+.img-preview-wrap .drag-handle:active{cursor:grabbing!important}
+.img-preview-wrap.no-fullscreen .zoom-badge{display:none}
+.img-preview-wrap.no-fullscreen img.img-preview{cursor:grab}
+.img-preview-mode-bar{display:flex;align-items:center;justify-content:space-between;gap:8px;background:#0f0f1a;border:1px solid #2d2d44;border-radius:10px;padding:8px 12px;margin-bottom:10px;flex-wrap:wrap}
+.img-preview-mode-bar .mode-label{font-size:12px;color:#cbd5e1;font-weight:700;display:flex;align-items:center;gap:6px}
+.img-preview-mode-bar .mode-label i{color:#fbbf24}
+.img-preview-mode-bar .mode-btns{display:flex;gap:6px;flex-wrap:wrap}
+.img-preview-mode-bar .mode-btn{padding:6px 12px;border-radius:9999px;font-size:11px;font-weight:900;border:none;cursor:pointer;transition:.2s;display:inline-flex;align-items:center;gap:5px}
+.img-preview-mode-bar .mode-btn.active{background:#fbbf24;color:#0f0f1a;box-shadow:0 0 10px rgba(251,191,36,.6);transform:scale(1.03)}
+.img-preview-mode-bar .mode-btn.inactive{background:#334155;color:#94a3b8}
+.img-preview-mode-bar .mode-btn:hover{transform:scale(1.08)}
 .upload-progress{background:#0f0f1a;border:1px solid #fbbf24;border-radius:8px;padding:8px;font-size:11px;color:#fbbf24;font-family:monospace;max-height:100px;overflow-y:auto;margin-top:6px}
 .social-link{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:9999px;font-size:12px;font-weight:700;text-decoration:none;transition:.2s;margin:2px}
 .social-link:hover{transform:translateY(-2px)}
-.bookmark-btn{position:fixed;bottom:90px;right:20px;z-index:100;background:#fbbf24;color:#0f0f1a;width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;box-shadow:0 4px 20px rgba(251,191,36,.5);border:none;transition:transform .25s}
-.bookmark-btn:hover{transform:scale(1.12) rotate(-10deg)}
-.bookmark-btn.bookmarked{background:linear-gradient(135deg,#10b981,#047857);color:white}
 .like-btn{transition:all .2s;cursor:pointer;display:inline-flex;align-items:center;gap:4px}
 .like-btn:hover{transform:scale(1.15)}
 .like-btn.liked{color:#ef4444}
@@ -141,7 +150,6 @@ body{font-family:'Inter',sans-serif;background:#0f0f1a;color:#e2e8f0;overflow-x:
 @keyframes resumeSlide{from{transform:translate(-50%,30px);opacity:0}to{transform:translate(-50%,0);opacity:1}}
 .resume-banner:hover{transform:translate(-50%,-4px)}
 .resume-banner button{background:rgba(0,0,0,.2);border:none;color:#0f0f1a;width:24px;height:24px;border-radius:50%;cursor:pointer;font-weight:900;display:flex;align-items:center;justify-content:center}
-/* Chat image */
 .chat-img{max-width:220px;max-height:280px;border-radius:12px;cursor:zoom-in;margin-top:4px;border:1px solid rgba(255,255,255,.1);transition:transform .2s}
 .chat-img:hover{transform:scale(1.02)}
 .chat-img-msg{padding:4px!important;background:transparent!important;border:none!important}
@@ -201,8 +209,7 @@ body{font-family:'Inter',sans-serif;background:#0f0f1a;color:#e2e8f0;overflow-x:
 <div id="modalContainer" class="fixed inset-0 flex items-center justify-center z-50 hidden modal-overlay p-4">
 <div id="modalContent" class="card-bg rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-6 shadow-2xl scrollbar-thin"></div>
 </div>
-<div id="toast" class="fixed bottom-6 right-6 z-50 hidden bg-slate-800 border border-amber-500 rounded-xl px-5 py-3 shadow-2xl text-sm"></div>
-<script type="module">
+<div id="toast" class="fixed bottom-6 right-6 z-50 hidden bg-slate-800 border border-amber-500 rounded-xl px-5 py-3 shadow-2xl text-sm"></div><script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 import { getAuth, signInAnonymously, GoogleAuthProvider, signInWithPopup, linkWithPopup, onAuthStateChanged, signOut, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, collection, addDoc, getDocs, query, where, orderBy, onSnapshot, serverTimestamp, limit } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
@@ -231,6 +238,7 @@ let currentResumeBanner = null;
 let pendingChatImg = { public: null, clan: null, private: null };
 let notifPrivateInit = false;
 let notifPrivateUnsubs = [];
+let dragMode = 'drag';
 
 const ALL_CATEGORIES = ['Action','Adventure','Romance','Fantasy','Slice of Life','Horror','Comedy','Mystery','Sci-Fi','Thriller','Drama','Supernatural','Historical','Isekai','Martial Arts','Sports','Music','School Life','Psychological','Tragedy','Mecha','Military','Cooking','Medical','Reincarnation','Vampire','Detective','Cyberpunk','Post-Apocalyptic','Magic'];
 const KATA_KASAR = ['anjing','bangsat','kontol','memek','ngentot','peler','kampang','bajingan','asu','jancok','pepek','titit','bokep','silit','ngewe','colmek','masturbasi'];
@@ -502,12 +510,10 @@ function showUploadGuide() {
       <div class="guide-step"><p class="font-bold text-amber-400 mb-1"><span class="guide-step-num">1</span>Login Google</p><p class="text-sm text-slate-300">Login Google supaya akun & PP permanen.</p></div>
       <div class="guide-step"><p class="font-bold text-amber-400 mb-1"><span class="guide-step-num">2</span>Jadi Kreator</p><p class="text-sm text-slate-300">Menu <b>Jadi Kreator</b> → minta role via WA admin.</p></div>
       <div class="guide-step"><p class="font-bold text-amber-400 mb-1"><span class="guide-step-num">3</span>Upload Gambar (1-5 foto)</p>
-        <p class="text-sm text-slate-300 mb-2">2 cara:</p>
-        <ul class="text-sm text-slate-300 list-disc pl-5 space-y-1">
-          <li><b>Dari perangkat</b> → pilih 1-5 foto sekaligus</li>
-          <li><b>Paste URL ImgBB</b> → dari imgbb.com</li>
-        </ul>
-        <p class="text-xs text-amber-400 mt-2">💡 Klik gambar untuk lihat fullscreen. Drag untuk ubah urutan. Foto #1 jadi sampul.</p>
+        <p class="text-sm text-slate-300 mb-2">2 cara: dari perangkat atau paste URL ImgBB.</p>
+        <p class="text-xs text-amber-400 mt-2">💡 Ada 2 MODE di preview gambar:<br>
+        <b>🖐️ Mode Drag</b> = gambar bisa di-drag untuk ubah urutan (fullscreen mati)<br>
+        <b>🔍 Mode Fullscreen</b> = klik gambar untuk lihat fullscreen (drag mati)</p>
       </div>
       <div class="guide-step"><p class="font-bold text-amber-400 mb-1"><span class="guide-step-num">4</span>Buat Karya</p><p class="text-sm text-slate-300">Creator → Buat Baru. Isi semua field *.</p></div>
       <div class="guide-step"><p class="font-bold text-amber-400 mb-1"><span class="guide-step-num">5</span>Chapter/Eps</p><p class="text-sm text-slate-300">Novel: judul + teks. Komik: judul opsional + 1-5 gambar. <b>Gambar pertama jadi sampul</b>.</p></div>
@@ -534,18 +540,20 @@ function multiImageField(containerId) {
       <a href="https://imgbb.com" target="_blank" class="bg-slate-700 text-slate-300 px-3 py-2 rounded-lg text-xs font-bold hover:bg-slate-600 transition"><i class="fas fa-external-link-alt mr-1"></i>ImgBB</a>
     </div>
     <textarea id="${containerId}-urls" rows="2" placeholder="Atau paste URL ImgBB, 1 per baris" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs font-mono"></textarea>
-    <p class="text-xs text-slate-500 mt-1">💡 Klik gambar untuk lihat fullscreen. Drag & drop untuk ubah urutan. Foto pertama = sampul.</p>
-    <div id="${containerId}-preview" class="flex flex-wrap gap-2 mt-2"></div>
+    <div id="${containerId}-preview" class="mt-2"></div>
     <div id="${containerId}-progress" class="upload-progress hidden"></div>
   </div>`;
 }
 
+// ==================== ATTACH MULTI IMAGE HANDLERS (DENGAN MODE TOGGLE) ====================
 function attachMultiImageHandlers(containerId) {
   const fileInput = document.getElementById(`${containerId}-file`);
   const preview = document.getElementById(`${containerId}-preview`);
   const progress = document.getElementById(`${containerId}-progress`);
   if (!fileInput) return;
   window[`_${containerId}_files`] = window[`_${containerId}_files`] || [];
+  window[`_${containerId}_dragSrc`] = null;
+  if (!window[`_${containerId}_mode`]) window[`_${containerId}_mode`] = dragMode;
   
   fileInput.onchange = async (e) => {
     const files = Array.from(e.target.files);
@@ -585,80 +593,319 @@ function attachMultiImageHandlers(containerId) {
     const files = window[`_${containerId}_files`] || [];
     const urlText = document.getElementById(`${containerId}-urls`)?.value || '';
     const urls = parseImgbbUrls(urlText);
+    const total = files.length + urls.length;
+    const mode = window[`_${containerId}_mode`] || 'drag';
     preview.innerHTML = '';
     
-    const totalInfo = document.createElement('div');
-    totalInfo.className = 'w-full text-xs text-amber-400 font-bold mb-1';
-    const total = files.length + urls.length;
-    totalInfo.textContent = `📸 Total: ${total} foto${total > 5 ? ' ⚠️ (lebih dari 5, mungkin gagal)' : ''} — klik gambar untuk fullscreen`;
-    preview.appendChild(totalInfo);
+    if (total === 0) return;
+    
+    const modeBar = document.createElement('div');
+    modeBar.className = 'img-preview-mode-bar';
+    modeBar.innerHTML = `
+      <span class="mode-label"><i class="fas fa-layer-group"></i>Total: ${total} foto${total > 5 ? ' ⚠️' : ''}</span>
+      <div class="mode-btns">
+        <button class="mode-btn ${mode === 'drag' ? 'active' : 'inactive'}" data-mode="drag">
+          <i class="fas fa-hand-rock"></i> 🖐️ Mode Drag
+        </button>
+        <button class="mode-btn ${mode === 'fullscreen' ? 'active' : 'inactive'}" data-mode="fullscreen">
+          <i class="fas fa-expand"></i> 🔍 Mode Fullscreen
+        </button>
+      </div>
+    `;
+    preview.appendChild(modeBar);
+    
+    modeBar.querySelectorAll('.mode-btn').forEach(btn => {
+      btn.onclick = (e) => {
+        e.stopPropagation();
+        const newMode = btn.dataset.mode;
+        window[`_${containerId}_mode`] = newMode;
+        dragMode = newMode;
+        showToast(newMode === 'drag' ? '🖐️ Mode Drag aktif' : '🔍 Mode Fullscreen aktif');
+        renderPreview();
+      };
+    });
+    
+    const hint = document.createElement('div');
+    hint.className = 'w-full text-[11px] mb-2 ' + (mode === 'drag' ? 'text-amber-400' : 'text-blue-400');
+    hint.innerHTML = mode === 'drag' 
+      ? '<i class="fas fa-hand-rock mr-1"></i> <b>Mode Drag:</b> Geser gambar untuk ubah urutan.'
+      : '<i class="fas fa-expand mr-1"></i> <b>Mode Fullscreen:</b> Klik gambar untuk perbesar.';
+    preview.appendChild(hint);
+    
+    function setupDragEvents(wrap, type, index) {
+      wrap.dataset.dragType = type;
+      wrap.dataset.dragIndex = index;
+      wrap.dataset.dragCid = containerId;
+      
+      if (mode === 'drag') {
+        wrap.draggable = true;
+        wrap.classList.add('draggable-ready');
+        
+        wrap.addEventListener('dragstart', (e) => {
+          e.dataTransfer.effectAllowed = 'move';
+          try {
+            e.dataTransfer.setData('text/plain', JSON.stringify({ cid: containerId, type, idx: index }));
+          } catch (err) {
+            e.dataTransfer.setData('text/plain', containerId + '||' + type + '||' + index);
+          }
+          window[`_${containerId}_dragSrc`] = { type, idx: index };
+          wrap.classList.add('dragging');
+          setTimeout(() => { wrap.style.opacity = '0.4'; }, 0);
+        });
+        
+        wrap.addEventListener('dragend', () => {
+          wrap.classList.remove('dragging');
+          wrap.style.opacity = '';
+          wrap.style.borderColor = '';
+          wrap.style.transform = '';
+          window[`_${containerId}_dragSrc`] = null;
+          preview.querySelectorAll('.img-preview-wrap').forEach(w => {
+            w.style.borderColor = '';
+            w.style.transform = '';
+          });
+        });
+        
+        wrap.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          e.dataTransfer.dropEffect = 'move';
+          if (window[`_${containerId}_dragSrc`]) {
+            wrap.style.borderColor = '#fbbf24';
+            wrap.style.transform = 'scale(1.1)';
+          }
+        });
+        
+        wrap.addEventListener('dragleave', () => {
+          wrap.style.borderColor = '';
+          wrap.style.transform = '';
+        });
+        
+        wrap.addEventListener('drop', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          wrap.style.borderColor = '';
+          wrap.style.transform = '';
+          
+          let data = window[`_${containerId}_dragSrc`];
+          try {
+            const raw = e.dataTransfer.getData('text/plain');
+            if (raw) {
+              if (raw.startsWith('{')) {
+                const parsed = JSON.parse(raw);
+                if (parsed.cid === containerId) data = parsed;
+              } else {
+                const parts = raw.split('||');
+                if (parts[0] === containerId) {
+                  data = { cid: parts[0], type: parts[1], idx: parseInt(parts[2]) };
+                }
+              }
+            }
+          } catch (err) {}
+          
+          if (!data || data.cid !== containerId) return;
+          reorderImages(containerId, data.type, data.idx, type, index);
+        });
+      } else {
+        wrap.draggable = false;
+      }
+    }
     
     files.forEach((f, i) => {
       const wrap = document.createElement('div');
-      wrap.className = 'img-preview-wrap';
-      wrap.draggable = true;
+      wrap.className = 'img-preview-wrap' + (mode === 'drag' ? ' no-fullscreen' : '');
       wrap.innerHTML = `
-        <img src="${f.dataUrl}" class="img-preview" onclick="event.stopPropagation();window.showImgFullscreen('${f.dataUrl}','Gambar #${i+1} dari ${total}')">
+        <img src="${f.dataUrl}" class="img-preview" draggable="false" ${mode === 'fullscreen' ? `onclick="event.stopPropagation();window.showImgFullscreen('${f.dataUrl}','Gambar #${i+1} dari ${total}')"` : ''}>
         <span class="order-num">#${i+1}</span>
-        <span class="zoom-badge" onclick="event.stopPropagation();window.showImgFullscreen('${f.dataUrl}','Gambar #${i+1} dari ${total}')" title="Lihat fullscreen"><i class="fas fa-expand"></i></span>
+        ${mode === 'fullscreen' ? `<span class="zoom-badge" onclick="event.stopPropagation();window.showImgFullscreen('${f.dataUrl}','Gambar #${i+1} dari ${total}')"><i class="fas fa-expand"></i></span>` : ''}
         <span class="remove-btn" onclick="event.stopPropagation();removeImg('${containerId}',${i})">×</span>
+        ${mode === 'drag' ? `<span class="drag-handle" title="Tahan & geser"><i class="fas fa-arrows-alt"></i></span>` : ''}
       `;
-      wrap.ondragstart = (e) => {
-        e.dataTransfer.setData('text/plain', JSON.stringify({ cid: containerId, type: 'file', idx: i }));
-        wrap.classList.add('dragging');
-      };
-      wrap.ondragend = () => { wrap.classList.remove('dragging'); };
-      wrap.ondragover = (e) => { e.preventDefault(); wrap.style.borderColor = '#fbbf24'; };
-      wrap.ondragleave = () => { wrap.style.borderColor = ''; };
-      wrap.ondrop = (e) => {
-        e.preventDefault(); wrap.style.borderColor = '';
-        const data = JSON.parse(e.dataTransfer.getData('text/plain'));
-        if (data.cid !== containerId) return;
-        reorderImages(containerId, data.type, data.idx, 'file', i);
-      };
+      setupDragEvents(wrap, 'file', i);
       preview.appendChild(wrap);
     });
     
     urls.forEach((url, i) => {
       const wrap = document.createElement('div');
-      wrap.className = 'img-preview-wrap';
-      wrap.draggable = true;
+      wrap.className = 'img-preview-wrap' + (mode === 'drag' ? ' no-fullscreen' : '');
       const safeUrl = escAttr(url);
       wrap.innerHTML = `
-        <img src="${url}" class="img-preview" onerror="this.src='https://placehold.co/80x80/1a1a2e/64748b?text=Err'" onclick="event.stopPropagation();window.showImgFullscreen('${safeUrl}','Gambar #${files.length + i + 1} dari ${total}')">
+        <img src="${url}" class="img-preview" draggable="false" onerror="this.src='https://placehold.co/80x80/1a1a2e/64748b?text=Err'" ${mode === 'fullscreen' ? `onclick="event.stopPropagation();window.showImgFullscreen('${safeUrl}','Gambar #${files.length + i + 1} dari ${total}')"` : ''}>
         <span class="order-num">#${files.length + i + 1}</span>
-        <span class="zoom-badge" onclick="event.stopPropagation();window.showImgFullscreen('${safeUrl}','Gambar #${files.length + i + 1} dari ${total}')" title="Lihat fullscreen"><i class="fas fa-expand"></i></span>
+        ${mode === 'fullscreen' ? `<span class="zoom-badge" onclick="event.stopPropagation();window.showImgFullscreen('${safeUrl}','Gambar #${files.length + i + 1} dari ${total}')"><i class="fas fa-expand"></i></span>` : ''}
         <span class="remove-btn" onclick="event.stopPropagation();removeUrl('${containerId}',${i})">×</span>
+        ${mode === 'drag' ? `<span class="drag-handle" title="Tahan & geser"><i class="fas fa-arrows-alt"></i></span>` : ''}
       `;
-      wrap.ondragstart = (e) => {
-        e.dataTransfer.setData('text/plain', JSON.stringify({ cid: containerId, type: 'url', idx: i }));
-        wrap.classList.add('dragging');
-      };
-      wrap.ondragend = () => { wrap.classList.remove('dragging'); };
-      wrap.ondragover = (e) => { e.preventDefault(); wrap.style.borderColor = '#fbbf24'; };
-      wrap.ondragleave = () => { wrap.style.borderColor = ''; };
-      wrap.ondrop = (e) => {
-        e.preventDefault(); wrap.style.borderColor = '';
-        const data = JSON.parse(e.dataTransfer.getData('text/plain'));
-        if (data.cid !== containerId) return;
-        reorderImages(containerId, data.type, data.idx, 'url', i);
-      };
+      setupDragEvents(wrap, 'url', i);
       preview.appendChild(wrap);
     });
-    
-    if (total > 1) {
-      const hint = document.createElement('div');
-      hint.className = 'w-full text-[10px] text-slate-500 mt-1';
-      hint.textContent = '💡 Drag foto untuk ubah urutan. Foto #1 = sampul.';
-      preview.appendChild(hint);
-    }
   }
   
   const urlTextarea = document.getElementById(`${containerId}-urls`);
-  urlTextarea.oninput = renderPreview;
+  if (urlTextarea) urlTextarea.oninput = renderPreview;
   window[`_${containerId}_render`] = renderPreview;
   renderPreview();
 }
+
+// ==================== HANDLER UNTUK GAMBAR SAAT INI DI EDIT CHAPTER ====================
+function attachExistingImagesHandler(cid, images) {
+  const preview = document.getElementById(`editExistingPreview-${cid}`);
+  const countEl = document.getElementById(`editExistingCount-${cid}`);
+  if (!preview) return;
+  
+  if (!window[`_existing_${cid}_images`]) window[`_existing_${cid}_images`] = [...images];
+  if (!window[`_existing_${cid}_mode`]) window[`_existing_${cid}_mode`] = dragMode;
+  window[`_existing_${cid}_dragSrc`] = null;
+  
+  function render() {
+    const imgs = window[`_existing_${cid}_images`] || [];
+    const mode = window[`_existing_${cid}_mode`] || 'drag';
+    const total = imgs.length;
+    preview.innerHTML = '';
+    if (countEl) countEl.textContent = total;
+    
+    if (total === 0) {
+      preview.innerHTML = '<p class="text-xs text-slate-500 italic mt-2">Tidak ada gambar.</p>';
+      return;
+    }
+    
+    const modeBar = document.createElement('div');
+    modeBar.className = 'img-preview-mode-bar';
+    modeBar.innerHTML = `
+      <span class="mode-label"><i class="fas fa-layer-group"></i>Total: ${total} gambar</span>
+      <div class="mode-btns">
+        <button class="mode-btn ${mode === 'drag' ? 'active' : 'inactive'}" data-mode="drag">
+          <i class="fas fa-hand-rock"></i> 🖐️ Mode Drag
+        </button>
+        <button class="mode-btn ${mode === 'fullscreen' ? 'active' : 'inactive'}" data-mode="fullscreen">
+          <i class="fas fa-expand"></i> 🔍 Mode Fullscreen
+        </button>
+      </div>
+    `;
+    preview.appendChild(modeBar);
+    
+    modeBar.querySelectorAll('.mode-btn').forEach(btn => {
+      btn.onclick = (e) => {
+        e.stopPropagation();
+        const newMode = btn.dataset.mode;
+        window[`_existing_${cid}_mode`] = newMode;
+        dragMode = newMode;
+        showToast(newMode === 'drag' ? '🖐️ Mode Drag aktif' : '🔍 Mode Fullscreen aktif');
+        render();
+      };
+    });
+    
+    const hint = document.createElement('div');
+    hint.className = 'w-full text-[11px] mb-2 ' + (mode === 'drag' ? 'text-amber-400' : 'text-blue-400');
+    hint.innerHTML = mode === 'drag' 
+      ? '<i class="fas fa-hand-rock mr-1"></i> <b>Mode Drag:</b> Geser gambar untuk ubah urutan.'
+      : '<i class="fas fa-expand mr-1"></i> <b>Mode Fullscreen:</b> Klik gambar untuk perbesar.';
+    preview.appendChild(hint);
+    
+    const grid = document.createElement('div');
+    grid.className = 'flex flex-wrap gap-2 max-h-60 overflow-y-auto scrollbar-thin bg-slate-900/50 border border-slate-700 rounded-lg p-2';
+    preview.appendChild(grid);
+    
+    function setupDrag(wrap, index) {
+      if (mode === 'drag') {
+        wrap.draggable = true;
+        wrap.classList.add('draggable-ready');
+        
+        wrap.addEventListener('dragstart', (e) => {
+          e.dataTransfer.effectAllowed = 'move';
+          try {
+            e.dataTransfer.setData('text/plain', JSON.stringify({ cid: 'existing_' + cid, idx: index }));
+          } catch (err) {
+            e.dataTransfer.setData('text/plain', 'existing_' + cid + '||' + index);
+          }
+          window[`_existing_${cid}_dragSrc`] = index;
+          wrap.classList.add('dragging');
+          setTimeout(() => { wrap.style.opacity = '0.4'; }, 0);
+        });
+        
+        wrap.addEventListener('dragend', () => {
+          wrap.classList.remove('dragging');
+          wrap.style.opacity = '';
+          wrap.style.borderColor = '';
+          wrap.style.transform = '';
+          window[`_existing_${cid}_dragSrc`] = null;
+          grid.querySelectorAll('.img-preview-wrap').forEach(w => {
+            w.style.borderColor = '';
+            w.style.transform = '';
+          });
+        });
+        
+        wrap.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          e.dataTransfer.dropEffect = 'move';
+          if (window[`_existing_${cid}_dragSrc`] !== null) {
+            wrap.style.borderColor = '#fbbf24';
+            wrap.style.transform = 'scale(1.1)';
+          }
+        });
+        
+        wrap.addEventListener('dragleave', () => {
+          wrap.style.borderColor = '';
+          wrap.style.transform = '';
+        });
+        
+        wrap.addEventListener('drop', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          wrap.style.borderColor = '';
+          wrap.style.transform = '';
+          
+          let fromIdx = window[`_existing_${cid}_dragSrc`];
+          try {
+            const raw = e.dataTransfer.getData('text/plain');
+            if (raw) {
+              if (raw.startsWith('{')) {
+                const parsed = JSON.parse(raw);
+                if (parsed.cid === 'existing_' + cid) fromIdx = parsed.idx;
+              } else {
+                const parts = raw.split('||');
+                if (parts[0] === 'existing_' + cid) fromIdx = parseInt(parts[1]);
+              }
+            }
+          } catch (err) {}
+          
+          if (fromIdx === null || fromIdx === undefined || fromIdx === index) return;
+          
+          const imgs = [...(window[`_existing_${cid}_images`] || [])];
+          const item = imgs.splice(fromIdx, 1)[0];
+          imgs.splice(index, 0, item);
+          window[`_existing_${cid}_images`] = imgs;
+          render();
+          showToast('✅ Urutan diubah!');
+        });
+      } else {
+        wrap.draggable = false;
+      }
+    }
+    
+    imgs.forEach((img, i) => {
+      const wrap = document.createElement('div');
+      wrap.className = 'img-preview-wrap' + (mode === 'drag' ? ' no-fullscreen' : '');
+      const safeUrl = escAttr(img);
+      wrap.innerHTML = `
+        <img src="${img}" class="img-preview" draggable="false" onerror="this.src='https://placehold.co/80x80/1a1a2e/64748b?text=Err'" ${mode === 'fullscreen' ? `onclick="event.stopPropagation();window.showImgFullscreen('${safeUrl}','Gambar #${i+1} dari ${total}')"` : ''}>
+        <span class="order-num">#${i+1}</span>
+        ${mode === 'fullscreen' ? `<span class="zoom-badge" onclick="event.stopPropagation();window.showImgFullscreen('${safeUrl}','Gambar #${i+1} dari ${total}')"><i class="fas fa-expand"></i></span>` : ''}
+        <span class="remove-btn" onclick="event.stopPropagation();window.removeExistingImage('${cid}',${i})">×</span>
+        ${mode === 'drag' ? `<span class="drag-handle" title="Tahan & geser"><i class="fas fa-arrows-alt"></i></span>` : ''}
+      `;
+      setupDrag(wrap, i);
+      grid.appendChild(wrap);
+    });
+  }
+  render();
+}
+
+window.removeExistingImage = (cid, index) => {
+  if (!confirm('Hapus gambar ini?')) return;
+  const imgs = window[`_existing_${cid}_images`] || [];
+  imgs.splice(index, 1);
+  window[`_existing_${cid}_images`] = imgs;
+  attachExistingImagesHandler(cid, imgs);
+};
 
 function reorderImages(containerId, fromType, fromIdx, toType, toIdx) {
   if (fromType === toType && fromIdx === toIdx) return;
@@ -687,6 +934,7 @@ function reorderImages(containerId, fromType, fromIdx, toType, toIdx) {
   window[`_${containerId}_files`] = files;
   urlTextarea.value = urls.join('\n');
   window[`_${containerId}_render`]?.();
+  showToast('✅ Urutan diubah!');
 }
 
 window.removeImg = (cid, idx) => {
@@ -745,7 +993,7 @@ function attachCoverHandler(id) {
         preview.innerHTML = `
           <div class="img-preview-wrap">
             <img src="${dataUrl}" class="img-preview" style="width:96px;height:128px" onclick="event.stopPropagation();window.showImgFullscreen('${dataUrl}','Sampul / Cover')">
-            <span class="zoom-badge" onclick="event.stopPropagation();window.showImgFullscreen('${dataUrl}','Sampul / Cover')" title="Lihat fullscreen"><i class="fas fa-expand"></i></span>
+            <span class="zoom-badge" onclick="event.stopPropagation();window.showImgFullscreen('${dataUrl}','Sampul / Cover')"><i class="fas fa-expand"></i></span>
           </div>
           <p class="text-xs text-slate-500 mt-1">${(dataUrl.length/1024).toFixed(0)} KB • Klik untuk fullscreen</p>
         `;
@@ -762,7 +1010,7 @@ function attachCoverHandler(id) {
       preview.innerHTML = `
         <div class="img-preview-wrap">
           <img src="${url}" class="img-preview" style="width:96px;height:128px" onerror="this.src='https://placehold.co/96x128/1a1a2e/64748b?text=Err'" onclick="event.stopPropagation();window.showImgFullscreen('${safeUrl}','Sampul / Cover')">
-          <span class="zoom-badge" onclick="event.stopPropagation();window.showImgFullscreen('${safeUrl}','Sampul / Cover')" title="Lihat fullscreen"><i class="fas fa-expand"></i></span>
+          <span class="zoom-badge" onclick="event.stopPropagation();window.showImgFullscreen('${safeUrl}','Sampul / Cover')"><i class="fas fa-expand"></i></span>
         </div>
         <p class="text-xs text-slate-500 mt-1">Klik untuk fullscreen</p>
       `;
@@ -869,7 +1117,6 @@ async function logout() {
   await signOut(auth); 
   isAdminSession = false; adminEmail = null; 
   localStorage.removeItem('adminSession'); localStorage.removeItem('adminEmail'); 
-  // cleanup notif private
   notifPrivateUnsubs.forEach(u => { try { u(); } catch(e){} });
   notifPrivateUnsubs = [];
   notifPrivateInit = false;
@@ -927,19 +1174,15 @@ async function addClanExp(clanId, amount) {
   } catch (e) {}
 }
 
-// ==================== NOTIF LISTENER (HANYA PRIVATE + CLAN) ====================
 function initNotifListener() {
   if (notifInitialized) return;
   notifInitialized = true;
-  // ❌ Chat publik TIDAK ada notif
-  // ✅ Notif clan
   if (userProfile?.clanId) {
     const clanQ = query(collection(db, 'clans', userProfile.clanId, 'messages'), orderBy('createdAt', 'desc'), limit(1));
     onSnapshot(clanQ, snap => {
       snap.forEach(d => {
         const msg = d.data();
         if (msg.userId === currentUser?.uid) return;
-        // Skip pesan lama (> 30 detik)
         const ts = msg.createdAt?.toDate?.();
         if (ts && Date.now() - ts.getTime() > 30000) return;
         const un = usersCache[msg.userId]?.username || msg.username || 'Seseorang';
@@ -948,20 +1191,17 @@ function initNotifListener() {
       });
     });
   }
-  // ✅ Notif DM (private chat) — listen ke semua chat yang melibatkan user
   initPrivateNotifListener();
 }
 
 function initPrivateNotifListener() {
   if (notifPrivateInit) return;
   notifPrivateInit = true;
-  // Listen ke collection privateChats, cari yang ada uid di doc id
   const unsub = onSnapshot(collection(db, 'privateChats'), snap => {
     snap.docChanges().forEach(change => {
       if (change.type === 'added') {
         const chatId = change.doc.id;
         if (!chatId.includes(currentUser.uid)) return;
-        // Listen ke messages subcollection
         const otherUid = chatId.split('_').find(u => u !== currentUser.uid);
         if (!otherUid) return;
         const msgQ = query(collection(db, 'privateChats', chatId, 'messages'), orderBy('createdAt', 'desc'), limit(1));
@@ -983,7 +1223,6 @@ function initPrivateNotifListener() {
   });
   notifPrivateUnsubs.push(unsub);
 }
-
 async function renderPage() {
   if (currentResumeBanner) {
     try { currentResumeBanner.remove(); } catch(e){}
@@ -1314,7 +1553,6 @@ async function renderPublicProfile(container, uid) {
   }
 }
 
-// ==================== PRIVATE CHAT (dengan kirim gambar) ====================
 async function renderPrivateChat(container, otherUid) {
   if (!currentUser) { container.innerHTML = '<p class="text-red-400">Login dulu</p>'; return; }
   const otherSnap = await getDoc(doc(db, 'users', otherUid));
@@ -1532,7 +1770,6 @@ async function renderClan(c) {
   }
 }
 
-// ==================== CLAN DETAIL (dengan kirim gambar) ====================
 async function renderClanDetail(container, clanId) {
   const snap = await getDoc(doc(db, 'clans', clanId));
   if (!snap.exists()) { container.innerHTML = '<p class="text-red-400">Clan tidak ditemukan</p>'; return; }
@@ -1752,7 +1989,6 @@ async function renderClanDetail(container, clanId) {
     msgsDiv.scrollTop = msgsDiv.scrollHeight;
   });
   
-  // Handler kirim gambar clan
   const clanImgInput = document.getElementById('clanImgInput');
   const clanImgPreview = document.getElementById('clanImgPreview');
   if (clanImgInput) {
@@ -1900,7 +2136,6 @@ window.delClanMsg = async (msgId) => {
   showToast('Dihapus');
 };
 
-// ==================== READER (dengan fullscreen cover + auto-scroll) ====================
 async function renderReader(container, novelId, chapterId = null) {
   if (!novelId) { container.innerHTML = '<p>Karya tidak ditemukan</p>'; return; }
   const workSnap = await getDoc(doc(db, 'works', novelId));
@@ -2283,7 +2518,6 @@ async function renderLeaderboard(container) {
     </div>`).join('');
 }
 
-// ==================== CHAT PUBLIK (dengan kirim gambar, TANPA notif) ====================
 async function renderChat(container) {
   container.innerHTML = `
     <h2 class="text-2xl font-bold mb-4"><i class="fas fa-comments text-amber-400 mr-2"></i>Chat Publik</h2>
@@ -2386,7 +2620,6 @@ async function renderChat(container) {
     messagesDiv.scrollTop = messagesDiv.scrollHeight;
   }
   
-  // Handler kirim gambar publik
   const pubImgInput = document.getElementById('publicImgInput');
   const pubImgPreview = document.getElementById('publicImgPreview');
   pubImgInput.onchange = async (e) => {
@@ -2613,7 +2846,6 @@ async function renderProfil(container) {
   document.getElementById('logoutBtn').onclick = logout;
 }
 
-// ==================== CREATOR ====================
 async function renderCreatorDashboard(container) {
   container.innerHTML = `
     <div class="flex justify-between items-center mb-6 flex-wrap gap-2">
@@ -2782,18 +3014,9 @@ async function renderCreatorDashboard(container) {
               <textarea id="editChContent" rows="10" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm">${ch.content || ''}</textarea>
             </div>
           ` : `
-            <div>
-              <label class="block text-sm font-semibold mb-1">Gambar Saat Ini (${(ch.images || []).length})</label>
-              <div class="flex flex-wrap gap-2 max-h-48 overflow-y-auto scrollbar-thin bg-slate-900/50 border border-slate-700 rounded-lg p-2">
-                ${(ch.images || []).map((img, i) => `
-                  <div class="img-preview-wrap">
-                    <img src="${img}" class="img-preview" onerror="this.src='https://placehold.co/80x80/1a1a2e/64748b?text=Err'" onclick="event.stopPropagation();window.showImgFullscreen('${escAttr(img)}','Gambar #${i+1}')">
-                    <span class="order-num">#${i+1}</span>
-                    <span class="zoom-badge" onclick="event.stopPropagation();window.showImgFullscreen('${escAttr(img)}','Gambar #${i+1}')" title="Lihat fullscreen"><i class="fas fa-expand"></i></span>
-                    <span class="remove-btn" onclick="removeImageFromChapter('${wid}','${cid}',${i})">×</span>
-                  </div>
-                `).join('')}
-              </div>
+            <div id="editExisting-${cid}">
+              <label class="block text-sm font-semibold mb-1">Gambar Saat Ini (<span id="editExistingCount-${cid}">${(ch.images || []).length}</span>)</label>
+              <div id="editExistingPreview-${cid}" class="mt-2"></div>
             </div>
             <div>
               <label class="block text-sm font-semibold mb-1">Tambah Gambar Baru (1-5)</label>
@@ -2806,7 +3029,10 @@ async function renderCreatorDashboard(container) {
           </div>
         </div>`;
       modal.classList.remove('hidden');
-      if (type === 'komik') attachMultiImageHandlers('editAdd-' + cid);
+      if (type === 'komik') {
+        attachMultiImageHandlers('editAdd-' + cid);
+        attachExistingImagesHandler(cid, ch.images || []);
+      }
       const close = () => modal.classList.add('hidden');
       document.getElementById('closeEditCh').onclick = close;
       document.getElementById('cancelEditCh').onclick = close;
@@ -2818,8 +3044,9 @@ async function renderCreatorDashboard(container) {
           if (!newContent) { showToast('Isi wajib!'); return; }
           await updateDoc(doc(db, 'works', wid, 'chapters', cid), { title: newTitle, content: newContent, updatedAt: serverTimestamp() });
         } else {
+          const existingImages = window[`_existing_${cid}_images`] || ch.images || [];
           const newImages = getMultiImages('editAdd-' + cid);
-          const finalImages = [...(ch.images || []), ...newImages];
+          const finalImages = [...existingImages, ...newImages];
           await updateDoc(doc(db, 'works', wid, 'chapters', cid), { 
             title: newTitle, 
             images: finalImages,
