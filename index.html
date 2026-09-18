@@ -1,0 +1,2596 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KomiNovel - Baca & Tulis Novel/Komik Online Gratis</title>
+<meta name="description" content="KomiNovel - Platform baca & tulis Novel dan Komik online gratis.">
+<link rel="icon" href="https://i.ibb.co.com/SDTthJ7m/Gemini-Generated-Image-fhupt4fhupt4fhup.jpg">
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+body{font-family:'Inter',sans-serif;background:#0f0f1a;color:#e2e8f0;overflow-x:hidden}
+.gold-glow{text-shadow:0 0 8px #fbbf24,0 0 20px #f59e0b;color:#fbbf24}
+.gold-badge{background:linear-gradient(135deg,#fbbf24,#d97706);color:#0f0f1a;font-weight:bold;box-shadow:0 0 15px rgba(251,191,36,.6)}
+.card-bg{background:#1a1a2e;border:1px solid #2d2d44}
+.scrollbar-thin::-webkit-scrollbar{width:6px}
+.scrollbar-thin::-webkit-scrollbar-thumb{background:#3b3b5c;border-radius:8px}
+.modal-overlay{background:rgba(0,0,0,.8);backdrop-filter:blur(4px);animation:fadeIn .2s ease-out}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.empty-animation{animation:float 2s infinite ease-in-out}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.line-clamp-2{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.admin-chat-border{border:2px solid #fbbf24;box-shadow:0 0 12px rgba(251,191,36,.7);background:linear-gradient(135deg,#2a1f0a,#1a1a2e)!important}
+.penulis-chat-border{border:2px solid #3b82f6;box-shadow:0 0 12px rgba(59,130,246,.6);background:linear-gradient(135deg,#0a1628,#1a1a2e)!important}
+.komikus-chat-border{border:2px solid #a855f7;box-shadow:0 0 12px rgba(168,85,247,.6);background:linear-gradient(135deg,#1a0a28,#1a1a2e)!important}
+.pembaca-chat-border{border:1px solid #334155}
+.clan-chat-border{border:2px solid #10b981;box-shadow:0 0 12px rgba(16,185,129,.5);background:linear-gradient(135deg,#0a2620,#1a1a2e)!important}
+.admin-tag{background:linear-gradient(135deg,#fbbf24,#d97706);color:#0f0f1a;font-size:10px;font-weight:900;padding:2px 6px;border-radius:4px;display:inline-block}
+.penulis-tag{background:linear-gradient(135deg,#3b82f6,#1d4ed8);color:white;font-size:10px;font-weight:900;padding:2px 6px;border-radius:4px;display:inline-block}
+.komikus-tag{background:linear-gradient(135deg,#a855f7,#7c3aed);color:white;font-size:10px;font-weight:900;padding:2px 6px;border-radius:4px;display:inline-block}
+.pembaca-tag{background:#475569;color:#e2e8f0;font-size:10px;font-weight:900;padding:2px 6px;border-radius:4px;display:inline-block}
+.clan-tag{background:linear-gradient(135deg,#10b981,#047857);color:white;font-size:10px;font-weight:900;padding:2px 6px;border-radius:4px;display:inline-block}
+.clan-owner-tag{background:linear-gradient(135deg,#f59e0b,#d97706);color:white;font-size:10px;font-weight:900;padding:2px 6px;border-radius:4px;box-shadow:0 0 8px rgba(245,158,11,.6);display:inline-block}
+.clan-admin-tag{background:linear-gradient(135deg,#8b5cf6,#6d28d9);color:white;font-size:10px;font-weight:900;padding:2px 6px;border-radius:4px;box-shadow:0 0 8px rgba(139,92,246,.5);display:inline-block}
+.tamat-tag{background:linear-gradient(90deg,#ef4444,#f87171,#ef4444);background-size:200% 100%;color:white;font-size:10px;font-weight:900;padding:2px 8px;border-radius:4px;letter-spacing:.5px;animation:tagShine 3s infinite}
+.berlanjut-tag{background:linear-gradient(90deg,#10b981,#34d399,#10b981);background-size:200% 100%;color:white;font-size:10px;font-weight:900;padding:2px 8px;border-radius:4px;letter-spacing:.5px;animation:tagShine 3s infinite;box-shadow:0 0 8px rgba(16,185,129,.5)}
+@keyframes tagShine{0%{background-position:-100% 0}100%{background-position:200% 0}}
+.star-rating{color:#fbbf24;cursor:pointer;transition:transform .15s}
+.star-rating:hover{transform:scale(1.25) rotate(8deg)}
+.comment-card{background:#12121f;border:1px solid #2d2d44}
+.reply-indent{border-left:2px solid #fbbf24;padding-left:12px;margin-left:12px}
+.leaderboard-rank{width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:50%;font-weight:900}
+.role-checkbox{appearance:none;width:16px;height:16px;border:2px solid #475569;border-radius:4px;cursor:pointer;position:relative}
+.role-checkbox:checked{background:#fbbf24;border-color:#fbbf24}
+.role-checkbox:checked::after{content:'✓';position:absolute;top:-3px;left:2px;color:#0f0f1a;font-weight:900;font-size:12px}
+.chapter-textarea{line-height:1.9;font-size:15px}
+.chat-edit-input{background:#0f0f1a;border:1px solid #fbbf24;border-radius:8px;padding:4px 8px;font-size:14px;color:#e2e8f0;width:100%}
+.tamat-border{border:2px solid #ef4444;box-shadow:0 0 10px rgba(239,68,68,.4)}
+.berlanjut-border{border:2px solid #10b981;box-shadow:0 0 10px rgba(16,185,129,.3)}
+.uploading-spinner{display:inline-block;width:14px;height:14px;border:2px solid #fbbf24;border-top-color:transparent;border-radius:50%;animation:spin .8s linear infinite;margin-right:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.guide-step{background:#12121f;border-left:3px solid #fbbf24;padding:12px 16px;border-radius:8px;margin-bottom:10px}
+.guide-step-num{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;background:#fbbf24;color:#0f0f1a;border-radius:50%;font-weight:900;font-size:12px;margin-right:8px}
+.cat-chip{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border:2px solid #475569;border-radius:20px;cursor:pointer;font-size:13px;font-weight:600;transition:.2s;background:#1a1a2e;color:#cbd5e1;user-select:none}
+.cat-chip:hover{border-color:#fbbf24;transform:translateY(-2px)}
+.cat-chip input{display:none}
+.cat-chip:has(input:checked){background:#fbbf24;color:#0f0f1a;border-color:#fbbf24;transform:scale(1.03)}
+.cat-chip input:checked + span::after{content:' ✓';font-weight:900}
+.nav-btn{position:relative;transition:all .25s}
+.nav-btn:hover{transform:translateY(-2px)}
+.nav-btn.nav-active{color:#fbbf24!important;background:rgba(251,191,36,.15);box-shadow:0 0 12px rgba(251,191,36,.2)}
+.nav-btn.nav-active::after{content:'';position:absolute;bottom:-2px;left:20%;right:20%;height:3px;background:#fbbf24;border-radius:3px;box-shadow:0 0 8px rgba(251,191,36,.8);animation:navPulse 1.5s infinite}
+@keyframes navPulse{0%,100%{opacity:1}50%{opacity:.5}}
+.mobile-nav-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:60}
+.mobile-nav-overlay.active{display:block;animation:fadeIn .2s}
+.mobile-nav-drawer{position:fixed;top:0;right:0;height:100vh;width:300px;max-width:85vw;background:#1a1a2e;border-left:1px solid #2d2d44;z-index:70;transform:translateX(100%);transition:transform .35s cubic-bezier(.4,0,.2,1);overflow-y:auto;padding:20px}
+.mobile-nav-drawer.active{transform:translateX(0)}
+.mobile-nav-item{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;color:#cbd5e1;transition:.25s;margin-bottom:4px;width:100%;text-align:left;background:transparent;border:none;position:relative}
+.mobile-nav-item:hover{background:#2d2d44;color:#fbbf24;transform:translateX(-4px)}
+.mobile-nav-item.active{background:rgba(251,191,36,.15);color:#fbbf24}
+.mobile-nav-item.active::before{content:'';position:absolute;left:0;top:20%;bottom:20%;width:4px;background:#fbbf24;border-radius:2px;box-shadow:0 0 8px rgba(251,191,36,.6)}
+.mobile-nav-item i{width:20px;text-align:center}
+.reader-fullscreen{position:fixed!important;inset:0!important;z-index:100!important;background:#000!important;margin:0!important;padding:0!important;overflow-y:auto!important;width:100vw!important}
+.reader-fullscreen .reader-content{max-width:100%!important;padding:0!important}
+.reader-fullscreen .reader-header,.reader-fullscreen .reader-sidebar,.reader-fullscreen .reader-comments{display:none!important}
+.reader-fullscreen .reader-images img{border-radius:0!important;margin:0!important;width:100%!important}
+.reader-fullscreen .reader-images{gap:0!important}
+.fullscreen-btn{position:fixed;bottom:20px;right:20px;z-index:101;background:#fbbf24;color:#0f0f1a;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;box-shadow:0 4px 20px rgba(251,191,36,.5);border:none;transition:transform .25s}
+.fullscreen-btn:hover{transform:scale(1.12) rotate(10deg)}
+.fullscreen-close{position:fixed;top:20px;right:20px;z-index:102;background:rgba(0,0,0,.7);color:white;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;border:1px solid rgba(255,255,255,.3)}
+@keyframes chatPop{0%{opacity:0;transform:translateY(20px) scale(.85)}60%{opacity:1;transform:translateY(-3px) scale(1.02)}100%{opacity:1;transform:translateY(0) scale(1)}}
+.chat-msg-new{animation:chatPop .4s cubic-bezier(.34,1.56,.64,1)}
+@keyframes chatSlideIn{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:translateX(0)}}
+.chat-msg-new-own{animation:chatSlideIn .35s ease-out}
+@keyframes cardIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.card-anim{animation:cardIn .4s ease-out backwards}
+@keyframes pageIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.page-anim{animation:pageIn .35s ease-out}
+@keyframes glowPulse{0%,100%{box-shadow:0 0 12px rgba(251,191,36,.4)}50%{box-shadow:0 0 24px rgba(251,191,36,.7)}}
+.btn-glow{animation:glowPulse 2s infinite}
+@keyframes badgeFloat{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-4px) rotate(-2deg)}}
+.badge-float{animation:badgeFloat 3s infinite ease-in-out}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+.shimmer{background:linear-gradient(90deg,transparent,rgba(251,191,36,.2),transparent);background-size:200% 100%;animation:shimmer 2s infinite}
+.card-bg.hover-lift{transition:transform .3s cubic-bezier(.4,0,.2,1),box-shadow .3s,border-color .3s}
+.card-bg.hover-lift:hover{transform:translateY(-6px) scale(1.02);box-shadow:0 12px 32px rgba(0,0,0,.5),0 0 20px rgba(251,191,36,.15);border-color:rgba(251,191,36,.5)}
+@keyframes contentFade{from{opacity:0}to{opacity:1}}
+.content-fade{animation:contentFade .4s ease-out}
+@keyframes toastIn{from{opacity:0;transform:translateY(20px) scale(.9)}to{opacity:1;transform:translateY(0) scale(1)}}
+#toast:not(.hidden){animation:toastIn .3s ease-out}
+@keyframes logoGlow{0%,100%{filter:drop-shadow(0 0 4px rgba(251,191,36,.6))}50%{filter:drop-shadow(0 0 12px rgba(251,191,36,1))}}
+.logo-glow{animation:logoGlow 2.5s infinite}
+@keyframes starPop{0%{transform:scale(1)}50%{transform:scale(1.3)}100%{transform:scale(1)}}
+.star-pop{animation:starPop .3s ease-out}
+@keyframes newWorkPulse{0%{box-shadow:0 0 0 0 rgba(16,185,129,.7)}70%{box-shadow:0 0 0 15px rgba(16,185,129,0)}100%{box-shadow:0 0 0 0 rgba(16,185,129,0)}}
+.new-work{animation:newWorkPulse 1.5s ease-out 2}
+.reply-preview{background:rgba(251,191,36,.1);border-left:2px solid #fbbf24;padding:4px 8px;border-radius:4px;font-size:11px;margin-bottom:4px}
+@keyframes notifSlideDown{from{opacity:0;transform:translate(-50%,-30px)}to{opacity:1;transform:translate(-50%,0)}}
+@keyframes notifSlideUp{from{opacity:1;transform:translate(-50%,0)}to{opacity:0;transform:translate(-50%,-30px)}}
+.img-preview{width:80px;height:80px;object-fit:cover;border-radius:8px;border:2px solid #3b3b5c}
+.img-preview-wrap{position:relative;display:inline-block;cursor:grab;transition:transform .15s}
+.img-preview-wrap:active{cursor:grabbing}
+.img-preview-wrap:hover{transform:scale(1.05)}
+.img-preview-wrap .remove-btn{position:absolute;top:-6px;right:-6px;background:#ef4444;color:white;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer;font-weight:900;border:2px solid #1a1a2e}
+.img-preview-wrap .order-num{position:absolute;bottom:2px;left:2px;background:rgba(0,0,0,.85);color:#fbbf24;font-size:11px;font-weight:900;padding:1px 6px;border-radius:4px}
+.img-preview-wrap.dragging{opacity:.4}
+.upload-progress{background:#0f0f1a;border:1px solid #fbbf24;border-radius:8px;padding:8px;font-size:11px;color:#fbbf24;font-family:monospace;max-height:100px;overflow-y:auto;margin-top:6px}
+.social-link{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:9999px;font-size:12px;font-weight:700;text-decoration:none;transition:.2s;margin:2px}
+.social-link:hover{transform:translateY(-2px)}
+.bookmark-btn{position:fixed;bottom:90px;right:20px;z-index:100;background:#fbbf24;color:#0f0f1a;width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;box-shadow:0 4px 20px rgba(251,191,36,.5);border:none;transition:transform .25s}
+.bookmark-btn:hover{transform:scale(1.12) rotate(-10deg)}
+.bookmark-btn.bookmarked{background:linear-gradient(135deg,#10b981,#047857);color:white}
+</style>
+</head>
+<body class="min-h-screen">
+
+<div id="app" class="max-w-7xl mx-auto p-3 md:p-4 pb-24">
+<header class="flex justify-between items-center mb-4 md:mb-6 card-bg rounded-2xl p-3 md:p-4 shadow-xl">
+<div class="flex items-center gap-2 md:gap-3 cursor-pointer hover:opacity-80 transition" onclick="window.location.hash='home'">
+<img src="https://i.ibb.co.com/SDTthJ7m/Gemini-Generated-Image-fhupt4fhupt4fhup.jpg" class="w-9 h-9 md:w-10 md:h-10 rounded-xl object-cover border-2 border-amber-500 logo-glow">
+<h1 class="text-xl md:text-2xl font-black tracking-tight bg-gradient-to-r from-amber-300 to-orange-500 bg-clip-text text-transparent">KomiNovel</h1>
+</div>
+<nav class="hidden lg:flex items-center gap-1 flex-wrap">
+<button data-nav="home" class="nav-btn text-sm font-semibold hover:text-amber-400 px-3 py-2 rounded-lg"><i class="fas fa-home mr-1"></i>Beranda</button>
+<button data-nav="kategori" class="nav-btn text-sm font-semibold hover:text-amber-400 px-3 py-2 rounded-lg"><i class="fas fa-tags mr-1"></i>Kategori</button>
+<button data-nav="leaderboard" class="nav-btn text-sm font-semibold hover:text-amber-400 px-3 py-2 rounded-lg"><i class="fas fa-trophy mr-1"></i>Leaderboard</button>
+<button data-nav="bookmark" class="nav-btn text-sm font-semibold hover:text-amber-400 px-3 py-2 rounded-lg"><i class="fas fa-bookmark mr-1"></i>Bookmark</button>
+<button data-nav="chat" class="nav-btn text-sm font-semibold hover:text-amber-400 px-3 py-2 rounded-lg"><i class="fas fa-comments mr-1"></i>Chat</button>
+<button data-nav="clan" class="nav-btn text-sm font-semibold hover:text-amber-400 px-3 py-2 rounded-lg"><i class="fas fa-users mr-1"></i>Clan</button>
+<button data-nav="teman" class="nav-btn text-sm font-semibold hover:text-amber-400 px-3 py-2 rounded-lg"><i class="fas fa-user-friends mr-1"></i>Teman</button>
+<button data-nav="jadi-kreator" class="nav-btn text-sm font-semibold text-green-400 hover:text-green-300 px-3 py-2 rounded-lg"><i class="fas fa-star mr-1"></i>Jadi Kreator</button>
+<button data-nav="kritik" class="nav-btn text-sm font-semibold hover:text-amber-400 px-3 py-2 rounded-lg"><i class="fas fa-envelope mr-1"></i>Kritik</button>
+<button data-nav="profil" class="nav-btn text-sm font-semibold hover:text-amber-400 px-3 py-2 rounded-lg"><i class="fas fa-user-circle mr-1"></i>Profil</button>
+<button id="navCreator" data-nav="creator" class="nav-btn text-sm font-semibold text-blue-400 hover:text-blue-300 hidden px-3 py-2 rounded-lg"><i class="fas fa-pen-fancy mr-1"></i>Creator</button>
+<button id="navAdmin" data-nav="admin" class="nav-btn text-sm font-semibold text-amber-400 hover:text-amber-300 hidden px-3 py-2 rounded-lg"><i class="fas fa-crown mr-1"></i>Admin</button>
+<button id="navAuth" class="bg-amber-500 hover:bg-amber-600 text-black font-bold py-2 px-4 rounded-full text-sm transition ml-2"><i class="fas fa-sign-in-alt mr-1"></i>Masuk</button>
+</nav>
+<div class="flex lg:hidden items-center gap-2">
+<button id="navAuthMobile" class="bg-amber-500 text-black font-bold py-2 px-3 rounded-full text-xs"><i class="fas fa-sign-in-alt"></i></button>
+<button id="mobileMenuBtn" class="text-white bg-slate-800 p-2.5 rounded-xl border border-slate-700 hover:bg-slate-700 transition"><i class="fas fa-bars text-lg"></i></button>
+</div>
+</header>
+<main id="mainContent" class="min-h-[70vh]"></main>
+<footer class="mt-12 text-center text-xs text-slate-500 border-t border-slate-800 pt-6">
+&copy; <span id="footerYear">2026</span> KomiNovel
+</footer>
+</div>
+
+<div id="mobileNavOverlay" class="mobile-nav-overlay"></div>
+<div id="mobileNavDrawer" class="mobile-nav-drawer">
+<div class="flex justify-between items-center mb-6 pb-4 border-b border-slate-700">
+<span class="font-bold text-lg">Menu</span>
+<button id="closeMobileNav" class="text-slate-400 text-2xl hover:rotate-90 transition-transform">&times;</button>
+</div>
+<div id="mobileNavItems"></div>
+</div>
+
+<div id="modalContainer" class="fixed inset-0 flex items-center justify-center z-50 hidden modal-overlay p-4">
+<div id="modalContent" class="card-bg rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-6 shadow-2xl scrollbar-thin"></div>
+</div>
+<div id="toast" class="fixed bottom-6 right-6 z-50 hidden bg-slate-800 border border-amber-500 rounded-xl px-5 py-3 shadow-2xl text-sm"></div>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+import { getAuth, signInAnonymously, GoogleAuthProvider, signInWithPopup, linkWithPopup, onAuthStateChanged, signOut, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, collection, addDoc, getDocs, query, where, orderBy, onSnapshot, serverTimestamp, limit } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDmAEREMEbxAFFBXGzwC25C6_Fty_3x7h0",
+  authDomain: "manzcodewebsite.firebaseapp.com",
+  projectId: "manzcodewebsite",
+  storageBucket: "manzcodewebsite.firebasestorage.app",
+  messagingSenderId: "645735217075",
+  appId: "1:645735217075:web:9c01b1c18b3157c7a4bdc6"
+};
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const googleProvider = new GoogleAuthProvider();
+
+let currentUser = null, userProfile = null;
+let isAdminSession = false, adminEmail = null;
+let currentContentType = 'novel', currentCategory = 'all', currentSearch = '';
+let chatUnsub = null, chatUsersUnsub = null, clanChatUnsub = null, privateChatUnsub = null, worksUnsub = null;
+let usersCache = {}, clansCache = {}, isFullscreenReader = false;
+let replyingToPublic = null, replyingToClan = null;
+let notifInitialized = false;
+
+const ALL_CATEGORIES = ['Action','Adventure','Romance','Fantasy','Slice of Life','Horror','Comedy','Mystery','Sci-Fi','Thriller','Drama','Supernatural','Historical','Isekai','Martial Arts','Sports','Music','School Life','Psychological','Tragedy','Mecha','Military','Cooking','Medical','Reincarnation','Vampire','Detective','Cyberpunk','Post-Apocalyptic','Magic'];
+const KATA_KASAR = ['anjing','bangsat','kontol','memek','ngentot','peler','kampang','bajingan','asu','jancok','pepek','titit','bokep','silit','ngewe','colmek','masturbasi'];
+const ROLE_LABELS = { pembaca:'Pembaca', penulis:'Penulis Novel', komikus:'Pembuat Komik', admin:'Admin' };
+const LEVEL_TITLES = [{min:1,max:100,title:'Pemula'},{min:101,max:1000,title:'Pendekar'},{min:1001,max:5000,title:'Master'},{min:5001,max:10000,title:'Dewa Mitos'}];
+const CLAN_LEVEL_TITLES = [{min:1,max:100,title:'Pemula'},{min:101,max:1000,title:'Berkembang'},{min:1001,max:10000,title:'Terkenal'},{min:10001,max:50000,title:'Legendaris'}];
+const MAX_LEVEL = 10000, MAX_CLAN_LEVEL = 50000;
+const EXP_PER_READ = 10, EXP_PER_CHAT = 2, EXP_PER_COMMENT = 5;
+const ADMIN_EMAIL = 'admin@kominovel.com', ADMIN_PASSWORD = 'admin123';
+const WA_NUMBER = '082254388144';
+const LOGO_URL = 'https://i.ibb.co.com/SDTthJ7m/Gemini-Generated-Image-fhupt4fhupt4fhup.jpg';
+
+function showToast(msg, dur = 3000) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.remove('hidden');
+  setTimeout(() => t.classList.add('hidden'), dur);
+}
+function getLevelTitle(l) { for (const t of LEVEL_TITLES) if (l >= t.min && l <= t.max) return t.title; return 'Dewa Mitos'; }
+function getClanLevelTitle(l) { for (const t of CLAN_LEVEL_TITLES) if (l >= t.min && l <= t.max) return t.title; return 'Legendaris'; }
+function isGolden(l) { return l > 1000; }
+function sensor(text) { let r = text; KATA_KASAR.forEach(k => r = r.replace(new RegExp(`\\b${k}\\b`,'gi'), m => '*'.repeat(m.length))); return r; }
+function getLevelFromExp(e) { return Math.min(MAX_LEVEL, Math.floor(e/20)+1); }
+function getClanLevelFromExp(e) { return Math.min(MAX_CLAN_LEVEL, Math.floor(e/10)+1); }
+function fmtDate(ts) { if (!ts) return ''; const d = ts.toDate ? ts.toDate() : new Date(ts); return d.toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}); }
+function hasRole(p, r) { if (!p) return false; const roles = p.roles || (p.role ? [p.role] : ['pembaca']); return roles.includes(r); }
+function isCreator(p) { return hasRole(p,'penulis') || hasRole(p,'komikus'); }
+function isAdminUser(p) { return hasRole(p,'admin') || isAdminSession; }
+function safeId(s) { return String(s).replace(/[^a-zA-Z0-9_-]/g,''); }
+function parseImgbbUrls(t) { return t.split('\n').map(u => u.trim()).filter(u => u.startsWith('http')); }
+function parseCategories(c) { if (!c) return []; if (Array.isArray(c)) return c; return String(c).split(',').map(x => x.trim()).filter(x => x); }
+function getHash() { return window.location.hash.replace('#','') || 'home'; }
+
+// ==================== AUTO KOMPRES ====================
+function compressImage(file, maxWidth = 1000, quality = 0.75) {
+  return new Promise((resolve, reject) => {
+    if (!file.type.startsWith('image/')) { reject(new Error('Bukan gambar')); return; }
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        let { width, height } = img;
+        if (width > maxWidth) {
+          height = Math.round((height * maxWidth) / width);
+          width = maxWidth;
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(0, 0, width, height);
+        ctx.drawImage(img, 0, 0, width, height);
+        let q = quality;
+        let dataUrl = canvas.toDataURL('image/jpeg', q);
+        while (dataUrl.length > 180 * 1024 && q > 0.25) {
+          q -= 0.1;
+          dataUrl = canvas.toDataURL('image/jpeg', q);
+        }
+        if (dataUrl.length > 220 * 1024) {
+          reject(new Error('Gambar terlalu besar setelah kompres'));
+          return;
+        }
+        resolve(dataUrl);
+      };
+      img.onerror = () => reject(new Error('Gagal memuat gambar'));
+      img.src = e.target.result;
+    };
+    reader.onerror = () => reject(new Error('Gagal baca file'));
+    reader.readAsDataURL(file);
+  });
+}
+
+// ==================== BUILD TAGS ====================
+function buildUserTags(profile, userId) {
+  if (!profile) return '';
+  const roles = profile.roles || (profile.role ? [profile.role] : ['pembaca']);
+  let html = '';
+  if (roles.includes('admin')) html += '<span class="admin-tag">ADMIN</span> ';
+  if (roles.includes('penulis')) html += '<span class="penulis-tag">PENULIS</span> ';
+  if (roles.includes('komikus')) html += '<span class="komikus-tag">KOMIKUS</span> ';
+  if (roles.includes('pembaca')) html += '<span class="pembaca-tag">PEMBACA</span> ';
+  if (profile.clanId && clansCache[profile.clanId]) {
+    const clan = clansCache[profile.clanId];
+    const isOwner = clan.leader === userId || clan.leader === profile.uid;
+    const isClanAdmin = (clan.admins || []).includes(userId) || (clan.admins || []).includes(profile.uid);
+    if (isOwner) html += `<span class="clan-owner-tag cursor-pointer" onclick="event.stopPropagation();window.location.hash='clan/${profile.clanId}'">👑 ${clan.name}</span> `;
+    else if (isClanAdmin) html += `<span class="clan-admin-tag cursor-pointer" onclick="event.stopPropagation();window.location.hash='clan/${profile.clanId}'">⚔️ ${clan.name}</span> `;
+    else html += `<span class="clan-tag cursor-pointer" onclick="event.stopPropagation();window.location.hash='clan/${profile.clanId}'">${clan.name}</span> `;
+  }
+  return html;
+}
+
+function statusLabel(isTamat) {
+  return isTamat 
+    ? '<span class="tamat-tag absolute top-2 right-2">TAMAT</span>' 
+    : '<span class="berlanjut-tag absolute top-2 right-2">BERLANJUT</span>';
+}
+document.getElementById('footerYear').textContent = new Date().getFullYear();
+
+// ==================== SOSMED HELPER ====================
+function buildSocialLinks(profile) {
+  if (!profile) return '';
+  const sosmed = profile.sosmed || {};
+  const links = [
+    { key: 'saweria', icon: 'fa-coffee', label: 'Saweria', color: 'bg-orange-500 text-white' },
+    { key: 'trakteer', icon: 'fa-mug-hot', label: 'Trakteer', color: 'bg-red-500 text-white' },
+    { key: 'facebook', icon: 'fa-facebook', label: 'Facebook', color: 'bg-blue-600 text-white' },
+    { key: 'tiktok', icon: 'fa-tiktok', label: 'TikTok', color: 'bg-black text-white border border-slate-600' },
+    { key: 'instagram', icon: 'fa-instagram', label: 'Instagram', color: 'bg-gradient-to-br from-pink-500 via-red-500 to-yellow-500 text-white' },
+    { key: 'threads', icon: 'fa-at', label: 'Threads', color: 'bg-black text-white border border-slate-600' },
+    { key: 'twitter', icon: 'fa-twitter', label: 'Twitter', color: 'bg-sky-500 text-white' },
+    { key: 'youtube', icon: 'fa-youtube', label: 'YouTube', color: 'bg-red-600 text-white' },
+    { key: 'website', icon: 'fa-globe', label: 'Website', color: 'bg-slate-600 text-white' }
+  ];
+  let html = '';
+  links.forEach(l => {
+    const url = sosmed[l.key];
+    if (url) {
+      html += `<a href="${url}" target="_blank" rel="noopener" class="social-link ${l.color}" onclick="event.stopPropagation()"><i class="fab ${l.icon}"></i> ${l.label}</a>`;
+    }
+  });
+  return html;
+}
+
+function showNotifBar(text, color = 'green') {
+  const existing = document.getElementById('notifBar');
+  if (existing) existing.remove();
+  const bar = document.createElement('div');
+  bar.id = 'notifBar';
+  bar.className = `fixed top-4 left-1/2 -translate-x-1/2 z-[200] px-6 py-3 rounded-full shadow-2xl text-sm font-bold flex items-center gap-2 ${
+    color === 'green' ? 'bg-green-600 text-white' : color === 'blue' ? 'bg-blue-600 text-white' : 'bg-amber-500 text-black'
+  }`;
+  bar.style.animation = 'notifSlideDown 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)';
+  bar.innerHTML = `<i class="fas fa-bell"></i> ${text}`;
+  document.body.appendChild(bar);
+  setTimeout(() => {
+    bar.style.animation = 'notifSlideUp 0.3s ease-in forwards';
+    setTimeout(() => bar.remove(), 300);
+  }, 3000);
+}
+
+const NAV_MAP = [
+  { id:'home', icon:'fa-home', label:'Beranda' },
+  { id:'kategori', icon:'fa-tags', label:'Kategori' },
+  { id:'leaderboard', icon:'fa-trophy', label:'Leaderboard' },
+  { id:'bookmark', icon:'fa-bookmark', label:'Bookmark' },
+  { id:'chat', icon:'fa-comments', label:'Chat Publik' },
+  { id:'clan', icon:'fa-users', label:'Clan' },
+  { id:'teman', icon:'fa-user-friends', label:'Teman & DM' },
+  { id:'jadi-kreator', icon:'fa-star', label:'Jadi Kreator', color:'text-green-400' },
+  { id:'kritik', icon:'fa-envelope', label:'Kritik & Saran' },
+  { id:'profil', icon:'fa-user-circle', label:'Profil' },
+  { id:'creator', icon:'fa-pen-fancy', label:'Creator', color:'text-blue-400', roleCheck:() => isCreator(userProfile) || isAdminSession },
+  { id:'admin', icon:'fa-crown', label:'Admin Panel', color:'text-amber-400', roleCheck:() => isAdminUser(userProfile) }
+];
+function updateActiveNav() {
+  const base = getHash().split('/')[0];
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('nav-active', b.dataset.nav === base));
+  document.querySelectorAll('.mobile-nav-item').forEach(b => b.classList.toggle('active', b.dataset.nav === base));
+}
+function renderMobileNav() {
+  const items = document.getElementById('mobileNavItems');
+  const cur = getHash().split('/')[0];
+  items.innerHTML = NAV_MAP.filter(i => !i.roleCheck || i.roleCheck()).map(i => `
+    <button class="mobile-nav-item ${i.color || ''} ${cur === i.id ? 'active' : ''}" data-nav="${i.id}">
+      <i class="fas ${i.icon}"></i><span>${i.label}</span>
+    </button>
+  `).join('');
+  items.querySelectorAll('.mobile-nav-item').forEach(b => {
+    b.onclick = () => { window.location.hash = b.dataset.nav; closeMobileNav(); };
+  });
+}
+function openMobileNav() { renderMobileNav(); document.getElementById('mobileNavOverlay').classList.add('active'); document.getElementById('mobileNavDrawer').classList.add('active'); }
+function closeMobileNav() { document.getElementById('mobileNavOverlay').classList.remove('active'); document.getElementById('mobileNavDrawer').classList.remove('active'); }
+document.getElementById('mobileMenuBtn').onclick = openMobileNav;
+document.getElementById('closeMobileNav').onclick = closeMobileNav;
+document.getElementById('mobileNavOverlay').onclick = closeMobileNav;
+document.querySelectorAll('.nav-btn').forEach(btn => { btn.onclick = () => { window.location.hash = btn.dataset.nav; }; });
+
+window.toggleFullscreenReader = () => {
+  isFullscreenReader = !isFullscreenReader;
+  const rc = document.getElementById('readerContent');
+  const fb = document.getElementById('fullscreenBtn');
+  if (!rc) return;
+  if (isFullscreenReader) {
+    rc.classList.add('reader-fullscreen');
+    if (fb) fb.classList.add('hidden');
+    if (!document.getElementById('fullscreenClose')) {
+      const btn = document.createElement('button');
+      btn.id = 'fullscreenClose'; btn.className = 'fullscreen-close';
+      btn.innerHTML = '<i class="fas fa-times"></i>';
+      btn.onclick = toggleFullscreenReader;
+      document.body.appendChild(btn);
+    }
+    document.body.style.overflow = 'hidden';
+  } else {
+    rc.classList.remove('reader-fullscreen');
+    if (fb) fb.classList.remove('hidden');
+    const cb = document.getElementById('fullscreenClose');
+    if (cb) cb.remove();
+    document.body.style.overflow = '';
+  }
+};
+
+function showUploadGuide() {
+  const modal = document.getElementById('modalContainer');
+  const content = document.getElementById('modalContent');
+  content.innerHTML = `
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-2xl font-black text-amber-400"><i class="fas fa-book-reader mr-2"></i>Panduan Upload</h2>
+      <button id="closeGuide" class="text-slate-400 hover:text-white text-2xl hover:rotate-90 transition-transform">&times;</button>
+    </div>
+    <div class="space-y-3">
+      <div class="guide-step"><p class="font-bold text-amber-400 mb-1"><span class="guide-step-num">1</span>Login Google</p><p class="text-sm text-slate-300">Login Google supaya akun & PP permanen.</p></div>
+      <div class="guide-step"><p class="font-bold text-amber-400 mb-1"><span class="guide-step-num">2</span>Jadi Kreator</p><p class="text-sm text-slate-300">Menu <b>Jadi Kreator</b> → minta role via WA admin.</p></div>
+      <div class="guide-step"><p class="font-bold text-amber-400 mb-1"><span class="guide-step-num">3</span>Upload Gambar (1-5 foto)</p>
+        <p class="text-sm text-slate-300 mb-2">2 cara:</p>
+        <ul class="text-sm text-slate-300 list-disc pl-5 space-y-1">
+          <li><b>Dari perangkat</b> → pilih 1-5 foto sekaligus</li>
+          <li><b>Paste URL ImgBB</b> → dari imgbb.com</li>
+        </ul>
+        <p class="text-xs text-amber-400 mt-2">💡 Urutan foto = urutan klik. Drag untuk ubah urutan. Foto #1 jadi sampul.</p>
+      </div>
+      <div class="guide-step"><p class="font-bold text-amber-400 mb-1"><span class="guide-step-num">4</span>Buat Karya</p><p class="text-sm text-slate-300">Creator → Buat Baru. Isi semua field *.</p></div>
+      <div class="guide-step"><p class="font-bold text-amber-400 mb-1"><span class="guide-step-num">5</span>Chapter/Eps</p><p class="text-sm text-slate-300">Novel: judul + teks. Komik: judul opsional + 1-5 gambar. <b>Gambar pertama jadi sampul</b>.</p></div>
+    </div>
+    <div class="flex gap-2 mt-6">
+      <a href="https://imgbb.com" target="_blank" class="flex-1 bg-amber-500 text-black font-bold py-3 rounded-full text-center"><i class="fas fa-external-link-alt mr-2"></i>Buka ImgBB</a>
+      <button id="closeGuide2" class="flex-1 bg-slate-700 text-white font-bold py-3 rounded-full">Mengerti</button>
+    </div>`;
+  modal.classList.remove('hidden');
+  const close = () => modal.classList.add('hidden');
+  document.getElementById('closeGuide').onclick = close;
+  document.getElementById('closeGuide2').onclick = close;
+}
+
+function multiImageField(containerId) {
+  return `<div class="bg-slate-900/50 border border-amber-500/30 rounded-xl p-3 mt-2">
+    <label class="text-xs font-semibold text-amber-400 block mb-2">Gambar (1-5 foto, urutan = pilihan)</label>
+    <div class="flex flex-wrap gap-2 mb-2">
+      <label class="cursor-pointer bg-amber-500 text-black px-3 py-2 rounded-lg text-xs font-bold hover:scale-105 transition">
+        <i class="fas fa-upload mr-1"></i>Pilih 1-5 Foto
+        <input type="file" id="${containerId}-file" accept="image/*" multiple class="hidden">
+      </label>
+      <a href="https://imgbb.com" target="_blank" class="bg-slate-700 text-slate-300 px-3 py-2 rounded-lg text-xs font-bold hover:bg-slate-600 transition"><i class="fas fa-external-link-alt mr-1"></i>ImgBB</a>
+    </div>
+    <textarea id="${containerId}-urls" rows="2" placeholder="Atau paste URL ImgBB, 1 per baris" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs font-mono"></textarea>
+    <p class="text-xs text-slate-500 mt-1">💡 Foto pertama = sampul. Drag & drop untuk ubah urutan.</p>
+    <div id="${containerId}-preview" class="flex flex-wrap gap-2 mt-2"></div>
+    <div id="${containerId}-progress" class="upload-progress hidden"></div>
+  </div>`;
+}
+
+function attachMultiImageHandlers(containerId) {
+  const fileInput = document.getElementById(`${containerId}-file`);
+  const preview = document.getElementById(`${containerId}-preview`);
+  const progress = document.getElementById(`${containerId}-progress`);
+  if (!fileInput) return;
+  window[`_${containerId}_files`] = window[`_${containerId}_files`] || [];
+  
+  fileInput.onchange = async (e) => {
+    const files = Array.from(e.target.files);
+    if (files.length === 0) return;
+    const currentCount = (window[`_${containerId}_files`] || []).length;
+    const remaining = 5 - currentCount;
+    if (remaining <= 0) {
+      showToast('Maksimal 5 foto. Hapus dulu salah satu.');
+      fileInput.value = '';
+      return;
+    }
+    const toProcess = files.slice(0, remaining);
+    if (files.length > remaining) showToast(`Hanya ${remaining} foto bisa ditambahkan.`);
+    
+    progress.classList.remove('hidden');
+    progress.innerHTML = `Memproses ${toProcess.length} foto...<br>`;
+    const newFiles = [];
+    for (let i = 0; i < toProcess.length; i++) {
+      const f = toProcess[i];
+      progress.innerHTML += `[${i+1}/${toProcess.length}] ${f.name}...<br>`;
+      try {
+        const dataUrl = await compressImage(f);
+        const sizeKb = (dataUrl.length / 1024).toFixed(0);
+        newFiles.push({ name: f.name, dataUrl });
+        progress.innerHTML += `&nbsp;&nbsp;✅ ${sizeKb} KB<br>`;
+      } catch (err) {
+        progress.innerHTML += `&nbsp;&nbsp;❌ ${err.message}<br>`;
+      }
+    }
+    window[`_${containerId}_files`] = [...(window[`_${containerId}_files`] || []), ...newFiles];
+    progress.innerHTML += `<br>Total: ${window[`_${containerId}_files`].length} foto`;
+    fileInput.value = '';
+    renderPreview();
+  };
+  
+  function renderPreview() {
+    const files = window[`_${containerId}_files`] || [];
+    const urlText = document.getElementById(`${containerId}-urls`)?.value || '';
+    const urls = parseImgbbUrls(urlText);
+    preview.innerHTML = '';
+    
+    const totalInfo = document.createElement('div');
+    totalInfo.className = 'w-full text-xs text-amber-400 font-bold mb-1';
+    const total = files.length + urls.length;
+    totalInfo.textContent = `📸 Total: ${total} foto${total > 5 ? ' ⚠️ (lebih dari 5, mungkin gagal)' : ''}`;
+    preview.appendChild(totalInfo);
+    
+    files.forEach((f, i) => {
+      const wrap = document.createElement('div');
+      wrap.className = 'img-preview-wrap';
+      wrap.draggable = true;
+      wrap.innerHTML = `
+        <img src="${f.dataUrl}" class="img-preview">
+        <span class="order-num">#${i+1}</span>
+        <span class="remove-btn" onclick="event.stopPropagation();removeImg('${containerId}',${i})">×</span>
+      `;
+      wrap.ondragstart = (e) => {
+        e.dataTransfer.setData('text/plain', JSON.stringify({ cid: containerId, type: 'file', idx: i }));
+        wrap.classList.add('dragging');
+      };
+      wrap.ondragend = () => { wrap.classList.remove('dragging'); };
+      wrap.ondragover = (e) => { e.preventDefault(); wrap.style.borderColor = '#fbbf24'; };
+      wrap.ondragleave = () => { wrap.style.borderColor = ''; };
+      wrap.ondrop = (e) => {
+        e.preventDefault(); wrap.style.borderColor = '';
+        const data = JSON.parse(e.dataTransfer.getData('text/plain'));
+        if (data.cid !== containerId) return;
+        reorderImages(containerId, data.type, data.idx, 'file', i);
+      };
+      preview.appendChild(wrap);
+    });
+    
+    urls.forEach((url, i) => {
+      const wrap = document.createElement('div');
+      wrap.className = 'img-preview-wrap';
+      wrap.draggable = true;
+      wrap.innerHTML = `
+        <img src="${url}" class="img-preview" onerror="this.src='https://placehold.co/80x80/1a1a2e/64748b?text=Err'">
+        <span class="order-num">#${files.length + i + 1}</span>
+        <span class="remove-btn" onclick="event.stopPropagation();removeUrl('${containerId}',${i})">×</span>
+      `;
+      wrap.ondragstart = (e) => {
+        e.dataTransfer.setData('text/plain', JSON.stringify({ cid: containerId, type: 'url', idx: i }));
+        wrap.classList.add('dragging');
+      };
+      wrap.ondragend = () => { wrap.classList.remove('dragging'); };
+      wrap.ondragover = (e) => { e.preventDefault(); wrap.style.borderColor = '#fbbf24'; };
+      wrap.ondragleave = () => { wrap.style.borderColor = ''; };
+      wrap.ondrop = (e) => {
+        e.preventDefault(); wrap.style.borderColor = '';
+        const data = JSON.parse(e.dataTransfer.getData('text/plain'));
+        if (data.cid !== containerId) return;
+        reorderImages(containerId, data.type, data.idx, 'url', i);
+      };
+      preview.appendChild(wrap);
+    });
+    
+    if (total > 1) {
+      const hint = document.createElement('div');
+      hint.className = 'w-full text-[10px] text-slate-500 mt-1';
+      hint.textContent = '💡 Drag foto untuk ubah urutan. Foto #1 = sampul.';
+      preview.appendChild(hint);
+    }
+  }
+  
+  const urlTextarea = document.getElementById(`${containerId}-urls`);
+  urlTextarea.oninput = renderPreview;
+  window[`_${containerId}_render`] = renderPreview;
+  renderPreview();
+}
+
+function reorderImages(containerId, fromType, fromIdx, toType, toIdx) {
+  if (fromType === toType && fromIdx === toIdx) return;
+  const files = [...(window[`_${containerId}_files`] || [])];
+  const urlTextarea = document.getElementById(`${containerId}-urls`);
+  const urls = [...parseImgbbUrls(urlTextarea.value)];
+  
+  let item;
+  if (fromType === 'file') item = files.splice(fromIdx, 1)[0];
+  else item = urls.splice(fromIdx, 1)[0];
+  
+  if (toType === 'file') {
+    if (fromType === 'url') {
+      files.splice(toIdx, 0, { name: 'url-item', dataUrl: item });
+    } else {
+      files.splice(toIdx, 0, item);
+    }
+  } else {
+    if (fromType === 'file') {
+      urls.splice(toIdx, 0, item.dataUrl || item);
+    } else {
+      urls.splice(toIdx, 0, item);
+    }
+  }
+  
+  window[`_${containerId}_files`] = files;
+  urlTextarea.value = urls.join('\n');
+  window[`_${containerId}_render`]?.();
+}
+
+window.removeImg = (cid, idx) => {
+  const files = window[`_${cid}_files`] || [];
+  files.splice(idx, 1);
+  window[`_${cid}_files`] = files;
+  window[`_${cid}_render`]?.();
+};
+window.removeUrl = (cid, idx) => {
+  const ta = document.getElementById(`${cid}-urls`);
+  const urls = parseImgbbUrls(ta.value);
+  urls.splice(idx, 1);
+  ta.value = urls.join('\n');
+  window[`_${cid}_render`]?.();
+};
+
+function getMultiImages(containerId) {
+  const files = window[`_${containerId}_files`] || [];
+  const urlText = document.getElementById(`${containerId}-urls`)?.value || '';
+  const urls = parseImgbbUrls(urlText);
+  const result = [];
+  files.forEach(f => result.push(f.dataUrl));
+  urls.forEach(u => result.push(u));
+  return result;
+}
+
+function coverField(id) {
+  return `<div class="bg-slate-900/50 border border-amber-500/30 rounded-xl p-3 mt-2">
+    <label class="text-xs font-semibold text-amber-400 block mb-2">Sampul / Cover <span class="text-red-400">*</span></label>
+    <div class="flex flex-wrap gap-2 mb-2">
+      <label class="cursor-pointer bg-amber-500 text-black px-3 py-2 rounded-lg text-xs font-bold hover:scale-105 transition">
+        <i class="fas fa-upload mr-1"></i>Upload dari Perangkat
+        <input type="file" id="${id}-file" accept="image/*" class="hidden">
+      </label>
+      <a href="https://imgbb.com" target="_blank" class="bg-slate-700 text-slate-300 px-3 py-2 rounded-lg text-xs font-bold hover:bg-slate-600 transition"><i class="fas fa-external-link-alt mr-1"></i>ImgBB</a>
+    </div>
+    <input type="text" id="${id}-url" placeholder="Atau paste URL ImgBB" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm">
+    <div id="${id}-preview" class="mt-2"></div>
+  </div>`;
+}
+
+function attachCoverHandler(id) {
+  const fileInput = document.getElementById(`${id}-file`);
+  const urlInput = document.getElementById(`${id}-url`);
+  const preview = document.getElementById(`${id}-preview`);
+  window[`_${id}_cover`] = null;
+  if (fileInput) {
+    fileInput.onchange = async (e) => {
+      const f = e.target.files[0];
+      if (!f) return;
+      preview.innerHTML = '<span class="text-xs text-amber-400">Memproses...</span>';
+      try {
+        const dataUrl = await compressImage(f);
+        window[`_${id}_cover`] = dataUrl;
+        preview.innerHTML = `<img src="${dataUrl}" class="w-24 h-32 object-cover rounded-lg border-2 border-amber-500"><p class="text-xs text-slate-500 mt-1">${(dataUrl.length/1024).toFixed(0)} KB</p>`;
+      } catch (err) {
+        preview.innerHTML = `<span class="text-xs text-red-400">Gagal: ${err.message}</span>`;
+      }
+    };
+  }
+  urlInput.oninput = () => {
+    if (urlInput.value.trim()) {
+      window[`_${id}_cover`] = urlInput.value.trim();
+      preview.innerHTML = `<img src="${urlInput.value.trim()}" class="w-24 h-32 object-cover rounded-lg border-2 border-amber-500" onerror="this.src='https://placehold.co/96x128/1a1a2e/64748b?text=Err'">`;
+    }
+  };
+}
+function getCoverValue(id) {
+  return window[`_${id}_cover`] || document.getElementById(`${id}-url`)?.value.trim() || '';
+}
+
+function categoryChipsField(containerId, selected = []) {
+  const sel = parseCategories(selected);
+  return `<div class="bg-slate-900/50 border border-amber-500/30 rounded-xl p-3 mt-2">
+    <label class="text-xs font-semibold text-amber-400 block mb-2">Pilih Kategori <span class="text-red-400">* (bisa &gt;1)</span></label>
+    <div id="${containerId}" class="flex flex-wrap gap-2 max-h-48 overflow-y-auto scrollbar-thin p-1">
+      ${ALL_CATEGORIES.map(cat => `<label class="cat-chip"><input type="checkbox" value="${cat}" ${sel.includes(cat) ? 'checked' : ''}><span>${cat}</span></label>`).join('')}
+    </div>
+  </div>`;
+}
+function getSelectedCats(containerId) {
+  const c = document.getElementById(containerId);
+  if (!c) return [];
+  return Array.from(c.querySelectorAll('input:checked')).map(cb => cb.value);
+}
+
+async function loadClansCache() {
+  try {
+    const snap = await getDocs(collection(db, 'clans'));
+    clansCache = {};
+    snap.forEach(d => { clansCache[d.id] = { id: d.id, ...d.data() }; });
+  } catch (e) {}
+}
+
+async function initAuth() {
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      currentUser = user;
+      const userRef = doc(db, 'users', user.uid);
+      const snap = await getDoc(userRef);
+      if (!snap.exists()) {
+        const np = {
+          uid: user.uid, username: user.displayName || 'User', email: user.email || '',
+          photoURL: user.photoURL || '', role: 'pembaca', roles: ['pembaca'],
+          exp: 0, level: 1, banned: false,
+          friends: [], friendRequests: [], clanId: null,
+          bookmarks: [], sosmed: {},
+          createdAt: serverTimestamp(), updatedAt: serverTimestamp()
+        };
+        await setDoc(userRef, np);
+        userProfile = np;
+      } else {
+        userProfile = snap.data();
+        if (!userProfile.roles) { userProfile.roles = [userProfile.role || 'pembaca']; await updateDoc(userRef, { roles: userProfile.roles }); }
+        if (!userProfile.friends) { userProfile.friends = []; await updateDoc(userRef, { friends: [] }); }
+        if (!userProfile.friendRequests) { userProfile.friendRequests = []; await updateDoc(userRef, { friendRequests: [] }); }
+        if (!userProfile.bookmarks) { userProfile.bookmarks = []; await updateDoc(userRef, { bookmarks: [] }); }
+        if (!userProfile.sosmed) { userProfile.sosmed = {}; await updateDoc(userRef, { sosmed: {} }); }
+        if (hasRole(userProfile, 'admin') && userProfile.level !== MAX_LEVEL) {
+          await updateDoc(userRef, { level: MAX_LEVEL, exp: MAX_LEVEL * 20 });
+          userProfile.level = MAX_LEVEL; userProfile.exp = MAX_LEVEL * 20;
+        }
+        if (!userProfile.photoURL && user.photoURL) {
+          await updateDoc(userRef, { photoURL: user.photoURL });
+          userProfile.photoURL = user.photoURL;
+        }
+        if (userProfile.banned) { showToast('Akun diblokir!', 5000); await signOut(auth); return; }
+      }
+      await loadClansCache();
+      document.getElementById('navAuth').innerHTML = `<i class="fas fa-sign-out-alt mr-1"></i>Keluar`;
+      document.getElementById('navAuthMobile').innerHTML = `<i class="fas fa-sign-out-alt"></i>`;
+      if (isAdminUser(userProfile)) document.getElementById('navAdmin').classList.remove('hidden');
+      else document.getElementById('navAdmin').classList.add('hidden');
+      if (isCreator(userProfile)) document.getElementById('navCreator').classList.remove('hidden');
+      else document.getElementById('navCreator').classList.add('hidden');
+      renderPage();
+      setTimeout(() => initNotifListener(), 2000);
+    } else {
+      currentUser = null; userProfile = null;
+      await loadClansCache();
+      document.getElementById('navAuth').innerHTML = `<i class="fas fa-sign-in-alt mr-1"></i>Masuk`;
+      document.getElementById('navAuthMobile').innerHTML = `<i class="fas fa-sign-in-alt"></i>`;
+      if (!isAdminSession) document.getElementById('navAdmin').classList.add('hidden');
+      document.getElementById('navCreator').classList.add('hidden');
+      renderPage();
+    }
+  });
+}
+async function signInWithGoogle() {
+  try {
+    if (currentUser && currentUser.isAnonymous) {
+      await linkWithPopup(currentUser, googleProvider);
+      showToast('Google ditautkan!');
+      const userRef = doc(db, 'users', currentUser.uid);
+      const snap = await getDoc(userRef);
+      if (snap.exists()) {
+        userProfile = snap.data();
+        await updateDoc(userRef, { email: currentUser.email, username: currentUser.displayName || userProfile.username, photoURL: currentUser.photoURL || userProfile.photoURL });
+      }
+    } else { await signInWithPopup(auth, googleProvider); showToast('Masuk Google!'); }
+  } catch (e) { showToast('Gagal: ' + e.message); }
+}
+async function signInAsGuest() { try { await signInAnonymously(auth); showToast('Guest masuk'); } catch (e) { showToast('Gagal: ' + e.message); } }
+async function logout() { await signOut(auth); isAdminSession = false; adminEmail = null; localStorage.removeItem('adminSession'); localStorage.removeItem('adminEmail'); showToast('Keluar'); }
+
+async function adminLogin(email, pass) {
+  if (email === ADMIN_EMAIL && pass === ADMIN_PASSWORD) {
+    isAdminSession = true; adminEmail = email;
+    localStorage.setItem('adminSession','true'); localStorage.setItem('adminEmail',email);
+    showToast('Admin login!'); document.getElementById('navAdmin').classList.remove('hidden');
+    window.location.hash = 'admin'; renderPage();
+  } else {
+    try {
+      const cred = await signInWithEmailAndPassword(auth, email, pass);
+      const userRef = doc(db,'users',cred.user.uid);
+      const snap = await getDoc(userRef);
+      let roles = snap.data()?.roles || ['pembaca'];
+      if (!roles.includes('admin')) roles.push('admin');
+      await updateDoc(userRef,{role:'admin',roles,level:MAX_LEVEL,exp:MAX_LEVEL*20});
+      isAdminSession = true; adminEmail = email;
+      localStorage.setItem('adminSession','true'); localStorage.setItem('adminEmail',email);
+      showToast('Admin login!'); document.getElementById('navAdmin').classList.remove('hidden');
+      window.location.hash = 'admin'; renderPage();
+    } catch (e) { showToast('Email/sandi salah!'); }
+  }
+}
+function adminLogout() {
+  isAdminSession = false; adminEmail = null;
+  localStorage.removeItem('adminSession'); localStorage.removeItem('adminEmail');
+  document.getElementById('navAdmin').classList.add('hidden');
+  window.location.hash = 'home'; renderPage();
+}
+if (localStorage.getItem('adminSession') === 'true') { isAdminSession = true; adminEmail = localStorage.getItem('adminEmail'); }
+
+async function addExp(amount) {
+  if (!currentUser || !userProfile || isAdminUser(userProfile)) return;
+  const ref = doc(db, 'users', currentUser.uid);
+  const e = (userProfile.exp || 0) + amount;
+  const l = getLevelFromExp(e);
+  await updateDoc(ref, { exp: e, level: l, updatedAt: serverTimestamp() });
+  userProfile.exp = e; userProfile.level = l;
+}
+async function addClanExp(clanId, amount) {
+  if (!clanId) return;
+  try {
+    const ref = doc(db, 'clans', clanId);
+    const snap = await getDoc(ref);
+    if (!snap.exists()) return;
+    const c = snap.data();
+    const e = (c.exp || 0) + amount;
+    const l = getClanLevelFromExp(e);
+    await updateDoc(ref, { exp: e, level: l, updatedAt: serverTimestamp() });
+  } catch (e) {}
+}
+
+function initNotifListener() {
+  if (notifInitialized) return;
+  notifInitialized = true;
+  const chatQ = query(collection(db, 'chats'), orderBy('createdAt', 'desc'), limit(1));
+  onSnapshot(chatQ, snap => {
+    snap.forEach(d => {
+      const msg = d.data();
+      if (msg.userId === currentUser?.uid) return;
+      const un = usersCache[msg.userId]?.username || msg.username || 'Seseorang';
+      showNotifBar(`💬 ${un}: ${(msg.text || '').slice(0, 40)}`, 'green');
+    });
+  });
+  if (userProfile?.clanId) {
+    const clanQ = query(collection(db, 'clans', userProfile.clanId, 'messages'), orderBy('createdAt', 'desc'), limit(1));
+    onSnapshot(clanQ, snap => {
+      snap.forEach(d => {
+        const msg = d.data();
+        if (msg.userId === currentUser?.uid) return;
+        const un = usersCache[msg.userId]?.username || msg.username || 'Seseorang';
+        showNotifBar(`🛡️ Clan - ${un}: ${(msg.text || '').slice(0, 40)}`, 'blue');
+      });
+    });
+  }
+}
+
+async function renderPage() {
+  if (isFullscreenReader) {
+    isFullscreenReader = false; document.body.style.overflow = '';
+    const cb = document.getElementById('fullscreenClose');
+    if (cb) cb.remove();
+  }
+  if (chatUnsub) { try { chatUnsub(); } catch(e){} chatUnsub = null; }
+  if (chatUsersUnsub) { try { chatUsersUnsub(); } catch(e){} chatUsersUnsub = null; }
+  if (clanChatUnsub) { try { clanChatUnsub(); } catch(e){} clanChatUnsub = null; }
+  if (privateChatUnsub) { try { privateChatUnsub(); } catch(e){} privateChatUnsub = null; }
+  if (worksUnsub) { try { worksUnsub(); } catch(e){} worksUnsub = null; }
+  replyingToPublic = null; replyingToClan = null;
+  await loadClansCache();
+  const hash = getHash();
+  const main = document.getElementById('mainContent');
+  updateActiveNav();
+  main.classList.remove('page-anim');
+  void main.offsetWidth;
+  main.classList.add('page-anim');
+  if (hash.startsWith('admin')) {
+    if (!isAdminSession && !hasRole(userProfile, 'admin')) { renderAdminLogin(main); return; }
+    await renderAdminPanel(main);
+  } else if (hash.startsWith('creator')) {
+    if (!isCreator(userProfile) && !isAdminSession) {
+      main.innerHTML = `<div class="card-bg rounded-2xl p-8 text-center"><i class="fas fa-lock text-4xl text-red-400 mb-4"></i><h2 class="text-xl font-bold">Akses Ditolak</h2></div>`;
+      return;
+    }
+    await renderCreatorDashboard(main);
+  } else if (hash.startsWith('reader/')) {
+    const p = hash.split('/'); await renderReader(main, p[1], p[2]);
+  } else if (hash.startsWith('user/')) {
+    await renderPublicProfile(main, hash.replace('user/',''));
+  } else if (hash.startsWith('privatechat/')) {
+    await renderPrivateChat(main, hash.replace('privatechat/',''));
+  } else if (hash.startsWith('clan/')) {
+    await renderClanDetail(main, hash.replace('clan/',''));
+  } else if (hash === 'kategori') await renderKategori(main);
+  else if (hash === 'leaderboard') await renderLeaderboard(main);
+  else if (hash === 'bookmark') await renderBookmarkPage(main);
+  else if (hash === 'chat') await renderChat(main);
+  else if (hash === 'clan') await renderClan(main);
+  else if (hash === 'teman') await renderTeman(main);
+  else if (hash === 'jadi-kreator') await renderJadiKreator(main);
+  else if (hash === 'kritik') await renderKritikSaran(main);
+  else if (hash === 'profil') await renderProfil(main);
+  else await renderHome(main);
+}
+
+function renderAdminLogin(c) {
+  c.innerHTML = `<div class="card-bg rounded-2xl p-6 md:p-8 max-w-md mx-auto card-anim">
+    <div class="text-center mb-6">
+      <img src="${LOGO_URL}" class="w-20 h-20 mx-auto rounded-2xl mb-3 border-2 border-amber-500 logo-glow">
+      <h2 class="text-2xl font-black">Admin Login</h2>
+    </div>
+    <div class="space-y-4">
+      <input id="adminEmailInput" type="email" placeholder="Email admin" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm">
+      <div class="relative">
+        <input id="adminPassInput" type="password" placeholder="Sandi" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 pr-12 text-sm">
+        <button id="togglePass" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400"><i class="fas fa-eye" id="eyeIcon"></i></button>
+      </div>
+      <button id="adminLoginBtn" class="w-full bg-amber-500 text-black font-bold py-3 rounded-full btn-glow">Login Admin</button>
+    </div>
+  </div>`;
+  const pi = document.getElementById('adminPassInput'), ei = document.getElementById('eyeIcon');
+  document.getElementById('togglePass').onclick = () => {
+    if (pi.type === 'password') { pi.type = 'text'; ei.classList.replace('fa-eye','fa-eye-slash'); }
+    else { pi.type = 'password'; ei.classList.replace('fa-eye-slash','fa-eye'); }
+  };
+  document.getElementById('adminLoginBtn').onclick = () => adminLogin(document.getElementById('adminEmailInput').value.trim(), pi.value);
+}
+
+async function renderJadiKreator(container) {
+  const isLoggedIn = !!currentUser;
+  const hasPenulis = hasRole(userProfile, 'penulis');
+  const hasKomikus = hasRole(userProfile, 'komikus');
+  const username = userProfile?.username || 'Guest';
+  const uid = currentUser?.uid || '-';
+  container.innerHTML = `
+    <div class="max-w-3xl mx-auto card-anim">
+      <div class="card-bg rounded-2xl p-6 md:p-8 mb-4 text-center">
+        <div class="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-amber-400 to-orange-600 flex items-center justify-center mb-4 badge-float">
+          <i class="fas fa-star text-white text-3xl"></i>
+        </div>
+        <h2 class="text-2xl md:text-3xl font-black text-amber-400">Jadi Kreator KomiNovel</h2>
+        <p class="text-slate-400 mt-2">Ingin menulis novel atau membuat komik? Ajukan ke Admin!</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <div class="card-bg rounded-2xl p-5 ${hasPenulis ? 'berlanjut-border' : ''}">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center"><i class="fas fa-pen-fancy text-blue-400 text-xl"></i></div>
+            <div><h3 class="font-bold">Penulis Novel</h3><p class="text-xs text-slate-400">Tulis cerita panjang</p></div>
+            ${hasPenulis ? '<span class="ml-auto penulis-tag">AKTIF</span>' : ''}
+          </div>
+          <p class="text-sm text-slate-400 mb-3">Menulis chapter teks panjang dengan alur cerita.</p>
+          ${hasPenulis ? `<button disabled class="w-full bg-slate-700 text-slate-400 font-bold py-2 rounded-full text-sm cursor-not-allowed">✓ Sudah Aktif</button>` : `<button onclick="requestRole('penulis')" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 rounded-full text-sm hover:scale-105 transition">Ajukan via WA</button>`}
+        </div>
+        <div class="card-bg rounded-2xl p-5 ${hasKomikus ? 'berlanjut-border' : ''}">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center"><i class="fas fa-palette text-purple-400 text-xl"></i></div>
+            <div><h3 class="font-bold">Pembuat Komik</h3><p class="text-xs text-slate-400">Buat komik bergambar</p></div>
+            ${hasKomikus ? '<span class="ml-auto komikus-tag">AKTIF</span>' : ''}
+          </div>
+          <p class="text-sm text-slate-400 mb-3">Membuat episode komik dengan banyak gambar.</p>
+          ${hasKomikus ? `<button disabled class="w-full bg-slate-700 text-slate-400 font-bold py-2 rounded-full text-sm cursor-not-allowed">✓ Sudah Aktif</button>` : `<button onclick="requestRole('komikus')" class="w-full bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 rounded-full text-sm hover:scale-105 transition">Ajukan via WA</button>`}
+        </div>
+      </div>
+      <div class="card-bg rounded-2xl p-6">
+        <h3 class="font-bold text-amber-400 mb-3"><i class="fas fa-info-circle mr-2"></i>Info Pengajuan</h3>
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between"><span class="text-slate-400">Username</span><span class="font-semibold">${username}</span></div>
+          <div class="flex justify-between"><span class="text-slate-400">User ID</span><span class="font-mono text-xs">${uid.slice(0,12)}...</span></div>
+          <div class="flex justify-between"><span class="text-slate-400">Status Login</span><span class="${isLoggedIn ? 'text-green-400' : 'text-red-400'}">${isLoggedIn ? '✓ Login' : '✗ Belum'}</span></div>
+        </div>
+        ${!isLoggedIn ? `<div class="mt-4 bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-3 text-sm text-yellow-200"><i class="fas fa-exclamation-triangle mr-2"></i>Login Google dulu sebelum ajukan permohonan!</div>` : ''}
+        <div class="mt-4 bg-green-500/10 border border-green-500/30 rounded-xl p-3 text-xs text-green-200"><i class="fab fa-whatsapp mr-2"></i>Tombol di atas akan membuka WhatsApp Admin (<b>${WA_NUMBER}</b>) dengan pesan otomatis.</div>
+      </div>
+    </div>`;
+}
+window.requestRole = (role) => {
+  if (!currentUser) { showToast('Login Google dulu!'); return; }
+  const username = userProfile?.username || 'User';
+  const uid = currentUser.uid;
+  const roleText = role === 'penulis' ? 'PENULIS NOVEL' : 'PEMBUAT KOMIK';
+  const pesan = `Halo Admin KomiNovel! 👋%0A%0ASaya ingin mengajukan permohonan menjadi *${roleText}* di KomiNovel.%0A%0A*Detail Akun:*%0A• Username: ${username}%0A• User ID: ${uid}%0A%0AMohon diaktifkan ya. Terima kasih! 🙏`;
+  window.open(`https://wa.me/${WA_NUMBER.replace(/^0/,'62')}?text=${pesan}`, '_blank');
+};
+
+async function renderHome(container) {
+  container.innerHTML = `
+    <div class="flex flex-wrap justify-between items-center gap-3 mb-6">
+      <div class="flex gap-2">
+        <button id="tabNovel" class="px-4 py-2 rounded-full font-bold transition text-sm ${currentContentType === 'novel' ? 'bg-amber-500 text-black' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'}">Novel</button>
+        <button id="tabKomik" class="px-4 py-2 rounded-full font-bold transition text-sm ${currentContentType === 'komik' ? 'bg-amber-500 text-black' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'}">Komik</button>
+      </div>
+      <div class="flex gap-2 w-full md:w-auto">
+        <input id="searchInput" type="text" placeholder="Cari judul..." value="${currentSearch}" class="bg-slate-800 border border-slate-700 rounded-full px-4 py-2 text-sm w-full md:w-64 focus:border-amber-500 transition">
+        <button id="searchBtn" class="bg-amber-500 text-black px-4 py-2 rounded-full font-bold text-sm hover:scale-105 transition"><i class="fas fa-search"></i></button>
+      </div>
+    </div>
+    <div id="contentList" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-5"></div>`;
+  document.getElementById('tabNovel').onclick = () => { currentContentType = 'novel'; renderPage(); };
+  document.getElementById('tabKomik').onclick = () => { currentContentType = 'komik'; renderPage(); };
+  document.getElementById('searchBtn').onclick = () => { currentSearch = document.getElementById('searchInput').value.trim(); renderPage(); };
+  const contentList = document.getElementById('contentList');
+  const q = query(collection(db, 'works'), where('type', '==', currentContentType));
+  let initialLoad = true;
+  let lastKnownIds = new Set();
+  worksUnsub = onSnapshot(q, (snapshot) => {
+    let works = [];
+    snapshot.forEach(d => works.push({ id: d.id, ...d.data() }));
+    works.sort((a, b) => (b.createdAt?.toDate?.() || 0) - (a.createdAt?.toDate?.() || 0));
+    if (currentSearch) works = works.filter(w => w.title.toLowerCase().includes(currentSearch.toLowerCase()));
+    const currentIds = new Set(works.map(w => w.id));
+    const newIds = new Set([...currentIds].filter(id => !lastKnownIds.has(id)));
+    renderWorkList(contentList, works, initialLoad ? new Set() : newIds);
+    lastKnownIds = currentIds;
+    initialLoad = false;
+  });
+}
+
+function renderWorkList(container, works, newIds = new Set()) {
+  if (works.length === 0) {
+    container.innerHTML = `<div class="col-span-full card-bg rounded-2xl p-12 text-center empty-animation">
+      <i class="fas fa-book-open text-6xl text-amber-400/50 mb-4"></i>
+      <h3 class="text-xl font-bold">Belum ada ${currentContentType === 'novel' ? 'Novel' : 'Komik'}.</h3>
+      <p class="text-slate-400 mt-2">Jadilah yang pertama!</p>
+      ${isCreator(userProfile) || isAdminSession ? `<button class="mt-4 bg-amber-500 text-black px-6 py-2 rounded-full font-bold btn-glow" onclick="window.location.hash='creator'">Upload Karya</button>` : `<button class="mt-4 bg-green-600 text-white px-6 py-2 rounded-full font-bold hover:scale-105 transition" onclick="window.location.hash='jadi-kreator'"><i class="fas fa-star mr-1"></i>Jadi Kreator</button>`}
+    </div>`;
+    return;
+  }
+  container.innerHTML = works.map((work, idx) => {
+    const cats = parseCategories(work.category);
+    const isNew = newIds && newIds.has(work.id);
+    return `
+    <div class="card-bg hover-lift rounded-2xl overflow-hidden shadow-lg cursor-pointer card-anim ${work.isTamat ? 'tamat-border' : 'berlanjut-border'} ${isNew ? 'new-work' : ''}" style="animation-delay:${Math.min(idx*0.03, 0.5)}s" onclick="window.location.hash='reader/${work.id}'">
+      <div class="h-40 md:h-48 bg-slate-800 flex items-center justify-center overflow-hidden relative">
+        ${work.coverURL ? `<img src="${work.coverURL}" class="w-full h-full object-cover" onerror="this.style.display='none';">` : `<i class="fas fa-image text-5xl text-slate-600"></i>`}
+        ${statusLabel(work.isTamat)}
+      </div>
+      <div class="p-3 md:p-4">
+        <h3 class="font-bold text-sm md:text-lg truncate">${work.title}</h3>
+        <p class="text-xs md:text-sm text-slate-400 line-clamp-2 mt-1">${work.teaser || ''}</p>
+        <div class="flex flex-wrap gap-1 mt-2">
+          ${cats.slice(0,2).map(c => `<span class="text-[10px] md:text-xs bg-slate-700 px-1.5 py-0.5 rounded-full">${c}</span>`).join('')}
+          ${cats.length > 2 ? `<span class="text-[10px] md:text-xs bg-slate-700 px-1.5 py-0.5 rounded-full">+${cats.length-2}</span>` : ''}
+        </div>
+        <div class="mt-2 text-xs text-slate-500 flex items-center gap-1 flex-wrap cursor-pointer hover:opacity-80" onclick="event.stopPropagation();window.location.hash='user/${work.authorId}'">
+          <img src="${work.authorPhotoURL || 'https://ui-avatars.com/api/?name='+encodeURIComponent(work.authorName||'U')}" class="w-5 h-5 rounded-full border border-slate-700">
+          <span class="truncate max-w-[80px] hover:text-amber-400">${work.authorName || 'Anonim'}</span>
+          ${work.authorLevel > 1000 ? '<i class="fas fa-crown text-amber-400 text-[10px] badge-float"></i>' : ''}
+          ${work.avgRating ? `<span class="ml-auto text-amber-400"><i class="fas fa-star text-[10px]"></i> ${work.avgRating.toFixed(1)}</span>` : ''}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function renderBookmarkPage(container) {
+  if (!currentUser || !userProfile) {
+    container.innerHTML = `<div class="card-bg rounded-2xl p-8 text-center card-anim"><p class="mb-4">Login untuk lihat bookmark.</p><button onclick="document.getElementById('navAuth').click()" class="bg-amber-500 text-black px-6 py-2 rounded-full font-bold btn-glow">Masuk</button></div>`;
+    return;
+  }
+  const bookmarks = userProfile.bookmarks || [];
+  container.innerHTML = `
+    <h2 class="text-2xl font-bold mb-4"><i class="fas fa-bookmark text-amber-400 mr-2"></i>Bookmark Saya (${bookmarks.length})</h2>
+    <div id="bookmarkList" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-5"></div>`;
+  const list = document.getElementById('bookmarkList');
+  if (bookmarks.length === 0) {
+    list.innerHTML = `<div class="col-span-full card-bg rounded-2xl p-12 text-center card-anim"><i class="fas fa-bookmark text-5xl text-amber-400/50 mb-3"></i><p class="text-slate-300">Belum ada bookmark.</p><p class="text-slate-500 text-sm">Tekan tombol bookmark saat baca novel/komik.</p></div>`;
+    return;
+  }
+  const works = [];
+  for (const id of bookmarks) {
+    try {
+      const s = await getDoc(doc(db, 'works', id));
+      if (s.exists()) works.push({ id: s.id, ...s.data() });
+    } catch (e) {}
+  }
+  if (works.length === 0) {
+    list.innerHTML = `<div class="col-span-full card-bg rounded-2xl p-12 text-center"><p class="text-slate-400">Bookmark kosong.</p></div>`;
+    return;
+  }
+  renderWorkList(list, works);
+}
+
+async function renderPublicProfile(container, uid) {
+  const snap = await getDoc(doc(db, 'users', uid));
+  if (!snap.exists()) { container.innerHTML = '<p class="text-red-400">User tidak ditemukan</p>'; return; }
+  const u = snap.data();
+  const isMe = currentUser && currentUser.uid === uid;
+  const isFriend = userProfile?.friends?.includes(uid);
+  const hasRequested = userProfile?.friendRequests?.includes(uid);
+  const level = u.level || 1, golden = isGolden(level);
+  const roles = u.roles || [u.role || 'pembaca'];
+  const worksSnap = await getDocs(query(collection(db, 'works'), where('authorId', '==', uid)));
+  const works = []; worksSnap.forEach(d => works.push({ id: d.id, ...d.data() }));
+  const clanSnap = u.clanId ? await getDoc(doc(db, 'clans', u.clanId)) : null;
+  const clan = clanSnap && clanSnap.exists() ? { id: clanSnap.id, ...clanSnap.data() } : null;
+  const isClanOwner = clan && clan.leader === uid;
+  const isClanAdmin = clan && (clan.admins || []).includes(uid);
+  const socialHtml = buildSocialLinks(u);
+  container.innerHTML = `
+    <button onclick="history.back()" class="text-amber-400 mb-4 hover:text-amber-300 transition"><i class="fas fa-arrow-left mr-2"></i>Kembali</button>
+    <div class="card-bg rounded-2xl p-6 mb-6 card-anim">
+      <div class="flex flex-col md:flex-row items-center md:items-start gap-4">
+        <img src="${u.photoURL || 'https://ui-avatars.com/api/?name='+encodeURIComponent(u.username||'U')}" class="w-24 h-24 rounded-full border-4 ${golden ? 'border-amber-400' : 'border-slate-600'}">
+        <div class="flex-1 text-center md:text-left">
+          <h2 class="text-2xl font-black ${golden ? 'gold-glow' : ''}">${u.username || 'User'}</h2>
+          <div class="flex gap-2 mt-2 flex-wrap justify-center md:justify-start">
+            <span class="text-xs px-3 py-1 rounded-full ${golden ? 'gold-badge' : 'bg-slate-700'}">Lv.${level} • ${getLevelTitle(level)}</span>
+            ${roles.map(r => `<span class="text-xs bg-indigo-900/60 px-3 py-1 rounded-full">${ROLE_LABELS[r] || r}</span>`).join('')}
+            ${clan ? `<span class="${isClanOwner ? 'clan-owner-tag' : isClanAdmin ? 'clan-admin-tag' : 'clan-tag'} cursor-pointer hover:scale-105 transition" onclick="window.location.hash='clan/${clan.id}'">${isClanOwner ? '👑 ' : isClanAdmin ? '⚔️ ' : ''}${clan.name}</span>` : ''}
+          </div>
+          ${socialHtml ? `<div class="flex flex-wrap gap-1 mt-4 justify-center md:justify-start">${socialHtml}</div>` : ''}
+          ${!isMe ? `<div class="flex gap-2 mt-4 justify-center md:justify-start flex-wrap">
+            ${isFriend ? `<button id="btnDM" class="bg-amber-500 text-black font-bold py-2 px-4 rounded-full text-sm hover:scale-105 transition"><i class="fas fa-comment mr-1"></i>Chat</button>` : 
+              hasRequested ? `<button class="bg-slate-700 text-slate-300 font-bold py-2 px-4 rounded-full text-sm" disabled>Sudah Request</button>` :
+              `<button id="btnAdd" class="bg-green-600 text-white font-bold py-2 px-4 rounded-full text-sm hover:scale-105 transition"><i class="fas fa-user-plus mr-1"></i>Tambah Teman</button>`}
+          </div>` : ''}
+        </div>
+      </div>
+    </div>
+    <h3 class="text-xl font-bold mb-3">Karya (${works.length})</h3>
+    <div id="pubWorks" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-5"></div>`;
+  renderWorkList(document.getElementById('pubWorks'), works);
+  if (document.getElementById('btnAdd')) {
+    document.getElementById('btnAdd').onclick = async () => {
+      if (!currentUser) { showToast('Login dulu'); return; }
+      const curSnap = await getDoc(doc(db, 'users', uid));
+      const curData = curSnap.data();
+      await updateDoc(doc(db, 'users', uid), { friendRequests: [...(curData.friendRequests || []), currentUser.uid] });
+      showToast('Request terkirim!'); renderPage();
+    };
+  }
+  if (document.getElementById('btnDM')) {
+    document.getElementById('btnDM').onclick = () => { window.location.hash = 'privatechat/' + uid; };
+  }
+}
+
+async function renderPrivateChat(container, otherUid) {
+  if (!currentUser) { container.innerHTML = '<p class="text-red-400">Login dulu</p>'; return; }
+  const otherSnap = await getDoc(doc(db, 'users', otherUid));
+  if (!otherSnap.exists()) { container.innerHTML = '<p class="text-red-400">User tidak ditemukan</p>'; return; }
+  const other = otherSnap.data();
+  const chatId = [currentUser.uid, otherUid].sort().join('_');
+  container.innerHTML = `
+    <button onclick="window.location.hash='teman'" class="text-amber-400 mb-4 hover:text-amber-300 transition"><i class="fas fa-arrow-left mr-2"></i>Kembali</button>
+    <div class="card-bg rounded-2xl p-4 flex items-center gap-3 mb-4 card-anim">
+      <img src="${other.photoURL || 'https://ui-avatars.com/api/?name='+encodeURIComponent(other.username||'U')}" class="w-10 h-10 rounded-full">
+      <div class="flex-1">
+        <div class="flex items-center gap-2 flex-wrap">
+          <h3 class="font-bold">${other.username}</h3>
+          ${buildUserTags(other, otherUid)}
+        </div>
+        <p class="text-xs text-slate-400">Lv.${other.level || 1} • ${getLevelTitle(other.level || 1)}</p>
+      </div>
+    </div>
+    <div class="card-bg rounded-2xl p-4 h-[60vh] flex flex-col card-anim">
+      <div id="pmMsgs" class="flex-1 overflow-y-auto scrollbar-thin space-y-3 mb-3 p-2"></div>
+      <div class="flex gap-2">
+        <input id="pmInput" type="text" placeholder="Tulis pesan..." class="flex-1 bg-slate-800 border border-slate-700 rounded-full px-4 py-2 text-sm focus:border-amber-500 transition">
+        <button id="pmSend" class="bg-amber-500 text-black px-5 py-2 rounded-full font-bold text-sm hover:scale-105 transition"><i class="fas fa-paper-plane"></i></button>
+      </div>
+    </div>`;
+  const msgsDiv = document.getElementById('pmMsgs');
+  let lastId = null;
+  privateChatUnsub = onSnapshot(query(collection(db, 'privateChats', chatId, 'messages'), orderBy('createdAt', 'asc'), limit(100)), snap => {
+    const arr = []; snap.forEach(d => arr.push({ id: d.id, ...d.data() }));
+    if (arr.length === 0) { msgsDiv.innerHTML = '<p class="text-slate-500 text-sm text-center">Belum ada pesan.</p>'; return; }
+    const lastMsg = arr[arr.length - 1];
+    const isNew = lastId && lastMsg.id !== lastId;
+    msgsDiv.innerHTML = arr.map((m, idx) => {
+      const own = m.userId === currentUser.uid;
+      const isLast = idx === arr.length - 1;
+      const anim = isLast && isNew ? (own ? 'chat-msg-new-own' : 'chat-msg-new') : '';
+      const userObj = usersCache[m.userId] || { username: m.username, photoURL: m.photoURL, level: m.userLevel };
+      const un = userObj.username || m.username || 'User';
+      const pu = userObj.photoURL || m.photoURL || '';
+      const ul = userObj.level || m.userLevel || 1;
+      return `<div class="flex ${own ? 'justify-end' : ''} gap-2 ${anim}">
+        ${!own ? `<img src="${pu || 'https://ui-avatars.com/api/?name='+encodeURIComponent(un)}" class="w-8 h-8 rounded-full">` : ''}
+        <div class="max-w-[70%] ${own ? 'bg-amber-500/20' : 'bg-slate-800'} rounded-2xl px-3 py-2">
+          <div class="flex items-center gap-1 flex-wrap text-xs mb-1">
+            <span class="${isGolden(ul) ? 'gold-glow font-bold' : 'text-slate-300 font-semibold'}">${un}</span>
+            ${buildUserTags(userObj, m.userId)}
+            <span class="text-slate-500">Lv.${ul}</span>
+          </div>
+          <p class="text-sm">${sensor(m.text || '')}</p>
+          <p class="text-xs text-slate-500 mt-1">${fmtDate(m.createdAt)}</p>
+        </div>
+        ${own ? `<img src="${pu || 'https://ui-avatars.com/api/?name='+encodeURIComponent(un)}" class="w-8 h-8 rounded-full">` : ''}
+      </div>`;
+    }).join('');
+    lastId = lastMsg.id;
+    msgsDiv.scrollTop = msgsDiv.scrollHeight;
+  });
+  document.getElementById('pmSend').onclick = async () => {
+    const text = document.getElementById('pmInput').value.trim();
+    if (!text) return;
+    await addDoc(collection(db, 'privateChats', chatId, 'messages'), {
+      userId: currentUser.uid, username: userProfile.username || 'User',
+      photoURL: userProfile.photoURL || '', text: sensor(text), createdAt: serverTimestamp()
+    });
+    document.getElementById('pmInput').value = '';
+    await addExp(EXP_PER_CHAT);
+  };
+  document.getElementById('pmInput').addEventListener('keypress', e => { if (e.key === 'Enter') document.getElementById('pmSend').click(); });
+}
+
+async function renderTeman(c) {
+  if (!currentUser) {
+    c.innerHTML = `<div class="card-bg rounded-2xl p-8 text-center card-anim"><p class="mb-4">Login dulu untuk akses fitur teman.</p><button onclick="document.getElementById('navAuth').click()" class="bg-amber-500 text-black px-6 py-2 rounded-full font-bold btn-glow">Masuk</button></div>`;
+    return;
+  }
+  const friendsSnap = await Promise.all((userProfile.friends || []).map(uid => getDoc(doc(db, 'users', uid))));
+  const friends = friendsSnap.filter(s => s.exists()).map(s => ({ id: s.id, ...s.data() }));
+  const reqSnap = await Promise.all((userProfile.friendRequests || []).map(uid => getDoc(doc(db, 'users', uid))));
+  const requests = reqSnap.filter(s => s.exists()).map(s => ({ id: s.id, ...s.data() }));
+  c.innerHTML = `
+    <h2 class="text-2xl font-bold mb-4"><i class="fas fa-user-friends text-amber-400 mr-2"></i>Teman & Chat</h2>
+    <div class="card-bg rounded-2xl p-4 mb-4 card-anim">
+      <label class="text-xs font-semibold text-amber-400 block mb-2">Cari Teman</label>
+      <input id="sUser" type="text" placeholder="Ketik username..." class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm mb-2 focus:border-amber-500 transition">
+      <div id="sResults"></div>
+    </div>
+    ${requests.length > 0 ? `<div class="card-bg rounded-2xl p-4 mb-4 card-anim">
+      <h3 class="font-bold mb-3 text-amber-400">Request Teman (${requests.length})</h3>
+      <div class="space-y-2">${requests.map(r => `<div class="flex items-center gap-2 bg-slate-800/50 rounded-xl p-2 hover:bg-slate-800 transition">
+        <img src="${r.photoURL || 'https://ui-avatars.com/api/?name='+encodeURIComponent(r.username)}" class="w-10 h-10 rounded-full">
+        <div class="flex-1 cursor-pointer" onclick="window.location.hash='user/${r.id}'"><p class="font-semibold text-sm">${r.username}</p><p class="text-xs text-slate-400">Lv.${r.level || 1}</p></div>
+        <button onclick="acceptFriend('${r.id}')" class="bg-green-600 text-white px-3 py-1 rounded-lg text-xs font-bold hover:scale-105 transition">Terima</button>
+        <button onclick="rejectFriend('${r.id}')" class="bg-red-600 text-white px-3 py-1 rounded-lg text-xs font-bold hover:scale-105 transition">Tolak</button>
+      </div>`).join('')}</div>
+    </div>` : ''}
+    <div class="card-bg rounded-2xl p-4 card-anim">
+      <h3 class="font-bold mb-3 text-amber-400">Teman Saya (${friends.length})</h3>
+      ${friends.length === 0 ? '<p class="text-slate-400 text-sm">Belum ada teman. Cari di atas!</p>' : `<div class="space-y-2">${friends.map(f => `<div class="flex items-center gap-2 bg-slate-800/50 rounded-xl p-2 hover:bg-slate-800 transition">
+        <img src="${f.photoURL || 'https://ui-avatars.com/api/?name='+encodeURIComponent(f.username)}" class="w-10 h-10 rounded-full cursor-pointer" onclick="window.location.hash='user/${f.id}'">
+        <div class="flex-1 cursor-pointer" onclick="window.location.hash='user/${f.id}'"><p class="font-semibold text-sm">${f.username}</p><p class="text-xs text-slate-400">Lv.${f.level || 1}</p></div>
+        <button onclick="window.location.hash='privatechat/${f.id}'" class="bg-amber-500 text-black px-3 py-1 rounded-lg text-xs font-bold hover:scale-105 transition"><i class="fas fa-comment"></i> Chat</button>
+      </div>`).join('')}</div>`}
+    </div>`;
+  const searchInput = document.getElementById('sUser');
+  const resDiv = document.getElementById('sResults');
+  searchInput.oninput = async (e) => {
+    const val = e.target.value.toLowerCase().trim();
+    if (val.length < 2) { resDiv.innerHTML = ''; return; }
+    const allSnap = await getDocs(collection(db, 'users'));
+    const matches = []; allSnap.forEach(d => { const u = { id: d.id, ...d.data() }; if (u.uid !== currentUser.uid && (u.username || '').toLowerCase().includes(val)) matches.push(u); });
+    resDiv.innerHTML = matches.slice(0, 10).map(m => `
+      <div class="flex items-center gap-2 bg-slate-800/50 rounded-xl p-2 mt-2 card-anim">
+        <img src="${m.photoURL || 'https://ui-avatars.com/api/?name='+encodeURIComponent(m.username)}" class="w-10 h-10 rounded-full cursor-pointer" onclick="window.location.hash='user/${m.id}'">
+        <div class="flex-1 cursor-pointer" onclick="window.location.hash='user/${m.id}'"><p class="font-semibold text-sm">${m.username}</p><p class="text-xs text-slate-400">Lv.${m.level || 1}</p></div>
+        ${(userProfile.friends || []).includes(m.id) ? '<span class="text-green-400 text-xs">Teman</span>' :
+          (userProfile.friendRequests || []).includes(m.id) ? '<span class="text-slate-400 text-xs">Pending</span>' :
+          `<button onclick="sendFriendRequest('${m.id}')" class="bg-green-600 text-white px-3 py-1 rounded-lg text-xs font-bold hover:scale-105 transition">Add</button>`}
+      </div>`).join('');
+  };
+}
+
+async function renderClan(c) {
+  if (!currentUser) { c.innerHTML = `<div class="card-bg rounded-2xl p-8 text-center card-anim"><p>Login untuk akses clan.</p></div>`; return; }
+  const clanSnap = userProfile.clanId ? await getDoc(doc(db, 'clans', userProfile.clanId)) : null;
+  const myClan = clanSnap && clanSnap.exists() ? { id: clanSnap.id, ...clanSnap.data() } : null;
+  const allClansSnap = await getDocs(query(collection(db, 'clans'), orderBy('exp', 'desc'), limit(50)));
+  const allClans = []; allClansSnap.forEach(d => allClans.push({ id: d.id, ...d.data() }));
+  const isOwner = myClan && myClan.leader === currentUser.uid;
+  const isAdmin = myClan && (myClan.admins || []).includes(currentUser.uid);
+  c.innerHTML = `
+    <h2 class="text-2xl font-bold mb-4"><i class="fas fa-users text-amber-400 mr-2"></i>Clan</h2>
+    ${myClan ? `
+      <div class="card-bg rounded-2xl p-6 mb-6 card-anim berlanjut-border">
+        <div class="flex justify-between items-start mb-3 flex-wrap gap-2">
+          <div>
+            <h3 class="text-2xl font-black text-amber-400">${isOwner ? '👑 ' : isAdmin ? '⚔️ ' : ''}${myClan.name}</h3>
+            <p class="text-sm text-slate-400">Level ${myClan.level || 1} • ${getClanLevelTitle(myClan.level || 1)} • ${(myClan.members || []).length} member</p>
+            <div class="w-full bg-slate-800 rounded-full h-2 mt-2 max-w-xs"><div class="bg-amber-500 h-2 rounded-full transition-all shimmer" style="width:${Math.min(100,((myClan.exp || 0)/((myClan.level || 1)*10))*100)}%"></div></div>
+          </div>
+          <button onclick="window.location.hash='clan/${myClan.id}'" class="bg-amber-500 text-black px-4 py-2 rounded-full font-bold text-sm hover:scale-105 transition">Buka Chat Clan</button>
+        </div>
+      </div>` : `
+      <div class="card-bg rounded-2xl p-6 mb-6 card-anim">
+        <h3 class="font-bold mb-3">Belum punya clan</h3>
+        <p class="text-sm text-slate-400 mb-3">Buat clan sendiri atau join dari daftar di bawah.</p>
+        <div class="flex gap-2">
+          <input id="newClanName" type="text" placeholder="Nama clan (3-20 char)" maxlength="20" class="flex-1 bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm">
+          <button id="createClanBtn" class="bg-amber-500 text-black px-6 py-2 rounded-full font-bold hover:scale-105 transition">Buat</button>
+        </div>
+      </div>`}
+    <div class="card-bg rounded-2xl p-4 card-anim">
+      <h3 class="font-bold mb-3 text-amber-400">Top Clan (${allClans.length})</h3>
+      ${allClans.length === 0 ? '<p class="text-slate-400 text-sm">Belum ada clan.</p>' : `<div class="space-y-2">${allClans.slice(0, 20).map((cn, i) => `
+        <div class="flex items-center gap-3 bg-slate-800/50 rounded-xl p-3 cursor-pointer hover:bg-slate-800 hover:translate-x-1 transition" onclick="window.location.hash='clan/${cn.id}'">
+          <div class="w-10 h-10 rounded-full bg-amber-500 text-black flex items-center justify-center font-black">${cn.name ? cn.name[0].toUpperCase() : 'C'}</div>
+          <div class="flex-1"><p class="font-bold">${cn.name}</p><p class="text-xs text-slate-400">Lv.${cn.level || 1} • ${(cn.members || []).length} member</p></div>
+          <span class="text-amber-400 text-xs font-bold">#${i + 1}</span>
+        </div>`).join('')}</div>`}
+    </div>`;
+  if (document.getElementById('createClanBtn')) {
+    document.getElementById('createClanBtn').onclick = async () => {
+      const name = document.getElementById('newClanName').value.trim();
+      if (!name || name.length < 3) { showToast('Nama 3-20 karakter'); return; }
+      try {
+        const ref = await addDoc(collection(db, 'clans'), {
+          name, leader: currentUser.uid, leaderName: userProfile.username,
+          members: [currentUser.uid], admins: [], exp: 0, level: 1, createdAt: serverTimestamp()
+        });
+        await updateDoc(doc(db, 'users', currentUser.uid), { clanId: ref.id });
+        userProfile.clanId = ref.id;
+        await loadClansCache();
+        showToast('Clan dibuat!'); renderPage();
+      } catch (e) { showToast('Gagal: ' + e.message); }
+    };
+  }
+}
+
+async function renderClanDetail(container, clanId) {
+  const snap = await getDoc(doc(db, 'clans', clanId));
+  if (!snap.exists()) { container.innerHTML = '<p class="text-red-400">Clan tidak ditemukan</p>'; return; }
+  const clan = { id: snap.id, ...snap.data() };
+  const admins = clan.admins || [];
+  const isMember = currentUser && clan.members?.includes(currentUser.uid);
+  const isOwner = currentUser && clan.leader === currentUser.uid;
+  const isAdmin = currentUser && admins.includes(currentUser.uid);
+  const canKick = isOwner || isAdmin;
+  const canManageAdmin = isOwner;
+  const memberSnaps = await Promise.all((clan.members || []).map(uid => getDoc(doc(db, 'users', uid))));
+  const members = memberSnaps.filter(s => s.exists()).map(s => ({ id: s.id, ...s.data() }));
+  
+  container.innerHTML = `
+    <button onclick="window.location.hash='clan'" class="text-amber-400 mb-4 hover:text-amber-300 transition"><i class="fas fa-arrow-left mr-2"></i>Kembali</button>
+    <div class="card-bg rounded-2xl p-6 mb-4 card-anim ${isOwner ? 'tamat-border' : 'berlanjut-border'}">
+      <div class="flex flex-col md:flex-row items-center gap-4">
+        <div class="w-20 h-20 rounded-2xl bg-amber-500 text-black flex items-center justify-center text-3xl font-black badge-float">${clan.name ? clan.name[0].toUpperCase() : 'C'}</div>
+        <div class="flex-1 text-center md:text-left">
+          <h2 class="text-2xl font-black text-amber-400">${isOwner ? '👑 ' : isAdmin ? '⚔️ ' : ''}${clan.name}</h2>
+          <p class="text-sm text-slate-400 mt-1">Leader: ${clan.leaderName || '-'}</p>
+          <div class="flex gap-2 mt-2 justify-center md:justify-start flex-wrap">
+            <span class="text-xs px-3 py-1 rounded-full bg-slate-700">Lv.${clan.level || 1} • ${getClanLevelTitle(clan.level || 1)}</span>
+            <span class="text-xs px-3 py-1 rounded-full bg-slate-700">${members.length} Member</span>
+            <span class="text-xs px-3 py-1 rounded-full bg-purple-900/60">${admins.length}/2 Admin</span>
+            ${isOwner ? '<span class="text-xs px-3 py-1 rounded-full clan-owner-tag">OWNER</span>' : isAdmin ? '<span class="text-xs px-3 py-1 rounded-full clan-admin-tag">ADMIN</span>' : ''}
+          </div>
+        </div>
+        <div class="flex flex-col md:flex-row gap-2 flex-wrap justify-center">
+          ${!isMember && currentUser ? `<button id="joinClan" class="bg-green-600 text-white font-bold px-6 py-2 rounded-full hover:scale-105 transition">Join Clan</button>` : ''}
+          ${isOwner ? `
+            <button id="editClanBtn" class="bg-blue-600 text-white font-bold px-4 py-2 rounded-full text-sm hover:scale-105 transition"><i class="fas fa-edit mr-1"></i>Edit</button>
+            <button id="deleteClanBtn" class="bg-red-700 text-white font-bold px-4 py-2 rounded-full text-sm hover:scale-105 transition"><i class="fas fa-trash mr-1"></i>Hapus</button>
+          ` : ''}
+        </div>
+      </div>
+      ${isOwner ? `<div id="editClanForm" class="hidden mt-4 border-t border-slate-700 pt-4">
+        <label class="block text-sm font-semibold mb-1 text-amber-400">Nama Clan Baru</label>
+        <div class="flex gap-2">
+          <input id="editClanName" type="text" maxlength="20" value="${clan.name}" class="flex-1 bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm">
+          <button id="saveClanNameBtn" class="bg-green-600 text-white px-4 py-2 rounded-lg font-bold text-sm hover:scale-105 transition">Simpan</button>
+          <button id="cancelEditClanBtn" class="bg-slate-700 text-slate-300 px-4 py-2 rounded-lg font-bold text-sm">Batal</button>
+        </div>
+      </div>` : ''}
+    </div>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div class="card-bg rounded-2xl p-4 card-anim">
+        <div class="flex justify-between items-center mb-3">
+          <h3 class="font-bold text-amber-400">Member (${members.length})</h3>
+          <span class="text-xs text-slate-400">Max 2 Admin</span>
+        </div>
+        <div class="space-y-2 max-h-[50vh] overflow-y-auto scrollbar-thin">
+          ${members.map(m => {
+            const mOwner = m.id === clan.leader;
+            const mAdmin = admins.includes(m.id);
+            const isMe = currentUser && m.id === currentUser.uid;
+            const canKickThis = canKick && !mOwner && !isMe;
+            const canPromoteThis = canManageAdmin && !mOwner && !isMe;
+            const canDemoteThis = canManageAdmin && mAdmin && !mOwner;
+            const userRoles = m.roles || [m.role || 'pembaca'];
+            let tagHtml = '';
+            if (userRoles.includes('admin')) tagHtml += '<span class="admin-tag text-xs">ADMIN</span> ';
+            if (userRoles.includes('penulis')) tagHtml += '<span class="penulis-tag text-xs">PENULIS</span> ';
+            if (userRoles.includes('komikus')) tagHtml += '<span class="komikus-tag text-xs">KOMIKUS</span> ';
+            if (userRoles.includes('pembaca')) tagHtml += '<span class="pembaca-tag text-xs">PEMBACA</span> ';
+            return `
+              <div class="bg-slate-800/50 rounded-xl p-3">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <img src="${m.photoURL || 'https://ui-avatars.com/api/?name='+encodeURIComponent(m.username)}" class="w-10 h-10 rounded-full cursor-pointer hover:scale-110 transition" onclick="window.location.hash='user/${m.id}'">
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-1 flex-wrap">
+                      <p class="font-semibold text-sm cursor-pointer hover:text-amber-400" onclick="window.location.hash='user/${m.id}'">${m.username}</p>
+                      ${mOwner ? '<span class="clan-owner-tag text-xs">👑 OWNER</span>' : mAdmin ? '<span class="clan-admin-tag text-xs">⚔️ ADMIN</span>' : '<span class="clan-tag text-xs">MEMBER</span>'}
+                    </div>
+                    <div class="flex items-center gap-1 flex-wrap mt-1">
+                      <span class="text-xs text-slate-400">Lv.${m.level || 1}</span>
+                      ${tagHtml}
+                    </div>
+                  </div>
+                </div>
+                ${(canKickThis || canPromoteThis || canDemoteThis) ? `
+                  <div class="flex gap-2 mt-2 flex-wrap">
+                    ${canPromoteThis && !mAdmin && admins.length < 2 ? `<button onclick="promoteToAdmin('${clanId}','${m.id}')" class="bg-purple-600 text-white px-3 py-1 rounded-lg text-xs font-bold hover:scale-105 transition"><i class="fas fa-crown mr-1"></i>Jadikan Admin</button>` : ''}
+                    ${canDemoteThis ? `<button onclick="demoteAdmin('${clanId}','${m.id}')" class="bg-yellow-600 text-white px-3 py-1 rounded-lg text-xs font-bold hover:scale-105 transition"><i class="fas fa-arrow-down mr-1"></i>Turunkan</button>` : ''}
+                    ${canKickThis ? `<button onclick="kickMember('${clanId}','${m.id}','${m.username}')" class="bg-red-600 text-white px-3 py-1 rounded-lg text-xs font-bold hover:scale-105 transition"><i class="fas fa-user-minus mr-1"></i>Keluarkan</button>` : ''}
+                  </div>
+                ` : ''}
+              </div>
+            `;
+          }).join('')}
+        </div>
+      </div>
+      <div class="card-bg rounded-2xl p-4 flex flex-col h-[70vh] card-anim">
+        <h3 class="font-bold mb-3 text-amber-400">Chat Clan</h3>
+        <div id="clanMsgs" class="flex-1 overflow-y-auto scrollbar-thin space-y-3 mb-2 p-2"></div>
+        <div id="clanReplyPreview"></div>
+        ${isMember ? `<div class="flex gap-2 mt-2"><input id="clanInput" type="text" placeholder="Pesan..." class="flex-1 bg-slate-800 border border-slate-700 rounded-full px-4 py-2 text-sm focus:border-amber-500 transition"><button id="clanSend" class="bg-amber-500 text-black px-4 py-2 rounded-full font-bold text-sm hover:scale-105 transition"><i class="fas fa-paper-plane"></i></button></div>` : '<p class="text-slate-400 text-sm mt-2">Join dulu untuk chat.</p>'}
+      </div>
+    </div>`;
+  
+  if (document.getElementById('joinClan')) {
+    document.getElementById('joinClan').onclick = async () => {
+      await updateDoc(doc(db, 'clans', clanId), { members: [...(clan.members || []), currentUser.uid] });
+      await updateDoc(doc(db, 'users', currentUser.uid), { clanId });
+      userProfile.clanId = clanId;
+      await loadClansCache();
+      showToast('Berhasil join!'); renderPage();
+    };
+  }
+  if (document.getElementById('editClanBtn')) {
+    document.getElementById('editClanBtn').onclick = () => document.getElementById('editClanForm').classList.toggle('hidden');
+    document.getElementById('cancelEditClanBtn').onclick = () => document.getElementById('editClanForm').classList.add('hidden');
+    document.getElementById('saveClanNameBtn').onclick = async () => {
+      const newName = document.getElementById('editClanName').value.trim();
+      if (!newName || newName.length < 3) { showToast('Nama 3-20 karakter'); return; }
+      await updateDoc(doc(db, 'clans', clanId), { name: newName, updatedAt: serverTimestamp() });
+      await loadClansCache();
+      showToast('Nama clan diubah!'); renderPage();
+    };
+  }
+  if (document.getElementById('deleteClanBtn')) {
+    document.getElementById('deleteClanBtn').onclick = async () => {
+      if (!confirm(`Yakin hapus clan "${clan.name}"?`)) return;
+      if (!confirm(`Konfirmasi sekali lagi: Hapus clan "${clan.name}"?`)) return;
+      try {
+        const msgsSnap = await getDocs(collection(db, 'clans', clanId, 'messages'));
+        for (const m of msgsSnap.docs) await deleteDoc(doc(db, 'clans', clanId, 'messages', m.id));
+        for (const m of members) await updateDoc(doc(db, 'users', m.id), { clanId: null });
+        await deleteDoc(doc(db, 'clans', clanId));
+        if (userProfile.clanId === clanId) {
+          userProfile.clanId = null;
+          await updateDoc(doc(db, 'users', currentUser.uid), { clanId: null });
+        }
+        await loadClansCache();
+        showToast('Clan dihapus!');
+        window.location.hash = 'clan';
+      } catch (e) { showToast('Gagal: ' + e.message); }
+    };
+  }
+  const msgsDiv = document.getElementById('clanMsgs');
+  let lastId = null;
+  clanChatUnsub = onSnapshot(query(collection(db, 'clans', clanId, 'messages'), orderBy('createdAt', 'asc'), limit(100)), snap => {
+    const arr = []; snap.forEach(d => arr.push({ id: d.id, ...d.data() }));
+    if (arr.length === 0) { msgsDiv.innerHTML = '<p class="text-slate-500 text-xs text-center">Belum ada pesan.</p>'; return; }
+    const lastMsg = arr[arr.length - 1];
+    const isNew = lastId && lastMsg.id !== lastId;
+    msgsDiv.innerHTML = arr.map((msg, idx) => {
+      const u = usersCache[msg.userId] || {};
+      const un = u.username || msg.username || 'Anonim';
+      const pu = u.photoURL || msg.photoURL || '';
+      const ul = u.level || 1;
+      const isOwn = msg.userId === currentUser?.uid;
+      const isLast = idx === arr.length - 1;
+      const isNewMsg = isLast && isNew;
+      const roles = u.roles || (u.role ? [u.role] : ['pembaca']);
+      const isA = roles.includes('admin'), isP = roles.includes('penulis'), isK = roles.includes('komikus'), isPc = roles.includes('pembaca');
+      const isG = ul > 1000;
+      const clanU = u.clanId ? clansCache[u.clanId] : null;
+      const isClanOwner = clanU && clanU.leader === u.uid;
+      const isClanAdminMsg = clanU && (clanU.admins || []).includes(u.uid);
+      let bc = 'pembaca-chat-border';
+      if (isA) bc = 'admin-chat-border';
+      else if (clanU) bc = 'clan-chat-border';
+      else if (isP) bc = 'penulis-chat-border';
+      else if (isK) bc = 'komikus-chat-border';
+      if (isOwn) bc += ' bg-amber-500/20';
+      const anim = isNewMsg ? (isOwn ? 'chat-msg-new-own' : 'chat-msg-new') : '';
+      let tagsHtml = '';
+      if (isA) tagsHtml += '<span class="admin-tag">ADMIN</span> ';
+      if (isP) tagsHtml += '<span class="penulis-tag">PENULIS</span> ';
+      if (isK) tagsHtml += '<span class="komikus-tag">KOMIKUS</span> ';
+      if (isPc) tagsHtml += '<span class="pembaca-tag">PEMBACA</span> ';
+      if (clanU) {
+        if (isClanOwner) tagsHtml += `<span class="clan-owner-tag cursor-pointer" onclick="window.location.hash='clan/${clanU.id}'">👑 ${clanU.name}</span> `;
+        else if (isClanAdminMsg) tagsHtml += `<span class="clan-admin-tag cursor-pointer" onclick="window.location.hash='clan/${clanU.id}'">⚔️ ${clanU.name}</span> `;
+        else tagsHtml += `<span class="clan-tag cursor-pointer" onclick="window.location.hash='clan/${clanU.id}'">${clanU.name}</span> `;
+      }
+      let replyPreview = '';
+      if (msg.replyTo && msg.replyToText) {
+        replyPreview = `<div class="reply-preview"><i class="fas fa-reply text-amber-400 mr-1"></i><b class="text-amber-400">${msg.replyToName || 'Anonim'}:</b> ${sensor(msg.replyToText).slice(0, 80)}${msg.replyToText.length > 80 ? '...' : ''}</div>`;
+      }
+      return `<div class="flex items-start gap-2 ${isOwn ? 'justify-end' : ''} group ${anim}" data-clanmsgid="${msg.id}">
+        ${!isOwn ? `<img src="${pu || 'https://ui-avatars.com/api/?name='+encodeURIComponent(un)}" class="w-8 h-8 rounded-full cursor-pointer hover:scale-110 transition" onclick="window.location.hash='user/${msg.userId}'">` : ''}
+        <div class="max-w-[75%] rounded-2xl px-3 py-2 ${bc}">
+          <div class="flex items-center gap-1 flex-wrap text-xs mb-1">
+            <span class="${isG ? 'gold-glow font-bold' : 'text-slate-300 font-semibold'} cursor-pointer hover:underline" onclick="window.location.hash='user/${msg.userId}'">${un}</span>
+            ${isG ? '<i class="fas fa-crown text-amber-400 text-xs"></i>' : ''}
+            ${tagsHtml}
+            <span class="text-slate-500">Lv.${ul}</span>
+            ${msg.edited ? '<span class="text-slate-500 text-xs italic">(diedit)</span>' : ''}
+          </div>
+          ${replyPreview}
+          <div id="clanmt-${msg.id}" class="text-sm">${sensor(msg.text || '')}</div>
+          <div class="flex gap-2 mt-1 text-xs">
+            <button onclick="replyClanMsg('${msg.id}')" class="text-slate-400 hover:text-green-400 transition opacity-0 group-hover:opacity-100"><i class="fas fa-reply"></i> Balas</button>
+            ${isOwn ? `
+              <button onclick="editClanMsg('${msg.id}')" class="text-blue-400 hover:text-blue-300 transition opacity-0 group-hover:opacity-100"><i class="fas fa-edit"></i> Edit</button>
+              <button onclick="delClanMsg('${msg.id}')" class="text-red-400 hover:text-red-300 transition opacity-0 group-hover:opacity-100"><i class="fas fa-trash"></i> Hapus</button>
+            ` : ''}
+          </div>
+        </div>
+        ${isOwn ? `<img src="${pu || 'https://ui-avatars.com/api/?name='+encodeURIComponent(un)}" class="w-8 h-8 rounded-full">` : ''}
+      </div>`;
+    }).join('');
+    lastId = lastMsg.id;
+    msgsDiv.scrollTop = msgsDiv.scrollHeight;
+  });
+  if (document.getElementById('clanSend')) {
+    document.getElementById('clanSend').onclick = async () => {
+      const text = document.getElementById('clanInput').value.trim();
+      if (!text) return;
+      const msgData = {
+        userId: currentUser.uid, username: userProfile.username, photoURL: userProfile.photoURL || '',
+        text: sensor(text), createdAt: serverTimestamp(), edited: false
+      };
+      if (replyingToClan) {
+        msgData.replyTo = replyingToClan.id;
+        msgData.replyToText = replyingToClan.text;
+        msgData.replyToName = replyingToClan.username;
+      }
+      await addDoc(collection(db, 'clans', clanId, 'messages'), msgData);
+      document.getElementById('clanInput').value = '';
+      replyingToClan = null;
+      document.getElementById('clanReplyPreview').innerHTML = '';
+      await addExp(EXP_PER_CHAT);
+      await addClanExp(clanId, 2);
+    };
+    document.getElementById('clanInput').addEventListener('keypress', e => { if (e.key === 'Enter') document.getElementById('clanSend').click(); });
+  }
+}
+
+window.promoteToAdmin = async (clanId, userId) => {
+  const snap = await getDoc(doc(db, 'clans', clanId));
+  if (!snap.exists()) return;
+  const clan = snap.data();
+  if (clan.leader !== currentUser.uid) { showToast('Hanya owner bisa!'); return; }
+  const admins = clan.admins || [];
+  if (admins.length >= 2) { showToast('Maksimal 2 admin!'); return; }
+  if (admins.includes(userId)) { showToast('Sudah admin'); return; }
+  await updateDoc(doc(db, 'clans', clanId), { admins: [...admins, userId], updatedAt: serverTimestamp() });
+  await loadClansCache();
+  showToast('Berhasil dijadikan admin!');
+  renderPage();
+};
+window.demoteAdmin = async (clanId, userId) => {
+  const snap = await getDoc(doc(db, 'clans', clanId));
+  if (!snap.exists()) return;
+  const clan = snap.data();
+  if (clan.leader !== currentUser.uid) { showToast('Hanya owner bisa!'); return; }
+  const admins = (clan.admins || []).filter(id => id !== userId);
+  await updateDoc(doc(db, 'clans', clanId), { admins, updatedAt: serverTimestamp() });
+  await loadClansCache();
+  showToast('Jabatan admin dicabut');
+  renderPage();
+};
+window.kickMember = async (clanId, userId, username) => {
+  if (!confirm(`Keluarkan ${username} dari clan?`)) return;
+  const snap = await getDoc(doc(db, 'clans', clanId));
+  if (!snap.exists()) return;
+  const clan = snap.data();
+  const admins = clan.admins || [];
+  const isOwner = clan.leader === currentUser.uid;
+  const isAdmin = admins.includes(currentUser.uid);
+  if (!isOwner && !isAdmin) { showToast('Tidak punya akses!'); return; }
+  if (clan.leader === userId) { showToast('Tidak bisa keluarkan owner!'); return; }
+  if (admins.includes(userId) && !isOwner) { showToast('Hanya owner bisa keluarkan admin!'); return; }
+  const newMembers = (clan.members || []).filter(id => id !== userId);
+  const newAdmins = admins.filter(id => id !== userId);
+  await updateDoc(doc(db, 'clans', clanId), { members: newMembers, admins: newAdmins, updatedAt: serverTimestamp() });
+  await updateDoc(doc(db, 'users', userId), { clanId: null });
+  await loadClansCache();
+  showToast('Member dikeluarkan');
+  renderPage();
+};
+window.replyClanMsg = (msgId) => {
+  const el = document.querySelector(`[data-clanmsgid="${msgId}"]`);
+  if (!el) return;
+  const text = el.querySelector(`#clanmt-${msgId}`)?.textContent || '';
+  const username = el.querySelector('span.font-semibold, span.gold-glow')?.textContent || 'Anonim';
+  replyingToClan = { id: msgId, text, username };
+  document.getElementById('clanReplyPreview').innerHTML = `
+    <div class="flex items-center justify-between bg-amber-500/10 border-l-2 border-amber-500 rounded px-3 py-2 mb-2">
+      <div class="text-xs">
+        <i class="fas fa-reply text-amber-400 mr-2"></i>
+        <b class="text-amber-400">${username}:</b> <span class="text-slate-300">${text.slice(0, 60)}${text.length > 60 ? '...' : ''}</span>
+      </div>
+      <button onclick="cancelReplyClan()" class="text-red-400 hover:text-red-300 text-lg">&times;</button>
+    </div>`;
+  document.getElementById('clanInput')?.focus();
+};
+window.cancelReplyClan = () => {
+  replyingToClan = null;
+  document.getElementById('clanReplyPreview').innerHTML = '';
+};
+window.editClanMsg = async (msgId) => {
+  const clanId = getHash().replace('clan/','');
+  const ref = doc(db, 'clans', clanId, 'messages', msgId);
+  const s = await getDoc(ref);
+  if (!s.exists() || s.data().userId !== currentUser.uid) return;
+  const orig = s.data().text || '';
+  const el = document.getElementById('clanmt-' + msgId);
+  if (!el) return;
+  el.innerHTML = `<textarea id="clanet-${msgId}" rows="2" class="chat-edit-input">${orig}</textarea><div class="flex gap-2 mt-1"><button onclick="saveClanMsg('${msgId}')" class="bg-green-600 text-white px-3 py-1 rounded text-xs font-bold">Simpan</button><button onclick="cancelClanEdit('${msgId}', '${orig.replace(/'/g,"\\'")}')" class="bg-slate-600 text-white px-3 py-1 rounded text-xs font-bold">Batal</button></div>`;
+};
+window.saveClanMsg = async (msgId) => {
+  const clanId = getHash().replace('clan/','');
+  const t = document.getElementById('clanet-' + msgId).value.trim();
+  if (!t) return;
+  await updateDoc(doc(db, 'clans', clanId, 'messages', msgId), { text: sensor(t), edited: true, updatedAt: serverTimestamp() });
+};
+window.cancelClanEdit = (msgId, orig) => {
+  const el = document.getElementById('clanmt-' + msgId);
+  if (el) el.textContent = orig;
+};
+window.delClanMsg = async (msgId) => {
+  const clanId = getHash().replace('clan/','');
+  const ref = doc(db, 'clans', clanId, 'messages', msgId);
+  const s = await getDoc(ref);
+  if (!s.exists() || s.data().userId !== currentUser.uid) return;
+  if (!confirm('Hapus pesan?')) return;
+  await deleteDoc(ref);
+  showToast('Dihapus');
+};
+
+// ==================== READER (dengan BOOKMARK) ====================
+async function renderReader(container, novelId, chapterId = null) {
+  if (!novelId) { container.innerHTML = '<p>Karya tidak ditemukan</p>'; return; }
+  const workSnap = await getDoc(doc(db, 'works', novelId));
+  if (!workSnap.exists()) { container.innerHTML = '<p class="text-red-400">Karya tidak ditemukan.</p>'; return; }
+  const work = { id: workSnap.id, ...workSnap.data() };
+  const chaptersSnap = await getDocs(query(collection(db, 'works', novelId, 'chapters'), orderBy('number', 'asc')));
+  const chapters = []; chaptersSnap.forEach(d => chapters.push({ id: d.id, ...d.data() }));
+  let currentChapter = null;
+  if (chapterId) currentChapter = chapters.find(c => c.id === chapterId);
+  else if (chapters.length > 0) { currentChapter = chapters[0]; window.location.hash = `reader/${novelId}/${currentChapter.id}`; return; }
+  if (currentUser && currentChapter) await addExp(EXP_PER_READ);
+  const chapterLabel = work.type === 'novel' ? 'Chapter' : 'Eps';
+  const canManage = currentUser && (currentUser.uid === work.authorId || isAdminUser(userProfile));
+  const cats = parseCategories(work.category);
+  const isKomik = work.type === 'komik';
+  const isBookmarked = currentUser && (userProfile?.bookmarks || []).includes(novelId);
+  const socialHtml = buildSocialLinks({ sosmed: work.authorSosmed || {} });
+  container.innerHTML = `
+    <div id="readerContent" class="card-anim">
+      <div class="reader-header mb-6 flex flex-wrap justify-between items-center">
+        <button onclick="window.location.hash='home'" class="text-amber-400 hover:text-amber-300 transition"><i class="fas fa-arrow-left mr-2"></i>Kembali</button>
+        <button id="bookmarkToggle" class="text-sm font-bold px-4 py-2 rounded-full transition ${isBookmarked ? 'bg-green-600 text-white' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'}">
+          <i class="fas fa-bookmark mr-1"></i>${isBookmarked ? 'Tersimpan' : 'Bookmark'}
+        </button>
+      </div>
+      <div class="reader-header card-bg rounded-2xl p-4 md:p-6 mb-6 ${work.isTamat ? 'tamat-border' : 'berlanjut-border'}">
+        <div class="flex flex-col md:flex-row gap-4 md:gap-6">
+          <div class="w-full md:w-48 h-64 bg-slate-800 rounded-xl overflow-hidden flex-shrink-0 relative">
+            ${work.coverURL ? `<img src="${work.coverURL}" class="w-full h-full object-cover" onerror="this.style.display='none';">` : `<div class="flex items-center justify-center h-full"><i class="fas fa-image text-5xl text-slate-600"></i></div>`}
+            ${statusLabel(work.isTamat)}
+          </div>
+          <div class="flex-1">
+            <h1 class="text-xl md:text-2xl font-black">${work.title}</h1>
+            <p class="text-amber-400/90 italic mt-2">${work.teaser || ''}</p>
+            <p class="text-slate-400 mt-2 text-sm">${work.description || ''}</p>
+            <div class="flex items-center gap-3 mt-3 text-sm flex-wrap">${cats.map(c => `<span class="bg-slate-700 px-3 py-1 rounded-full text-xs">${c}</span>`).join('')}</div>
+            <div class="mt-3 flex items-center gap-2 cursor-pointer hover:opacity-80" onclick="window.location.hash='user/${work.authorId}'">
+              <img src="${work.authorPhotoURL || 'https://ui-avatars.com/api/?name='+encodeURIComponent(work.authorName||'U')}" class="w-8 h-8 rounded-full border border-slate-700">
+              <span class="text-sm text-amber-400 hover:underline">${work.authorName || 'Anonim'}</span>
+              ${work.authorLevel > 1000 ? '<i class="fas fa-crown text-amber-400 badge-float"></i>' : ''}
+            </div>
+            ${socialHtml ? `<div class="flex flex-wrap gap-1 mt-3">${socialHtml}</div>` : ''}
+          </div>
+        </div>
+      </div>
+      <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <div class="reader-sidebar lg:col-span-1 card-bg rounded-2xl p-4 max-h-[70vh] overflow-y-auto scrollbar-thin order-2 lg:order-1">
+          <h3 class="font-bold mb-3 text-amber-400">Daftar ${chapterLabel} (${chapters.length})</h3>
+          <div class="space-y-2">${chapters.map((ch, idx) => `
+            <div class="flex items-center gap-1">
+              <button onclick="window.location.hash='reader/${novelId}/${ch.id}'" class="flex-1 text-left px-3 py-2 rounded-lg ${currentChapter && currentChapter.id === ch.id ? 'bg-amber-500/20 border border-amber-500' : 'hover:bg-slate-800'} text-sm truncate transition">
+                ${chapterLabel} ${ch.number || idx+1}${ch.title ? ': ' + ch.title : ''}
+              </button>
+              ${canManage ? `<button onclick="deleteChapterFromReader('${novelId}','${ch.id}','${ch.number || idx+1}')" class="text-red-400 hover:text-red-300 px-2"><i class="fas fa-trash text-xs"></i></button>` : ''}
+            </div>`).join('')}
+          </div>
+        </div>
+        <div class="lg:col-span-3 space-y-6 order-1 lg:order-2">
+          <div class="reader-content card-bg rounded-2xl p-4 md:p-6">
+            ${currentChapter ? `
+              <div class="flex justify-between items-start mb-4 gap-2 flex-wrap">
+                <h2 class="text-lg md:text-xl font-bold">${chapterLabel} ${currentChapter.number}${currentChapter.title ? ': ' + currentChapter.title : ''}</h2>
+                ${isKomik && currentChapter.images && currentChapter.images.length > 0 ? `<button onclick="toggleFullscreenReader()" class="bg-amber-500 text-black text-xs font-bold px-3 py-2 rounded-full hover:scale-105 transition"><i class="fas fa-expand"></i> Fullscreen</button>` : ''}
+              </div>
+              ${work.type === 'novel' ? `<div class="whitespace-pre-wrap text-slate-200" style="line-height:1.9;font-size:15px;">${currentChapter.content || ''}</div>` : `<div class="reader-images grid grid-cols-1 gap-4">${(currentChapter.images || []).map(img => `<img src="${img}" class="w-full rounded-lg hover:shadow-2xl transition">`).join('')}</div>`}
+            ` : '<p class="text-slate-400">Pilih chapter.</p>'}
+          </div>
+          ${currentChapter ? `
+          <div class="reader-comments card-bg rounded-2xl p-4 md:p-6">
+            <h3 class="font-bold mb-4 text-amber-400"><i class="fas fa-star mr-2"></i>Rating & Komentar</h3>
+            <div class="flex items-center gap-2 mb-4" id="ratingStars">${[1,2,3,4,5].map(n => `<i class="fas fa-star text-2xl star-rating text-slate-600" data-star="${n}"></i>`).join('')}<span id="ratingText" class="text-sm text-slate-400 ml-2">Pilih</span></div>
+            <div class="flex gap-2"><input id="commentInput" type="text" placeholder="Komentar..." class="flex-1 bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm focus:border-amber-500 transition"><button id="submitComment" class="bg-amber-500 text-black px-5 py-2 rounded-xl font-bold text-sm hover:scale-105 transition">Kirim</button></div>
+          </div>
+          <div class="reader-comments card-bg rounded-2xl p-4 md:p-6">
+            <h3 class="font-bold mb-4 text-amber-400"><i class="fas fa-comments mr-2"></i>Komentar</h3>
+            <div id="commentsList" class="space-y-3 max-h-[50vh] overflow-y-auto scrollbar-thin"></div>
+          </div>` : ''}
+        </div>
+      </div>
+      ${isKomik && currentChapter && currentChapter.images && currentChapter.images.length > 0 ? `<button id="fullscreenBtn" class="fullscreen-btn" onclick="toggleFullscreenReader()"><i class="fas fa-expand"></i></button>` : ''}
+    </div>`;
+
+  // Bookmark handler
+  const bmBtn = document.getElementById('bookmarkToggle');
+  if (bmBtn) {
+    bmBtn.onclick = async () => {
+      if (!currentUser || !userProfile) { showToast('Login dulu untuk bookmark'); return; }
+      const currentBM = userProfile.bookmarks || [];
+      const isNow = currentBM.includes(novelId);
+      let newBM;
+      if (isNow) newBM = currentBM.filter(id => id !== novelId);
+      else newBM = [...currentBM, novelId];
+      await updateDoc(doc(db, 'users', currentUser.uid), { bookmarks: newBM });
+      userProfile.bookmarks = newBM;
+      showToast(isNow ? 'Bookmark dihapus' : 'Ditambahkan ke bookmark');
+      renderPage();
+    };
+  }
+
+  if (!currentChapter) return;
+  const commentsRef = collection(db, 'works', novelId, 'chapters', currentChapter.id, 'comments');
+  onSnapshot(query(commentsRef, orderBy('createdAt', 'desc')), (snap) => {
+    const div = document.getElementById('commentsList');
+    if (!div) return;
+    const arr = []; snap.forEach(d => arr.push({ id: d.id, ...d.data() }));
+    const parents = arr.filter(c => !c.parentId);
+    const replies = arr.filter(c => c.parentId);
+    if (parents.length === 0) { div.innerHTML = '<p class="text-slate-500 text-sm">Belum ada komentar.</p>'; return; }
+    div.innerHTML = parents.map(c => {
+      const cReps = replies.filter(r => r.parentId === c.id);
+      return `<div class="comment-card rounded-xl p-3 card-anim">
+        <div class="flex items-start gap-2">
+          <img src="${c.photoURL || 'https://ui-avatars.com/api/?name='+encodeURIComponent(c.username||'U')}" class="w-8 h-8 rounded-full cursor-pointer hover:scale-110 transition" onclick="window.location.hash='user/${c.userId}'">
+          <div class="flex-1">
+            <div class="flex items-center gap-2 text-xs mb-1 flex-wrap">
+              <span class="${isGolden(c.userLevel) ? 'gold-glow font-bold' : 'text-slate-300 font-semibold'} cursor-pointer" onclick="window.location.hash='user/${c.userId}'">${c.username || 'Anonim'}</span>
+              ${isGolden(c.userLevel) ? '<i class="fas fa-crown text-amber-400 text-xs"></i>' : ''}
+              <span class="text-slate-500">Lv.${c.userLevel || 1}</span>
+              ${buildUserTags(c, c.userId)}
+              <span class="text-slate-500">• ${fmtDate(c.createdAt)}</span>
+            </div>
+            <p class="text-sm">${sensor(c.text || '')}</p>
+            <div class="flex items-center gap-3 mt-2 text-xs">
+              <button onclick="likeComment('${novelId}','${currentChapter.id}','${c.id}')" class="text-slate-400 hover:text-red-400 transition"><i class="fas fa-heart"></i> ${c.likes || 0}</button>
+              <button onclick="showReplyInput('${c.id}')" class="text-slate-400 hover:text-amber-400 transition"><i class="fas fa-reply"></i> Balas</button>
+            </div>
+            <div id="reply-input-${c.id}" class="hidden mt-2 flex gap-2"><input type="text" id="reply-text-${c.id}" placeholder="Balasan..." class="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-xs"><button onclick="submitReply('${novelId}','${currentChapter.id}','${c.id}')" class="bg-amber-500 text-black px-3 py-1.5 rounded-lg text-xs font-bold">Kirim</button></div>
+            ${cReps.length > 0 ? `<div class="mt-3 space-y-2">${cReps.map(r => `<div class="reply-indent">
+              <div class="flex items-start gap-2">
+                <img src="${r.photoURL || 'https://ui-avatars.com/api/?name='+encodeURIComponent(r.username||'U')}" class="w-6 h-6 rounded-full">
+                <div><span class="${isGolden(r.userLevel) ? 'gold-glow font-bold' : 'text-slate-300'} text-xs">${r.username}</span> ${buildUserTags(r, r.userId)}<p class="text-xs">${sensor(r.text || '')}</p></div>
+              </div>
+            </div>`).join('')}</div>` : ''}
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+  });
+  let selRating = 0;
+  document.querySelectorAll('#ratingStars .star-rating').forEach(s => s.onclick = () => {
+    selRating = parseInt(s.dataset.star);
+    document.querySelectorAll('#ratingStars .star-rating').forEach((x, i) => { x.classList.toggle('text-amber-400', i < selRating); x.classList.toggle('text-slate-600', i >= selRating); });
+    s.classList.add('star-pop');
+    setTimeout(() => s.classList.remove('star-pop'), 300);
+    document.getElementById('ratingText').textContent = selRating + ' bintang';
+  });
+  document.getElementById('submitComment').onclick = async () => {
+    if (!currentUser || !userProfile) { showToast('Login dulu'); return; }
+    const text = document.getElementById('commentInput').value.trim();
+    if (!text && selRating === 0) { showToast('Tulis komentar/rating'); return; }
+    if (text) {
+      await addDoc(commentsRef, { userId: currentUser.uid, username: userProfile.username, photoURL: userProfile.photoURL || '', userLevel: userProfile.level || 1, isAdmin: isAdminUser(userProfile), isPenulis: hasRole(userProfile, 'penulis'), isKomikus: hasRole(userProfile, 'komikus'), text: sensor(text), likes: 0, parentId: null, createdAt: serverTimestamp() });
+      await addExp(EXP_PER_COMMENT);
+    }
+    if (selRating > 0) {
+      await setDoc(doc(db, 'works', novelId, 'chapters', currentChapter.id, 'ratings', currentUser.uid), { userId: currentUser.uid, rating: selRating, createdAt: serverTimestamp() });
+      await recalcWorkRating(novelId);
+    }
+    document.getElementById('commentInput').value = ''; selRating = 0;
+    document.querySelectorAll('#ratingStars .star-rating').forEach(s => { s.classList.remove('text-amber-400'); s.classList.add('text-slate-600'); });
+    document.getElementById('ratingText').textContent = 'Pilih';
+    showToast('Terkirim');
+  };
+}
+
+async function recalcWorkRating(workId) {
+  const cs = await getDocs(collection(db, 'works', workId, 'chapters'));
+  let total = 0, count = 0;
+  for (const ch of cs.docs) {
+    const rs = await getDocs(collection(db, 'works', workId, 'chapters', ch.id, 'ratings'));
+    rs.forEach(r => { total += r.data().rating || 0; count++; });
+  }
+  await updateDoc(doc(db, 'works', workId), { avgRating: count > 0 ? total/count : 0, ratingCount: count, updatedAt: serverTimestamp() });
+}
+
+window.likeComment = async (wid,cid,id) => {
+  if (!currentUser) { showToast('Login dulu'); return; }
+  const r = doc(db,'works',wid,'chapters',cid,'comments',id); const s = await getDoc(r);
+  if (s.exists()) await updateDoc(r, { likes: (s.data().likes || 0) + 1 });
+};
+window.showReplyInput = id => document.getElementById('reply-input-' + id)?.classList.toggle('hidden');
+window.submitReply = async (wid,cid,pid) => {
+  if (!currentUser) { showToast('Login dulu'); return; }
+  const inp = document.getElementById('reply-text-' + pid);
+  const t = inp.value.trim();
+  if (!t) return;
+  await addDoc(collection(db,'works',wid,'chapters',cid,'comments'), { userId: currentUser.uid, username: userProfile.username, photoURL: userProfile.photoURL || '', userLevel: userProfile.level || 1, isAdmin: isAdminUser(userProfile), isPenulis: hasRole(userProfile,'penulis'), isKomikus: hasRole(userProfile,'komikus'), text: sensor(t), likes: 0, parentId: pid, createdAt: serverTimestamp() });
+  await addExp(EXP_PER_COMMENT);
+  inp.value = ''; document.getElementById('reply-input-' + pid).classList.add('hidden');
+  showToast('Balasan terkirim');
+};
+window.deleteChapterFromReader = async (wid,cid,num) => {
+  if (!confirm(`Hapus ${num}?`)) return;
+  try {
+    const cs = await getDocs(collection(db,'works',wid,'chapters',cid,'comments'));
+    for (const c of cs.docs) await deleteDoc(doc(db,'works',wid,'chapters',cid,'comments',c.id));
+    const rs = await getDocs(collection(db,'works',wid,'chapters',cid,'ratings'));
+    for (const r of rs.docs) await deleteDoc(doc(db,'works',wid,'chapters',cid,'ratings',r.id));
+    await deleteDoc(doc(db,'works',wid,'chapters',cid));
+    showToast('Dihapus'); window.location.hash = 'reader/' + wid;
+  } catch (e) { showToast('Gagal: ' + e.message); }
+};
+window.acceptFriend = async (uid) => {
+  await updateDoc(doc(db,'users',currentUser.uid), { friends: [...(userProfile.friends || []), uid], friendRequests: (userProfile.friendRequests || []).filter(x => x !== uid) });
+  const otherSnap = await getDoc(doc(db, 'users', uid));
+  const otherData = otherSnap.data();
+  await updateDoc(doc(db,'users',uid), { friends: [...(otherData.friends || []), currentUser.uid] });
+  userProfile.friends = [...(userProfile.friends || []), uid];
+  userProfile.friendRequests = (userProfile.friendRequests || []).filter(x => x !== uid);
+  showToast('Teman ditambahkan'); renderPage();
+};
+window.rejectFriend = async (uid) => {
+  await updateDoc(doc(db,'users',currentUser.uid), { friendRequests: (userProfile.friendRequests || []).filter(x => x !== uid) });
+  userProfile.friendRequests = (userProfile.friendRequests || []).filter(x => x !== uid);
+  showToast('Ditolak'); renderPage();
+};
+window.sendFriendRequest = async (uid) => {
+  const s = await getDoc(doc(db,'users',uid));
+  const u = s.data();
+  await updateDoc(doc(db,'users',uid), { friendRequests: [...(u.friendRequests || []), currentUser.uid] });
+  showToast('Request terkirim'); renderPage();
+};
+
+async function renderKategori(container) {
+  container.innerHTML = `
+    <h2 class="text-2xl font-bold mb-4">Kategori</h2>
+    <div class="flex flex-wrap gap-2 mb-6">
+      <button class="cat-btn px-4 py-2 rounded-full bg-amber-500 text-black font-bold text-sm hover:scale-105 transition" data-cat="all">Semua</button>
+      ${ALL_CATEGORIES.map(c => `<button class="cat-btn px-4 py-2 rounded-full bg-slate-800 text-sm hover:bg-slate-700 transition" data-cat="${c}">${c}</button>`).join('')}
+    </div>
+    <div id="kategoriList" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-5"></div>`;
+  document.querySelectorAll('.cat-btn').forEach(b => b.onclick = () => {
+    document.querySelectorAll('.cat-btn').forEach(x => x.classList.remove('bg-amber-500','text-black'));
+    b.classList.add('bg-amber-500','text-black');
+    currentCategory = b.dataset.cat; loadKL();
+  });
+  async function loadKL() {
+    const list = document.getElementById('kategoriList');
+    const snap = await getDocs(collection(db, 'works'));
+    let works = []; snap.forEach(d => works.push({ id: d.id, ...d.data() }));
+    if (currentCategory !== 'all') works = works.filter(w => parseCategories(w.category).includes(currentCategory));
+    works.sort((a,b) => (b.createdAt?.toDate?.() || 0) - (a.createdAt?.toDate?.() || 0));
+    if (works.length === 0) { list.innerHTML = `<div class="col-span-full card-bg rounded-2xl p-12 text-center card-anim"><i class="fas fa-folder-open text-5xl text-amber-400/50 mb-3"></i><p>Belum ada karya.</p></div>`; return; }
+    renderWorkList(list, works);
+  }
+  loadKL();
+}
+
+async function renderLeaderboard(container) {
+  container.innerHTML = `
+    <h2 class="text-2xl font-bold mb-4"><i class="fas fa-trophy text-amber-400 mr-2 badge-float"></i>Leaderboard</h2>
+    <div class="flex gap-2 mb-6">
+      <button id="lbNovel" class="px-5 py-2 rounded-full font-bold text-sm ${currentContentType === 'novel' ? 'bg-amber-500 text-black' : 'bg-slate-800 text-slate-300'}">Novel</button>
+      <button id="lbKomik" class="px-5 py-2 rounded-full font-bold text-sm ${currentContentType === 'komik' ? 'bg-amber-500 text-black' : 'bg-slate-800 text-slate-300'}">Komik</button>
+    </div>
+    <div id="leaderboardList" class="space-y-3"></div>`;
+  document.getElementById('lbNovel').onclick = () => { currentContentType='novel'; renderPage(); };
+  document.getElementById('lbKomik').onclick = () => { currentContentType='komik'; renderPage(); };
+  const list = document.getElementById('leaderboardList');
+  const snap = await getDocs(query(collection(db,'works'), where('type','==',currentContentType)));
+  let works = []; snap.forEach(d => works.push({ id: d.id, ...d.data() }));
+  works.sort((a,b) => (b.avgRating || 0) - (a.avgRating || 0) || (b.ratingCount || 0) - (a.ratingCount || 0));
+  works = works.slice(0,20);
+  if (works.length === 0) { list.innerHTML = '<div class="card-bg rounded-2xl p-8 text-center text-slate-400">Belum ada.</div>'; return; }
+  const rankColors = ['bg-gradient-to-br from-yellow-400 to-amber-600 text-black', 'bg-gradient-to-br from-slate-300 to-slate-500 text-black', 'bg-gradient-to-br from-amber-700 to-amber-900 text-white'];
+  list.innerHTML = works.map((w,i) => `
+    <div class="card-bg hover-lift rounded-2xl p-4 flex items-center gap-4 cursor-pointer card-anim" style="animation-delay:${i*0.05}s" onclick="window.location.hash='reader/${w.id}'">
+      <div class="leaderboard-rank ${i < 3 ? rankColors[i] : 'bg-slate-700 text-slate-300'}">${i+1}</div>
+      <div class="w-16 h-20 bg-slate-800 rounded-lg overflow-hidden">${w.coverURL ? `<img src="${w.coverURL}" class="w-full h-full object-cover">` : ''}</div>
+      <div class="flex-1 min-w-0"><h3 class="font-bold truncate">${w.title}</h3><p class="text-xs text-slate-400 line-clamp-2">${w.teaser || ''}</p></div>
+      <div class="text-right"><div class="text-amber-400 font-black">${(w.avgRating || 0).toFixed(1)}</div><div class="text-xs text-slate-400">${w.ratingCount || 0}</div></div>
+    </div>`).join('');
+}
+
+async function renderChat(container) {
+  container.innerHTML = `
+    <h2 class="text-2xl font-bold mb-4"><i class="fas fa-comments text-amber-400 mr-2"></i>Chat Publik</h2>
+    <div class="card-bg rounded-2xl p-4 h-[65vh] flex flex-col card-anim">
+      <div id="chatMessages" class="flex-1 overflow-y-auto scrollbar-thin space-y-3 mb-3 p-2"></div>
+      <div id="publicReplyPreview"></div>
+      <div class="flex gap-2 mt-2">
+        <input id="chatInput" type="text" placeholder="Tulis pesan..." class="flex-1 bg-slate-800 border border-slate-700 rounded-full px-4 py-2 text-sm focus:border-amber-500 transition">
+        <button id="sendChat" class="bg-amber-500 text-black px-5 py-2 rounded-full font-bold text-sm hover:scale-105 transition"><i class="fas fa-paper-plane"></i></button>
+      </div>
+    </div>`;
+  const messagesDiv = document.getElementById('chatMessages');
+  const input = document.getElementById('chatInput');
+  const sendBtn = document.getElementById('sendChat');
+  let rawMessages = [];
+  let lastId = null;
+  chatUnsub = onSnapshot(query(collection(db,'chats'), orderBy('createdAt','asc'), limit(100)), snapshot => {
+    rawMessages = []; snapshot.forEach(d => rawMessages.push({ id: d.id, ...d.data() }));
+    renderMsgs();
+  });
+  chatUsersUnsub = onSnapshot(collection(db,'users'), snap => {
+    usersCache = {}; snap.forEach(d => usersCache[d.id] = { id: d.id, ...d.data() });
+    renderMsgs();
+  });
+  onSnapshot(collection(db,'clans'), snap => {
+    clansCache = {}; snap.forEach(d => clansCache[d.id] = { id: d.id, ...d.data() });
+    renderMsgs();
+  });
+  function renderMsgs() {
+    if (rawMessages.length === 0) { messagesDiv.innerHTML = '<p class="text-slate-500 text-sm text-center">Belum ada pesan.</p>'; return; }
+    const lastMsg = rawMessages[rawMessages.length - 1];
+    const isNew = lastId && lastMsg.id !== lastId;
+    messagesDiv.innerHTML = rawMessages.map((msg, idx) => {
+      const u = usersCache[msg.userId] || {};
+      const un = u.username || msg.username || 'Anonim';
+      const pu = u.photoURL || msg.photoURL || '';
+      const ul = u.level || 1;
+      const roles = u.roles || (u.role ? [u.role] : ['pembaca']);
+      const isA = roles.includes('admin'), isP = roles.includes('penulis'), isK = roles.includes('komikus'), isPc = roles.includes('pembaca');
+      const isG = ul > 1000;
+      const own = msg.userId === currentUser?.uid;
+      const clanId = u.clanId;
+      const clan = clanId ? clansCache[clanId] : null;
+      const isClanOwner = clan && clan.leader === u.uid;
+      const isClanAdminMsg = clan && (clan.admins || []).includes(u.uid);
+      let bc = 'pembaca-chat-border';
+      if (isA) bc = 'admin-chat-border';
+      else if (clan) bc = 'clan-chat-border';
+      else if (isP) bc = 'penulis-chat-border';
+      else if (isK) bc = 'komikus-chat-border';
+      if (own) bc += ' bg-amber-500/20';
+      const isLast = idx === rawMessages.length - 1;
+      const anim = isLast && isNew ? (own ? 'chat-msg-new-own' : 'chat-msg-new') : '';
+      let tagsHtml = '';
+      if (isA) tagsHtml += '<span class="admin-tag">ADMIN</span> ';
+      if (isP) tagsHtml += '<span class="penulis-tag">PENULIS</span> ';
+      if (isK) tagsHtml += '<span class="komikus-tag">KOMIKUS</span> ';
+      if (isPc) tagsHtml += '<span class="pembaca-tag">PEMBACA</span> ';
+      if (clan) {
+        if (isClanOwner) tagsHtml += `<span class="clan-owner-tag cursor-pointer" onclick="event.stopPropagation();window.location.hash='clan/${clan.id}'">👑 ${clan.name}</span> `;
+        else if (isClanAdminMsg) tagsHtml += `<span class="clan-admin-tag cursor-pointer" onclick="event.stopPropagation();window.location.hash='clan/${clan.id}'">⚔️ ${clan.name}</span> `;
+        else tagsHtml += `<span class="clan-tag cursor-pointer" onclick="event.stopPropagation();window.location.hash='clan/${clan.id}'">${clan.name}</span> `;
+      }
+      let replyPreview = '';
+      if (msg.replyTo && msg.replyToText) {
+        replyPreview = `<div class="reply-preview"><i class="fas fa-reply text-amber-400 mr-1"></i><b class="text-amber-400">${msg.replyToName || 'Anonim'}:</b> ${sensor(msg.replyToText).slice(0, 80)}${msg.replyToText.length > 80 ? '...' : ''}</div>`;
+      }
+      return `<div class="flex items-start gap-2 ${own ? 'justify-end' : ''} group ${anim}" data-publicmsgid="${msg.id}">
+        ${!own ? `<img src="${pu || 'https://ui-avatars.com/api/?name='+encodeURIComponent(un)}" class="w-8 h-8 rounded-full cursor-pointer hover:scale-110 transition" onclick="window.location.hash='user/${msg.userId}'">` : ''}
+        <div class="max-w-[75%] rounded-2xl px-3 py-2 ${bc}">
+          <div class="flex items-center gap-1 flex-wrap text-xs mb-1">
+            <span class="${isG ? 'gold-glow font-bold' : 'text-slate-300 font-semibold'} cursor-pointer hover:underline" onclick="window.location.hash='user/${msg.userId}'">${un}</span>
+            ${isG ? '<i class="fas fa-crown text-amber-400 text-xs"></i>' : ''}
+            ${tagsHtml}
+            <span class="text-slate-500">Lv.${ul}</span>
+            ${msg.edited ? '<span class="text-slate-500 text-xs italic">(diedit)</span>' : ''}
+          </div>
+          ${replyPreview}
+          <div id="pubmt-${msg.id}" class="text-sm">${sensor(msg.text || '')}</div>
+          <div class="flex gap-2 mt-1 text-xs">
+            <button onclick="replyPubMsg('${msg.id}')" class="text-slate-400 hover:text-green-400 transition opacity-0 group-hover:opacity-100"><i class="fas fa-reply"></i> Balas</button>
+            ${own ? `
+              <button onclick="editPubMsg('${msg.id}')" class="text-blue-400 hover:text-blue-300 transition opacity-0 group-hover:opacity-100"><i class="fas fa-edit"></i> Edit</button>
+              <button onclick="delPubMsg('${msg.id}')" class="text-red-400 hover:text-red-300 transition opacity-0 group-hover:opacity-100"><i class="fas fa-trash"></i> Hapus</button>
+            ` : ''}
+          </div>
+        </div>
+        ${own ? `<img src="${pu || 'https://ui-avatars.com/api/?name='+encodeURIComponent(un)}" class="w-8 h-8 rounded-full">` : ''}
+      </div>`;
+    }).join('');
+    lastId = lastMsg.id;
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+  }
+  sendBtn.onclick = async () => {
+    const text = input.value.trim();
+    if (!text || !currentUser) { showToast('Login dulu'); return; }
+    const msgData = {
+      userId: currentUser.uid, username: userProfile.username || 'Guest',
+      photoURL: userProfile.photoURL || '', userLevel: userProfile.level || 1,
+      isAdmin: isAdminUser(userProfile), isPenulis: hasRole(userProfile,'penulis'), isKomikus: hasRole(userProfile,'komikus'),
+      text: sensor(text), edited: false, createdAt: serverTimestamp()
+    };
+    if (replyingToPublic) {
+      msgData.replyTo = replyingToPublic.id;
+      msgData.replyToText = replyingToPublic.text;
+      msgData.replyToName = replyingToPublic.username;
+    }
+    await addDoc(collection(db,'chats'), msgData);
+    input.value = '';
+    replyingToPublic = null;
+    document.getElementById('publicReplyPreview').innerHTML = '';
+    await addExp(EXP_PER_CHAT);
+  };
+  input.addEventListener('keypress', e => { if (e.key === 'Enter') sendBtn.click(); });
+}
+window.replyPubMsg = (msgId) => {
+  const el = document.querySelector(`[data-publicmsgid="${msgId}"]`);
+  if (!el) return;
+  const text = el.querySelector(`#pubmt-${msgId}`)?.textContent || '';
+  const username = el.querySelector('span.font-semibold, span.gold-glow')?.textContent || 'Anonim';
+  replyingToPublic = { id: msgId, text, username };
+  document.getElementById('publicReplyPreview').innerHTML = `
+    <div class="flex items-center justify-between bg-amber-500/10 border-l-2 border-amber-500 rounded px-3 py-2 mb-2">
+      <div class="text-xs">
+        <i class="fas fa-reply text-amber-400 mr-2"></i>
+        <b class="text-amber-400">${username}:</b> <span class="text-slate-300">${text.slice(0, 60)}${text.length > 60 ? '...' : ''}</span>
+      </div>
+      <button onclick="cancelReplyPub()" class="text-red-400 hover:text-red-300 text-lg">&times;</button>
+    </div>`;
+  document.getElementById('chatInput')?.focus();
+};
+window.cancelReplyPub = () => {
+  replyingToPublic = null;
+  document.getElementById('publicReplyPreview').innerHTML = '';
+};
+window.editPubMsg = async (id) => {
+  const ref = doc(db,'chats',id); const s = await getDoc(ref);
+  if (!s.exists() || s.data().userId !== currentUser.uid) return;
+  const orig = s.data().text || '';
+  const el = document.getElementById('pubmt-'+id);
+  if (!el) return;
+  el.innerHTML = `<textarea id="pubet-${id}" rows="2" class="chat-edit-input">${orig}</textarea><div class="flex gap-2 mt-1"><button onclick="savePubMsg('${id}')" class="bg-green-600 text-white px-3 py-1 rounded text-xs font-bold">Simpan</button><button onclick="cancelPubEdit('${id}', '${orig.replace(/'/g,"\\'")}')" class="bg-slate-600 text-white px-3 py-1 rounded text-xs font-bold">Batal</button></div>`;
+};
+window.savePubMsg = async (id) => {
+  const t = document.getElementById('pubet-'+id).value.trim();
+  if (!t) return;
+  await updateDoc(doc(db,'chats',id), { text: sensor(t), edited: true, updatedAt: serverTimestamp() });
+};
+window.cancelPubEdit = (id, orig) => {
+  const el = document.getElementById('pubmt-'+id);
+  if (el) el.textContent = orig;
+};
+window.delPubMsg = async (id) => {
+  const r = doc(db,'chats',id); const s = await getDoc(r);
+  if (!s.exists() || s.data().userId !== currentUser.uid) return;
+  if (!confirm('Hapus?')) return;
+  await deleteDoc(r); showToast('Dihapus');
+};
+
+async function renderKritikSaran(container) {
+  container.innerHTML = `
+    <div class="card-bg rounded-2xl p-6 md:p-8 max-w-2xl mx-auto card-anim">
+      <div class="text-center mb-6">
+        <img src="${LOGO_URL}" class="w-16 h-16 mx-auto rounded-xl mb-3 border-2 border-amber-500 logo-glow">
+        <h2 class="text-2xl font-black">Kritik & Saran</h2>
+      </div>
+      <div class="space-y-4">
+        <input id="kritikNama" type="text" placeholder="Nama" value="${userProfile?.username || ''}" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm">
+        <select id="kritikJenis" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm"><option>Kritik</option><option>Saran</option><option>Bug Report</option><option>Request Fitur</option><option>Lainnya</option></select>
+        <textarea id="kritikPesan" rows="6" placeholder="Pesan..." class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm"></textarea>
+        <div class="flex flex-col md:flex-row gap-3">
+          <button id="kirimKritikWA" class="flex-1 bg-green-600 text-white font-bold py-3 rounded-full hover:scale-105 transition"><i class="fab fa-whatsapp mr-2"></i>WA</button>
+          <button id="kirimKritikDirect" class="flex-1 bg-amber-500 text-black font-bold py-3 rounded-full hover:scale-105 transition"><i class="fas fa-paper-plane mr-2"></i>Kirim</button>
+        </div>
+        <p class="text-xs text-slate-500 text-center">WA Admin: ${WA_NUMBER}</p>
+      </div>
+    </div>`;
+  document.getElementById('kirimKritikWA').onclick = () => {
+    const n = document.getElementById('kritikNama').value.trim() || 'Anonim';
+    const j = document.getElementById('kritikJenis').value;
+    const p = document.getElementById('kritikPesan').value.trim();
+    if (!p) return;
+    window.open(`https://wa.me/${WA_NUMBER.replace(/^0/,'62')}?text=${encodeURIComponent('*'+j+'*\n'+n+'\n\n'+p)}`,'_blank');
+  };
+  document.getElementById('kirimKritikDirect').onclick = async () => {
+    const n = document.getElementById('kritikNama').value.trim() || 'Anonim';
+    const j = document.getElementById('kritikJenis').value;
+    const p = document.getElementById('kritikPesan').value.trim();
+    if (!p) return;
+    await addDoc(collection(db,'kritik_saran'), { userId: currentUser?.uid || null, nama: n, jenis: j, pesan: p, createdAt: serverTimestamp() });
+    showToast('Terkirim!'); document.getElementById('kritikPesan').value = '';
+  };
+}
+
+async function renderProfil(container) {
+  if (!currentUser || !userProfile) {
+    container.innerHTML = `<div class="card-bg rounded-2xl p-8 text-center max-w-md mx-auto card-anim">
+      <img src="${LOGO_URL}" class="w-20 h-20 mx-auto rounded-2xl mb-4 border-2 border-amber-500 logo-glow">
+      <h2 class="text-xl font-bold mb-4">Masuk KomiNovel</h2>
+      <div class="flex flex-col gap-3">
+        <button id="loginGoogle" class="bg-white text-black font-bold py-3 rounded-full hover:scale-105 transition"><i class="fab fa-google mr-2"></i>Google</button>
+        <button id="loginGuest" class="bg-slate-700 text-slate-300 font-bold py-2 rounded-full text-xs">Guest</button>
+      </div>
+    </div>`;
+    document.getElementById('loginGoogle').onclick = signInWithGoogle;
+    document.getElementById('loginGuest').onclick = signInAsGuest;
+    return;
+  }
+  const level = userProfile.level || 1;
+  const golden = isGolden(level);
+  const title = getLevelTitle(level);
+  const roles = userProfile.roles || [userProfile.role || 'pembaca'];
+  const roleBadges = roles.map(r => `<span class="text-xs bg-indigo-900/60 px-3 py-1 rounded-full">${ROLE_LABELS[r] || r}</span>`).join(' ');
+  const myClan = userProfile.clanId ? clansCache[userProfile.clanId] : null;
+  const isClanOwner = myClan && myClan.leader === currentUser.uid;
+  const isClanAdmin = myClan && (myClan.admins || []).includes(currentUser.uid);
+  const sosmed = userProfile.sosmed || {};
+  const isKreator = isCreator(userProfile);
+  container.innerHTML = `
+    <div class="card-bg rounded-2xl p-6 max-w-2xl mx-auto card-anim">
+      <div class="flex flex-col items-center text-center">
+        <div class="relative">
+          <img src="${userProfile.photoURL || 'https://ui-avatars.com/api/?name='+encodeURIComponent(userProfile.username||'U')}" class="w-24 h-24 rounded-full border-4 ${golden ? 'border-amber-400' : 'border-slate-600'}">
+          ${golden ? '<i class="fas fa-crown absolute -top-2 -right-2 text-amber-400 text-2xl badge-float"></i>' : ''}
+        </div>
+        <h2 class="text-2xl font-black mt-3 ${golden ? 'gold-glow' : ''}">${userProfile.username || 'User'}</h2>
+        <div class="flex gap-2 mt-3 flex-wrap justify-center">
+          <span class="text-xs px-3 py-1.5 rounded-full ${golden ? 'gold-badge' : 'bg-slate-700'} font-bold"><i class="fas fa-star mr-1"></i>Level ${level} • ${title}</span>
+          ${roleBadges}
+          ${myClan ? `<span class="${isClanOwner ? 'clan-owner-tag' : isClanAdmin ? 'clan-admin-tag' : 'clan-tag'} cursor-pointer hover:scale-105 transition" onclick="window.location.hash='clan/${myClan.id}'">${isClanOwner ? '👑 ' : isClanAdmin ? '⚔️ ' : ''}${myClan.name}</span>` : ''}
+        </div>
+        <div class="w-full mt-4">
+          <div class="flex justify-between text-xs mb-1"><span>EXP: ${userProfile.exp || 0}</span><span>Lv.${level} / ${MAX_LEVEL}</span></div>
+          <div class="w-full bg-slate-800 rounded-full h-2"><div class="bg-amber-500 h-2 rounded-full transition-all shimmer" style="width:${Math.min(100,((userProfile.exp||0)/(level*20))*100)}%"></div></div>
+        </div>
+      </div>
+      <div class="mt-6 space-y-4">
+        <div><label class="block text-sm font-semibold mb-1">Username</label><input id="profileUsername" type="text" value="${userProfile.username || ''}" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm"></div>
+        <div class="flex flex-col md:flex-row gap-3">
+          <button id="saveProfile" class="flex-1 bg-amber-500 text-black font-bold py-2 rounded-full hover:scale-105 transition">Simpan</button>
+          ${currentUser.isAnonymous ? `<button id="linkGoogle" class="flex-1 bg-white text-black font-bold py-2 rounded-full hover:scale-105 transition"><i class="fab fa-google mr-2"></i>Tautkan</button>` : ''}
+        </div>
+        <button id="logoutBtn" class="w-full bg-red-900/50 hover:bg-red-800 text-red-300 font-bold py-2 rounded-full transition">Keluar</button>
+      </div>
+
+      ${isKreator ? `
+      <div class="mt-6 border-t border-slate-700 pt-6">
+        <h3 class="font-bold text-amber-400 mb-3"><i class="fas fa-link mr-2"></i>Link Sosmed & Dukungan</h3>
+        <p class="text-xs text-slate-500 mb-3">Muncul di profil publik & halaman karya kamu</p>
+        <div class="space-y-3">
+          <div><label class="block text-xs font-semibold mb-1 text-orange-400"><i class="fa-solid fa-coffee mr-1"></i>Saweria</label><input id="sm_saweria" type="url" placeholder="https://saweria.co/username" value="${sosmed.saweria || ''}" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm"></div>
+          <div><label class="block text-xs font-semibold mb-1 text-red-400"><i class="fa-solid fa-mug-hot mr-1"></i>Trakteer</label><input id="sm_trakteer" type="url" placeholder="https://trakteer.id/username" value="${sosmed.trakteer || ''}" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm"></div>
+          <div><label class="block text-xs font-semibold mb-1 text-blue-400"><i class="fab fa-facebook mr-1"></i>Facebook</label><input id="sm_facebook" type="url" placeholder="https://facebook.com/username" value="${sosmed.facebook || ''}" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm"></div>
+          <div><label class="block text-xs font-semibold mb-1 text-white"><i class="fab fa-tiktok mr-1"></i>TikTok</label><input id="sm_tiktok" type="url" placeholder="https://tiktok.com/@username" value="${sosmed.tiktok || ''}" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm"></div>
+          <div><label class="block text-xs font-semibold mb-1 text-pink-400"><i class="fab fa-instagram mr-1"></i>Instagram</label><input id="sm_instagram" type="url" placeholder="https://instagram.com/username" value="${sosmed.instagram || ''}" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm"></div>
+          <div><label class="block text-xs font-semibold mb-1 text-white"><i class="fa-solid fa-at mr-1"></i>Threads</label><input id="sm_threads" type="url" placeholder="https://threads.net/@username" value="${sosmed.threads || ''}" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm"></div>
+          <div><label class="block text-xs font-semibold mb-1 text-sky-400"><i class="fab fa-twitter mr-1"></i>Twitter/X</label><input id="sm_twitter" type="url" placeholder="https://x.com/username" value="${sosmed.twitter || ''}" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm"></div>
+          <div><label class="block text-xs font-semibold mb-1 text-red-500"><i class="fab fa-youtube mr-1"></i>YouTube</label><input id="sm_youtube" type="url" placeholder="https://youtube.com/@username" value="${sosmed.youtube || ''}" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm"></div>
+          <div><label class="block text-xs font-semibold mb-1 text-slate-300"><i class="fas fa-globe mr-1"></i>Website</label><input id="sm_website" type="url" placeholder="https://website.com" value="${sosmed.website || ''}" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm"></div>
+          <button id="saveSosmedBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 rounded-full transition">Simpan Link Sosmed</button>
+        </div>
+      </div>` : ''}
+    </div>`;
+  document.getElementById('saveProfile').onclick = async () => {
+    const nu = document.getElementById('profileUsername').value.trim();
+    await updateDoc(doc(db,'users',currentUser.uid), { username: nu || userProfile.username, updatedAt: serverTimestamp() });
+    userProfile.username = nu || userProfile.username;
+    showToast('Disimpan'); renderPage();
+  };
+  if (document.getElementById('saveSosmedBtn')) {
+    document.getElementById('saveSosmedBtn').onclick = async () => {
+      const newSosmed = {
+        saweria: document.getElementById('sm_saweria').value.trim(),
+        trakteer: document.getElementById('sm_trakteer').value.trim(),
+        facebook: document.getElementById('sm_facebook').value.trim(),
+        tiktok: document.getElementById('sm_tiktok').value.trim(),
+        instagram: document.getElementById('sm_instagram').value.trim(),
+        threads: document.getElementById('sm_threads').value.trim(),
+        twitter: document.getElementById('sm_twitter').value.trim(),
+        youtube: document.getElementById('sm_youtube').value.trim(),
+        website: document.getElementById('sm_website').value.trim()
+      };
+      await updateDoc(doc(db, 'users', currentUser.uid), { sosmed: newSosmed, updatedAt: serverTimestamp() });
+      userProfile.sosmed = newSosmed;
+      showToast('Link sosmed disimpan!'); renderPage();
+    };
+  }
+  document.getElementById('linkGoogle')?.addEventListener('click', signInWithGoogle);
+  document.getElementById('logoutBtn').onclick = logout;
+}
+
+// ==================== CREATOR (1-5 foto + drag + sosmed) ====================
+async function renderCreatorDashboard(container) {
+  container.innerHTML = `
+    <div class="flex justify-between items-center mb-6 flex-wrap gap-2">
+      <h2 class="text-xl md:text-2xl font-bold"><i class="fas fa-pen-fancy text-blue-400 mr-2"></i>Creator</h2>
+      <div class="flex gap-2 flex-wrap items-center">
+        ${hasRole(userProfile,'penulis') ? '<span class="penulis-tag text-xs px-3 py-1">PENULIS</span>' : ''}
+        ${hasRole(userProfile,'komikus') ? '<span class="komikus-tag text-xs px-3 py-1">KOMIKUS</span>' : ''}
+        <button id="openGuideBtn" class="bg-blue-600 text-white text-xs font-bold px-3 py-2 rounded-full hover:scale-105 transition"><i class="fas fa-question-circle mr-1"></i>Panduan</button>
+      </div>
+    </div>
+    <div class="flex flex-wrap gap-2 mb-6">
+      <button id="creatorTabUpload" class="px-4 py-2 rounded-full bg-amber-500 text-black font-bold text-sm hover:scale-105 transition">Buat Baru</button>
+      <button id="creatorTabManage" class="px-4 py-2 rounded-full bg-slate-800 text-slate-300 text-sm hover:bg-slate-700 transition">Kelola</button>
+    </div>
+    <div id="creatorContent"></div>`;
+  document.getElementById('openGuideBtn').onclick = showUploadGuide;
+  const cC = document.getElementById('creatorContent');
+  async function loadUploadForm() {
+    const canN = hasRole(userProfile,'penulis') || isAdminSession;
+    const canK = hasRole(userProfile,'komikus') || isAdminSession;
+    let opts = ''; if (canN) opts += '<option value="novel">Novel</option>'; if (canK) opts += '<option value="komik">Komik</option>';
+    if (!opts) opts = '<option value="novel">Novel</option>';
+    cC.innerHTML = `<div class="card-bg rounded-2xl p-6 max-w-2xl mx-auto card-anim">
+      <h3 class="font-bold text-lg mb-4">Buat Karya</h3>
+      <div class="space-y-4">
+        <div><label class="block text-sm font-semibold mb-1">Judul <span class="text-red-400">*</span></label><input id="uploadTitle" type="text" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm focus:border-amber-500 transition"></div>
+        <div><label class="block text-sm font-semibold mb-1">Teaser <span class="text-red-400">*</span> <span class="text-xs text-slate-500">(maks 150)</span></label><input id="uploadTeaser" type="text" maxlength="150" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm focus:border-amber-500 transition"><p class="text-xs text-slate-500 mt-1"><span id="teaserCount">0</span>/150</p></div>
+        <div><label class="block text-sm font-semibold mb-1">Tipe <span class="text-red-400">*</span></label><select id="uploadType" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm">${opts}</select></div>
+        ${categoryChipsField('uploadCategories')}
+        <div><label class="block text-sm font-semibold mb-1">Deskripsi</label><textarea id="uploadDesc" rows="3" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm"></textarea></div>
+        ${coverField('uploadCover')}
+        <button id="uploadSubmit" class="w-full bg-amber-500 text-black font-bold py-3 rounded-full btn-glow">Buat</button>
+      </div></div>`;
+    document.getElementById('uploadTeaser').oninput = e => document.getElementById('teaserCount').textContent = e.target.value.length;
+    attachCoverHandler('uploadCover');
+    document.getElementById('uploadSubmit').onclick = async () => {
+      const title = document.getElementById('uploadTitle').value.trim();
+      const teaser = document.getElementById('uploadTeaser').value.trim();
+      const type = document.getElementById('uploadType').value;
+      const cats = getSelectedCats('uploadCategories');
+      const category = cats.join(', ');
+      const desc = document.getElementById('uploadDesc').value.trim();
+      const coverURL = getCoverValue('uploadCover');
+      if (!title || !teaser || cats.length === 0 || !coverURL) { showToast('Lengkapi field *'); return; }
+      if (teaser.length > 150) { showToast('Teaser max 150'); return; }
+      const btn = document.getElementById('uploadSubmit');
+      btn.disabled = true; btn.innerHTML = '<span class="uploading-spinner"></span>Menyimpan...';
+      try {
+        await addDoc(collection(db,'works'), { 
+          title, teaser, type, category, description: desc, coverURL, 
+          authorId: currentUser.uid, 
+          authorName: userProfile.username || 'Kreator', 
+          authorPhotoURL: userProfile.photoURL || '', 
+          authorSosmed: userProfile.sosmed || {},
+          authorLevel: userProfile.level || 1, 
+          avgRating: 0, ratingCount: 0, isTamat: false, 
+          createdAt: serverTimestamp(), updatedAt: serverTimestamp() 
+        });
+        showToast('Karya dibuat!'); loadManage();
+      } catch (e) { showToast('Gagal: ' + e.message); }
+      finally { btn.disabled = false; btn.innerHTML = 'Buat'; }
+    };
+  }
+  async function loadManage() {
+    cC.innerHTML = `<div class="card-bg rounded-2xl p-6 card-anim"><h3 class="font-bold mb-4">Karya Saya</h3><div id="mW" class="space-y-4">Memuat...</div></div>`;
+    const snap = await getDocs(query(collection(db,'works'), where('authorId','==',currentUser.uid)));
+    const works = []; snap.forEach(d => works.push({ id: d.id, ...d.data() }));
+    const list = document.getElementById('mW');
+    if (works.length === 0) { list.innerHTML = '<p class="text-slate-400">Belum ada.</p>'; return; }
+    const withCh = await Promise.all(works.map(async w => {
+      const cs = await getDocs(query(collection(db,'works',w.id,'chapters'), orderBy('number','asc')));
+      const chapters = []; cs.forEach(d => chapters.push({ id: d.id, ...d.data() }));
+      return { ...w, chapters };
+    }));
+    list.innerHTML = withCh.map(w => {
+      const sid = safeId(w.id);
+      const lbl = w.type === 'novel' ? 'Chapter' : 'Eps';
+      return `<div class="comment-card rounded-xl p-4 card-anim ${w.isTamat ? 'tamat-border' : 'berlanjut-border'}">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-14 h-20 bg-slate-800 rounded-lg overflow-hidden relative">${w.coverURL ? `<img src="${w.coverURL}" class="w-full h-full object-cover">` : ''}${statusLabel(w.isTamat)}</div>
+          <div class="flex-1 min-w-0"><h4 class="font-bold truncate">${w.title}</h4><p class="text-xs text-slate-400">${w.chapters.length} ${lbl}</p></div>
+        </div>
+        <div class="flex flex-wrap gap-2 mb-3">
+          <button class="addC bg-amber-500 text-black px-4 py-2 rounded-lg text-xs font-bold flex-1 hover:scale-105 transition" data-wid="${w.id}" data-type="${w.type}">+ ${lbl}</button>
+          <button class="tamatB ${w.isTamat ? 'bg-yellow-600' : 'bg-red-600'} text-white px-4 py-2 rounded-lg text-xs font-bold hover:scale-105 transition" data-wid="${w.id}" data-t="${w.isTamat ? 'true' : 'false'}">${w.isTamat ? 'Batal' : 'Tamatkan'}</button>
+          <button class="delW bg-red-800 text-white px-4 py-2 rounded-lg text-xs font-bold hover:scale-105 transition" data-wid="${w.id}" data-title="${w.title}"><i class="fas fa-trash"></i></button>
+        </div>
+        <div class="border-t border-slate-700 pt-3 max-h-40 overflow-y-auto scrollbar-thin space-y-1">
+          ${w.chapters.map(ch => `
+            <div class="flex items-center justify-between bg-slate-800/50 rounded px-2 py-1.5 text-xs gap-2">
+              <span class="truncate flex-1"><span class="text-amber-400 font-bold">${lbl} ${ch.number}</span>${ch.title ? ': ' + ch.title : ''}</span>
+              ${w.type === 'komik' && ch.images ? `<span class="text-slate-500">${ch.images.length}🖼️</span>` : ''}
+              <button class="editChapterBtn text-blue-400 hover:text-blue-300 px-1" data-wid="${w.id}" data-cid="${ch.id}" data-type="${w.type}" title="Edit"><i class="fas fa-edit"></i></button>
+              <button class="delC text-red-400 hover:text-red-300 px-1" data-wid="${w.id}" data-cid="${ch.id}" data-num="${ch.number}"><i class="fas fa-trash"></i></button>
+            </div>
+          `).join('')}
+        </div>
+        <div id="f-${sid}" class="hidden border-t border-slate-700 pt-4 space-y-3 mt-3">
+          <input type="text" id="ct-${sid}" placeholder="${w.type === 'novel' ? 'Judul Chapter *' : 'Judul Eps (opsional)'}" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm">
+          ${w.type === 'novel' ? `<textarea id="cc-${sid}" rows="10" placeholder="Isi cerita *" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm"></textarea>` : `${multiImageField('mi-' + sid)}`}
+          <div class="flex gap-2"><button class="subC bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-bold flex-1 hover:scale-105 transition" data-wid="${w.id}" data-type="${w.type}" data-sid="${sid}">Simpan</button><button class="canC bg-slate-700 text-slate-300 px-4 py-2 rounded-lg text-sm font-bold" data-sid="${sid}">Batal</button></div>
+        </div>
+      </div>`;
+    }).join('');
+    
+    withCh.forEach(w => {
+      if (w.type === 'komik') attachMultiImageHandlers('mi-' + safeId(w.id));
+    });
+    
+    list.querySelectorAll('.addC').forEach(b => b.onclick = () => document.getElementById('f-' + safeId(b.dataset.wid)).classList.toggle('hidden'));
+    list.querySelectorAll('.canC').forEach(b => b.onclick = () => document.getElementById('f-' + b.dataset.sid).classList.add('hidden'));
+    list.querySelectorAll('.tamatB').forEach(b => b.onclick = async () => { const n = b.dataset.t === 'true'; if (!confirm(n ? 'Batal?' : 'Tamatkan?')) return; await updateDoc(doc(db,'works',b.dataset.wid), { isTamat: !n, updatedAt: serverTimestamp() }); loadManage(); });
+    list.querySelectorAll('.delW').forEach(b => b.onclick = async () => {
+      if (!confirm(`Hapus "${b.dataset.title}"?`)) return;
+      const wid = b.dataset.wid;
+      const cs = await getDocs(collection(db,'works',wid,'chapters'));
+      for (const ch of cs.docs) {
+        const coms = await getDocs(collection(db,'works',wid,'chapters',ch.id,'comments'));
+        for (const cm of coms.docs) await deleteDoc(doc(db,'works',wid,'chapters',ch.id,'comments',cm.id));
+        const rs = await getDocs(collection(db,'works',wid,'chapters',ch.id,'ratings'));
+        for (const r of rs.docs) await deleteDoc(doc(db,'works',wid,'chapters',ch.id,'ratings',r.id));
+        await deleteDoc(doc(db,'works',wid,'chapters',ch.id));
+      }
+      await deleteDoc(doc(db,'works',wid));
+      showToast('Dihapus'); loadManage();
+    });
+    list.querySelectorAll('.delC').forEach(b => b.onclick = async () => {
+      if (!confirm(`Hapus ${b.dataset.num}?`)) return;
+      const wid = b.dataset.wid, cid = b.dataset.cid;
+      const coms = await getDocs(collection(db,'works',wid,'chapters',cid,'comments'));
+      for (const cm of coms.docs) await deleteDoc(doc(db,'works',wid,'chapters',cid,'comments',cm.id));
+      const rs = await getDocs(collection(db,'works',wid,'chapters',cid,'ratings'));
+      for (const r of rs.docs) await deleteDoc(doc(db,'works',wid,'chapters',cid,'ratings',r.id));
+      await deleteDoc(doc(db,'works',wid,'chapters',cid));
+      loadManage();
+    });
+    // EDIT CHAPTER
+    list.querySelectorAll('.editChapterBtn').forEach(b => b.onclick = async () => {
+      const wid = b.dataset.wid, cid = b.dataset.cid, type = b.dataset.type;
+      const chSnap = await getDoc(doc(db, 'works', wid, 'chapters', cid));
+      if (!chSnap.exists()) return;
+      const ch = chSnap.data();
+      const modal = document.getElementById('modalContainer');
+      const content = document.getElementById('modalContent');
+      content.innerHTML = `
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-2xl font-black text-amber-400"><i class="fas fa-edit mr-2"></i>Edit ${type === 'novel' ? 'Chapter' : 'Eps'} ${ch.number}</h2>
+          <button id="closeEditCh" class="text-slate-400 text-2xl hover:rotate-90 transition-transform">&times;</button>
+        </div>
+        <div class="space-y-3">
+          <div>
+            <label class="block text-sm font-semibold mb-1">Judul ${type === 'novel' ? 'Chapter' : 'Eps'}</label>
+            <input id="editChTitle" type="text" value="${ch.title || ''}" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm">
+          </div>
+          ${type === 'novel' ? `
+            <div>
+              <label class="block text-sm font-semibold mb-1">Isi Cerita *</label>
+              <textarea id="editChContent" rows="10" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm">${ch.content || ''}</textarea>
+            </div>
+          ` : `
+            <div>
+              <label class="block text-sm font-semibold mb-1">Gambar Saat Ini (${(ch.images || []).length})</label>
+              <div class="flex flex-wrap gap-2 max-h-48 overflow-y-auto scrollbar-thin bg-slate-900/50 border border-slate-700 rounded-lg p-2">
+                ${(ch.images || []).map((img, i) => `
+                  <div class="img-preview-wrap">
+                    <img src="${img}" class="img-preview" onerror="this.src='https://placehold.co/80x80/1a1a2e/64748b?text=Err'">
+                    <span class="order-num">#${i+1}</span>
+                    <span class="remove-btn" onclick="removeImageFromChapter('${wid}','${cid}',${i})">×</span>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-semibold mb-1">Tambah Gambar Baru (1-5)</label>
+              ${multiImageField('editAdd-' + cid)}
+            </div>
+          `}
+          <div class="flex gap-2">
+            <button id="saveEditCh" class="flex-1 bg-amber-500 text-black font-bold py-2 rounded-full hover:scale-105 transition">Simpan</button>
+            <button id="cancelEditCh" class="bg-slate-700 text-slate-300 px-4 py-2 rounded-full font-bold">Batal</button>
+          </div>
+        </div>`;
+      modal.classList.remove('hidden');
+      if (type === 'komik') attachMultiImageHandlers('editAdd-' + cid);
+      const close = () => modal.classList.add('hidden');
+      document.getElementById('closeEditCh').onclick = close;
+      document.getElementById('cancelEditCh').onclick = close;
+      document.getElementById('saveEditCh').onclick = async () => {
+        const newTitle = document.getElementById('editChTitle').value.trim();
+        if (type === 'novel') {
+          const newContent = document.getElementById('editChContent').value.trim();
+          if (!newTitle) { showToast('Judul wajib!'); return; }
+          if (!newContent) { showToast('Isi wajib!'); return; }
+          await updateDoc(doc(db, 'works', wid, 'chapters', cid), { title: newTitle, content: newContent, updatedAt: serverTimestamp() });
+        } else {
+          const newImages = getMultiImages('editAdd-' + cid);
+          const finalImages = [...(ch.images || []), ...newImages];
+          await updateDoc(doc(db, 'works', wid, 'chapters', cid), { 
+            title: newTitle, 
+            images: finalImages,
+            coverImage: finalImages[0] || '',
+            updatedAt: serverTimestamp() 
+          });
+          if (finalImages.length > 0) {
+            const workRef = doc(db, 'works', wid);
+            const workSnap = await getDoc(workRef);
+            if (workSnap.exists()) {
+              const w = workSnap.data();
+              if (!w.coverURL || w.coverURL === '') {
+                await updateDoc(workRef, { coverURL: finalImages[0] });
+              }
+            }
+          }
+        }
+        showToast('Tersimpan!');
+        close();
+        loadManage();
+      };
+    });
+    // SUBMIT CHAPTER
+    list.querySelectorAll('.subC').forEach(b => b.onclick = async () => {
+      const wid = b.dataset.wid, sid = b.dataset.sid, type = b.dataset.type;
+      const t = document.getElementById('ct-' + sid).value.trim();
+      const cs = await getDocs(collection(db,'works',wid,'chapters'));
+      const next = cs.size + 1;
+      if (type === 'novel') {
+        const c = document.getElementById('cc-' + sid).value.trim();
+        if (!t) { showToast('Judul wajib'); return; }
+        if (!c) { showToast('Isi wajib'); return; }
+        await addDoc(collection(db,'works',wid,'chapters'), { number: next, title: t, content: c, images: [], createdAt: serverTimestamp() });
+      } else {
+        const images = getMultiImages('mi-' + sid);
+        if (images.length === 0) { showToast('Pilih minimal 1 gambar'); return; }
+        if (images.length > 5) { showToast('Maksimal 5 foto'); return; }
+        await addDoc(collection(db,'works',wid,'chapters'), { number: next, title: t, content: '', images: images, coverImage: images[0], createdAt: serverTimestamp() });
+        const workRef = doc(db, 'works', wid);
+        const workSnap = await getDoc(workRef);
+        if (workSnap.exists()) {
+          const w = workSnap.data();
+          if (!w.coverURL || w.coverURL === '') {
+            await updateDoc(workRef, { coverURL: images[0] });
+          }
+        }
+      }
+      showToast('Ditambahkan'); loadManage();
+    });
+  }
+  document.getElementById('creatorTabUpload').onclick = loadUploadForm;
+  document.getElementById('creatorTabManage').onclick = loadManage;
+  loadManage();
+}
+
+window.removeImageFromChapter = async (wid, cid, index) => {
+  if (!confirm('Hapus gambar ini?')) return;
+  const chSnap = await getDoc(doc(db, 'works', wid, 'chapters', cid));
+  if (!chSnap.exists()) return;
+  const ch = chSnap.data();
+  const newImages = [...(ch.images || [])];
+  newImages.splice(index, 1);
+  await updateDoc(doc(db, 'works', wid, 'chapters', cid), { images: newImages, updatedAt: serverTimestamp() });
+  showToast('Gambar dihapus');
+  const b = document.querySelector(`.editChapterBtn[data-cid="${cid}"]`);
+  if (b) b.click();
+};
+
+async function renderAdminPanel(container) {
+  container.innerHTML = `<div class="flex justify-between items-center mb-4 flex-wrap gap-2">
+    <h2 class="text-xl md:text-2xl font-bold"><i class="fas fa-crown text-amber-400 mr-2"></i>Admin</h2>
+    <button id="adminLogoutBtn" class="bg-red-900/50 text-red-300 font-bold py-2 px-4 rounded-full text-xs hover:bg-red-800 transition">Logout</button>
+  </div>
+  <div class="flex flex-wrap gap-2 mb-6">
+    <button id="adminTabUsers" class="px-4 py-2 rounded-full bg-amber-500 text-black font-bold text-sm hover:scale-105 transition">User</button>
+    <button id="adminTabUpload" class="px-4 py-2 rounded-full bg-slate-800 text-slate-300 text-sm hover:bg-slate-700 transition">Upload</button>
+    <button id="adminTabKritik" class="px-4 py-2 rounded-full bg-slate-800 text-slate-300 text-sm hover:bg-slate-700 transition">Kritik</button>
+    <button id="adminTabSettings" class="px-4 py-2 rounded-full bg-slate-800 text-slate-300 text-sm hover:bg-slate-700 transition">Setting</button>
+  </div>
+  <div id="adminContent"></div>`;
+  document.getElementById('adminLogoutBtn').onclick = adminLogout;
+  const aC = document.getElementById('adminContent');
+  async function loadUsers() {
+    const snap = await getDocs(collection(db,'users'));
+    const users = []; snap.forEach(d => users.push({ id: d.id, ...d.data() }));
+    aC.innerHTML = `<input id="adminSearchUser" type="text" placeholder="Cari..." class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm mb-4 card-anim">
+      <div class="space-y-3 max-h-[60vh] overflow-y-auto scrollbar-thin">
+        ${users.map(u => {
+          const roles = u.roles || [u.role || 'pembaca'];
+          return `<div class="card-bg rounded-xl p-3 user-row card-anim" data-username="${(u.username || '').toLowerCase()}">
+            <div class="flex items-center gap-2 mb-2">
+              <img src="${u.photoURL || 'https://ui-avatars.com/api/?name='+encodeURIComponent(u.username || 'U')}" class="w-10 h-10 rounded-full">
+              <div class="flex-1"><p class="font-semibold text-sm">${u.username || 'User'}</p><p class="text-xs text-slate-400">${u.email || 'Guest'} • Lv.${u.level || 1}</p></div>
+              <button class="ban-btn ${u.banned ? 'bg-green-600' : 'bg-red-600'} text-white px-3 py-1 rounded-lg text-xs font-bold hover:scale-105 transition" data-uid="${u.id}" data-banned="${u.banned || false}">${u.banned ? 'Unban' : 'Ban'}</button>
+            </div>
+            <div class="flex flex-wrap gap-3 pl-12">
+              <label class="flex items-center gap-2 text-xs"><input type="checkbox" class="role-checkbox role-toggle" data-uid="${u.id}" data-role="pembaca" ${roles.includes('pembaca') ? 'checked' : ''}><span>Pembaca</span></label>
+              <label class="flex items-center gap-2 text-xs"><input type="checkbox" class="role-checkbox role-toggle" data-uid="${u.id}" data-role="penulis" ${roles.includes('penulis') ? 'checked' : ''}><span class="text-blue-400">Penulis</span></label>
+              <label class="flex items-center gap-2 text-xs"><input type="checkbox" class="role-checkbox role-toggle" data-uid="${u.id}" data-role="komikus" ${roles.includes('komikus') ? 'checked' : ''}><span class="text-purple-400">Komikus</span></label>
+              <label class="flex items-center gap-2 text-xs"><input type="checkbox" class="role-checkbox role-toggle" data-uid="${u.id}" data-role="admin" ${roles.includes('admin') ? 'checked' : ''}><span class="text-amber-400">Admin</span></label>
+            </div>
+          </div>`;
+        }).join('')}
+      </div>`;
+    aC.querySelectorAll('.role-toggle').forEach(cb => cb.onchange = async () => {
+      const ref = doc(db,'users',cb.dataset.uid);
+      const s = await getDoc(ref);
+      let roles = s.data().roles || ['pembaca'];
+      if (cb.checked) { if (!roles.includes(cb.dataset.role)) roles.push(cb.dataset.role); }
+      else { roles = roles.filter(r => r !== cb.dataset.role); if (roles.length === 0) roles = ['pembaca']; }
+      const prio = ['admin','penulis','komikus','pembaca']; let primary = 'pembaca';
+      for (const p of prio) if (roles.includes(p)) { primary = p; break; }
+      const upd = { roles, role: primary };
+      if (roles.includes('admin')) { upd.level = MAX_LEVEL; upd.exp = MAX_LEVEL * 20; }
+      await updateDoc(ref, upd); showToast('Diperbarui');
+    });
+    aC.querySelectorAll('.ban-btn').forEach(b => b.onclick = async () => {
+      const now = b.dataset.banned === 'true';
+      await updateDoc(doc(db,'users',b.dataset.uid), { banned: !now });
+      loadUsers();
+    });
+    document.getElementById('adminSearchUser').oninput = e => {
+      const v = e.target.value.toLowerCase();
+      aC.querySelectorAll('.user-row').forEach(r => r.style.display = r.dataset.username.includes(v) ? 'block' : 'none');
+    };
+  }
+  async function loadUploadForm() {
+    aC.innerHTML = `<div class="card-bg rounded-2xl p-6 max-w-2xl mx-auto card-anim"><h3 class="font-bold mb-4">Upload (Admin)</h3>
+      <div class="space-y-4">
+        <input id="adminUploadTitle" type="text" placeholder="Judul *" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm">
+        <input id="adminUploadTeaser" type="text" maxlength="150" placeholder="Teaser * (max 150)" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm">
+        <select id="adminUploadType" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm"><option value="novel">Novel</option><option value="komik">Komik</option></select>
+        ${categoryChipsField('adminUploadCategories')}
+        <textarea id="adminUploadDesc" rows="3" placeholder="Deskripsi" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm"></textarea>
+        ${coverField('adminUploadCover')}
+        <button id="adminUploadSubmit" class="w-full bg-amber-500 text-black font-bold py-3 rounded-full hover:scale-105 transition">Upload</button>
+      </div></div>`;
+    attachCoverHandler('adminUploadCover');
+    document.getElementById('adminUploadSubmit').onclick = async () => {
+      const title = document.getElementById('adminUploadTitle').value.trim();
+      const teaser = document.getElementById('adminUploadTeaser').value.trim();
+      const type = document.getElementById('adminUploadType').value;
+      const cats = getSelectedCats('adminUploadCategories');
+      const category = cats.join(', ');
+      const desc = document.getElementById('adminUploadDesc').value.trim();
+      const coverURL = getCoverValue('adminUploadCover');
+      if (!title || !teaser || cats.length === 0 || !coverURL) { showToast('Lengkapi'); return; }
+      await addDoc(collection(db,'works'), { 
+        title, teaser, type, category, description: desc, coverURL, 
+        authorId: currentUser?.uid || 'admin', 
+        authorName: userProfile?.username || 'Admin', 
+        authorPhotoURL: userProfile?.photoURL || '', 
+        authorSosmed: userProfile?.sosmed || {},
+        authorLevel: MAX_LEVEL, 
+        avgRating: 0, ratingCount: 0, isTamat: false, 
+        createdAt: serverTimestamp(), updatedAt: serverTimestamp() 
+      });
+      showToast('Dibuat'); window.location.hash = 'creator';
+    };
+  }
+  async function loadKritik() {
+    aC.innerHTML = `<div class="card-bg rounded-2xl p-6 card-anim"><h3 class="font-bold mb-4">Kritik</h3><div id="kL"></div></div>`;
+    const snap = await getDocs(query(collection(db,'kritik_saran'), orderBy('createdAt','desc'), limit(50)));
+    const arr = []; snap.forEach(d => arr.push({ id: d.id, ...d.data() }));
+    const l = document.getElementById('kL');
+    if (arr.length === 0) { l.innerHTML = '<p class="text-slate-400">Belum ada.</p>'; return; }
+    l.innerHTML = arr.map(k => `<div class="comment-card rounded-xl p-3 mb-2 card-anim"><div class="flex gap-2 text-xs mb-1"><span class="text-amber-400 font-semibold">${k.nama}</span><span class="bg-slate-700 px-2 py-0.5 rounded-full">${k.jenis}</span><span class="ml-auto text-slate-500">${fmtDate(k.createdAt)}</span></div><p class="text-sm whitespace-pre-wrap">${k.pesan}</p></div>`).join('');
+  }
+  async function loadSet() {
+    aC.innerHTML = `<div class="card-bg rounded-2xl p-6 max-w-lg mx-auto card-anim"><h3 class="font-bold mb-4">Setting</h3>
+      <label class="block text-sm font-semibold mb-1">Nomor WA Admin</label>
+      <input id="adminWANumber" type="text" value="${localStorage.getItem('adminWA') || WA_NUMBER}" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm">
+      <button id="saveSettings" class="mt-4 w-full bg-amber-500 text-black font-bold py-2 rounded-full hover:scale-105 transition">Simpan</button></div>`;
+    document.getElementById('saveSettings').onclick = () => {
+      localStorage.setItem('adminWA', document.getElementById('adminWANumber').value.trim());
+      showToast('Disimpan');
+    };
+  }
+  document.getElementById('adminTabUsers').onclick = loadUsers;
+  document.getElementById('adminTabUpload').onclick = loadUploadForm;
+  document.getElementById('adminTabKritik').onclick = loadKritik;
+  document.getElementById('adminTabSettings').onclick = loadSet;
+  loadUsers();
+}
+
+function handleAuthClick() {
+  if (currentUser) logout();
+  else {
+    const m = document.getElementById('modalContainer');
+    const c = document.getElementById('modalContent');
+    c.innerHTML = `<div class="text-center mb-4"><img src="${LOGO_URL}" class="w-20 h-20 mx-auto rounded-2xl mb-3 border-2 border-amber-500 logo-glow"><h3 class="text-xl font-bold">Masuk</h3></div>
+      <div class="flex flex-col gap-3">
+        <button id="mg" class="bg-white text-black font-bold py-3 rounded-full hover:scale-105 transition"><i class="fab fa-google mr-2"></i>Google</button>
+        <button id="mgu" class="bg-slate-700 text-slate-300 font-bold py-2 rounded-full text-xs">Guest</button>
+      </div>`;
+    m.classList.remove('hidden');
+    document.getElementById('mg').onclick = () => { signInWithGoogle(); m.classList.add('hidden'); };
+    document.getElementById('mgu').onclick = () => { signInAsGuest(); m.classList.add('hidden'); };
+  }
+}
+document.getElementById('navAuth').onclick = handleAuthClick;
+document.getElementById('navAuthMobile').onclick = handleAuthClick;
+document.getElementById('modalContainer').onclick = e => { if (e.target.id === 'modalContainer') e.target.classList.add('hidden'); };
+window.addEventListener('hashchange', renderPage);
+
+(async function init() {
+  await initAuth();
+  if (localStorage.getItem('adminSession') === 'true') {
+    isAdminSession = true;
+    adminEmail = localStorage.getItem('adminEmail');
+    document.getElementById('navAdmin').classList.remove('hidden');
+  }
+  if (!window.location.hash) window.location.hash = 'home';
+  renderPage();
+})();
+</script>
+</body>
+</html>
