@@ -48,6 +48,7 @@ body{font-family:'Inter',sans-serif;background:#0f0f1a;color:#e2e8f0;overflow-x:
 .clan-admin-tag{background:linear-gradient(135deg,#8b5cf6,#6d28d9);color:white;font-size:10px;font-weight:900;padding:2px 6px;border-radius:4px;box-shadow:0 0 8px rgba(139,92,246,.5);display:inline-block}
 .tamat-tag{background:linear-gradient(90deg,#ef4444,#f87171,#ef4444);background-size:200% 100%;color:white;font-size:10px;font-weight:900;padding:2px 8px;border-radius:4px;letter-spacing:.5px;animation:tagShine 3s infinite}
 .berlanjut-tag{background:linear-gradient(90deg,#10b981,#34d399,#10b981);background-size:200% 100%;color:white;font-size:10px;font-weight:900;padding:2px 8px;border-radius:4px;letter-spacing:.5px;animation:tagShine 3s infinite;box-shadow:0 0 8px rgba(16,185,129,.5)}
+.takedown-tag{background:linear-gradient(90deg,#7f1d1d,#ef4444,#7f1d1d);background-size:200% 100%;color:white;font-size:10px;font-weight:900;padding:2px 8px;border-radius:4px;letter-spacing:.5px;animation:tagShine 3s infinite;box-shadow:0 0 8px rgba(239,68,68,.7)}
 @keyframes tagShine{0%{background-position:-100% 0}100%{background-position:200% 0}}
 .star-rating{color:#fbbf24;cursor:pointer;transition:transform .15s}
 .star-rating:hover{transform:scale(1.25) rotate(8deg)}
@@ -61,6 +62,7 @@ body{font-family:'Inter',sans-serif;background:#0f0f1a;color:#e2e8f0;overflow-x:
 .chat-edit-input{background:#0f0f1a;border:1px solid #fbbf24;border-radius:8px;padding:4px 8px;font-size:14px;color:#e2e8f0;width:100%}
 .tamat-border{border:2px solid #ef4444;box-shadow:0 0 10px rgba(239,68,68,.4)}
 .berlanjut-border{border:2px solid #10b981;box-shadow:0 0 10px rgba(16,185,129,.3)}
+.takedown-border{border:2px solid #7f1d1d;box-shadow:0 0 10px rgba(127,29,29,.6);background:linear-gradient(135deg,#1a0a0a,#1a1a2e)}
 .uploading-spinner{display:inline-block;width:14px;height:14px;border:2px solid #fbbf24;border-top-color:transparent;border-radius:50%;animation:spin .8s linear infinite;margin-right:6px}
 @keyframes spin{to{transform:rotate(360deg)}}
 .guide-step{background:#12121f;border-left:3px solid #fbbf24;padding:12px 16px;border-radius:8px;margin-bottom:10px}
@@ -200,6 +202,11 @@ body{font-family:'Inter',sans-serif;background:#0f0f1a;color:#e2e8f0;overflow-x:
 .guide-content ul li::before{content:'▸';position:absolute;left:8px;color:#fbbf24;font-weight:900}
 .guide-content .tip{background:rgba(16,185,129,.1);border-left:3px solid #10b981;padding:8px 12px;border-radius:8px;font-size:12px;color:#a7f3d0;margin:8px 0}
 .guide-content .warning{background:rgba(239,68,68,.1);border-left:3px solid #ef4444;padding:8px 12px;border-radius:8px;font-size:12px;color:#fecaca;margin:8px 0}
+.warning-hard{background:linear-gradient(135deg,rgba(127,29,29,.4),rgba(239,68,68,.2));border:2px solid #ef4444;border-radius:12px;padding:16px;margin:12px 0;box-shadow:0 0 20px rgba(239,68,68,.3)}
+.warning-hard h4{color:#ef4444;font-size:15px;font-weight:900;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.warning-hard ul{list-style:none;padding-left:0}
+.warning-hard li{font-size:12px;color:#fecaca;padding:4px 0 4px 20px;position:relative}
+.warning-hard li::before{content:'❌';position:absolute;left:0;font-size:10px}
 </style>
 </head>
 <body class="min-h-screen">
@@ -287,7 +294,6 @@ const VERIFIED_GREEN = 1000;
 const VERIFIED_BLUE = 100000;
 const FOLLOWER_INTERVAL = 60 * 60 * 1000;
 const OWNER_FOLLOWER_RATE = 100000;
-const OWNER_UID = '';
 
 const ALL_CATEGORIES = ['Action','Adventure','Romance','Fantasy','Slice of Life','Horror','Comedy','Mystery','Sci-Fi','Thriller','Drama','Supernatural','Historical','Isekai','Martial Arts','Sports','Music','School Life','Psychological','Tragedy','Mecha','Military','Cooking','Medical','Reincarnation','Vampire','Detective','Cyberpunk','Post-Apocalyptic','Magic'];
 const KATA_KASAR = ['anjing','bangsat','kontol','memek','ngentot','peler','kampang','bajingan','asu','jancok','pepek','titit','bokep','silit','ngewe','colmek','masturbasi'];
@@ -306,6 +312,13 @@ function showToast(msg, dur = 3000) {
   t.textContent = msg; t.classList.remove('hidden');
   setTimeout(() => t.classList.add('hidden'), dur);
 }
+// Tampilkan error nyata (izin Firestore, upload gagal, dll.) supaya tidak gagal diam-diam
+window.addEventListener('unhandledrejection', (e) => {
+  const r = e.reason; const msg = (r && (r.message || r.code)) || String(r);
+  console.error('Unhandled:', r);
+  showToast('⚠️ Error: ' + String(msg).slice(0, 160), 8000);
+});
+window.addEventListener('error', (e) => { if (e && e.message && !/ResizeObserver/.test(e.message)) console.error('Error:', e.message); });
 function getLevelTitle(l) { for (const t of LEVEL_TITLES) if (l >= t.min && l <= t.max) return t.title; return 'Dewa Mitos'; }
 function getClanLevelTitle(l) { for (const t of CLAN_LEVEL_TITLES) if (l >= t.min && l <= t.max) return t.title; return 'Legendaris'; }
 function isGolden(l) { return l > 1000; }
@@ -318,6 +331,35 @@ function isCreator(p) { return hasRole(p,'penulis') || hasRole(p,'komikus'); }
 function isAdminUser(p) { return hasRole(p,'admin') || hasRole(p,'owner') || isAdminSession; }
 function isOwnerUser(p) { return hasRole(p,'owner'); }
 function safeId(s) { return String(s).replace(/[^a-zA-Z0-9_-]/g,''); }
+function escHtml(s) { return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+// ===== FITUR CHAPTER (pengelompokan Eps) =====
+// Ubah label di sini kalau mau: komik -> "Chapter" berisi banyak "Eps"; novel -> "Volume" berisi banyak "Chapter".
+const GROUP_LABELS = { komik: 'Chapter', novel: 'Volume' };
+function groupLabel(type) { return GROUP_LABELS[type] || 'Chapter'; }
+function getGroups(work) {
+  const g = Array.isArray(work && work.chapterGroups) ? work.chapterGroups : [];
+  return g.slice().sort((a, b) => (Number(a.number) || 0) - (Number(b.number) || 0));
+}
+function newGroupId() { return 'g' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
+function groupTitleText(g, type) { return `${groupLabel(type)} ${g.number}${g.title ? ': ' + g.title : ''}`; }
+// Kelompokkan daftar eps menurut chapter. Eps tanpa chapter masuk "Tanpa Chapter" (hanya tampil jika ada chapter).
+function groupChapters(chapters, work) {
+  const groups = getGroups(work);
+  if (!groups.length) return [{ group: null, loose: false, items: chapters }];
+  const byId = {}; groups.forEach(g => byId[g.id] = []);
+  const loose = [];
+  chapters.forEach(c => { if (c.groupId && byId[c.groupId]) byId[c.groupId].push(c); else loose.push(c); });
+  const out = groups.map(g => ({ group: g, loose: false, items: byId[g.id] }));
+  if (loose.length) out.push({ group: null, loose: true, items: loose });
+  return out;
+}
+function groupSelectHtml(id, groups, selected, type) {
+  return `<select id="${id}" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm">
+    <option value="">— Tanpa ${groupLabel(type)} —</option>
+    ${groups.map(g => `<option value="${g.id}" ${g.id === selected ? 'selected' : ''}>${escHtml(groupTitleText(g, type))}</option>`).join('')}
+  </select>`;
+}
 function parseImgbbUrls(t) { return t.split('\n').map(u => u.trim()).filter(u => u.startsWith('http')); }
 function parseCategories(c) { if (!c) return []; if (Array.isArray(c)) return c; return String(c).split(',').map(x => x.trim()).filter(x => x); }
 function getHash() { return window.location.hash.replace('#','') || 'home'; }
@@ -334,6 +376,10 @@ function getVerifiedBadge(followers) {
   if (followers >= VERIFIED_BLUE) return '<span class="verified-badge blue" title="Verified 100K+"><i class="fas fa-check"></i></span>';
   if (followers >= VERIFIED_GREEN) return '<span class="verified-badge green" title="Verified 1K+"><i class="fas fa-check"></i></span>';
   return '';
+}
+
+function isTakedown(work) {
+  return work && work.takedown && work.takedown.active === true;
 }
 
 window.showImgFullscreen = (src, label = '') => {
@@ -382,44 +428,59 @@ window.clearReadingPos = (workId) => {
   } catch (e) {}
 };
 
-function compressImage(file, maxWidth = 1000, quality = 0.75, maxSizeKB = 180) {
-  return new Promise((resolve, reject) => {
-    if (!file.type.startsWith('image/')) { reject(new Error('Bukan gambar')); return; }
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const img = new Image();
-      img.onload = () => {
-        let { width, height } = img;
-        if (width > maxWidth) {
-          height = Math.round((height * maxWidth) / width);
-          width = maxWidth;
-        }
-        const canvas = document.createElement('canvas');
-        canvas.width = width;
-        canvas.height = height;
-        const ctx = canvas.getContext('2d');
-        ctx.fillStyle = '#FFFFFF';
-        ctx.fillRect(0, 0, width, height);
-        ctx.drawImage(img, 0, 0, width, height);
-        let q = quality;
-        let dataUrl = canvas.toDataURL('image/jpeg', q);
-        while (dataUrl.length > maxSizeKB * 1024 && q > 0.25) {
-          q -= 0.1;
-          dataUrl = canvas.toDataURL('image/jpeg', q);
-        }
-        if (dataUrl.length > (maxSizeKB + 40) * 1024) {
-          reject(new Error('Gambar terlalu besar setelah kompres'));
-          return;
-        }
-        resolve(dataUrl);
-      };
-      img.onerror = () => reject(new Error('Gagal memuat gambar'));
-      img.src = e.target.result;
-    };
-    reader.onerror = () => reject(new Error('Gagal baca file'));
-    reader.readAsDataURL(file);
+// Alamat gambar ImgBB kadang diblokir di beberapa jaringan. Urutan percobaan: mirror .co.com -> i.ibb.co -> proxy wsrv.nl
+function ibbChain(url) {
+  const m = String(url || '').match(/^https?:\/\/i\.ibb\.co(?:\.com)?\/(.+)$/);
+  if (!m) return null;
+  return ['https://i.ibb.co.com/' + m[1], 'https://i.ibb.co/' + m[1], 'https://wsrv.nl/?url=' + encodeURIComponent('i.ibb.co/' + m[1])];
+}
+function ibbFix(u) { const c = ibbChain(u); return c ? c[0] : u; }
+function testImgLoad(url, ms = 5000) {
+  return new Promise(res => {
+    const i = new Image(); let done = false;
+    const f = ok => { if (!done) { done = true; res(ok); } };
+    i.onload = () => f(true); i.onerror = () => f(false);
+    setTimeout(() => f(false), ms);
+    i.src = url;
   });
 }
+async function pickWorkingUrl(u) {
+  const chain = ibbChain(u);
+  if (!chain) return u;
+  for (const c of chain) { if (await testImgLoad(c)) return c; }
+  return chain[0];
+}
+document.addEventListener('error', (e) => {
+  const t = e.target;
+  if (!t || t.tagName !== 'IMG') return;
+  const chain = ibbChain(t.src);
+  if (!chain) return;
+  let idx = chain.indexOf(t.src); if (idx < 0) idx = 0;
+  const next = chain[idx + 1];
+  if (next) { e.stopImmediatePropagation(); t.src = next; }
+}, true);
+const IMGBB_KEY = 'ba3afa5b0d8e2ea7a8dc2098ac38aad6';
+const IMGBB_MAX_MB = 32; // batas dari ImgBB per file (bukan batas jumlah gambar)
+async function uploadToImgbb(file) {
+  if (!file || !file.type || !file.type.startsWith('image/')) throw new Error('Bukan gambar');
+  if (file.size > IMGBB_MAX_MB * 1024 * 1024) throw new Error(`Ukuran file > ${IMGBB_MAX_MB} MB (batas ImgBB)`);
+  let lastErr = 'Upload gagal';
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    try {
+      const fd = new FormData();
+      fd.append('image', file);
+      const res = await fetch('https://api.imgbb.com/1/upload?key=' + IMGBB_KEY, { method: 'POST', body: fd });
+      const json = await res.json().catch(() => ({}));
+      if (res.ok && json.success && json.data && json.data.url) return await pickWorkingUrl(json.data.url);
+      lastErr = (json.error && (json.error.message || json.error)) || ('HTTP ' + res.status);
+      if (res.status === 400) break; // file/key salah, jangan diulang
+    } catch (e) { lastErr = 'Koneksi bermasalah'; }
+    await new Promise(r => setTimeout(r, 800 * attempt));
+  }
+  throw new Error(String(lastErr));
+}
+// Dipertahankan namanya supaya semua pemanggil lama tetap jalan; sekarang hasilnya URL ImgBB (bukan base64).
+function compressImage(file) { return uploadToImgbb(file); }
 
 function buildUserTags(profile, userId) {
   if (!profile) return '';
@@ -543,7 +604,6 @@ async function boostOwnerFollowers() {
     await updateDoc(ref, { followerCount: newCount, lastOwnerBoost: now, updatedAt: serverTimestamp() });
     userProfile.followerCount = newCount;
     userProfile.lastOwnerBoost = now;
-    showToast(`👑 +${formatCount(OWNER_FOLLOWER_RATE)} followers (bonus owner)`);
   } catch (e) {}
 }
 
@@ -579,7 +639,9 @@ async function checkBirthdays() {
     banner.innerHTML = `<i class="fas fa-birthday-cake text-xl badge-float"></i><div style="flex:1;text-align:left;max-width:900px">${names}</div><button onclick="document.getElementById('birthdayBanner').remove()"><i class="fas fa-times"></i></button>`;
     document.body.appendChild(banner);
   } catch (e) {}
-}const NAV_MAP = [
+}
+
+const NAV_MAP = [
   { id:'home', icon:'fa-home', label:'Beranda' },
   { id:'kategori', icon:'fa-tags', label:'Kategori' },
   { id:'leaderboard', icon:'fa-trophy', label:'Leaderboard' },
@@ -644,6 +706,81 @@ window.toggleFullscreenReader = () => {
   }
 };
 
+window.openGroupManager = async (wid, type, onDone) => {
+  const gl = groupLabel(type);
+  const wRef = doc(db, 'works', wid);
+  const modal = document.getElementById('modalContainer');
+  const content = document.getElementById('modalContent');
+  let changed = false;
+  const close = () => { modal.classList.add('hidden'); if (changed && onDone) onDone(); };
+  async function load() {
+    const wSnap = await getDoc(wRef);
+    if (!wSnap.exists()) { close(); return; }
+    const groups = getGroups(wSnap.data());
+    const cs = await getDocs(collection(db, 'works', wid, 'chapters'));
+    const counts = {};
+    cs.forEach(d => { const g = d.data().groupId; if (g) counts[g] = (counts[g] || 0) + 1; });
+    const nextNum = groups.reduce((m, g) => Math.max(m, Number(g.number) || 0), 0) + 1;
+    content.innerHTML = `
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-2xl font-black text-amber-400"><i class="fas fa-folder-open mr-2"></i>Kelola ${gl}</h2>
+        <button id="gmClose" class="text-slate-400 text-2xl hover:rotate-90 transition-transform">&times;</button>
+      </div>
+      <p class="text-xs text-slate-400 mb-3">${gl} dipakai untuk mengelompokkan ${type === 'novel' ? 'Chapter' : 'Eps'}. Nomor menentukan urutan tampil. Menghapus ${gl.toLowerCase()} <b>tidak</b> menghapus isinya — ${type === 'novel' ? 'Chapter' : 'Eps'}-nya jadi "Tanpa ${gl}".</p>
+      <div class="space-y-2 max-h-[45vh] overflow-y-auto scrollbar-thin mb-4">
+        ${groups.length === 0 ? `<p class="text-sm text-slate-500 italic">Belum ada ${gl}.</p>` : groups.map(g => `
+          <div class="bg-slate-800/60 border border-slate-700 rounded-lg p-2 flex items-center gap-2 flex-wrap" data-gid="${g.id}">
+            <span class="text-amber-400 text-xs font-bold">${gl}</span>
+            <input type="number" min="0" class="gmNum w-16 bg-slate-900 border border-slate-700 rounded px-2 py-1 text-sm" value="${g.number}">
+            <input type="text" class="gmTitle flex-1 min-w-[120px] bg-slate-900 border border-slate-700 rounded px-2 py-1 text-sm" placeholder="Judul (opsional)" value="${escHtml(g.title || '')}">
+            <span class="text-[10px] text-slate-500">${counts[g.id] || 0} ${type === 'novel' ? 'chapter' : 'eps'}</span>
+            <button class="gmSave bg-green-600 text-white px-2 py-1 rounded text-xs font-bold" title="Simpan"><i class="fas fa-check"></i></button>
+            <button class="gmDel bg-red-700 text-white px-2 py-1 rounded text-xs font-bold" title="Hapus"><i class="fas fa-trash"></i></button>
+          </div>`).join('')}
+      </div>
+      <div class="border-t border-slate-700 pt-3">
+        <p class="text-sm font-semibold mb-2">+ Tambah ${gl} Baru</p>
+        <div class="flex items-center gap-2 flex-wrap">
+          <input type="number" min="0" id="gmNewNum" class="w-16 bg-slate-800 border border-slate-700 rounded px-2 py-2 text-sm" value="${nextNum}">
+          <input type="text" id="gmNewTitle" class="flex-1 min-w-[120px] bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm" placeholder="Judul ${gl} (opsional)">
+          <button id="gmAdd" class="bg-amber-500 text-black px-4 py-2 rounded-lg text-sm font-bold">Tambah</button>
+        </div>
+      </div>
+      <button id="gmDone" class="w-full mt-4 bg-slate-700 text-white font-bold py-2 rounded-full">Selesai</button>`;
+    modal.classList.remove('hidden');
+    document.getElementById('gmClose').onclick = close;
+    document.getElementById('gmDone').onclick = close;
+    const save = async (arr) => { await updateDoc(wRef, { chapterGroups: arr, updatedAt: serverTimestamp() }); changed = true; await load(); };
+    document.getElementById('gmAdd').onclick = async () => {
+      const num = parseInt(document.getElementById('gmNewNum').value, 10);
+      if (isNaN(num)) { showToast('Nomor wajib diisi'); return; }
+      const title = document.getElementById('gmNewTitle').value.trim();
+      try { await save([...groups, { id: newGroupId(), number: num, title }]); showToast(`${gl} ditambahkan`); }
+      catch (e) { showToast('Gagal: ' + e.message); }
+    };
+    content.querySelectorAll('[data-gid]').forEach(row => {
+      const gid = row.dataset.gid;
+      row.querySelector('.gmSave').onclick = async () => {
+        const num = parseInt(row.querySelector('.gmNum').value, 10);
+        if (isNaN(num)) { showToast('Nomor wajib diisi'); return; }
+        const title = row.querySelector('.gmTitle').value.trim();
+        try { await save(groups.map(g => g.id === gid ? { ...g, number: num, title } : g)); showToast(`${gl} diperbarui`); }
+        catch (e) { showToast('Gagal: ' + e.message); }
+      };
+      row.querySelector('.gmDel').onclick = async () => {
+        const g = groups.find(x => x.id === gid);
+        if (!confirm(`Hapus ${groupTitleText(g, type)}?\n(${type === 'novel' ? 'Chapter' : 'Eps'} di dalamnya tidak ikut terhapus)`)) return;
+        try {
+          for (const d of cs.docs) if (d.data().groupId === gid) await updateDoc(doc(db, 'works', wid, 'chapters', d.id), { groupId: '' });
+          await save(groups.filter(x => x.id !== gid));
+          showToast(`${gl} dihapus`);
+        } catch (e) { showToast('Gagal: ' + e.message); }
+      };
+    });
+  }
+  await load();
+};
+
 function showUploadGuide() {
   const modal = document.getElementById('modalContainer');
   const content = document.getElementById('modalContent');
@@ -655,14 +792,14 @@ function showUploadGuide() {
     <div class="space-y-3">
       <div class="guide-step"><p class="font-bold text-amber-400 mb-1"><span class="guide-step-num">1</span>Login Google</p><p class="text-sm text-slate-300">Login Google supaya akun & PP permanen.</p></div>
       <div class="guide-step"><p class="font-bold text-amber-400 mb-1"><span class="guide-step-num">2</span>Jadi Kreator</p><p class="text-sm text-slate-300">Menu <b>Jadi Kreator</b> → minta role via WA admin.</p></div>
-      <div class="guide-step"><p class="font-bold text-amber-400 mb-1"><span class="guide-step-num">3</span>Upload Gambar (1-5 foto)</p>
-        <p class="text-sm text-slate-300 mb-2">2 cara: dari perangkat atau paste URL ImgBB.</p>
+      <div class="guide-step"><p class="font-bold text-amber-400 mb-1"><span class="guide-step-num">3</span>Upload Gambar (tanpa batas)</p>
+        <p class="text-sm text-slate-300 mb-2">Pilih dari perangkat, otomatis diupload ke ImgBB (tanpa batas jumlah). Atau paste URL gambar.</p>
         <p class="text-xs text-amber-400 mt-2">💡 Ada 2 MODE di preview gambar:<br>
         <b>🖐️ Mode Drag</b> = gambar bisa di-drag untuk ubah urutan (fullscreen mati)<br>
         <b>🔍 Mode Fullscreen</b> = klik gambar untuk lihat fullscreen (drag mati)</p>
       </div>
       <div class="guide-step"><p class="font-bold text-amber-400 mb-1"><span class="guide-step-num">4</span>Buat Karya</p><p class="text-sm text-slate-300">Creator → Buat Baru. Isi semua field *.</p></div>
-      <div class="guide-step"><p class="font-bold text-amber-400 mb-1"><span class="guide-step-num">5</span>Chapter/Eps</p><p class="text-sm text-slate-300">Novel: judul + teks. Komik: judul opsional + 1-5 gambar. <b>Gambar pertama jadi sampul</b>.</p></div>
+      <div class="guide-step"><p class="font-bold text-amber-400 mb-1"><span class="guide-step-num">5</span>Chapter/Eps</p><p class="text-sm text-slate-300">Novel: judul + teks. Komik: judul opsional + gambar sebanyak apa pun. <b>Gambar pertama jadi sampul</b>. Di menu Kelola ada tombol <b>📁 Chapter</b> (novel: Volume) untuk membuat, mengedit, dan menghapus Chapter, lalu Eps bisa dimasukkan ke Chapter tertentu.</p></div>
       <div class="guide-step"><p class="font-bold text-amber-400 mb-1"><span class="guide-step-num">6</span>Kirim Gambar di Chat</p><p class="text-sm text-slate-300">Klik ikon <i class="fas fa-image"></i> di chat untuk kirim gambar (publik, DM, clan).</p></div>
     </div>
     <div class="flex gap-2 mt-6">
@@ -677,15 +814,15 @@ function showUploadGuide() {
 
 function multiImageField(containerId) {
   return `<div class="bg-slate-900/50 border border-amber-500/30 rounded-xl p-3 mt-2">
-    <label class="text-xs font-semibold text-amber-400 block mb-2">Gambar (1-5 foto, urutan = pilihan)</label>
+    <label class="text-xs font-semibold text-amber-400 block mb-2">Gambar (tanpa batas jumlah, urutan = pilihan)</label>
     <div class="flex flex-wrap gap-2 mb-2">
       <label class="cursor-pointer bg-amber-500 text-black px-3 py-2 rounded-lg text-xs font-bold hover:scale-105 transition">
-        <i class="fas fa-upload mr-1"></i>Pilih 1-5 Foto
+        <i class="fas fa-upload mr-1"></i>Pilih Foto (bisa banyak)
         <input type="file" id="${containerId}-file" accept="image/*" multiple class="hidden">
       </label>
       <a href="https://imgbb.com" target="_blank" class="bg-slate-700 text-slate-300 px-3 py-2 rounded-lg text-xs font-bold hover:bg-slate-600 transition"><i class="fas fa-external-link-alt mr-1"></i>ImgBB</a>
     </div>
-    <textarea id="${containerId}-urls" rows="2" placeholder="Atau paste URL ImgBB, 1 per baris" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs font-mono"></textarea>
+    <textarea id="${containerId}-urls" rows="2" placeholder="Atau paste URL gambar, 1 per baris" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs font-mono"></textarea>
     <div id="${containerId}-preview" class="mt-2"></div>
     <div id="${containerId}-progress" class="upload-progress hidden"></div>
   </div>`;
@@ -703,27 +840,17 @@ function attachMultiImageHandlers(containerId) {
   fileInput.onchange = async (e) => {
     const files = Array.from(e.target.files);
     if (files.length === 0) return;
-    const currentCount = (window[`_${containerId}_files`] || []).length;
-    const remaining = 5 - currentCount;
-    if (remaining <= 0) {
-      showToast('Maksimal 5 foto. Hapus dulu salah satu.');
-      fileInput.value = '';
-      return;
-    }
-    const toProcess = files.slice(0, remaining);
-    if (files.length > remaining) showToast(`Hanya ${remaining} foto bisa ditambahkan.`);
-    
+    const toProcess = files; // tidak ada batas jumlah gambar
     progress.classList.remove('hidden');
-    progress.innerHTML = `Memproses ${toProcess.length} foto...<br>`;
+    progress.innerHTML = `Mengupload ${toProcess.length} foto ke ImgBB...<br>`;
     const newFiles = [];
     for (let i = 0; i < toProcess.length; i++) {
       const f = toProcess[i];
       progress.innerHTML += `[${i+1}/${toProcess.length}] ${f.name}...<br>`;
       try {
-        const dataUrl = await compressImage(f);
-        const sizeKb = (dataUrl.length / 1024).toFixed(0);
-        newFiles.push({ name: f.name, dataUrl });
-        progress.innerHTML += `&nbsp;&nbsp;✅ ${sizeKb} KB<br>`;
+        const dataUrl = await uploadToImgbb(f);
+        newFiles.push({ name: f.name, dataUrl, preview: URL.createObjectURL(f) });
+        progress.innerHTML += `&nbsp;&nbsp;✅ ${(f.size/1024).toFixed(0)} KB terupload<br>&nbsp;&nbsp;🔗 <a href="${dataUrl}" target="_blank" style="text-decoration:underline">${dataUrl.replace(/^https?:\/\//,'').slice(0,42)}...</a><br>`;
       } catch (err) {
         progress.innerHTML += `&nbsp;&nbsp;❌ ${err.message}<br>`;
       }
@@ -745,7 +872,7 @@ function attachMultiImageHandlers(containerId) {
     const modeBar = document.createElement('div');
     modeBar.className = 'img-preview-mode-bar';
     modeBar.innerHTML = `
-      <span class="mode-label"><i class="fas fa-layer-group"></i>Total: ${total} foto${total > 5 ? ' ⚠️' : ''}</span>
+      <span class="mode-label"><i class="fas fa-layer-group"></i>Total: ${total} foto</span>
       <div class="mode-btns">
         <button class="mode-btn ${mode === 'drag' ? 'active' : 'inactive'}" data-mode="drag">
           <i class="fas fa-hand-rock"></i> 🖐️ Mode Drag
@@ -844,7 +971,7 @@ function attachMultiImageHandlers(containerId) {
       const wrap = document.createElement('div');
       wrap.className = 'img-preview-wrap' + (mode === 'drag' ? ' no-fullscreen' : '');
       wrap.innerHTML = `
-        <img src="${f.dataUrl}" class="img-preview" draggable="false" ${mode === 'fullscreen' ? `onclick="event.stopPropagation();window.showImgFullscreen('${f.dataUrl}','Gambar #${i+1} dari ${total}')"` : ''}>
+        <img src="${f.preview || f.dataUrl}" class="img-preview" draggable="false" ${mode === 'fullscreen' ? `onclick="event.stopPropagation();window.showImgFullscreen('${f.dataUrl}','Gambar #${i+1} dari ${total}')"` : ''}>
         <span class="order-num">#${i+1}</span>
         ${mode === 'fullscreen' ? `<span class="zoom-badge" onclick="event.stopPropagation();window.showImgFullscreen('${f.dataUrl}','Gambar #${i+1} dari ${total}')"><i class="fas fa-expand"></i></span>` : ''}
         <span class="remove-btn" onclick="event.stopPropagation();removeImg('${containerId}',${i})">×</span>
@@ -1094,7 +1221,7 @@ function attachCoverHandler(id) {
     fileInput.onchange = async (e) => {
       const f = e.target.files[0];
       if (!f) return;
-      preview.innerHTML = '<span class="text-xs text-amber-400">Memproses...</span>';
+      preview.innerHTML = '<span class="text-xs text-amber-400">Mengupload ke ImgBB...</span>';
       try {
         const dataUrl = await compressImage(f);
         window[`_${id}_cover`] = dataUrl;
@@ -1103,7 +1230,7 @@ function attachCoverHandler(id) {
             <img src="${dataUrl}" class="img-preview" style="width:96px;height:128px" onclick="event.stopPropagation();window.showImgFullscreen('${dataUrl}','Sampul / Cover')">
             <span class="zoom-badge" onclick="event.stopPropagation();window.showImgFullscreen('${dataUrl}','Sampul / Cover')"><i class="fas fa-expand"></i></span>
           </div>
-          <p class="text-xs text-slate-500 mt-1">${(dataUrl.length/1024).toFixed(0)} KB • Klik untuk fullscreen</p>
+          <p class="text-xs text-green-400 mt-1">✅ Terupload ke ImgBB • Klik untuk fullscreen</p>
         `;
       } catch (err) {
         preview.innerHTML = `<span class="text-xs text-red-400">Gagal: ${err.message}</span>`;
@@ -1416,7 +1543,9 @@ async function renderPage() {
   else if (hash === 'kritik') await renderKritikSaran(main);
   else if (hash === 'profil') await renderProfil(main);
   else await renderHome(main);
-}function renderAdminLogin(c) {
+}
+
+function renderAdminLogin(c) {
   c.innerHTML = `<div class="card-bg rounded-2xl p-6 md:p-8 max-w-md mx-auto card-anim">
     <div class="text-center mb-6">
       <img src="${LOGO_URL}" class="w-20 h-20 mx-auto rounded-2xl mb-3 border-2 border-amber-500 logo-glow">
@@ -1453,6 +1582,16 @@ async function renderJadiKreator(container) {
         </div>
         <h2 class="text-2xl md:text-3xl font-black text-amber-400">Jadi Kreator KomiNovel</h2>
         <p class="text-slate-400 mt-2">Ingin menulis novel atau membuat komik? Ajukan ke Admin!</p>
+      </div>
+      <div class="warning-hard mb-4">
+        <h4><i class="fas fa-exclamation-triangle"></i> PERINGATAN KERAS</h4>
+        <ul>
+          <li>DILARANG KERAS membuat konten 18+ / dewasa / pornografi</li>
+          <li>DILARANG konten kekerasan berlebihan, gore, atau sadisme</li>
+          <li>DILARANG plagiarisme / menjiplak karya orang lain</li>
+          <li>DILARANG konten SARA, ujaran kebencian, atau bullying</li>
+        </ul>
+        <p class="text-red-300 text-xs mt-3 font-bold">🚨 Karya yang melanggar akan DI-TAKEDOWN (tidak bisa dibuka) oleh Admin/Owner dengan alasan tertulis!</p>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
         <div class="card-bg rounded-2xl p-5 ${hasPenulis ? 'berlanjut-border' : ''}">
@@ -1505,13 +1644,28 @@ async function renderPanduan(container) {
         <h2 class="text-2xl md:text-3xl font-black text-amber-400">Buku Panduan KomiNovel</h2>
         <p class="text-slate-400 mt-2">Semua yang perlu kamu tau tentang KomiNovel ada di sini 📚</p>
       </div>
+
+      <!-- PERINGATAN KERAS -->
+      <div class="warning-hard mb-4">
+        <h4><i class="fas fa-exclamation-triangle"></i> ⚠️ PERINGATAN KERAS — DILARANG KERAS!</h4>
+        <ul>
+          <li><b>DILARANG</b> membuat novel/komik dengan konten <b>18+ / dewasa / pornografi</b></li>
+          <li><b>DILARANG</b> konten kekerasan berlebihan, gore, atau sadisme</li>
+          <li><b>DILARANG</b> plagiarisme / menjiplak karya orang lain</li>
+          <li><b>DILARANG</b> konten SARA, ujaran kebencian, atau bullying</li>
+        </ul>
+        <div class="bg-red-950/50 border border-red-700 rounded-lg p-3 mt-3">
+          <p class="text-red-300 text-sm font-bold">🚨 SANKSI:</p>
+          <p class="text-red-200 text-xs mt-1">Karya yang melanggar akan <b>DI-TAKEDOWN</b> (tidak bisa dibuka) oleh Admin/Owner dengan alasan tertulis. Pelanggaran berat bisa berakibat <b>akun diblokir permanen</b>.</p>
+        </div>
+      </div>
+
       <div class="card-bg rounded-2xl p-6 md:p-8 guide-content">
         <h3><i class="fas fa-sign-in-alt"></i> 1. Cara Masuk / Login</h3>
         <p>Klik tombol <b>Masuk</b> di kanan atas, pilih salah satu:</p>
         <ul>
           <li><b>Google</b> — login pakai akun Google (disarankan, biar profil permanen)</li>
           <li><b>Guest</b> — login anonymous (data bisa hilang kalau ganti device)</li>
-          <li><b>Admin</b> — login email + sandi khusus admin di menu <code>/admin</code></li>
         </ul>
         <div class="tip">💡 Login Google supaya username, foto profil, EXP, dan level kamu tersimpan permanen.</div>
 
@@ -1525,11 +1679,11 @@ async function renderPanduan(container) {
         <p>20 karya terbaik berdasarkan rating. Filter novel / komik pakai tombol di atas.</p>
 
         <h3><i class="fas fa-users"></i> 5. Top Followers</h3>
-        <p>Urutan user dengan followers terbanyak. Ada 3 tab:</p>
+        <p>Urutan user dengan followers terbanyak. Hanya user yang punya followers yang muncul di daftar ini. Ada 3 tab:</p>
         <ul>
-          <li><b>Semua</b> — user biasa (pembaca, penulis, komikus), tidak termasuk Admin/Owner</li>
+          <li><b>Semua</b> — user biasa (pembaca, penulis, komikus)</li>
           <li><b>Kreator</b> — penulis novel & pembuat komik saja</li>
-          <li><b>Staff</b> — khusus Owner & Admin (Owner selalu di paling atas)</li>
+          <li><b>Staff</b> — khusus staff KomiNovel</li>
         </ul>
 
         <h3><i class="fas fa-user-plus"></i> 6. Follow / Unfollow</h3>
@@ -1549,6 +1703,7 @@ async function renderPanduan(container) {
           <li>Klik tombol "Ajukan via WA" — otomatis buka WhatsApp Admin</li>
           <li>Tunggu Admin approve role kamu</li>
         </ul>
+        <div class="warning">⚠️ Dengan mendaftar sebagai kreator, kamu <b>WAJIB</b> mematuhi aturan: dilarang keras membuat konten 18+, kekerasan berlebihan, SARA, atau plagiarisme. Karya yang melanggar akan di-takedown!</div>
 
         <h3><i class="fas fa-pen-fancy"></i> 9. Buat Karya (Creator)</h3>
         <ul>
@@ -1564,15 +1719,16 @@ async function renderPanduan(container) {
           <li>Menu <b>Creator</b> → <b>Kelola</b></li>
           <li>Klik tombol <b>+ Chapter</b> atau <b>+ Eps</b></li>
           <li><b>Novel</b>: isi judul + teks cerita</li>
-          <li><b>Komik</b>: isi judul (opsional) + upload 1-5 gambar</li>
+          <li><b>Komik</b>: isi judul (opsional) + upload gambar sebanyak apa pun</li>
           <li>Klik <b>Simpan</b></li>
         </ul>
+        <div class="tip">📁 Ingin mengelompokkan? Klik tombol <b>Chapter</b> (novel: <b>Volume</b>) di karya kamu → tambah / ubah nomor &amp; judul / hapus. Saat menambah Eps, pilih Chapter tujuannya.</div>
         <div class="tip">💡 Ada 2 MODE di preview gambar: <b>🖐️ Mode Drag</b> untuk ubah urutan, <b>🔍 Mode Fullscreen</b> untuk lihat gambar besar.</div>
 
         <h3><i class="fas fa-edit"></i> 11. Edit Chapter yang Sudah Ada</h3>
         <ul>
           <li>Menu <b>Creator</b> → <b>Kelola</b></li>
-          <li>Klik ikon ✏️ di chapter yang mau diedit</li>
+          <li>Klik ikon ✏️ di chapter/eps yang mau diedit (judul, nomor, dan pindah Chapter juga bisa diubah)</li>
           <li>Untuk komik: gambar lama bisa di-drag urutannya, atau hapus ❌</li>
           <li>Klik <b>Simpan</b></li>
         </ul>
@@ -1637,7 +1793,6 @@ async function renderPanduan(container) {
         <ul>
           <li>Muncul banner ucapan otomatis di atas halaman</li>
           <li>Banner otomatis menyebut akun kamu (@username)</li>
-          <li>Text ucapan bisa di-custom oleh Admin</li>
         </ul>
 
         <h3><i class="fas fa-link"></i> 19. Link Sosmed & Dukungan</h3>
@@ -1648,15 +1803,14 @@ async function renderPanduan(container) {
           <li>Link muncul otomatis di profil publik & halaman karya kamu</li>
         </ul>
 
-        <h3><i class="fas fa-crown"></i> 20. Info Role</h3>
+        <h3><i class="fas fa-ban"></i> 20. Takedown Karya</h3>
+        <p>Karya yang melanggar aturan (18+, kekerasan, SARA, plagiarisme) akan <b>DI-TAKEDOWN</b>:</p>
         <ul>
-          <li><b>Pembaca</b> — user biasa, bisa baca, like, komentar, follow</li>
-          <li><b>Penulis</b> — bisa upload novel</li>
-          <li><b>Komikus</b> — bisa upload komik</li>
-          <li><b>Admin</b> — akses Admin Panel, bisa ubah role user, ban user, upload karya</li>
-          <li><b>Owner</b> — role tertinggi, mendapat <b>+100K followers per jam</b> otomatis</li>
+          <li>Karya masih ada di sistem, tapi <b>tidak bisa dibuka</b></li>
+          <li>Jika dibuka, akan muncul <b>alasan takedown</b> dari Admin</li>
+          <li>Pembuat karya bisa lihat alasan di menu <b>Creator</b></li>
+          <li>Jika merasa keberatan, hubungi Admin via WhatsApp</li>
         </ul>
-        <div class="warning">⚠️ Admin TIDAK mendapat auto-followers. Admin harus cari followers sendiri seperti user biasa. Hanya Owner yang dapat bonus +100K/jam.</div>
 
         <h3><i class="fas fa-envelope"></i> 21. Kritik & Saran</h3>
         <p>Kirim kritik, saran, bug report, atau request fitur ke Admin via WhatsApp atau form langsung.</p>
@@ -1716,19 +1870,20 @@ function renderWorkList(container, works, newIds = new Set()) {
     const liked = currentUser && (work.likedBy || []).includes(currentUser.uid);
     const resume = getReadingPos(work.id);
     const vBadge = getVerifiedBadge(work.authorFollowerCount || 0);
+    const isTD = isTakedown(work);
     return `
-    <div class="card-bg hover-lift rounded-2xl overflow-hidden shadow-lg cursor-pointer card-anim ${work.isTamat ? 'tamat-border' : 'berlanjut-border'} ${isNew ? 'new-work' : ''}" style="animation-delay:${Math.min(idx*0.03, 0.5)}s" onclick="window.location.hash='reader/${work.id}'">
+    <div class="card-bg hover-lift rounded-2xl overflow-hidden shadow-lg cursor-pointer card-anim ${isTD ? 'takedown-border' : (work.isTamat ? 'tamat-border' : 'berlanjut-border')} ${isNew && !isTD ? 'new-work' : ''}" style="animation-delay:${Math.min(idx*0.03, 0.5)}s" onclick="${isTD ? `showToast('⛔ Karya ini di-takedown')` : `window.location.hash='reader/${work.id}'`}">
       <div class="h-40 md:h-48 bg-slate-800 flex items-center justify-center overflow-hidden relative">
-        ${work.coverURL ? `<img src="${work.coverURL}" class="w-full h-full object-cover" onerror="this.style.display='none';">` : `<i class="fas fa-image text-5xl text-slate-600"></i>`}
-        ${statusLabel(work.isTamat)}
+        ${work.coverURL ? `<img src="${work.coverURL}" class="w-full h-full object-cover ${isTD ? 'grayscale opacity-40' : ''}" onerror="this.style.display='none';">` : `<i class="fas fa-image text-5xl text-slate-600"></i>`}
+        ${isTD ? `<div class="absolute inset-0 flex items-center justify-center bg-black/60"><div class="text-center"><i class="fas fa-ban text-red-500 text-4xl mb-1"></i><p class="text-red-400 font-black text-xs">TAKEDOWN</p></div></div>` : statusLabel(work.isTamat)}
         <div class="absolute bottom-2 left-2 right-2 flex justify-between items-center pointer-events-none">
           <span class="view-badge bg-black/70 backdrop-blur px-2 py-1 rounded-full"><i class="fas fa-eye"></i> ${formatCount(work.views || 0)}</span>
           <span class="view-badge bg-black/70 backdrop-blur px-2 py-1 rounded-full"><i class="fas fa-heart" style="color:#ef4444"></i> ${formatCount(work.likes || 0)}</span>
         </div>
-        ${resume ? `<div class="absolute top-2 left-2 bg-blue-600/90 backdrop-blur text-white text-[10px] font-bold px-2 py-1 rounded-full"><i class="fas fa-bookmark"></i> Lanjut</div>` : ''}
+        ${resume && !isTD ? `<div class="absolute top-2 left-2 bg-blue-600/90 backdrop-blur text-white text-[10px] font-bold px-2 py-1 rounded-full"><i class="fas fa-bookmark"></i> Lanjut</div>` : ''}
       </div>
       <div class="p-3 md:p-4">
-        <h3 class="font-bold text-sm md:text-lg truncate">${work.title}</h3>
+        <h3 class="font-bold text-sm md:text-lg truncate ${isTD ? 'text-slate-500 line-through' : ''}">${work.title}</h3>
         <p class="text-xs md:text-sm text-slate-400 line-clamp-2 mt-1">${work.teaser || ''}</p>
         <div class="flex flex-wrap gap-1 mt-2">
           ${cats.slice(0,2).map(c => `<span class="text-[10px] md:text-xs bg-slate-700 px-1.5 py-0.5 rounded-full">${c}</span>`).join('')}
@@ -1740,7 +1895,7 @@ function renderWorkList(container, works, newIds = new Set()) {
             <span class="truncate max-w-[80px] hover:text-amber-400">${work.authorName || 'Anonim'}${vBadge}</span>
             ${work.authorLevel > 1000 ? '<i class="fas fa-crown text-amber-400 text-[10px] badge-float"></i>' : ''}
           </div>
-          <button class="like-btn ${liked ? 'liked' : 'text-slate-400'}" onclick="event.stopPropagation();toggleWorkLike('${work.id}')" title="${liked ? 'Unlike' : 'Like'}">
+          <button class="like-btn ${liked ? 'liked' : 'text-slate-400'}" onclick="event.stopPropagation();toggleWorkLike('${work.id}')" title="${liked ? 'Unlike' : 'Like'}" ${isTD ? 'disabled' : ''}>
             <i class="fas fa-heart"></i> <span id="like-count-${work.id}">${formatCount(work.likes || 0)}</span>
           </button>
           ${work.avgRating ? `<span class="text-amber-400"><i class="fas fa-star text-[10px]"></i> ${work.avgRating.toFixed(1)}</span>` : ''}
@@ -1850,6 +2005,7 @@ async function renderFollowersPage(container, uid, mode) {
 async function renderTopFollowers(container) {
   container.innerHTML = `
     <h2 class="text-2xl font-bold mb-4"><i class="fas fa-crown text-amber-400 mr-2 badge-float"></i>Top Followers</h2>
+    <p class="text-xs text-slate-500 mb-4"><i class="fas fa-info-circle"></i> Hanya user yang punya followers yang muncul di daftar ini</p>
     <div class="flex gap-2 mb-6 flex-wrap">
       <button id="lfAll" class="px-4 py-2 rounded-full font-bold text-sm bg-amber-500 text-black">Semua</button>
       <button id="lfKreator" class="px-4 py-2 rounded-full font-bold text-sm bg-slate-800 text-slate-300">Kreator</button>
@@ -1873,6 +2029,8 @@ async function renderTopFollowers(container) {
     const snap = await getDocs(collection(db, 'users'));
     let users = [];
     snap.forEach(d => users.push({ id: d.id, ...d.data() }));
+    // Filter: hanya yang punya followers > 0
+    users = users.filter(u => (u.followerCount || 0) > 0);
     if (filterMode === 'kreator') {
       users = users.filter(u => {
         const r = u.roles || [u.role || 'pembaca'];
@@ -1898,7 +2056,7 @@ async function renderTopFollowers(container) {
       users.sort((a, b) => (b.followerCount || 0) - (a.followerCount || 0));
     }
     users = users.slice(0, 30);
-    if (users.length === 0) { list.innerHTML = '<div class="card-bg rounded-2xl p-8 text-center text-slate-400">Belum ada.</div>'; return; }
+    if (users.length === 0) { list.innerHTML = '<div class="card-bg rounded-2xl p-8 text-center text-slate-400"><i class="fas fa-users text-4xl text-amber-400/30 mb-3"></i><p>Belum ada user dengan followers.</p></div>'; return; }
     const rankColors = ['bg-gradient-to-br from-yellow-400 to-amber-600 text-black','bg-gradient-to-br from-slate-300 to-slate-500 text-black','bg-gradient-to-br from-amber-700 to-amber-900 text-white'];
     list.innerHTML = users.map((u, i) => {
       const r = u.roles || [u.role || 'pembaca'];
@@ -1922,7 +2080,9 @@ async function renderTopFollowers(container) {
     }).join('');
   }
   load();
-}async function renderPublicProfile(container, uid) {
+}
+
+async function renderPublicProfile(container, uid) {
   const snap = await getDoc(doc(db, 'users', uid));
   if (!snap.exists()) { container.innerHTML = '<p class="text-red-400">User tidak ditemukan</p>'; return; }
   const u = snap.data();
@@ -2063,7 +2223,7 @@ async function renderPrivateChat(container, otherUid) {
   imgInput.onchange = async (e) => {
     const f = e.target.files[0];
     if (!f) return;
-    imgPreview.innerHTML = '<p class="text-xs text-amber-400 mt-2">Memproses gambar...</p>';
+    imgPreview.innerHTML = '<p class="text-xs text-amber-400 mt-2">Mengupload gambar...</p>';
     try {
       const dataUrl = await compressImage(f, 800, 0.7, 150);
       pendingChatImg.private = dataUrl;
@@ -2072,7 +2232,7 @@ async function renderPrivateChat(container, otherUid) {
           <img src="${dataUrl}">
           <span class="remove-btn" onclick="event.stopPropagation();window.cancelChatImg('private')">×</span>
         </div>
-        <p class="text-xs text-slate-500 mt-1">Gambar siap dikirim (${(dataUrl.length/1024).toFixed(0)} KB)</p>
+        <p class="text-xs text-green-400 mt-1">✅ Gambar terupload, siap dikirim</p>
       `;
     } catch (err) {
       imgPreview.innerHTML = `<p class="text-xs text-red-400 mt-1">Gagal: ${err.message}</p>`;
@@ -2439,7 +2599,7 @@ async function renderClanDetail(container, clanId) {
     clanImgInput.onchange = async (e) => {
       const f = e.target.files[0];
       if (!f) return;
-      clanImgPreview.innerHTML = '<p class="text-xs text-amber-400 mb-2">Memproses gambar...</p>';
+      clanImgPreview.innerHTML = '<p class="text-xs text-amber-400 mb-2">Mengupload gambar...</p>';
       try {
         const dataUrl = await compressImage(f, 800, 0.7, 150);
         pendingChatImg.clan = dataUrl;
@@ -2578,11 +2738,48 @@ window.delClanMsg = async (msgId) => {
   if (!confirm('Hapus pesan?')) return;
   await deleteDoc(ref);
   showToast('Dihapus');
-};async function renderReader(container, novelId, chapterId = null) {
+};
+
+function takedownBanner(work) {
+  return `
+    <div class="fixed inset-0 z-[150] flex items-center justify-center p-4" style="background:rgba(0,0,0,.92);backdrop-filter:blur(6px)">
+      <div class="max-w-lg w-full card-bg rounded-2xl p-8 text-center border-2 border-red-600" style="box-shadow:0 0 40px rgba(239,68,68,.5)">
+        <div class="w-20 h-20 mx-auto rounded-full bg-red-600/20 flex items-center justify-center mb-4">
+          <i class="fas fa-ban text-red-500 text-4xl"></i>
+        </div>
+        <h2 class="text-2xl font-black text-red-500 mb-2">KARYA DI-TAKEDOWN</h2>
+        <p class="text-slate-400 text-sm mb-4">Karya ini tidak dapat dibuka karena melanggar ketentuan KomiNovel.</p>
+        <div class="bg-red-950/40 border border-red-800 rounded-xl p-4 text-left mb-4">
+          <p class="text-xs text-red-400 font-bold mb-1"><i class="fas fa-info-circle mr-1"></i>ALASAN:</p>
+          <p class="text-sm text-red-200 whitespace-pre-wrap">${sensor(work.takedown.reason || '-')}</p>
+        </div>
+        <div class="text-xs text-slate-500 mb-4">
+          <p>Di-takedown oleh: <b class="text-amber-400">${work.takedown.by || 'Admin'}</b></p>
+          <p>Tanggal: ${fmtDate(work.takedown.at)}</p>
+        </div>
+        <div class="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-3 text-xs text-yellow-200 mb-4">
+          <i class="fas fa-exclamation-triangle mr-1"></i>
+          Jika kamu pemilik karya ini dan merasa keberatan, hubungi Admin via WhatsApp <b>${WA_NUMBER}</b>
+        </div>
+        <button onclick="window.location.hash='home'" class="bg-amber-500 text-black font-bold py-2 px-6 rounded-full hover:scale-105 transition">
+          <i class="fas fa-home mr-1"></i>Kembali ke Beranda
+        </button>
+      </div>
+    </div>`;
+}
+
+async function renderReader(container, novelId, chapterId = null) {
   if (!novelId) { container.innerHTML = '<p>Karya tidak ditemukan</p>'; return; }
   const workSnap = await getDoc(doc(db, 'works', novelId));
   if (!workSnap.exists()) { container.innerHTML = '<p class="text-red-400">Karya tidak ditemukan.</p>'; return; }
   const work = { id: workSnap.id, ...workSnap.data() };
+  
+  // Cek takedown
+  if (isTakedown(work)) {
+    container.innerHTML = takedownBanner(work);
+    return;
+  }
+  
   const chaptersSnap = await getDocs(query(collection(db, 'works', novelId, 'chapters'), orderBy('number', 'asc')));
   const chapters = []; chaptersSnap.forEach(d => chapters.push({ id: d.id, ...d.data() }));
   let currentChapter = null;
@@ -2612,6 +2809,31 @@ window.delClanMsg = async (msgId) => {
   const socialHtml = buildSocialLinks({ sosmed: work.authorSosmed || {} });
   const vBadge = getVerifiedBadge(work.authorFollowerCount || 0);
   
+  const chItemHtml = (ch) => {
+    const idx = chapters.indexOf(ch);
+    return `
+            <div class="flex items-center gap-1">
+              <button onclick="window.location.hash='reader/${novelId}/${ch.id}'" class="flex-1 text-left px-3 py-2 rounded-lg ${currentChapter && currentChapter.id === ch.id ? 'bg-amber-500/20 border border-amber-500' : 'hover:bg-slate-800'} text-sm truncate transition">
+                ${chapterLabel} ${ch.number || idx+1}${ch.title ? ': ' + escHtml(ch.title) : ''}
+              </button>
+              ${canManage ? `<button onclick="deleteChapterFromReader('${novelId}','${ch.id}','${ch.number || idx+1}')" class="text-red-400 hover:text-red-300 px-2"><i class="fas fa-trash text-xs"></i></button>` : ''}
+            </div>`;
+  };
+  const readerSections = groupChapters(chapters, work);
+  const hasGroups = getGroups(work).length > 0;
+  const listHtml = !hasGroups
+    ? chapters.map(chItemHtml).join('')
+    : readerSections.map(sec => {
+        const isOpen = currentChapter && sec.items.some(c => c.id === currentChapter.id);
+        const name = sec.group ? escHtml(groupTitleText(sec.group, work.type)) : `Tanpa ${groupLabel(work.type)}`;
+        return `<details class="rounded-lg border border-slate-700/60 bg-slate-900/40" ${isOpen ? 'open' : ''}>
+          <summary class="cursor-pointer select-none px-3 py-2 text-sm font-bold text-amber-300 flex items-center gap-2"><i class="fas fa-folder text-amber-400 text-xs"></i><span class="flex-1 truncate">${name}</span><span class="text-[10px] text-slate-500 font-normal">${sec.items.length}</span></summary>
+          <div class="px-1 pb-2 space-y-1">${sec.items.length ? sec.items.map(chItemHtml).join('') : '<p class="text-xs text-slate-500 italic px-3 py-1">Belum ada isi.</p>'}</div>
+        </details>`;
+      }).join('');
+  const curGroup = currentChapter && currentChapter.groupId ? getGroups(work).find(g => g.id === currentChapter.groupId) : null;
+  const crumbHtml = curGroup ? `<p class="text-xs text-amber-400 font-bold mb-1"><i class="fas fa-folder mr-1"></i>${escHtml(groupTitleText(curGroup, work.type))}</p>` : '';
+
   const savedPos = getReadingPos(novelId);
   const hasSavedPos = savedPos && savedPos.chapterId === currentChapter?.id && savedPos.scrollY > 100;
   
@@ -2657,20 +2879,13 @@ window.delClanMsg = async (msgId) => {
       <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
         <div class="reader-sidebar lg:col-span-1 card-bg rounded-2xl p-4 max-h-[70vh] overflow-y-auto scrollbar-thin order-2 lg:order-1">
           <h3 class="font-bold mb-3 text-amber-400">Daftar ${chapterLabel} (${chapters.length})</h3>
-          <div class="space-y-2">${chapters.map((ch, idx) => `
-            <div class="flex items-center gap-1">
-              <button onclick="window.location.hash='reader/${novelId}/${ch.id}'" class="flex-1 text-left px-3 py-2 rounded-lg ${currentChapter && currentChapter.id === ch.id ? 'bg-amber-500/20 border border-amber-500' : 'hover:bg-slate-800'} text-sm truncate transition">
-                ${chapterLabel} ${ch.number || idx+1}${ch.title ? ': ' + ch.title : ''}
-              </button>
-              ${canManage ? `<button onclick="deleteChapterFromReader('${novelId}','${ch.id}','${ch.number || idx+1}')" class="text-red-400 hover:text-red-300 px-2"><i class="fas fa-trash text-xs"></i></button>` : ''}
-            </div>`).join('')}
-          </div>
+          <div class="space-y-2">${listHtml}</div>
         </div>
         <div class="lg:col-span-3 space-y-6 order-1 lg:order-2">
           <div class="reader-content card-bg rounded-2xl p-4 md:p-6">
             ${currentChapter ? `
               <div class="flex justify-between items-start mb-4 gap-2 flex-wrap">
-                <h2 class="text-lg md:text-xl font-bold">${chapterLabel} ${currentChapter.number}${currentChapter.title ? ': ' + currentChapter.title : ''}</h2>
+                <div>${crumbHtml}<h2 class="text-lg md:text-xl font-bold">${chapterLabel} ${currentChapter.number}${currentChapter.title ? ': ' + currentChapter.title : ''}</h2></div>
                 ${isKomik && currentChapter.images && currentChapter.images.length > 0 ? `<button onclick="toggleFullscreenReader()" class="bg-amber-500 text-black text-xs font-bold px-3 py-2 rounded-full hover:scale-105 transition"><i class="fas fa-expand"></i> Fullscreen</button>` : ''}
               </div>
               ${work.type === 'novel' ? `<div class="whitespace-pre-wrap text-slate-200" style="line-height:1.9;font-size:15px;">${currentChapter.content || ''}</div>` : `<div class="reader-images grid grid-cols-1 gap-4">${(currentChapter.images || []).map(img => `<img src="${img}" class="w-full rounded-lg hover:shadow-2xl transition cover-clickable" onclick="window.showImgFullscreen('${escAttr(img)}','${escAttr(currentChapter.title || chapterLabel + ' ' + currentChapter.number)}')">`).join('')}</div>`}
@@ -2943,6 +3158,7 @@ async function renderLeaderboard(container) {
   const list = document.getElementById('leaderboardList');
   const snap = await getDocs(query(collection(db,'works'), where('type','==',currentContentType)));
   let works = []; snap.forEach(d => works.push({ id: d.id, ...d.data() }));
+  works = works.filter(w => !isTakedown(w));
   works.sort((a,b) => (b.avgRating || 0) - (a.avgRating || 0) || (b.ratingCount || 0) - (a.ratingCount || 0));
   works = works.slice(0,20);
   if (works.length === 0) { list.innerHTML = '<div class="card-bg rounded-2xl p-8 text-center text-slate-400">Belum ada.</div>'; return; }
@@ -3071,7 +3287,7 @@ async function renderChat(container) {
   pubImgInput.onchange = async (e) => {
     const f = e.target.files[0];
     if (!f) return;
-    pubImgPreview.innerHTML = '<p class="text-xs text-amber-400 mb-2">Memproses gambar...</p>';
+    pubImgPreview.innerHTML = '<p class="text-xs text-amber-400 mb-2">Mengupload gambar...</p>';
     try {
       const dataUrl = await compressImage(f, 800, 0.7, 150);
       pendingChatImg.public = dataUrl;
@@ -3384,6 +3600,7 @@ async function renderCreatorDashboard(container) {
           authorFollowerCount: userProfile.followerCount || 0,
           avgRating: 0, ratingCount: 0, isTamat: false, 
           views: 0, likes: 0, likedBy: [],
+          takedown: { active: false, reason: '', by: '', at: null },
           createdAt: serverTimestamp(), updatedAt: serverTimestamp() 
         });
         showToast('Karya dibuat!'); loadManage();
@@ -3405,12 +3622,34 @@ async function renderCreatorDashboard(container) {
     list.innerHTML = withCh.map(w => {
       const sid = safeId(w.id);
       const lbl = w.type === 'novel' ? 'Chapter' : 'Eps';
-      return `<div class="comment-card rounded-xl p-4 card-anim ${w.isTamat ? 'tamat-border' : 'berlanjut-border'}">
+      const isTD = isTakedown(w);
+      const gl = groupLabel(w.type);
+      const wGroups = getGroups(w);
+      const secs = groupChapters(w.chapters, w);
+      const epRow = (ch) => `
+            <div class="flex items-center justify-between bg-slate-800/50 rounded px-2 py-1.5 text-xs gap-2">
+              <span class="truncate flex-1"><span class="text-amber-400 font-bold">${lbl} ${ch.number}</span>${ch.title ? ': ' + escHtml(ch.title) : ''}</span>
+              ${w.type === 'komik' && ch.images ? `<span class="text-slate-500">${ch.images.length}🖼️</span>` : ''}
+              <button class="editChapterBtn text-blue-400 hover:text-blue-300 px-1" data-wid="${w.id}" data-cid="${ch.id}" data-type="${w.type}" title="Edit" ${isTD ? 'disabled' : ''}><i class="fas fa-edit"></i></button>
+              <button class="delC text-red-400 hover:text-red-300 px-1" data-wid="${w.id}" data-cid="${ch.id}" data-num="${ch.number}" ${isTD ? 'disabled' : ''}><i class="fas fa-trash"></i></button>
+            </div>`;
+      const listInner = wGroups.length === 0
+        ? w.chapters.map(epRow).join('')
+        : secs.map(sec => `
+            <div class="mb-2">
+              <div class="flex items-center gap-2 px-1 py-1 text-xs font-bold text-amber-300">
+                <i class="fas fa-folder"></i><span class="flex-1 truncate">${sec.group ? escHtml(groupTitleText(sec.group, w.type)) : 'Tanpa ' + gl}</span>
+                <span class="text-[10px] text-slate-500 font-normal">${sec.items.length}</span>
+                ${sec.group ? `<button class="manageG text-blue-400 hover:text-blue-300 px-1" data-wid="${w.id}" data-type="${w.type}" title="Edit ${gl}" ${isTD ? 'disabled' : ''}><i class="fas fa-edit"></i></button>` : ''}
+              </div>
+              <div class="space-y-1 pl-2 border-l-2 border-amber-500/30">${sec.items.length ? sec.items.map(epRow).join('') : '<p class="text-[11px] text-slate-500 italic">Kosong</p>'}</div>
+            </div>`).join('');
+      return `<div class="comment-card rounded-xl p-4 card-anim ${isTD ? 'takedown-border' : (w.isTamat ? 'tamat-border' : 'berlanjut-border')}">
         <div class="flex items-center gap-3 mb-3">
-          <div class="w-14 h-20 bg-slate-800 rounded-lg overflow-hidden relative">${w.coverURL ? `<img src="${w.coverURL}" class="w-full h-full object-cover">` : ''}${statusLabel(w.isTamat)}</div>
+          <div class="w-14 h-20 bg-slate-800 rounded-lg overflow-hidden relative">${w.coverURL ? `<img src="${w.coverURL}" class="w-full h-full object-cover ${isTD ? 'grayscale' : ''}">` : ''}${isTD ? '<span class="takedown-tag absolute top-1 right-1">TD</span>' : statusLabel(w.isTamat)}</div>
           <div class="flex-1 min-w-0">
-            <h4 class="font-bold truncate">${w.title}</h4>
-            <p class="text-xs text-slate-400">${w.chapters.length} ${lbl}</p>
+            <h4 class="font-bold truncate ${isTD ? 'line-through text-slate-500' : ''}">${w.title}</h4>
+            <p class="text-xs text-slate-400">${w.chapters.length} ${lbl}${wGroups.length ? ' • ' + wGroups.length + ' ' + gl : ''}</p>
             <div class="flex gap-3 mt-1 text-[10px] text-slate-400">
               <span><i class="fas fa-eye text-amber-400"></i> ${formatCount(w.views || 0)}</span>
               <span><i class="fas fa-heart" style="color:#ef4444"></i> ${formatCount(w.likes || 0)}</span>
@@ -3418,23 +3657,24 @@ async function renderCreatorDashboard(container) {
             </div>
           </div>
         </div>
+        ${isTD ? `<div class="bg-red-950/40 border border-red-800 rounded-lg p-3 mb-3">
+          <p class="text-xs text-red-400 font-bold mb-1"><i class="fas fa-ban mr-1"></i>KARYA DI-TAKEDOWN</p>
+          <p class="text-xs text-red-300 mb-1"><b>Alasan:</b> ${sensor(w.takedown.reason || '-')}</p>
+          <p class="text-[10px] text-red-500/70">Oleh: ${w.takedown.by || 'Admin'} • ${fmtDate(w.takedown.at)}</p>
+          <p class="text-[10px] text-yellow-300 mt-2"><i class="fas fa-info-circle mr-1"></i>Hubungi Admin via WA jika keberatan</p>
+        </div>` : ''}
         <div class="flex flex-wrap gap-2 mb-3">
-          <button class="addC bg-amber-500 text-black px-4 py-2 rounded-lg text-xs font-bold flex-1 hover:scale-105 transition" data-wid="${w.id}" data-type="${w.type}">+ ${lbl}</button>
-          <button class="tamatB ${w.isTamat ? 'bg-yellow-600' : 'bg-red-600'} text-white px-4 py-2 rounded-lg text-xs font-bold hover:scale-105 transition" data-wid="${w.id}" data-t="${w.isTamat ? 'true' : 'false'}">${w.isTamat ? 'Batal' : 'Tamatkan'}</button>
+          <button class="addC bg-amber-500 text-black px-4 py-2 rounded-lg text-xs font-bold flex-1 hover:scale-105 transition" data-wid="${w.id}" data-type="${w.type}" ${isTD ? 'disabled' : ''}>+ ${lbl}</button>
+          <button class="manageG bg-blue-600 text-white px-4 py-2 rounded-lg text-xs font-bold hover:scale-105 transition" data-wid="${w.id}" data-type="${w.type}" ${isTD ? 'disabled' : ''}><i class="fas fa-folder-open mr-1"></i>${gl}</button>
+          <button class="tamatB ${w.isTamat ? 'bg-yellow-600' : 'bg-red-600'} text-white px-4 py-2 rounded-lg text-xs font-bold hover:scale-105 transition" data-wid="${w.id}" data-t="${w.isTamat ? 'true' : 'false'}" ${isTD ? 'disabled' : ''}>${w.isTamat ? 'Batal' : 'Tamatkan'}</button>
           <button class="delW bg-red-800 text-white px-4 py-2 rounded-lg text-xs font-bold hover:scale-105 transition" data-wid="${w.id}" data-title="${w.title}"><i class="fas fa-trash"></i></button>
         </div>
-        <div class="border-t border-slate-700 pt-3 max-h-40 overflow-y-auto scrollbar-thin space-y-1">
-          ${w.chapters.map(ch => `
-            <div class="flex items-center justify-between bg-slate-800/50 rounded px-2 py-1.5 text-xs gap-2">
-              <span class="truncate flex-1"><span class="text-amber-400 font-bold">${lbl} ${ch.number}</span>${ch.title ? ': ' + ch.title : ''}</span>
-              ${w.type === 'komik' && ch.images ? `<span class="text-slate-500">${ch.images.length}🖼️</span>` : ''}
-              <button class="editChapterBtn text-blue-400 hover:text-blue-300 px-1" data-wid="${w.id}" data-cid="${ch.id}" data-type="${w.type}" title="Edit"><i class="fas fa-edit"></i></button>
-              <button class="delC text-red-400 hover:text-red-300 px-1" data-wid="${w.id}" data-cid="${ch.id}" data-num="${ch.number}"><i class="fas fa-trash"></i></button>
-            </div>
-          `).join('')}
+        <div class="border-t border-slate-700 pt-3 max-h-72 overflow-y-auto scrollbar-thin space-y-1">
+          ${listInner}
         </div>
         <div id="f-${sid}" class="hidden border-t border-slate-700 pt-4 space-y-3 mt-3">
           <input type="text" id="ct-${sid}" placeholder="${w.type === 'novel' ? 'Judul Chapter *' : 'Judul Eps (opsional)'}" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm">
+          ${wGroups.length ? `<div><label class="block text-xs font-semibold text-amber-400 mb-1">Masukkan ke ${gl}</label>${groupSelectHtml('cg-' + sid, wGroups, wGroups[wGroups.length - 1].id, w.type)}</div>` : `<p class="text-[11px] text-slate-500">💡 Klik tombol <b>${gl}</b> di atas untuk membuat ${gl} dan mengelompokkan ${lbl}.</p>`}
           ${w.type === 'novel' ? `<textarea id="cc-${sid}" rows="10" placeholder="Isi cerita *" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm"></textarea>` : `${multiImageField('mi-' + sid)}`}
           <div class="flex gap-2"><button class="subC bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-bold flex-1 hover:scale-105 transition" data-wid="${w.id}" data-type="${w.type}" data-sid="${sid}">Simpan</button><button class="canC bg-slate-700 text-slate-300 px-4 py-2 rounded-lg text-sm font-bold" data-sid="${sid}">Batal</button></div>
         </div>
@@ -3442,10 +3682,11 @@ async function renderCreatorDashboard(container) {
     }).join('');
     
     withCh.forEach(w => {
-      if (w.type === 'komik') attachMultiImageHandlers('mi-' + safeId(w.id));
+      if (w.type === 'komik' && !isTakedown(w)) attachMultiImageHandlers('mi-' + safeId(w.id));
     });
     
     list.querySelectorAll('.addC').forEach(b => b.onclick = () => document.getElementById('f-' + safeId(b.dataset.wid)).classList.toggle('hidden'));
+    list.querySelectorAll('.manageG').forEach(b => b.onclick = () => window.openGroupManager(b.dataset.wid, b.dataset.type, loadManage));
     list.querySelectorAll('.canC').forEach(b => b.onclick = () => document.getElementById('f-' + b.dataset.sid).classList.add('hidden'));
     list.querySelectorAll('.tamatB').forEach(b => b.onclick = async () => { const n = b.dataset.t === 'true'; if (!confirm(n ? 'Batal?' : 'Tamatkan?')) return; await updateDoc(doc(db,'works',b.dataset.wid), { isTamat: !n, updatedAt: serverTimestamp() }); loadManage(); });
     list.querySelectorAll('.delW').forEach(b => b.onclick = async () => {
@@ -3477,6 +3718,8 @@ async function renderCreatorDashboard(container) {
       const chSnap = await getDoc(doc(db, 'works', wid, 'chapters', cid));
       if (!chSnap.exists()) return;
       const ch = chSnap.data();
+      const wDataSnap = await getDoc(doc(db, 'works', wid));
+      const editGroups = getGroups(wDataSnap.exists() ? wDataSnap.data() : {});
       const modal = document.getElementById('modalContainer');
       const content = document.getElementById('modalContent');
       content.innerHTML = `
@@ -3487,12 +3730,22 @@ async function renderCreatorDashboard(container) {
         <div class="space-y-3">
           <div>
             <label class="block text-sm font-semibold mb-1">Judul ${type === 'novel' ? 'Chapter' : 'Eps'}</label>
-            <input id="editChTitle" type="text" value="${ch.title || ''}" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm">
+            <input id="editChTitle" type="text" value="${escHtml(ch.title || '')}" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm">
+          </div>
+          <div class="grid grid-cols-3 gap-3">
+            <div>
+              <label class="block text-sm font-semibold mb-1">Nomor</label>
+              <input id="editChNumber" type="number" min="0" value="${ch.number ?? ''}" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm">
+            </div>
+            <div class="col-span-2">
+              <label class="block text-sm font-semibold mb-1">${groupLabel(type)}</label>
+              ${groupSelectHtml('editChGroup', editGroups, ch.groupId || '', type)}
+            </div>
           </div>
           ${type === 'novel' ? `
             <div>
               <label class="block text-sm font-semibold mb-1">Isi Cerita *</label>
-              <textarea id="editChContent" rows="10" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm">${ch.content || ''}</textarea>
+              <textarea id="editChContent" rows="10" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm">${escHtml(ch.content || '')}</textarea>
             </div>
           ` : `
             <div id="editExisting-${cid}">
@@ -3500,7 +3753,7 @@ async function renderCreatorDashboard(container) {
               <div id="editExistingPreview-${cid}" class="mt-2"></div>
             </div>
             <div>
-              <label class="block text-sm font-semibold mb-1">Tambah Gambar Baru (1-5)</label>
+              <label class="block text-sm font-semibold mb-1">Tambah Gambar Baru (tanpa batas)</label>
               ${multiImageField('editAdd-' + cid)}
             </div>
           `}
@@ -3519,17 +3772,21 @@ async function renderCreatorDashboard(container) {
       document.getElementById('cancelEditCh').onclick = close;
       document.getElementById('saveEditCh').onclick = async () => {
         const newTitle = document.getElementById('editChTitle').value.trim();
+        const numVal = parseInt(document.getElementById('editChNumber').value, 10);
+        const extra = { groupId: document.getElementById('editChGroup').value || '' };
+        if (!isNaN(numVal)) extra.number = numVal;
         if (type === 'novel') {
           const newContent = document.getElementById('editChContent').value.trim();
           if (!newTitle) { showToast('Judul wajib!'); return; }
           if (!newContent) { showToast('Isi wajib!'); return; }
-          await updateDoc(doc(db, 'works', wid, 'chapters', cid), { title: newTitle, content: newContent, updatedAt: serverTimestamp() });
+          await updateDoc(doc(db, 'works', wid, 'chapters', cid), { title: newTitle, content: newContent, ...extra, updatedAt: serverTimestamp() });
         } else {
           const existingImages = window[`_existing_${cid}_images`] || ch.images || [];
           const newImages = getMultiImages('editAdd-' + cid);
           const finalImages = [...existingImages, ...newImages];
           await updateDoc(doc(db, 'works', wid, 'chapters', cid), { 
             title: newTitle, 
+            ...extra,
             images: finalImages,
             coverImage: finalImages[0] || '',
             updatedAt: serverTimestamp() 
@@ -3554,17 +3811,17 @@ async function renderCreatorDashboard(container) {
       const wid = b.dataset.wid, sid = b.dataset.sid, type = b.dataset.type;
       const t = document.getElementById('ct-' + sid).value.trim();
       const cs = await getDocs(collection(db,'works',wid,'chapters'));
-      const next = cs.size + 1;
+      const next = cs.docs.reduce((m, d) => Math.max(m, Number(d.data().number) || 0), 0) + 1;
+      const groupId = document.getElementById('cg-' + sid)?.value || '';
       if (type === 'novel') {
         const c = document.getElementById('cc-' + sid).value.trim();
         if (!t) { showToast('Judul wajib'); return; }
         if (!c) { showToast('Isi wajib'); return; }
-        await addDoc(collection(db,'works',wid,'chapters'), { number: next, title: t, content: c, images: [], createdAt: serverTimestamp() });
+        await addDoc(collection(db,'works',wid,'chapters'), { number: next, title: t, content: c, images: [], groupId, createdAt: serverTimestamp() });
       } else {
         const images = getMultiImages('mi-' + sid);
         if (images.length === 0) { showToast('Pilih minimal 1 gambar'); return; }
-        if (images.length > 5) { showToast('Maksimal 5 foto'); return; }
-        await addDoc(collection(db,'works',wid,'chapters'), { number: next, title: t, content: '', images: images, coverImage: images[0], createdAt: serverTimestamp() });
+        await addDoc(collection(db,'works',wid,'chapters'), { number: next, title: t, content: '', images: images, coverImage: images[0], groupId, createdAt: serverTimestamp() });
         const workRef = doc(db, 'works', wid);
         const workSnap = await getDoc(workRef);
         if (workSnap.exists()) {
@@ -3602,6 +3859,7 @@ async function renderAdminPanel(container) {
   </div>
   <div class="flex flex-wrap gap-2 mb-6">
     <button id="adminTabUsers" class="px-4 py-2 rounded-full bg-amber-500 text-black font-bold text-sm hover:scale-105 transition">User</button>
+    <button id="adminTabWorks" class="px-4 py-2 rounded-full bg-slate-800 text-slate-300 text-sm hover:bg-slate-700 transition">Karya</button>
     <button id="adminTabUpload" class="px-4 py-2 rounded-full bg-slate-800 text-slate-300 text-sm hover:bg-slate-700 transition">Upload</button>
     <button id="adminTabKritik" class="px-4 py-2 rounded-full bg-slate-800 text-slate-300 text-sm hover:bg-slate-700 transition">Kritik</button>
     <button id="adminTabBirthday" class="px-4 py-2 rounded-full bg-slate-800 text-slate-300 text-sm hover:bg-slate-700 transition">Ultah</button>
@@ -3610,6 +3868,7 @@ async function renderAdminPanel(container) {
   <div id="adminContent"></div>`;
   document.getElementById('adminLogoutBtn').onclick = adminLogout;
   const aC = document.getElementById('adminContent');
+  
   async function loadUsers() {
     const snap = await getDocs(collection(db,'users'));
     const users = []; snap.forEach(d => users.push({ id: d.id, ...d.data() }));
@@ -3655,6 +3914,111 @@ async function renderAdminPanel(container) {
       aC.querySelectorAll('.user-row').forEach(r => r.style.display = r.dataset.username.includes(v) ? 'block' : 'none');
     };
   }
+  
+  async function loadAdminWorks() {
+    aC.innerHTML = `
+      <div class="flex gap-2 mb-4 flex-wrap">
+        <input id="adminWorkSearch" type="text" placeholder="Cari judul karya..." class="flex-1 bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm">
+        <select id="adminWorkFilter" class="bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm">
+          <option value="all">Semua</option>
+          <option value="active">Aktif</option>
+          <option value="takedown">Takedown</option>
+        </select>
+      </div>
+      <div id="adminWorksList" class="space-y-3 max-h-[65vh] overflow-y-auto scrollbar-thin">Memuat...</div>`;
+    const snap = await getDocs(collection(db, 'works'));
+    let works = []; snap.forEach(d => works.push({ id: d.id, ...d.data() }));
+    works.sort((a,b) => (b.createdAt?.toDate?.() || 0) - (a.createdAt?.toDate?.() || 0));
+    function renderList() {
+      const q = document.getElementById('adminWorkSearch').value.toLowerCase();
+      const f = document.getElementById('adminWorkFilter').value;
+      let filtered = works.filter(w => (w.title || '').toLowerCase().includes(q));
+      if (f === 'active') filtered = filtered.filter(w => !isTakedown(w));
+      if (f === 'takedown') filtered = filtered.filter(w => isTakedown(w));
+      const list = document.getElementById('adminWorksList');
+      if (filtered.length === 0) { list.innerHTML = '<p class="text-slate-400 text-sm">Tidak ada karya.</p>'; return; }
+      list.innerHTML = filtered.map(w => {
+        const isTD = isTakedown(w);
+        return `<div class="card-bg rounded-xl p-3 card-anim ${isTD ? 'takedown-border' : ''}">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-16 bg-slate-800 rounded overflow-hidden flex-shrink-0">${w.coverURL ? `<img src="${w.coverURL}" class="w-full h-full object-cover ${isTD ? 'grayscale' : ''}">` : ''}</div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 flex-wrap">
+                <h4 class="font-bold text-sm truncate ${isTD ? 'line-through text-slate-500' : ''}">${w.title}</h4>
+                <span class="text-[10px] px-2 py-0.5 rounded-full ${w.type === 'novel' ? 'bg-blue-900/60 text-blue-300' : 'bg-purple-900/60 text-purple-300'}">${(w.type || 'novel').toUpperCase()}</span>
+                ${isTD ? '<span class="text-[10px] bg-red-900/60 text-red-300 px-2 py-0.5 rounded-full font-bold">TAKEDOWN</span>' : '<span class="text-[10px] bg-green-900/60 text-green-300 px-2 py-0.5 rounded-full">AKTIF</span>'}
+              </div>
+              <p class="text-xs text-slate-400 truncate">oleh ${w.authorName || 'Anonim'}</p>
+              <p class="text-[10px] text-slate-500">${formatCount(w.views || 0)} views • ${formatCount(w.likes || 0)} likes</p>
+            </div>
+          </div>
+          ${isTD ? `<div class="mt-2 bg-red-950/40 border border-red-800 rounded-lg p-2 text-xs">
+            <p class="text-red-400"><b>Alasan:</b> ${sensor(w.takedown.reason || '-')}</p>
+            <p class="text-red-500/70 text-[10px] mt-1">Oleh ${w.takedown.by || 'Admin'} • ${fmtDate(w.takedown.at)}</p>
+          </div>` : ''}
+          <div class="flex gap-2 mt-2">
+            ${isTD ? `<button class="restoreBtn bg-green-600 text-white px-4 py-1.5 rounded-lg text-xs font-bold hover:scale-105 transition" data-wid="${w.id}"><i class="fas fa-undo mr-1"></i>Restore</button>` : `<button class="takedownBtn bg-red-600 text-white px-4 py-1.5 rounded-lg text-xs font-bold hover:scale-105 transition" data-wid="${w.id}" data-title="${escAttr(w.title)}"><i class="fas fa-ban mr-1"></i>Takedown</button>`}
+            <button class="adminViewBtn bg-slate-700 text-slate-300 px-4 py-1.5 rounded-lg text-xs font-bold hover:scale-105 transition" data-wid="${w.id}"><i class="fas fa-eye mr-1"></i>Lihat</button>
+          </div>
+        </div>`;
+      }).join('');
+      list.querySelectorAll('.takedownBtn').forEach(b => b.onclick = () => openTakedownModal(b.dataset.wid, b.dataset.title));
+      list.querySelectorAll('.restoreBtn').forEach(b => b.onclick = async () => {
+        if (!confirm('Restore karya ini? Karya akan bisa diakses kembali.')) return;
+        await updateDoc(doc(db, 'works', b.dataset.wid), { 
+          takedown: { active: false, reason: '', by: '', at: null },
+          updatedAt: serverTimestamp() 
+        });
+        showToast('✅ Karya di-restore!');
+        loadAdminWorks();
+      });
+      list.querySelectorAll('.adminViewBtn').forEach(b => b.onclick = () => { window.location.hash = 'reader/' + b.dataset.wid; });
+    }
+    document.getElementById('adminWorkSearch').oninput = renderList;
+    document.getElementById('adminWorkFilter').onchange = renderList;
+    renderList();
+  }
+
+  function openTakedownModal(wid, title) {
+    const modal = document.getElementById('modalContainer');
+    const content = document.getElementById('modalContent');
+    content.innerHTML = `
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-black text-red-400"><i class="fas fa-ban mr-2"></i>Takedown Karya</h2>
+        <button id="closeTD" class="text-slate-400 text-2xl hover:rotate-90 transition-transform">&times;</button>
+      </div>
+      <div class="bg-red-950/30 border border-red-800 rounded-xl p-3 mb-4">
+        <p class="text-xs text-red-300"><b>Karya:</b> ${title}</p>
+      </div>
+      <label class="block text-sm font-semibold mb-1 text-red-400">Alasan Takedown <span class="text-red-500">*</span></label>
+      <textarea id="tdReason" rows="4" placeholder="Contoh: Mengandung konten 18+ / kekerasan berlebihan / plagiarisme..." class="w-full bg-slate-800 border border-red-800 rounded-xl px-4 py-2 text-sm mb-2"></textarea>
+      <p class="text-xs text-slate-500 mb-4">Alasan ini akan ditampilkan ke pembaca & pembuat karya.</p>
+      <div class="flex gap-2">
+        <button id="confirmTD" class="flex-1 bg-red-600 text-white font-bold py-2 rounded-full hover:scale-105 transition"><i class="fas fa-ban mr-1"></i>Takedown</button>
+        <button id="cancelTD" class="bg-slate-700 text-slate-300 px-4 py-2 rounded-full font-bold">Batal</button>
+      </div>`;
+    modal.classList.remove('hidden');
+    document.getElementById('closeTD').onclick = () => modal.classList.add('hidden');
+    document.getElementById('cancelTD').onclick = () => modal.classList.add('hidden');
+    document.getElementById('confirmTD').onclick = async () => {
+      const reason = document.getElementById('tdReason').value.trim();
+      if (!reason) { showToast('Alasan wajib diisi!'); return; }
+      const adminName = userProfile?.username || (isAdminSession ? (adminEmail || 'Admin') : 'Admin');
+      await updateDoc(doc(db, 'works', wid), {
+        takedown: {
+          active: true,
+          reason: sensor(reason),
+          by: adminName,
+          at: serverTimestamp()
+        },
+        updatedAt: serverTimestamp()
+      });
+      showToast('⛔ Karya di-takedown');
+      modal.classList.add('hidden');
+      loadAdminWorks();
+    };
+  }
+  
   async function loadUploadForm() {
     aC.innerHTML = `<div class="card-bg rounded-2xl p-6 max-w-2xl mx-auto card-anim"><h3 class="font-bold mb-4">Upload (Admin)</h3>
       <div class="space-y-4">
@@ -3686,11 +4050,13 @@ async function renderAdminPanel(container) {
         authorFollowerCount: userProfile?.followerCount || 0,
         avgRating: 0, ratingCount: 0, isTamat: false, 
         views: 0, likes: 0, likedBy: [],
+        takedown: { active: false, reason: '', by: '', at: null },
         createdAt: serverTimestamp(), updatedAt: serverTimestamp() 
       });
       showToast('Dibuat'); window.location.hash = 'creator';
     };
   }
+  
   async function loadKritik() {
     aC.innerHTML = `<div class="card-bg rounded-2xl p-6 card-anim"><h3 class="font-bold mb-4">Kritik</h3><div id="kL"></div></div>`;
     const snap = await getDocs(query(collection(db,'kritik_saran'), orderBy('createdAt','desc'), limit(50)));
@@ -3699,6 +4065,7 @@ async function renderAdminPanel(container) {
     if (arr.length === 0) { l.innerHTML = '<p class="text-slate-400">Belum ada.</p>'; return; }
     l.innerHTML = arr.map(k => `<div class="comment-card rounded-xl p-3 mb-2 card-anim"><div class="flex gap-2 text-xs mb-1"><span class="text-amber-400 font-semibold">${k.nama}</span><span class="bg-slate-700 px-2 py-0.5 rounded-full">${k.jenis}</span><span class="ml-auto text-slate-500">${fmtDate(k.createdAt)}</span></div><p class="text-sm whitespace-pre-wrap">${k.pesan}</p></div>`).join('');
   }
+  
   async function loadBirthday() {
     aC.innerHTML = `<div class="card-bg rounded-2xl p-6 max-w-2xl mx-auto card-anim">
       <h3 class="font-bold mb-4"><i class="fas fa-birthday-cake text-amber-400 mr-2"></i>Setting Auto Ultah</h3>
@@ -3739,6 +4106,7 @@ async function renderAdminPanel(container) {
       setTimeout(() => { if (banner.parentElement) banner.remove(); }, 8000);
     };
   }
+  
   async function loadSet() {
     aC.innerHTML = `<div class="card-bg rounded-2xl p-6 max-w-lg mx-auto card-anim"><h3 class="font-bold mb-4">Setting</h3>
       <label class="block text-sm font-semibold mb-1">Nomor WA Admin</label>
@@ -3750,6 +4118,7 @@ async function renderAdminPanel(container) {
     };
   }
   document.getElementById('adminTabUsers').onclick = loadUsers;
+  document.getElementById('adminTabWorks').onclick = loadAdminWorks;
   document.getElementById('adminTabUpload').onclick = loadUploadForm;
   document.getElementById('adminTabKritik').onclick = loadKritik;
   document.getElementById('adminTabBirthday').onclick = loadBirthday;
