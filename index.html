@@ -51,6 +51,7 @@ body{font-family:'Inter',sans-serif;background:#0f0f1a;color:#e2e8f0;overflow-x:
 .takedown-tag{background:linear-gradient(90deg,#7f1d1d,#ef4444,#7f1d1d);background-size:200% 100%;color:white;font-size:10px;font-weight:900;padding:2px 8px;border-radius:4px;letter-spacing:.5px;animation:tagShine 3s infinite;box-shadow:0 0 8px rgba(239,68,68,.7)}
 .nonpublish-tag{background:linear-gradient(90deg,#64748b,#94a3b8,#64748b);background-size:200% 100%;color:white;font-size:10px;font-weight:900;padding:2px 8px;border-radius:4px;letter-spacing:.5px;animation:tagShine 3s infinite}
 .unggulan-tag{background:linear-gradient(90deg,#f59e0b,#fbbf24,#f59e0b);background-size:200% 100%;color:#0f0f1a;font-size:10px;font-weight:900;padding:2px 8px;border-radius:4px;letter-spacing:.5px;animation:tagShine 3s infinite;box-shadow:0 0 10px rgba(245,158,11,.7)}
+.baru-tag{background:linear-gradient(90deg,#3b82f6,#60a5fa,#3b82f6);background-size:200% 100%;color:white;font-size:10px;font-weight:900;padding:2px 8px;border-radius:4px;letter-spacing:.5px;animation:tagShine 3s infinite;box-shadow:0 0 10px rgba(59,130,246,.7)}
 @keyframes tagShine{0%{background-position:-100% 0}100%{background-position:200% 0}}
 .star-rating{color:#fbbf24;cursor:pointer;transition:transform .15s}
 .star-rating:hover{transform:scale(1.25) rotate(8deg)}
@@ -67,6 +68,7 @@ body{font-family:'Inter',sans-serif;background:#0f0f1a;color:#e2e8f0;overflow-x:
 .takedown-border{border:2px solid #7f1d1d;box-shadow:0 0 10px rgba(127,29,29,.6);background:linear-gradient(135deg,#1a0a0a,#1a1a2e)}
 .nonpublish-border{border:2px solid #64748b;box-shadow:0 0 10px rgba(100,116,139,.4);background:linear-gradient(135deg,#1a1a2e,#252540)}
 .unggulan-border{border:2px solid #f59e0b;box-shadow:0 0 15px rgba(245,158,11,.5);background:linear-gradient(135deg,#2a1f0a,#1a1a2e)}
+.baru-border{border:2px solid #3b82f6;box-shadow:0 0 12px rgba(59,130,246,.5);background:linear-gradient(135deg,#0a1628,#1a1a2e)}
 .uploading-spinner{display:inline-block;width:14px;height:14px;border:2px solid #fbbf24;border-top-color:transparent;border-radius:50%;animation:spin .8s linear infinite;margin-right:6px}
 @keyframes spin{to{transform:rotate(360deg)}}
 .guide-step{background:#12121f;border-left:3px solid #fbbf24;padding:12px 16px;border-radius:8px;margin-bottom:10px}
@@ -686,6 +688,8 @@ async function checkBirthdays() {
 
 const NAV_MAP = [
   { id:'home', icon:'fa-home', label:'Beranda' },
+  { id:'baru', icon:'fa-clock', label:'Baru-baru Ini' },
+  { id:'baruupload', icon:'fa-upload', label:'Baru Upload' },
   { id:'berita', icon:'fa-newspaper', label:'Berita' },
   { id:'kategori', icon:'fa-tags', label:'Kategori' },
   { id:'leaderboard', icon:'fa-trophy', label:'Leaderboard' },
@@ -1449,7 +1453,9 @@ async function renderPage() {
     await renderFollowersPage(main, hash.replace('followers/',''), 'followers');
   } else if (hash.startsWith('following/')) {
     await renderFollowersPage(main, hash.replace('following/',''), 'following');
-  } else if (hash === 'berita') await renderBerita(main);
+  } else if (hash === 'baru') await renderBaru(main);
+  else if (hash === 'baruupload') await renderBaruUpload(main);
+  else if (hash === 'berita') await renderBerita(main);
   else if (hash === 'kategori') await renderKategori(main);
   else if (hash === 'leaderboard') await renderLeaderboard(main);
   else if (hash === 'followers') await renderTopFollowers(main);
@@ -1485,6 +1491,49 @@ function renderAdminLogin(c) {
     else { pi.type = 'password'; ei.classList.replace('fa-eye-slash','fa-eye'); }
   };
   document.getElementById('adminLoginBtn').onclick = () => adminLogin(document.getElementById('adminEmailInput').value.trim(), pi.value);
+}
+
+async function renderBaru(container) {
+  container.innerHTML = `
+    <h2 class="text-2xl font-bold mb-4"><i class="fas fa-clock text-blue-400 mr-2"></i>Baru-baru Ini</h2>
+    <p class="text-sm text-slate-400 mb-6">Karya yang sedang dalam proses pembuatan (belum dipublish).</p>
+    <div id="baruList" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-5"></div>`;
+  const list = document.getElementById('baruList');
+  const snap = await getDocs(collection(db, 'works'));
+  let works = []; snap.forEach(d => works.push({ id: d.id, ...d.data() }));
+  works = works.filter(w => isNonPublish(w) && !isTakedown(w));
+  works.sort((a, b) => {
+    const aTime = a.updatedAt?.toDate?.() || a.createdAt?.toDate?.() || 0;
+    const bTime = b.updatedAt?.toDate?.() || b.createdAt?.toDate?.() || 0;
+    return bTime - aTime;
+  });
+  if (works.length === 0) {
+    list.innerHTML = `<div class="col-span-full card-bg rounded-2xl p-12 text-center card-anim"><i class="fas fa-clock text-5xl text-blue-400/50 mb-3"></i><p class="text-slate-300">Belum ada karya yang sedang dibuat.</p><p class="text-xs text-slate-500 mt-2">Karya yang di-nonpublish akan muncul di sini.</p></div>`;
+    return;
+  }
+  renderWorkList(list, works);
+}
+
+async function renderBaruUpload(container) {
+  container.innerHTML = `
+    <h2 class="text-2xl font-bold mb-4"><i class="fas fa-upload text-green-400 mr-2"></i>Baru Upload</h2>
+    <p class="text-sm text-slate-400 mb-6">Karya yang baru saja dipublish.</p>
+    <div id="baruUploadList" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-5"></div>`;
+  const list = document.getElementById('baruUploadList');
+  const snap = await getDocs(collection(db, 'works'));
+  let works = []; snap.forEach(d => works.push({ id: d.id, ...d.data() }));
+  works = works.filter(w => !isTakedown(w) && !isNonPublish(w));
+  works.sort((a, b) => {
+    const aTime = a.createdAt?.toDate?.() || 0;
+    const bTime = b.createdAt?.toDate?.() || 0;
+    return bTime - aTime;
+  });
+  works = works.slice(0, 40);
+  if (works.length === 0) {
+    list.innerHTML = `<div class="col-span-full card-bg rounded-2xl p-12 text-center card-anim"><i class="fas fa-upload text-5xl text-green-400/50 mb-3"></i><p class="text-slate-300">Belum ada karya yang dipublish.</p></div>`;
+    return;
+  }
+  renderWorkList(list, works);
 }
 
 async function renderJadiKreator(container) {
@@ -1568,22 +1617,28 @@ async function renderPanduan(container) {
     <h3><i class="fas fa-home"></i> 2. Beranda</h3>
     <p>Lihat daftar <b>Komik</b> (default) & <b>Novel</b>. Komik paling populer muncul paling atas.</p>
 
-    <h3><i class="fas fa-newspaper"></i> 3. Berita</h3>
+    <h3><i class="fas fa-clock"></i> 3. Baru-baru Ini</h3>
+    <p>Karya yang sedang dalam proses pembuatan (belum dipublish). Karya yang di-nonpublish akan muncul di sini.</p>
+
+    <h3><i class="fas fa-upload"></i> 4. Baru Upload</h3>
+    <p>Karya yang baru saja dipublish oleh kreator.</p>
+
+    <h3><i class="fas fa-newspaper"></i> 5. Berita</h3>
     <p>Informasi terbaru dari Admin. Berita yang disematkan (pinned) muncul paling atas dengan border emas.</p>
 
-    <h3><i class="fas fa-tags"></i> 4. Kategori</h3>
+    <h3><i class="fas fa-tags"></i> 6. Kategori</h3>
     <p>Filter karya berdasarkan genre. Ada puluhan kategori, klik "Lihat Selengkapnya" untuk melihat semua.</p>
 
-    <h3><i class="fas fa-star"></i> 5. Status Komik</h3>
+    <h3><i class="fas fa-star"></i> 7. Status Komik</h3>
     <ul>
       <li><b>Publish</b> — pembaca bisa baca semua chapter</li>
       <li><b>Nonpublish</b> — pembaca hanya bisa lihat sampul, teaser, deskripsi</li>
     </ul>
 
-    <h3><i class="fas fa-crown"></i> 6. Kreator Unggulan</h3>
+    <h3><i class="fas fa-crown"></i> 8. Kreator Unggulan</h3>
     <p>Admin/Owner bisa menandai kreator sebagai <b>Unggulan</b> (⭐). Kreator unggulan mendapat border emas di profil dan karyanya.</p>
 
-    <h3><i class="fas fa-check-circle"></i> 7. Centang Verified</h3>
+    <h3><i class="fas fa-check-circle"></i> 9. Centang Verified</h3>
     <ul>
       <li><b>🟡 Centang Kuning</b> — Penulis Novel terverifikasi</li>
       <li><b>🟠 Centang Oranye</b> — Pembuat Komik terverifikasi</li>
@@ -1591,13 +1646,13 @@ async function renderPanduan(container) {
       <li><b>🔵 Centang Biru</b> — 100.000+ followers</li>
     </ul>
 
-    <h3><i class="fas fa-comments"></i> 8. Komentar & Rating</h3>
+    <h3><i class="fas fa-comments"></i> 10. Komentar & Rating</h3>
     <p>Di halaman baca komik/novel, kamu bisa komentar, rating bintang 1-5, lihat rating user lain, edit/hapus komentar sendiri.</p>
 
-    <h3><i class="fas fa-users"></i> 9. Clan</h3>
+    <h3><i class="fas fa-users"></i> 11. Clan</h3>
     <p>Buat atau join clan. Join clan perlu <b>persetujuan Admin/Owner clan</b>. Owner clan bisa promote max 2 admin.</p>
 
-    <h3><i class="fas fa-birthday-cake"></i> 10. Auto Ultah</h3>
+    <h3><i class="fas fa-birthday-cake"></i> 12. Auto Ultah</h3>
     <p>Penulis & Komikus yang isi tanggal lahir akan dapat banner ucapan otomatis di hari ulang tahunnya. Ada riwayat ultah di Admin Panel.</p>
 
     <h3><i class="fas fa-question-circle"></i> Butuh Bantuan?</h3>
@@ -1656,7 +1711,6 @@ async function renderPanduan(container) {
 }
 
 async function renderHome(container) {
-  // TAB FILTER: Komik dulu (kiri), lalu Novel (kanan)
   container.innerHTML = `
     <div class="flex flex-wrap justify-between items-center gap-3 mb-6">
       <div class="flex gap-2">
@@ -1825,7 +1879,6 @@ async function renderBerita(container) {
   document.getElementById('addBeritaBtn').onclick = () => openBeritaModal(null, container);
 }
 
-// PERBAIKAN: berita pakai upload gambar ke ImgBB (sama seperti cover karya)
 async function openBeritaModal(id, container) {
   const modal = document.getElementById('modalContainer');
   const content = document.getElementById('modalContent');
@@ -1848,7 +1901,6 @@ async function openBeritaModal(id, container) {
       <button id="saveBeritaBtn" class="w-full bg-amber-500 text-black font-bold py-2 rounded-full hover:scale-105 transition">Simpan</button>
     </div>`;
   modal.classList.remove('hidden');
-  // Prefill cover kalau edit
   if (data.image) {
     window[`_beritaCover_cover`] = data.image;
     const urlInp = document.getElementById('beritaCover-url');
@@ -1864,7 +1916,6 @@ async function openBeritaModal(id, container) {
     }
   }
   attachCoverHandler('beritaCover');
-  // Re-attach prefill karena attachCoverHandler reset
   if (data.image) {
     window[`_beritaCover_cover`] = data.image;
     const urlInp = document.getElementById('beritaCover-url');
@@ -2949,11 +3000,25 @@ async function renderReader(container, novelId, chapterId = null) {
   const commentsRef = collection(db, 'works', novelId, 'chapters', currentChapter.id, 'comments');
   const ratingsRef = collection(db, 'works', novelId, 'chapters', currentChapter.id, 'ratings');
   
-  onSnapshot(ratingsRef, (snap) => {
+  // ✅ FIX: Rating — fetch user dari Firestore jika belum ada di cache
+  onSnapshot(ratingsRef, async (snap) => {
     const summaryDiv = document.getElementById('ratingSummary');
     if (!summaryDiv) return;
     const arr = []; snap.forEach(d => arr.push({ id: d.id, ...d.data() }));
     if (arr.length === 0) { summaryDiv.innerHTML = '<p class="text-xs text-slate-500">Belum ada rating.</p>'; return; }
+    
+    // Fetch data user yang belum ada di cache
+    for (const r of arr) {
+      if (!usersCache[r.userId]) {
+        try {
+          const uSnap = await getDoc(doc(db, 'users', r.userId));
+          if (uSnap.exists()) {
+            usersCache[r.userId] = { id: r.userId, ...uSnap.data() };
+          }
+        } catch (e) {}
+      }
+    }
+    
     const avg = arr.reduce((s, r) => s + (r.rating || 0), 0) / arr.length;
     summaryDiv.innerHTML = `
       <div class="flex items-center gap-3 mb-3 flex-wrap">
@@ -2966,7 +3031,8 @@ async function renderReader(container, novelId, chapterId = null) {
       <div class="flex flex-wrap gap-1">
         ${arr.map(r => {
           const u = usersCache[r.userId] || {};
-          const un = u.username || r.username || 'User';
+          let un = u.username || r.username || '';
+          if (!un || un === 'User' || un === 'Guest') un = 'Anonim';
           const uPhoto = u.photoURL || r.photoURL || '';
           const vB = getVerifiedBadge(u.followerCount || 0) + getCreatorVerifiedBadge(u);
           return `<div class="rating-display user-rating" title="${un} kasih ${r.rating} bintang">
@@ -3168,7 +3234,6 @@ async function renderKategori(container) {
 }
 
 async function renderLeaderboard(container) {
-  // TAB FILTER: Komik dulu (kiri), lalu Novel (kanan)
   container.innerHTML = `
     <h2 class="text-2xl font-bold mb-4"><i class="fas fa-trophy text-amber-400 mr-2 badge-float"></i>Leaderboard</h2>
     <div class="flex gap-2 mb-6">
