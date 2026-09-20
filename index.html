@@ -1829,57 +1829,75 @@ window.toggleWorkLike = async (workId) => {
 };
 
 async function renderBerita(container) {
-  if (!isAdminUser(userProfile)) {
-    container.innerHTML = `<div class="card-bg rounded-2xl p-8 text-center card-anim"><i class="fas fa-lock text-4xl text-red-400 mb-4"></i><h2 class="text-xl font-bold">Akses Ditolak</h2><p class="text-slate-400 mt-2">Hanya Admin/Owner yang bisa akses.</p></div>`;
-    return;
-  }
+  // ============ BERITA BISA DILIHAT SEMUA ORANG ============
+  // Hanya admin/owner yang bisa upload, edit, pin, hapus
+  const canManage = isAdminUser(userProfile);
+  
   container.innerHTML = `
     <div class="flex justify-between items-center mb-4 flex-wrap gap-2">
-      <h2 class="text-2xl font-bold"><i class="fas fa-newspaper text-amber-400 mr-2"></i>Berita</h2>
-      <button id="addBeritaBtn" class="bg-amber-500 text-black font-bold px-4 py-2 rounded-full text-sm hover:scale-105 transition"><i class="fas fa-plus mr-1"></i>Buat Berita</button>
+      <div>
+        <h2 class="text-2xl font-bold"><i class="fas fa-newspaper text-amber-400 mr-2"></i>Berita</h2>
+        <p class="text-xs text-slate-400 mt-1">Informasi terbaru dari Admin KomiNovel</p>
+      </div>
+      ${canManage ? `<button id="addBeritaBtn" class="bg-amber-500 text-black font-bold px-4 py-2 rounded-full text-sm hover:scale-105 transition"><i class="fas fa-plus mr-1"></i>Buat Berita</button>` : ''}
     </div>
     <div id="beritaList" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>`;
   const list = document.getElementById('beritaList');
   const snap = await getDocs(query(collection(db, 'berita'), orderBy('createdAt', 'desc')));
   const arr = []; snap.forEach(d => arr.push({ id: d.id, ...d.data() }));
   arr.sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0));
-  if (arr.length === 0) { list.innerHTML = '<div class="col-span-full card-bg rounded-2xl p-8 text-center text-slate-400">Belum ada berita.</div>'; }
-  else {
+  
+  if (arr.length === 0) { 
+    list.innerHTML = `<div class="col-span-full card-bg rounded-2xl p-12 text-center card-anim">
+      <i class="fas fa-newspaper text-5xl text-amber-400/50 mb-3"></i>
+      <p class="text-slate-300">Belum ada berita.</p>
+      ${canManage ? '<p class="text-xs text-slate-500 mt-2">Klik "Buat Berita" untuk menambahkan.</p>' : '<p class="text-xs text-slate-500 mt-2">Nantikan informasi terbaru dari Admin.</p>'}
+    </div>`; 
+  } else {
     list.innerHTML = arr.map(b => `
       <div class="news-card ${b.pinned ? 'pinned' : ''} card-anim">
         ${b.pinned ? '<span class="pin-badge mb-2"><i class="fas fa-thumbtack"></i> DISEMATKAN</span>' : ''}
-        <h3 class="font-bold text-lg mt-2">${b.title}</h3>
-        <p class="text-xs text-slate-500 mb-2">${fmtDate(b.createdAt)} • oleh ${b.authorName || 'Admin'}</p>
+        <h3 class="font-bold text-lg mt-2">${escHtml(b.title)}</h3>
+        <p class="text-xs text-slate-500 mb-2">${fmtDate(b.createdAt)} • oleh ${escHtml(b.authorName || 'Admin')}</p>
         <div class="text-sm text-slate-300 whitespace-pre-wrap">${linkify(b.content || '')}</div>
         ${b.image ? `<img src="${b.image}" class="w-full rounded-lg mt-3 cursor-zoom-in" onclick="window.showImgFullscreen('${escAttr(b.image)}','Berita')">` : ''}
-        <div class="flex gap-2 mt-3">
+        ${canManage ? `
+        <div class="flex gap-2 mt-3 flex-wrap">
           <button class="pinBtn ${b.pinned ? 'bg-yellow-600' : 'bg-slate-700'} text-white px-3 py-1 rounded-lg text-xs font-bold" data-id="${b.id}" data-pinned="${b.pinned || false}">
             <i class="fas fa-thumbtack mr-1"></i>${b.pinned ? 'Lepas Semat' : 'Sematkan'}
           </button>
           <button class="editBeritaBtn bg-blue-600 text-white px-3 py-1 rounded-lg text-xs font-bold" data-id="${b.id}"><i class="fas fa-edit mr-1"></i>Edit</button>
           <button class="delBeritaBtn bg-red-600 text-white px-3 py-1 rounded-lg text-xs font-bold" data-id="${b.id}"><i class="fas fa-trash mr-1"></i>Hapus</button>
-        </div>
+        </div>` : ''}
       </div>`).join('');
     
-    list.querySelectorAll('.pinBtn').forEach(b => b.onclick = async () => {
-      const now = b.dataset.pinned === 'true';
-      await updateDoc(doc(db, 'berita', b.dataset.id), { pinned: !now, updatedAt: serverTimestamp() });
-      showToast(now ? 'Sematan dilepas' : '📌 Berita disematkan');
-      renderBerita(container);
-    });
-    list.querySelectorAll('.editBeritaBtn').forEach(b => b.onclick = () => openBeritaModal(b.dataset.id, container));
-    list.querySelectorAll('.delBeritaBtn').forEach(b => b.onclick = async () => {
-      if (!confirm('Hapus berita ini?')) return;
-      await deleteDoc(doc(db, 'berita', b.dataset.id));
-      showToast('Dihapus');
-      renderBerita(container);
-    });
+    // Event handler hanya aktif jika admin/owner
+    if (canManage) {
+      list.querySelectorAll('.pinBtn').forEach(b => b.onclick = async () => {
+        const now = b.dataset.pinned === 'true';
+        await updateDoc(doc(db, 'berita', b.dataset.id), { pinned: !now, updatedAt: serverTimestamp() });
+        showToast(now ? 'Sematan dilepas' : '📌 Berita disematkan');
+        renderBerita(container);
+      });
+      list.querySelectorAll('.editBeritaBtn').forEach(b => b.onclick = () => openBeritaModal(b.dataset.id, container));
+      list.querySelectorAll('.delBeritaBtn').forEach(b => b.onclick = async () => {
+        if (!confirm('Hapus berita ini?')) return;
+        await deleteDoc(doc(db, 'berita', b.dataset.id));
+        showToast('Dihapus');
+        renderBerita(container);
+      });
+    }
   }
 
-  document.getElementById('addBeritaBtn').onclick = () => openBeritaModal(null, container);
+  if (canManage) {
+    document.getElementById('addBeritaBtn').onclick = () => openBeritaModal(null, container);
+  }
 }
 
 async function openBeritaModal(id, container) {
+  // Guard: hanya admin/owner
+  if (!isAdminUser(userProfile)) { showToast('Akses ditolak! Hanya Admin/Owner.'); return; }
+  
   const modal = document.getElementById('modalContainer');
   const content = document.getElementById('modalContent');
   let data = { title: '', content: '', image: '' };
