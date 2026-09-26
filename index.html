@@ -13,8 +13,7 @@
   "url": "https://kominovel.vercel.app"
 }
 </script>
-
-<meta name="google-site-verification" content="GvyTGbIx3Zov0CXr0f1voJ2LJnac-ppCl62NStzdY3E"
+<meta name="google-site-verification" content="GvyTGbIx3Zov0CXr0f1voJ2LJnac-ppCl62NStzdY3E">
 <meta name="description" content="KomiNovel - Platform baca & tulis Novel dan Komik online gratis.">
 <link rel="icon" href="https://i.ibb.co.com/SDTthJ7m/Gemini-Generated-Image-fhupt4fhupt4fhup.jpg">
 <script src="https://cdn.tailwindcss.com"></script>
@@ -230,6 +229,38 @@ body{font-family:'Inter',sans-serif;background:#0f0f1a;color:#e2e8f0;overflow-x:
 }
 .owner-shine{border:3px solid #fbbf24;animation:ownerGlow 2.6s infinite ease-in-out;border-radius:50%}
 .owner-shine-card{border:2px solid #fbbf24;animation:ownerGlow 2.6s infinite ease-in-out}
+
+/* === MINIGAME STYLES === */
+.mg-room-code{font-family:monospace;letter-spacing:4px;font-weight:900;font-size:28px;color:#fbbf24;text-shadow:0 0 12px rgba(251,191,36,.6)}
+.mg-canvas-wrap{position:relative;background:#1a1a2e;border:2px solid #2d2d44;border-radius:16px;overflow:hidden}
+.mg-canvas{display:block;width:100%;height:auto;cursor:crosshair;background:#fff;touch-action:none}
+.mg-timer{font-family:monospace;font-weight:900;font-size:18px;color:#fbbf24;background:#0f0f1a;border:1px solid #fbbf24;border-radius:10px;padding:6px 14px}
+.mg-timer.warning{color:#ef4444;border-color:#ef4444;animation:glowPulse 1s infinite}
+.mg-player-chip{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:9999px;font-size:12px;font-weight:700;background:#1a1a2e;border:2px solid #2d2d44;transition:.2s}
+.mg-player-chip.active{border-color:#fbbf24;box-shadow:0 0 12px rgba(251,191,36,.4)}
+.mg-player-chip.drawer{border-color:#10b981;box-shadow:0 0 12px rgba(16,185,129,.4)}
+.mg-player-chip.guessed{border-color:#3b82f6;background:rgba(59,130,246,.15)}
+.mg-player-chip.owner-chip{border-color:#ef4444;box-shadow:0 0 12px rgba(239,68,68,.4)}
+.mg-guess-log{background:#12121f;border:1px solid #2d2d44;border-radius:10px;padding:10px;max-height:200px;overflow-y:auto;font-size:13px}
+.mg-guess-log .correct{color:#10b981;font-weight:700}
+.mg-guess-log .wrong{color:#ef4444}
+.mg-guess-log .close{color:#f59e0b}
+.mg-guess-log .info{color:#94a3b8}
+.mg-guess-log .system{color:#a855f7;font-style:italic}
+.mg-canvas-toolbar{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.mg-tool-btn{width:36px;height:36px;border-radius:8px;border:2px solid #2d2d44;background:#1a1a2e;color:#cbd5e1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s;font-size:14px}
+.mg-tool-btn:hover{border-color:#fbbf24;color:#fbbf24}
+.mg-tool-btn.active{border-color:#fbbf24;background:rgba(251,191,36,.15);color:#fbbf24}
+.mg-color-swatch{width:28px;height:28px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:.2s}
+.mg-color-swatch.active{border-color:#fff;transform:scale(1.15)}
+.mg-color-swatch:hover{transform:scale(1.1)}
+.mg-scoreboard{background:#12121f;border:1px solid #2d2d44;border-radius:10px;padding:10px}
+.mg-waiting-pulse{animation:glowPulse 1.8s infinite}
+.mg-answer-reveal{background:linear-gradient(135deg,#10b981,#047857);color:white;padding:12px 20px;border-radius:12px;font-weight:900;font-size:16px;text-align:center;box-shadow:0 0 20px rgba(16,185,129,.5)}
+.mg-mode-card{cursor:pointer;transition:.25s;border:2px solid #2d2d44;border-radius:16px;padding:20px;text-align:center;background:#1a1a2e}
+.mg-mode-card:hover{border-color:#fbbf24;transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,0,0,.4)}
+.mg-mode-card.selected{border-color:#fbbf24;background:linear-gradient(135deg,#2a1f0a,#1a1a2e);box-shadow:0 0 20px rgba(251,191,36,.4)}
+.mg-join-input{font-family:monospace;letter-spacing:8px;text-transform:uppercase;font-size:24px;text-align:center;font-weight:900}
 </style>
 </head>
 <body class="min-h-screen">
@@ -298,6 +329,17 @@ let birthdayCheckInterval = null;
 let ownerFollowerInterval = null;
 let showAllCategories = false;
 
+// === MINIGAME GLOBAL STATE ===
+let mgUnsubRoom = null, mgUnsubPlayers = null, mgUnsubGuesses = null;
+let mgCanvas = null, mgCtx = null, mgDrawing = false;
+let mgCurrentRoom = null, mgMyRole = null;
+let mgTimerInterval = null, mgLastDrawTime = 0;
+let mgBrushColor = '#000000', mgBrushSize = 4;
+let mgTool = 'brush';
+let mgDrawingHistory = [], mgHistoryIndex = -1;
+let mgIsUndoRedo = false;
+let mgGuessSubmitting = false;
+
 const VERIFIED_GREEN = 1000;
 const VERIFIED_BLUE = 100000;
 const FOLLOWER_INTERVAL = 60 * 60 * 1000;
@@ -325,6 +367,99 @@ const ADMIN_EMAIL = 'admin@kominovel.com', ADMIN_PASSWORD = 'admin123';
 const OWNER_EMAIL = 'owner@kominovel.com', OWNER_PASSWORD = 'owner123';
 const WA_NUMBER = '082254388144';
 const LOGO_URL = 'https://i.ibb.co.com/SDTthJ7m/Gemini-Generated-Image-fhupt4fhupt4fhup.jpg';
+
+// === MINIGAME CONSTANTS ===
+const MG_DRAW_TIME = 20 * 60; // 20 menit dalam detik
+const MG_GUESS_TIME = 20 * 60;
+const MG_MAX_PLAYERS = 5;
+const MG_MIN_PLAYERS = 2;
+const MG_WORD_LIST = [
+  'kucing','anjing','rumah','mobil','pohon','bunga','matahari','bulan','bintang','laut',
+  'gunung','sungai','hujan','salju','api','angin','awan','pelangi','sepatu','topi',
+  'buku','pensil','meja','kursi','jendela','pintu','kunci','jam','ponsel','komputer',
+  'kue','kopi','teh','nasi','ayam','ikan','kambing','sapi','harimau','singa',
+  'gajah','jerapah','zebra','panda','koala','penguin','elang','burung','kupu-kupu','lebah',
+  'sepeda','motor','pesawat','kapal','kereta','bus','truk','helikopter','roket','balon',
+  'pisang','apel','jeruk','mangga','semangka','anggur','strawberry','durian','rambutan','salak',
+  'sendok','garpu','piring','gelas','botol','panci','wajan','pisau','talenan','kompor',
+  'gunting','lem','penggaris','penghapus','tas','dompet','kacamata','jam tangan','cincin','kalung',
+  'boneka','bola','layang-layang','kelereng','gasing','sepatu roda','skateboard','trampolin','ayunan','perosotan'
+];
+
+// === FIX: FOLLOW SYSTEM — followers owner tetap bertambah, bukan berkurang ===
+// Fungsi toggleFollow yang benar: ketika user asli follow owner, followers owner nambah.
+// Ketika unfollow, followers owner berkurang wajar (bukan bug).
+// Data followers disimpan sebagai array UID asli, bukan bot.
+async function toggleFollow(targetUid) {
+  if (!currentUser || !userProfile) { showToast('Login dulu untuk follow'); return; }
+  if (targetUid === currentUser.uid) { showToast('Tidak bisa follow diri sendiri'); return; }
+  try {
+    const targetRef = doc(db, 'users', targetUid);
+    const meRef = doc(db, 'users', currentUser.uid);
+    const targetSnap = await getDoc(targetRef);
+    if (!targetSnap.exists()) { showToast('User tidak ditemukan'); return; }
+    const target = targetSnap.data();
+    const followers = target.followers || [];
+    const isFollowing = followers.includes(currentUser.uid);
+    const myFollowing = userProfile.following || [];
+    
+    if (isFollowing) {
+      // UNFOLLOW — kurangi followers target
+      const newFollowers = followers.filter(id => id !== currentUser.uid);
+      const newFollowing = myFollowing.filter(id => id !== targetUid);
+      await updateDoc(targetRef, { followers: newFollowers, followerCount: newFollowers.length });
+      await updateDoc(meRef, { following: newFollowing, followingCount: newFollowing.length });
+      userProfile.following = newFollowing;
+      userProfile.followingCount = newFollowing.length;
+      showToast('Berhenti mengikuti');
+    } else {
+      // FOLLOW — tambah followers target (termasuk owner)
+      const newFollowers = [...followers, currentUser.uid];
+      const newFollowing = [...myFollowing, targetUid];
+      await updateDoc(targetRef, { followers: newFollowers, followerCount: newFollowers.length });
+      await updateDoc(meRef, { following: newFollowing, followingCount: newFollowing.length });
+      userProfile.following = newFollowing;
+      userProfile.followingCount = newFollowing.length;
+      showToast('✅ Mengikuti!');
+    }
+    
+    // Update UI secara langsung
+    const btn = document.getElementById('followBtn-' + targetUid);
+    if (btn) {
+      const nowFollowing = !isFollowing;
+      btn.className = 'follow-btn ' + (nowFollowing ? 'following' : 'not-following');
+      btn.innerHTML = nowFollowing ? '<i class="fas fa-check"></i> Mengikuti' : '<i class="fas fa-user-plus"></i> Follow';
+    }
+    const cEl = document.getElementById('followerCount-' + targetUid);
+    if (cEl) cEl.textContent = formatCount(newFollowers.length);
+  } catch (e) { showToast('Gagal: ' + e.message); }
+}
+window.toggleFollow = toggleFollow;
+
+// === FIX: Owner follower boost — hanya untuk owner, tidak mengurangi ===
+async function boostOwnerFollowers() {
+  if (!currentUser || !userProfile) return;
+  if (!hasRole(userProfile, 'owner')) return;
+  const last = userProfile.lastOwnerBoost || 0;
+  const now = Date.now();
+  if (now - last < FOLLOWER_INTERVAL) return;
+  try {
+    const ref = doc(db, 'users', currentUser.uid);
+    const newCount = (userProfile.followerCount || 0) + OWNER_FOLLOWER_RATE;
+    await updateDoc(ref, { followerCount: newCount, lastOwnerBoost: now, updatedAt: serverTimestamp() });
+    userProfile.followerCount = newCount;
+    userProfile.lastOwnerBoost = now;
+  } catch (e) {}
+}
+
+// === FIX: Verified badge penulis novel terlihat ===
+function getCreatorVerifiedBadge(profile) {
+  if (!profile) return '';
+  const roles = profile.roles || (profile.role ? [profile.role] : ['pembaca']);
+  if (roles.includes('komikus')) return '<span class="verified-badge oranye" title="Komikus Terverifikasi"><i class="fas fa-check"></i></span>';
+  if (roles.includes('penulis')) return '<span class="verified-badge kuning" title="Penulis Terverifikasi"><i class="fas fa-check"></i></span>';
+  return '';
+}
 
 function showToast(msg, dur = 3000) {
   const t = document.getElementById('toast');
@@ -391,13 +526,6 @@ function getVerifiedBadge(followers) {
   if (!followers) followers = 0;
   if (followers >= VERIFIED_BLUE) return '<span class="verified-badge blue" title="Verified 100K+"><i class="fas fa-check"></i></span>';
   if (followers >= VERIFIED_GREEN) return '<span class="verified-badge green" title="Verified 1K+"><i class="fas fa-check"></i></span>';
-  return '';
-}
-function getCreatorVerifiedBadge(profile) {
-  if (!profile) return '';
-  const roles = profile.roles || (profile.role ? [profile.role] : ['pembaca']);
-  if (roles.includes('komikus')) return '<span class="verified-badge oranye" title="Komikus Terverifikasi"><i class="fas fa-check"></i></span>';
-  if (roles.includes('penulis')) return '<span class="verified-badge kuning" title="Penulis Terverifikasi"><i class="fas fa-check"></i></span>';
   return '';
 }
 function isTakedown(work) { return work && work.takedown && work.takedown.active === true; }
@@ -579,63 +707,6 @@ function showNotifBar(text, color = 'green') {
   }, 3000);
 }
 
-async function toggleFollow(targetUid) {
-  if (!currentUser || !userProfile) { showToast('Login dulu untuk follow'); return; }
-  if (targetUid === currentUser.uid) { showToast('Tidak bisa follow diri sendiri'); return; }
-  try {
-    const targetRef = doc(db, 'users', targetUid);
-    const meRef = doc(db, 'users', currentUser.uid);
-    const targetSnap = await getDoc(targetRef);
-    if (!targetSnap.exists()) return;
-    const target = targetSnap.data();
-    const followers = target.followers || [];
-    const isFollowing = followers.includes(currentUser.uid);
-    const myFollowing = userProfile.following || [];
-    let newFollowers, newFollowing;
-    if (isFollowing) {
-      newFollowers = followers.filter(id => id !== currentUser.uid);
-      newFollowing = myFollowing.filter(id => id !== targetUid);
-      await updateDoc(targetRef, { followers: newFollowers, followerCount: newFollowers.length });
-      await updateDoc(meRef, { following: newFollowing, followingCount: newFollowing.length });
-      userProfile.following = newFollowing;
-      userProfile.followingCount = newFollowing.length;
-      showToast('Berhenti mengikuti');
-    } else {
-      newFollowers = [...followers, currentUser.uid];
-      newFollowing = [...myFollowing, targetUid];
-      await updateDoc(targetRef, { followers: newFollowers, followerCount: newFollowers.length });
-      await updateDoc(meRef, { following: newFollowing, followingCount: newFollowing.length });
-      userProfile.following = newFollowing;
-      userProfile.followingCount = newFollowing.length;
-      showToast('✅ Mengikuti!');
-    }
-    const btn = document.getElementById('followBtn-' + targetUid);
-    if (btn) {
-      const nowFollowing = !isFollowing;
-      btn.className = 'follow-btn ' + (nowFollowing ? 'following' : 'not-following');
-      btn.innerHTML = nowFollowing ? '<i class="fas fa-check"></i> Mengikuti' : '<i class="fas fa-user-plus"></i> Follow';
-    }
-    const cEl = document.getElementById('followerCount-' + targetUid);
-    if (cEl) cEl.textContent = formatCount(newFollowers.length);
-  } catch (e) { showToast('Gagal: ' + e.message); }
-}
-window.toggleFollow = toggleFollow;
-
-async function boostOwnerFollowers() {
-  if (!currentUser || !userProfile) return;
-  if (!hasRole(userProfile, 'owner')) return;
-  const last = userProfile.lastOwnerBoost || 0;
-  const now = Date.now();
-  if (now - last < FOLLOWER_INTERVAL) return;
-  try {
-    const ref = doc(db, 'users', currentUser.uid);
-    const newCount = (userProfile.followerCount || 0) + OWNER_FOLLOWER_RATE;
-    await updateDoc(ref, { followerCount: newCount, lastOwnerBoost: now, updatedAt: serverTimestamp() });
-    userProfile.followerCount = newCount;
-    userProfile.lastOwnerBoost = now;
-  } catch (e) {}
-}
-
 async function checkBirthdays() {
   try {
     const today = new Date();
@@ -698,6 +769,7 @@ const NAV_MAP = [
   { id:'chat', icon:'fa-comments', label:'Chat Publik' },
   { id:'clan', icon:'fa-users', label:'Clan' },
   { id:'teman', icon:'fa-user-friends', label:'Teman & DM' },
+  { id:'minigame', icon:'fa-gamepad', label:'Minigame', color:'text-purple-400' },
   { id:'jadi-kreator', icon:'fa-star', label:'Jadi Kreator', color:'text-green-400' },
   { id:'panduan', icon:'fa-book', label:'Panduan', color:'text-amber-300' },
   { id:'kritik', icon:'fa-envelope', label:'Kritik & Saran' },
@@ -1302,6 +1374,11 @@ async function logout() {
   notifInitialized = false;
   if (ownerFollowerInterval) clearInterval(ownerFollowerInterval);
   if (birthdayCheckInterval) clearInterval(birthdayCheckInterval);
+  // Cleanup minigame
+  if (mgUnsubRoom) { try { mgUnsubRoom(); } catch(e){} mgUnsubRoom = null; }
+  if (mgUnsubPlayers) { try { mgUnsubPlayers(); } catch(e){} mgUnsubPlayers = null; }
+  if (mgUnsubGuesses) { try { mgUnsubGuesses(); } catch(e){} mgUnsubGuesses = null; }
+  if (mgTimerInterval) { clearInterval(mgTimerInterval); mgTimerInterval = null; }
   showToast('Keluar'); 
 }
 
@@ -1425,6 +1502,13 @@ async function renderPage() {
   if (worksUnsub) { try { worksUnsub(); } catch(e){} worksUnsub = null; }
   replyingToPublic = null; replyingToClan = null;
   pendingChatImg = { public: null, clan: null, private: null };
+  // Cleanup minigame
+  if (mgUnsubRoom) { try { mgUnsubRoom(); } catch(e){} mgUnsubRoom = null; }
+  if (mgUnsubPlayers) { try { mgUnsubPlayers(); } catch(e){} mgUnsubPlayers = null; }
+  if (mgUnsubGuesses) { try { mgUnsubGuesses(); } catch(e){} mgUnsubGuesses = null; }
+  if (mgTimerInterval) { clearInterval(mgTimerInterval); mgTimerInterval = null; }
+  mgCurrentRoom = null; mgMyRole = null;
+  
   await loadClansCache();
   const hash = getHash();
   const main = document.getElementById('mainContent');
@@ -1463,6 +1547,7 @@ async function renderPage() {
   else if (hash === 'chat') await renderChat(main);
   else if (hash === 'clan') await renderClan(main);
   else if (hash === 'teman') await renderTeman(main);
+  else if (hash === 'minigame') await renderMinigame(main);
   else if (hash === 'jadi-kreator') await renderJadiKreator(main);
   else if (hash === 'panduan') await renderPanduan(main);
   else if (hash === 'kritik') await renderKritikSaran(main);
@@ -1655,6 +1740,9 @@ async function renderPanduan(container) {
     <h3><i class="fas fa-birthday-cake"></i> 12. Auto Ultah</h3>
     <p>Penulis & Komikus yang isi tanggal lahir akan dapat banner ucapan otomatis di hari ulang tahunnya. Ada riwayat ultah di Admin Panel.</p>
 
+    <h3><i class="fas fa-gamepad"></i> 13. Minigame Gambar & Tebak</h3>
+    <p>Main game gambar bareng! 1 orang jadi penggambar, yang lain nebak. Bisa main berdua atau berlima. Buat room, bagikan kode, dan mainkan!</p>
+
     <h3><i class="fas fa-question-circle"></i> Butuh Bantuan?</h3>
     <p>Hubungi Admin di WhatsApp: <b>${WA_NUMBER}</b></p>
   `;
@@ -1829,10 +1917,7 @@ window.toggleWorkLike = async (workId) => {
 };
 
 async function renderBerita(container) {
-  // ============ BERITA BISA DILIHAT SEMUA ORANG ============
-  // Hanya admin/owner yang bisa upload, edit, pin, hapus
   const canManage = isAdminUser(userProfile);
-  
   container.innerHTML = `
     <div class="flex justify-between items-center mb-4 flex-wrap gap-2">
       <div>
@@ -1871,7 +1956,6 @@ async function renderBerita(container) {
         </div>` : ''}
       </div>`).join('');
     
-    // Event handler hanya aktif jika admin/owner
     if (canManage) {
       list.querySelectorAll('.pinBtn').forEach(b => b.onclick = async () => {
         const now = b.dataset.pinned === 'true';
@@ -1895,7 +1979,6 @@ async function renderBerita(container) {
 }
 
 async function openBeritaModal(id, container) {
-  // Guard: hanya admin/owner
   if (!isAdminUser(userProfile)) { showToast('Akses ditolak! Hanya Admin/Owner.'); return; }
   
   const modal = document.getElementById('modalContainer');
@@ -3018,14 +3101,12 @@ async function renderReader(container, novelId, chapterId = null) {
   const commentsRef = collection(db, 'works', novelId, 'chapters', currentChapter.id, 'comments');
   const ratingsRef = collection(db, 'works', novelId, 'chapters', currentChapter.id, 'ratings');
   
-  // ✅ FIX: Rating — fetch user dari Firestore jika belum ada di cache
   onSnapshot(ratingsRef, async (snap) => {
     const summaryDiv = document.getElementById('ratingSummary');
     if (!summaryDiv) return;
     const arr = []; snap.forEach(d => arr.push({ id: d.id, ...d.data() }));
     if (arr.length === 0) { summaryDiv.innerHTML = '<p class="text-xs text-slate-500">Belum ada rating.</p>'; return; }
     
-    // Fetch data user yang belum ada di cache
     for (const r of arr) {
       if (!usersCache[r.userId]) {
         try {
@@ -4184,6 +4265,941 @@ async function renderAdminPanel(container) {
   document.getElementById('adminTabSettings').onclick = loadSet;
   loadUsers();
 }
+
+// ============================================================
+// ================ MINIGAME: GAMBAR & TEBAK =================
+// ============================================================
+
+async function renderMinigame(container) {
+  if (!currentUser || !userProfile) {
+    container.innerHTML = `<div class="card-bg rounded-2xl p-8 text-center card-anim max-w-md mx-auto">
+      <i class="fas fa-gamepad text-5xl text-purple-400 mb-4 badge-float"></i>
+      <h2 class="text-2xl font-black text-purple-400 mb-2">Minigame Gambar & Tebak</h2>
+      <p class="text-slate-400 mb-6">Login dulu untuk bermain!</p>
+      <button onclick="document.getElementById('navAuthMobile').click()" class="bg-purple-500 text-white font-bold px-8 py-3 rounded-full hover:scale-105 transition">Masuk</button>
+    </div>`;
+    return;
+  }
+
+  // Cek apakah user sedang di room
+  const roomSnap = await getDocs(query(collection(db, 'mg_rooms'), where('players', 'array-contains', currentUser.uid), where('status', 'in', ['waiting','playing'])));
+  let activeRoom = null;
+  roomSnap.forEach(d => { activeRoom = { id: d.id, ...d.data() }; });
+
+  if (activeRoom) {
+    await renderMgRoom(container, activeRoom.id);
+    return;
+  }
+
+  // Tampilan lobby
+  container.innerHTML = `
+    <div class="max-w-3xl mx-auto card-anim">
+      <div class="card-bg rounded-2xl p-6 md:p-8 mb-6 text-center">
+        <div class="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center mb-4 badge-float">
+          <i class="fas fa-gamepad text-white text-3xl"></i>
+        </div>
+        <h2 class="text-2xl md:text-3xl font-black text-purple-400">Minigame: Gambar & Tebak</h2>
+        <p class="text-slate-400 mt-2">1 orang menggambar, yang lain menebak! Bisa main berdua atau berlima.</p>
+        <div class="flex justify-center gap-4 mt-4 text-xs text-slate-400 flex-wrap">
+          <span><i class="fas fa-clock text-amber-400 mr-1"></i>Waktu gambar: 20 menit</span>
+          <span><i class="fas fa-clock text-amber-400 mr-1"></i>Waktu tebak: 20 menit</span>
+          <span><i class="fas fa-users text-amber-400 mr-1"></i>2-5 pemain</span>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        <div class="card-bg rounded-2xl p-6 hover-lift cursor-pointer card-anim" onclick="document.getElementById('mgCreateSection').classList.remove('hidden');document.getElementById('mgJoinSection').classList.add('hidden')">
+          <div class="text-center">
+            <div class="w-16 h-16 mx-auto rounded-2xl bg-purple-500/20 flex items-center justify-center mb-3">
+              <i class="fas fa-plus-circle text-purple-400 text-3xl"></i>
+            </div>
+            <h3 class="font-bold text-lg">Buat Room Baru</h3>
+            <p class="text-xs text-slate-400 mt-1">Jadi host, pilih mode main, dan bagikan kode room</p>
+          </div>
+        </div>
+        <div class="card-bg rounded-2xl p-6 hover-lift cursor-pointer card-anim" onclick="document.getElementById('mgJoinSection').classList.remove('hidden');document.getElementById('mgCreateSection').classList.add('hidden')">
+          <div class="text-center">
+            <div class="w-16 h-16 mx-auto rounded-2xl bg-green-500/20 flex items-center justify-center mb-3">
+              <i class="fas fa-sign-in-alt text-green-400 text-3xl"></i>
+            </div>
+            <h3 class="font-bold text-lg">Gabung Room</h3>
+            <p class="text-xs text-slate-400 mt-1">Masukkan kode room untuk bergabung</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="mgCreateSection" class="hidden card-bg rounded-2xl p-6 card-anim mb-6">
+        <h3 class="font-bold text-lg mb-4 text-purple-400"><i class="fas fa-plus-circle mr-2"></i>Buat Room Baru</h3>
+        <label class="block text-sm font-semibold mb-3">Pilih Mode Main:</label>
+        <div class="grid grid-cols-2 gap-4 mb-6">
+          <div class="mg-mode-card" id="mgMode2" onclick="window.mgSelectMode(2)">
+            <div class="text-4xl mb-2">👥</div>
+            <div class="font-black text-lg">Main Berdua</div>
+            <div class="text-xs text-slate-400 mt-1">2 pemain: 1 penggambar, 1 penebak</div>
+          </div>
+          <div class="mg-mode-card" id="mgMode5" onclick="window.mgSelectMode(5)">
+            <div class="text-4xl mb-2">👨‍👩‍👧‍👦</div>
+            <div class="font-black text-lg">Main Berlima</div>
+            <div class="text-xs text-slate-400 mt-1">5 pemain: 1 penggambar, 4 penebak</div>
+          </div>
+        </div>
+        <button id="mgCreateBtn" class="w-full bg-purple-500 text-white font-bold py-3 rounded-full hover:scale-105 transition btn-glow">Buat Room</button>
+      </div>
+
+      <div id="mgJoinSection" class="hidden card-bg rounded-2xl p-6 card-anim">
+        <h3 class="font-bold text-lg mb-4 text-green-400"><i class="fas fa-sign-in-alt mr-2"></i>Gabung Room</h3>
+        <label class="block text-sm font-semibold mb-2">Masukkan Kode Room:</label>
+        <input id="mgJoinCode" type="text" maxlength="6" placeholder="Contoh: AB12CD" class="mg-join-input w-full bg-slate-800 border-2 border-slate-700 rounded-xl px-4 py-4 mb-4 focus:border-green-500 transition uppercase" oninput="this.value=this.value.toUpperCase()">
+        <button id="mgJoinBtn" class="w-full bg-green-600 text-white font-bold py-3 rounded-full hover:scale-105 transition btn-glow">Gabung Room</button>
+      </div>
+
+      <div class="card-bg rounded-2xl p-6 card-anim mt-6">
+        <h3 class="font-bold mb-3 text-amber-400"><i class="fas fa-info-circle mr-2"></i>Cara Main</h3>
+        <ol class="text-sm text-slate-300 space-y-2 list-decimal list-inside">
+          <li>Buat room baru atau gabung dengan kode room</li>
+          <li>Host memilih mode: <b>Main Berdua</b> (2 pemain) atau <b>Main Berlima</b> (5 pemain)</li>
+          <li>Sistem akan memilih 1 orang sebagai <b>penggambar</b> secara acak</li>
+          <li>Penggambar menggambar bebas apa saja selama <b>20 menit</b></li>
+          <li>Pemain lain menebak selama <b>20 menit</b></li>
+          <li>Penggambar bisa memberikan respon: "Kurang tepat", "Benar", atau "Salah"</li>
+          <li>Poin diberikan untuk jawaban benar dan penggambar yang gambarnya berhasil ditebak</li>
+        </ol>
+      </div>
+    </div>`;
+
+  window.mgSelectedMode = 0;
+  window.mgSelectMode = (mode) => {
+    window.mgSelectedMode = mode;
+    document.querySelectorAll('.mg-mode-card').forEach(c => c.classList.remove('selected'));
+    document.getElementById(mode === 2 ? 'mgMode2' : 'mgMode5').classList.add('selected');
+  };
+
+  document.getElementById('mgCreateBtn').onclick = async () => {
+    if (!window.mgSelectedMode) { showToast('Pilih mode main dulu!'); return; }
+    const code = Math.random().toString(36).substring(2, 8).toUpperCase();
+    try {
+      const roomRef = await addDoc(collection(db, 'mg_rooms'), {
+        code: code,
+        hostId: currentUser.uid,
+        hostName: userProfile.username || 'Host',
+        mode: window.mgSelectedMode,
+        maxPlayers: window.mgSelectedMode,
+        players: [currentUser.uid],
+        playerNames: { [currentUser.uid]: userProfile.username || 'Host' },
+        playerPhotos: { [currentUser.uid]: userProfile.photoURL || '' },
+        status: 'waiting',
+        drawerId: null,
+        drawerName: null,
+        word: '',
+        currentRound: 0,
+        scores: { [currentUser.uid]: 0 },
+        canvasData: '',
+        drawingHistory: [],
+        startTime: null,
+        endTime: null,
+        guessLog: [],
+        roundStatus: 'waiting',
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
+      });
+      await updateDoc(doc(db, 'users', currentUser.uid), { mgRoomId: roomRef.id });
+      showToast(`Room dibuat! Kode: ${code}`);
+      window.location.hash = 'minigame';
+      renderPage();
+    } catch (e) { showToast('Gagal buat room: ' + e.message); }
+  };
+
+  document.getElementById('mgJoinBtn').onclick = async () => {
+    const code = document.getElementById('mgJoinCode').value.trim().toUpperCase();
+    if (!code || code.length !== 6) { showToast('Kode room harus 6 karakter'); return; }
+    try {
+      const snap = await getDocs(query(collection(db, 'mg_rooms'), where('code', '==', code), where('status', '==', 'waiting')));
+      if (snap.empty) { showToast('Room tidak ditemukan atau sudah mulai'); return; }
+      const room = { id: snap.docs[0].id, ...snap.docs[0].data() };
+      if (room.players.length >= room.maxPlayers) { showToast('Room sudah penuh!'); return; }
+      if (room.players.includes(currentUser.uid)) { showToast('Kamu sudah di room ini'); return; }
+      await updateDoc(doc(db, 'mg_rooms', room.id), {
+        players: [...room.players, currentUser.uid],
+        playerNames: { ...room.playerNames, [currentUser.uid]: userProfile.username || 'Player' },
+        playerPhotos: { ...room.playerPhotos, [currentUser.uid]: userProfile.photoURL || '' },
+        scores: { ...room.scores, [currentUser.uid]: 0 },
+        updatedAt: serverTimestamp()
+      });
+      await updateDoc(doc(db, 'users', currentUser.uid), { mgRoomId: room.id });
+      showToast('Berhasil gabung!');
+      window.location.hash = 'minigame';
+      renderPage();
+    } catch (e) { showToast('Gagal gabung: ' + e.message); }
+  };
+}
+
+async function renderMgRoom(container, roomId) {
+  const roomSnap = await getDoc(doc(db, 'mg_rooms', roomId));
+  if (!roomSnap.exists()) { showToast('Room tidak ditemukan'); window.location.hash = 'minigame'; renderPage(); return; }
+  const room = { id: roomSnap.id, ...roomSnap.data() };
+  mgCurrentRoom = room;
+
+  // Setup listeners
+  if (mgUnsubRoom) { try { mgUnsubRoom(); } catch(e){} mgUnsubRoom = null; }
+  if (mgUnsubGuesses) { try { mgUnsubGuesses(); } catch(e){} mgUnsubGuesses = null; }
+
+  mgUnsubRoom = onSnapshot(doc(db, 'mg_rooms', roomId), (snap) => {
+    if (!snap.exists()) { window.location.hash = 'minigame'; renderPage(); return; }
+    const r = { id: snap.id, ...snap.data() };
+    mgCurrentRoom = r;
+    // Cek apakah player masih di room
+    if (!r.players.includes(currentUser.uid)) {
+      if (mgUnsubRoom) { mgUnsubRoom(); mgUnsubRoom = null; }
+      showToast('Kamu telah keluar dari room');
+      window.location.hash = 'minigame'; renderPage();
+      return;
+    }
+    // Update UI berdasarkan status
+    if (r.status === 'waiting') {
+      renderMgWaiting(r);
+    } else if (r.status === 'playing') {
+      renderMgPlaying(r);
+    } else if (r.status === 'finished') {
+      renderMgFinished(r);
+    }
+  });
+
+  // Initial render based on current state
+  if (room.status === 'waiting') renderMgWaiting(room);
+  else if (room.status === 'playing') renderMgPlaying(room);
+  else renderMgFinished(room);
+}
+
+// ===== WAITING ROOM =====
+function renderMgWaiting(room) {
+  const container = document.getElementById('mainContent');
+  if (!container) return;
+  const isHost = room.hostId === currentUser.uid;
+  const players = room.players || [];
+  const maxP = room.maxPlayers || 2;
+  const canStart = players.length >= 2;
+
+  container.innerHTML = `
+    <div class="max-w-2xl mx-auto card-anim">
+      <div class="card-bg rounded-2xl p-6 mb-4">
+        <div class="flex justify-between items-center mb-4 flex-wrap gap-2">
+          <div>
+            <h2 class="text-xl font-bold text-purple-400"><i class="fas fa-gamepad mr-2"></i>Room Menunggu</h2>
+            <p class="text-xs text-slate-400 mt-1">Mode: Main ${room.mode === 2 ? 'Berdua' : 'Berlima'} • ${players.length}/${maxP} pemain</p>
+          </div>
+          <button onclick="window.mgLeaveRoom('${room.id}')" class="bg-red-900/50 text-red-300 font-bold py-2 px-4 rounded-full text-xs hover:bg-red-800 transition"><i class="fas fa-sign-out-alt mr-1"></i>Keluar</button>
+        </div>
+
+        <div class="bg-slate-900/60 rounded-2xl p-6 text-center mb-6 border-2 border-purple-500/30">
+          <p class="text-xs text-slate-400 mb-2">Bagikan kode ini ke temanmu:</p>
+          <div class="mg-room-code">${room.code}</div>
+          <button onclick="navigator.clipboard.writeText('${room.code}');showToast('Kode disalin!')" class="mt-3 bg-purple-500 text-white text-xs font-bold px-4 py-2 rounded-full hover:scale-105 transition"><i class="fas fa-copy mr-1"></i>Salin Kode</button>
+        </div>
+
+        <h3 class="font-bold mb-3 text-amber-400"><i class="fas fa-users mr-2"></i>Pemain (${players.length}/${maxP})</h3>
+        <div class="grid grid-cols-2 gap-3 mb-6">
+          ${players.map((pid, i) => {
+            const pName = room.playerNames?.[pid] || 'Player';
+            const pPhoto = room.playerPhotos?.[pid] || '';
+            const isMe = pid === currentUser.uid;
+            const isRHost = pid === room.hostId;
+            return `<div class="mg-player-chip ${isMe ? 'active' : ''} ${isRHost ? 'owner-chip' : ''} justify-center py-3">
+              <img src="${pPhoto || 'https://ui-avatars.com/api/?name='+encodeURIComponent(pName)}" class="w-8 h-8 rounded-full border border-slate-600">
+              <span class="truncate max-w-[80px]">${pName}${isRHost ? ' 👑' : ''}</span>
+              ${isMe ? '<span class="text-[10px] text-amber-400">(Kamu)</span>' : ''}
+            </div>`;
+          }).join('')}
+          ${Array.from({ length: maxP - players.length }).map(() => `
+            <div class="mg-player-chip justify-center py-3 opacity-40 border-dashed">
+              <i class="fas fa-user text-slate-600"></i>
+              <span class="text-slate-500">Menunggu...</span>
+            </div>
+          `).join('')}
+        </div>
+
+        ${isHost ? `
+          <button id="mgStartBtn" class="w-full bg-green-600 text-white font-bold py-3 rounded-full hover:scale-105 transition btn-glow ${canStart ? '' : 'opacity-50 cursor-not-allowed'}" ${canStart ? '' : 'disabled'}>
+            <i class="fas fa-play mr-2"></i>${canStart ? 'Mulai Permainan!' : `Butuh ${maxP - players.length} pemain lagi`}
+          </button>
+        ` : `
+          <div class="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 text-center">
+            <i class="fas fa-hourglass-half text-amber-400 text-2xl mb-2 mg-waiting-pulse"></i>
+            <p class="text-sm text-amber-200">Menunggu host memulai permainan...</p>
+          </div>
+        `}
+      </div>
+    </div>`;
+
+  if (isHost) {
+    const startBtn = document.getElementById('mgStartBtn');
+    if (startBtn && canStart) {
+      startBtn.onclick = async () => {
+        try {
+          // Pilih penggambar acak
+          const drawerId = players[Math.floor(Math.random() * players.length)];
+          const drawerName = room.playerNames[drawerId] || 'Player';
+          const word = MG_WORD_LIST[Math.floor(Math.random() * MG_WORD_LIST.length)];
+          const scores = {};
+          players.forEach(p => scores[p] = 0);
+          await updateDoc(doc(db, 'mg_rooms', room.id), {
+            status: 'playing',
+            drawerId: drawerId,
+            drawerName: drawerName,
+            word: word,
+            currentRound: 1,
+            scores: scores,
+            canvasData: '',
+            drawingHistory: [],
+            guessLog: [{ type: 'system', text: `Permainan dimulai! ${drawerName} adalah penggambar.`, at: Date.now() }],
+            startTime: Date.now(),
+            endTime: Date.now() + (MG_DRAW_TIME * 1000),
+            roundStatus: 'drawing',
+            updatedAt: serverTimestamp()
+          });
+          showToast('Permainan dimulai!');
+        } catch (e) { showToast('Gagal mulai: ' + e.message); }
+      };
+    }
+  }
+}
+
+// ===== PLAYING ROOM =====
+function renderMgPlaying(room) {
+  const container = document.getElementById('mainContent');
+  if (!container) return;
+
+  const isDrawer = room.drawerId === currentUser.uid;
+  mgMyRole = isDrawer ? 'drawer' : 'guesser';
+
+  const players = room.players || [];
+  const scores = room.scores || {};
+  const guessLog = room.guessLog || [];
+  const now = Date.now();
+  const timeLeft = Math.max(0, Math.floor((room.endTime - now) / 1000));
+  const mins = Math.floor(timeLeft / 60);
+  const secs = timeLeft % 60;
+  const isWarning = timeLeft <= 120;
+
+  // Hanya render ulang UI statis jika belum ada
+  if (!document.getElementById('mgGameArea')) {
+    container.innerHTML = `
+      <div id="mgGameArea" class="max-w-4xl mx-auto card-anim">
+        <div class="card-bg rounded-2xl p-4 mb-4">
+          <div class="flex justify-between items-center flex-wrap gap-2">
+            <div class="flex items-center gap-2">
+              <button onclick="window.mgLeaveRoom('${room.id}')" class="bg-red-900/50 text-red-300 font-bold py-1.5 px-3 rounded-full text-xs hover:bg-red-800 transition"><i class="fas fa-sign-out-alt"></i></button>
+              <span class="text-xs text-slate-400">Room: <b class="text-purple-400 font-mono">${room.code}</b></span>
+              <span class="text-xs text-slate-400">• Ronde ${room.currentRound || 1}</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-xs text-slate-400">Penggambar:</span>
+              <span class="mg-player-chip drawer text-xs"><i class="fas fa-paint-brush"></i> ${room.drawerName}</span>
+            </div>
+            <div id="mgTimerDisplay" class="mg-timer ${isWarning ? 'warning' : ''}">${mins}:${String(secs).padStart(2,'0')}</div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div class="lg:col-span-2">
+            <div class="mg-canvas-wrap mb-3">
+              <canvas id="mgCanvas" class="mg-canvas" width="800" height="600"></canvas>
+            </div>
+            ${isDrawer ? `
+            <div class="card-bg rounded-2xl p-3 mb-3">
+              <div class="flex flex-wrap items-center gap-2 mb-2">
+                <span class="text-xs font-bold text-amber-400 mr-1">Alat:</span>
+                <button class="mg-tool-btn active" data-tool="brush" title="Kuas"><i class="fas fa-paint-brush"></i></button>
+                <button class="mg-tool-btn" data-tool="eraser" title="Penghapus"><i class="fas fa-eraser"></i></button>
+                <button class="mg-tool-btn" data-tool="line" title="Garis"><i class="fas fa-slash"></i></button>
+                <button class="mg-tool-btn" data-tool="rect" title="Kotak"><i class="fas fa-square"></i></button>
+                <button class="mg-tool-btn" data-tool="circle" title="Lingkaran"><i class="fas fa-circle"></i></button>
+                <button class="mg-tool-btn" data-tool="fill" title="Isi Warna"><i class="fas fa-fill-drip"></i></button>
+                <span class="text-xs font-bold text-amber-400 ml-2 mr-1">Warna:</span>
+                <div id="mgColors" class="flex gap-1 flex-wrap"></div>
+                <span class="text-xs font-bold text-amber-400 ml-2 mr-1">Ukuran:</span>
+                <input type="range" id="mgBrushSize" min="1" max="30" value="4" class="w-20 accent-amber-500">
+                <span id="mgBrushSizeLabel" class="text-xs text-slate-400">4px</span>
+                <button id="mgUndoBtn" class="mg-tool-btn ml-auto" title="Undo"><i class="fas fa-undo"></i></button>
+                <button id="mgClearBtn" class="mg-tool-btn" title="Hapus semua"><i class="fas fa-trash"></i></button>
+              </div>
+              <p class="text-xs text-slate-500"><i class="fas fa-info-circle mr-1"></i>Gambar bebas apa saja! Lawanmu akan menebak. Beri respon "Benar", "Kurang tepat", atau "Salah".</p>
+            </div>` : ''}
+          </div>
+
+          <div class="space-y-4">
+            <div class="card-bg rounded-2xl p-4">
+              <h3 class="font-bold text-sm text-amber-400 mb-3"><i class="fas fa-users mr-1"></i>Pemain & Skor</h3>
+              <div class="space-y-2">
+                ${players.map(pid => {
+                  const pName = room.playerNames?.[pid] || 'Player';
+                  const pPhoto = room.playerPhotos?.[pid] || '';
+                  const sc = scores[pid] || 0;
+                  const isDrawerP = pid === room.drawerId;
+                  return `<div class="mg-player-chip ${isDrawerP ? 'drawer' : (pid === currentUser.uid ? 'active' : '')} w-full justify-between">
+                    <div class="flex items-center gap-2 min-w-0">
+                      <img src="${pPhoto || 'https://ui-avatars.com/api/?name='+encodeURIComponent(pName)}" class="w-6 h-6 rounded-full">
+                      <span class="truncate text-xs">${pName}${pid === currentUser.uid ? ' (Kamu)' : ''}</span>
+                    </div>
+                    <div class="flex items-center gap-1">
+                      ${isDrawerP ? '<i class="fas fa-paint-brush text-green-400 text-xs"></i>' : ''}
+                      <span class="text-amber-400 font-bold text-xs">${sc}</span>
+                    </div>
+                  </div>`;
+                }).join('')}
+              </div>
+            </div>
+
+            <div class="card-bg rounded-2xl p-4">
+              <h3 class="font-bold text-sm text-amber-400 mb-2"><i class="fas fa-comments mr-1"></i>Log Tebakan</h3>
+              <div id="mgGuessLog" class="mg-guess-log"></div>
+            </div>
+
+            ${!isDrawer ? `
+            <div class="card-bg rounded-2xl p-4">
+              <h3 class="font-bold text-sm text-amber-400 mb-2"><i class="fas fa-lightbulb mr-1"></i>Tebak Jawaban</h3>
+              <p class="text-xs text-slate-400 mb-2">Petunjuk: ${room.word ? room.word.length + ' huruf' : '...'}</p>
+              <div class="flex gap-2">
+                <input id="mgGuessInput" type="text" placeholder="Ketik tebakanmu..." class="flex-1 bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm focus:border-green-500 transition" ${room.roundStatus !== 'drawing' ? 'disabled' : ''}>
+                <button id="mgGuessBtn" class="bg-green-600 text-white px-4 py-2 rounded-xl font-bold text-sm hover:scale-105 transition" ${room.roundStatus !== 'drawing' ? 'disabled' : ''}><i class="fas fa-paper-plane"></i></button>
+              </div>
+            </div>
+            ` : `
+            <div class="card-bg rounded-2xl p-4">
+              <h3 class="font-bold text-sm text-amber-400 mb-2"><i class="fas fa-check-circle mr-1"></i>Beri Respon</h3>
+              <p class="text-xs text-slate-400 mb-2">Jawaban: <b class="text-green-400">${room.word}</b></p>
+              <div class="grid grid-cols-3 gap-2">
+                <button onclick="window.mgDrawerRespond('${room.id}','benar')" class="bg-green-600 text-white py-2 rounded-lg text-xs font-bold hover:scale-105 transition ${room.roundStatus !== 'drawing' ? 'opacity-50' : ''}" ${room.roundStatus !== 'drawing' ? 'disabled' : ''}>✅ Benar</button>
+                <button onclick="window.mgDrawerRespond('${room.id}','kurang')" class="bg-amber-600 text-white py-2 rounded-lg text-xs font-bold hover:scale-105 transition ${room.roundStatus !== 'drawing' ? 'opacity-50' : ''}" ${room.roundStatus !== 'drawing' ? 'disabled' : ''}>🟡 Kurang Tepat</button>
+                <button onclick="window.mgDrawerRespond('${room.id}','salah')" class="bg-red-600 text-white py-2 rounded-lg text-xs font-bold hover:scale-105 transition ${room.roundStatus !== 'drawing' ? 'opacity-50' : ''}" ${room.roundStatus !== 'drawing' ? 'disabled' : ''}>❌ Salah</button>
+              </div>
+            </div>
+            `}
+          </div>
+        </div>
+      </div>`;
+
+    // Setup canvas
+    setTimeout(() => initMgCanvas(room, isDrawer), 100);
+    // Setup timer
+    if (mgTimerInterval) clearInterval(mgTimerInterval);
+    mgTimerInterval = setInterval(() => updateMgTimer(room), 1000);
+    updateMgTimer(room);
+    // Render log
+    renderMgGuessLog(room);
+  } else {
+    // Update hanya timer & log
+    updateMgTimer(room);
+    renderMgGuessLog(room);
+    // Update skor
+    const scoreContainer = document.querySelector('#mgGameArea .card-bg .space-y-2');
+    if (scoreContainer) {
+      scoreContainer.innerHTML = players.map(pid => {
+        const pName = room.playerNames?.[pid] || 'Player';
+        const pPhoto = room.playerPhotos?.[pid] || '';
+        const sc = scores[pid] || 0;
+        const isDrawerP = pid === room.drawerId;
+        return `<div class="mg-player-chip ${isDrawerP ? 'drawer' : (pid === currentUser.uid ? 'active' : '')} w-full justify-between">
+          <div class="flex items-center gap-2 min-w-0">
+            <img src="${pPhoto || 'https://ui-avatars.com/api/?name='+encodeURIComponent(pName)}" class="w-6 h-6 rounded-full">
+            <span class="truncate text-xs">${pName}${pid === currentUser.uid ? ' (Kamu)' : ''}</span>
+          </div>
+          <div class="flex items-center gap-1">
+            ${isDrawerP ? '<i class="fas fa-paint-brush text-green-400 text-xs"></i>' : ''}
+            <span class="text-amber-400 font-bold text-xs">${sc}</span>
+          </div>
+        </div>`;
+      }).join('');
+    }
+  }
+}
+
+function updateMgTimer(room) {
+  const timerEl = document.getElementById('mgTimerDisplay');
+  if (!timerEl) return;
+  const now = Date.now();
+  const timeLeft = Math.max(0, Math.floor((room.endTime - now) / 1000));
+  const mins = Math.floor(timeLeft / 60);
+  const secs = timeLeft % 60;
+  timerEl.textContent = `${mins}:${String(secs).padStart(2,'0')}`;
+  timerEl.classList.toggle('warning', timeLeft <= 120);
+  if (timeLeft <= 0) {
+    if (mgTimerInterval) { clearInterval(mgTimerInterval); mgTimerInterval = null; }
+    // Waktu habis — penggambar tidak berhasil
+    if (room.status === 'playing') {
+      window.mgTimeUp(room.id);
+    }
+  }
+}
+
+function renderMgGuessLog(room) {
+  const logEl = document.getElementById('mgGuessLog');
+  if (!logEl) return;
+  const log = room.guessLog || [];
+  logEl.innerHTML = log.slice(-30).map(l => {
+    const time = new Date(l.at || Date.now()).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+    let cls = 'info';
+    if (l.type === 'correct') cls = 'correct';
+    else if (l.type === 'wrong') cls = 'wrong';
+    else if (l.type === 'close') cls = 'close';
+    else if (l.type === 'system') cls = 'system';
+    return `<div class="${cls} mb-1">[${time}] ${l.text}</div>`;
+  }).join('');
+  logEl.scrollTop = logEl.scrollHeight;
+}
+
+function initMgCanvas(room, isDrawer) {
+  const canvas = document.getElementById('mgCanvas');
+  if (!canvas) return;
+  mgCanvas = canvas;
+  mgCtx = canvas.getContext('2d');
+  mgCtx.lineCap = 'round';
+  mgCtx.lineJoin = 'round';
+
+  // Load canvas dari data tersimpan
+  if (room.canvasData && room.canvasData.startsWith('data:image')) {
+    const img = new Image();
+    img.onload = () => {
+      mgCtx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      mgDrawingHistory.push(canvas.toDataURL());
+      mgHistoryIndex = 0;
+    };
+    img.src = room.canvasData;
+  } else {
+    mgCtx.fillStyle = '#ffffff';
+    mgCtx.fillRect(0, 0, canvas.width, canvas.height);
+    mgDrawingHistory = [canvas.toDataURL()];
+    mgHistoryIndex = 0;
+  }
+
+  if (!isDrawer) {
+    canvas.style.cursor = 'default';
+    return;
+  }
+
+  // Warna
+  const colors = ['#000000','#ffffff','#ef4444','#f97316','#fbbf24','#10b981','#3b82f6','#8b5cf6','#ec4899','#78716c','#0ea5e9','#84cc16'];
+  const colorsDiv = document.getElementById('mgColors');
+  if (colorsDiv) {
+    colorsDiv.innerHTML = colors.map(c => `<div class="mg-color-swatch ${c === '#000000' ? 'active' : ''}" style="background:${c}" data-color="${c}"></div>`).join('');
+    colorsDiv.querySelectorAll('.mg-color-swatch').forEach(sw => {
+      sw.onclick = () => {
+        mgBrushColor = sw.dataset.color;
+        colorsDiv.querySelectorAll('.mg-color-swatch').forEach(s => s.classList.remove('active'));
+        sw.classList.add('active');
+      };
+    });
+  }
+
+  // Tool buttons
+  document.querySelectorAll('.mg-tool-btn[data-tool]').forEach(btn => {
+    btn.onclick = () => {
+      mgTool = btn.dataset.tool;
+      document.querySelectorAll('.mg-tool-btn[data-tool]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    };
+  });
+
+  // Brush size
+  const sizeInput = document.getElementById('mgBrushSize');
+  const sizeLabel = document.getElementById('mgBrushSizeLabel');
+  if (sizeInput) {
+    sizeInput.oninput = () => {
+      mgBrushSize = parseInt(sizeInput.value);
+      sizeLabel.textContent = mgBrushSize + 'px';
+    };
+  }
+
+  // Drawing events
+  let lastX = 0, lastY = 0;
+  let startX = 0, startY = 0;
+  let snapshot = null;
+
+  const getPos = (e) => {
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    return {
+      x: (clientX - rect.left) * scaleX,
+      y: (clientY - rect.top) * scaleY
+    };
+  };
+
+  const startDraw = (e) => {
+    e.preventDefault();
+    if (mgTool === 'fill') {
+      const pos = getPos(e);
+      floodFill(pos.x, pos.y, mgBrushColor);
+      pushHistory();
+      mgLastDrawTime = Date.now();
+      syncCanvas(room.id);
+      return;
+    }
+    mgDrawing = true;
+    const pos = getPos(e);
+    lastX = pos.x; lastY = pos.y;
+    startX = pos.x; startY = pos.y;
+    snapshot = mgCtx.getImageData(0, 0, canvas.width, canvas.height);
+    if (mgTool === 'brush') {
+      mgCtx.globalCompositeOperation = 'source-over';
+      mgCtx.strokeStyle = mgBrushColor;
+      mgCtx.lineWidth = mgBrushSize;
+      mgCtx.beginPath();
+      mgCtx.moveTo(lastX, lastY);
+      mgCtx.lineTo(lastX + 0.1, lastY + 0.1);
+      mgCtx.stroke();
+    }
+  };
+
+  const draw = (e) => {
+    if (!mgDrawing) return;
+    e.preventDefault();
+    const pos = getPos(e);
+    if (mgTool === 'brush' || mgTool === 'eraser') {
+      mgCtx.globalCompositeOperation = mgTool === 'eraser' ? 'destination-out' : 'source-over';
+      mgCtx.strokeStyle = mgTool === 'eraser' ? 'rgba(0,0,0,1)' : mgBrushColor;
+      mgCtx.lineWidth = mgTool === 'eraser' ? mgBrushSize * 2 : mgBrushSize;
+      mgCtx.beginPath();
+      mgCtx.moveTo(lastX, lastY);
+      mgCtx.lineTo(pos.x, pos.y);
+      mgCtx.stroke();
+      lastX = pos.x; lastY = pos.y;
+    } else if (mgTool === 'line') {
+      mgCtx.putImageData(snapshot, 0, 0);
+      mgCtx.globalCompositeOperation = 'source-over';
+      mgCtx.strokeStyle = mgBrushColor;
+      mgCtx.lineWidth = mgBrushSize;
+      mgCtx.beginPath();
+      mgCtx.moveTo(startX, startY);
+      mgCtx.lineTo(pos.x, pos.y);
+      mgCtx.stroke();
+    } else if (mgTool === 'rect') {
+      mgCtx.putImageData(snapshot, 0, 0);
+      mgCtx.globalCompositeOperation = 'source-over';
+      mgCtx.strokeStyle = mgBrushColor;
+      mgCtx.lineWidth = mgBrushSize;
+      mgCtx.strokeRect(startX, startY, pos.x - startX, pos.y - startY);
+    } else if (mgTool === 'circle') {
+      mgCtx.putImageData(snapshot, 0, 0);
+      mgCtx.globalCompositeOperation = 'source-over';
+      mgCtx.strokeStyle = mgBrushColor;
+      mgCtx.lineWidth = mgBrushSize;
+      const rx = Math.abs(pos.x - startX) / 2;
+      const ry = Math.abs(pos.y - startY) / 2;
+      const cx = (pos.x + startX) / 2;
+      const cy = (pos.y + startY) / 2;
+      mgCtx.beginPath();
+      mgCtx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2);
+      mgCtx.stroke();
+    }
+  };
+
+  const endDraw = (e) => {
+    if (!mgDrawing) return;
+    mgDrawing = false;
+    pushHistory();
+    mgLastDrawTime = Date.now();
+    syncCanvas(room.id);
+  };
+
+  canvas.addEventListener('mousedown', startDraw);
+  canvas.addEventListener('mousemove', draw);
+  canvas.addEventListener('mouseup', endDraw);
+  canvas.addEventListener('mouseleave', endDraw);
+  canvas.addEventListener('touchstart', startDraw, { passive: false });
+  canvas.addEventListener('touchmove', draw, { passive: false });
+  canvas.addEventListener('touchend', endDraw);
+
+  // Undo
+  document.getElementById('mgUndoBtn').onclick = () => {
+    if (mgHistoryIndex > 0) {
+      mgHistoryIndex--;
+      const img = new Image();
+      img.onload = () => {
+        mgCtx.clearRect(0, 0, canvas.width, canvas.height);
+        mgCtx.drawImage(img, 0, 0);
+        syncCanvas(room.id);
+      };
+      img.src = mgDrawingHistory[mgHistoryIndex];
+    }
+  };
+
+  // Clear
+  document.getElementById('mgClearBtn').onclick = () => {
+    if (!confirm('Hapus semua gambar?')) return;
+    mgCtx.fillStyle = '#ffffff';
+    mgCtx.fillRect(0, 0, canvas.width, canvas.height);
+    pushHistory();
+    syncCanvas(room.id);
+  };
+}
+
+function pushHistory() {
+  if (!mgCanvas) return;
+  const data = mgCanvas.toDataURL();
+  mgDrawingHistory = mgDrawingHistory.slice(0, mgHistoryIndex + 1);
+  mgDrawingHistory.push(data);
+  if (mgDrawingHistory.length > 30) mgDrawingHistory.shift();
+  mgHistoryIndex = mgDrawingHistory.length - 1;
+}
+
+async function syncCanvas(roomId) {
+  if (!mgCanvas || !roomId) return;
+  const now = Date.now();
+  if (now - mgLastDrawTime < 500) return; // throttle
+  mgLastDrawTime = now;
+  try {
+    const data = mgCanvas.toDataURL('image/png');
+    await updateDoc(doc(db, 'mg_rooms', roomId), { canvasData: data, updatedAt: serverTimestamp() });
+  } catch (e) {}
+}
+
+function floodFill(x, y, color) {
+  if (!mgCtx || !mgCanvas) return;
+  const w = mgCanvas.width, h = mgCanvas.height;
+  const imageData = mgCtx.getImageData(0, 0, w, h);
+  const data = imageData.data;
+  const px = Math.floor(x), py = Math.floor(y);
+  if (px < 0 || px >= w || py < 0 || py >= h) return;
+  const idx = (py * w + px) * 4;
+  const targetR = data[idx], targetG = data[idx+1], targetB = data[idx+2], targetA = data[idx+3];
+  const fillRGB = hexToRgb(color);
+  if (!fillRGB) return;
+  if (targetR === fillRGB.r && targetG === fillRGB.g && targetB === fillRGB.b && targetA === 255) return;
+  const stack = [[px, py]];
+  while (stack.length > 0) {
+    const [cx, cy] = stack.pop();
+    const ci = (cy * w + cx) * 4;
+    if (cx < 0 || cx >= w || cy < 0 || cy >= h) continue;
+    if (data[ci] !== targetR || data[ci+1] !== targetG || data[ci+2] !== targetB || data[ci+3] !== targetA) continue;
+    data[ci] = fillRGB.r; data[ci+1] = fillRGB.g; data[ci+2] = fillRGB.b; data[ci+3] = 255;
+    stack.push([cx+1, cy], [cx-1, cy], [cx, cy+1], [cx, cy-1]);
+  }
+  mgCtx.putImageData(imageData, 0, 0);
+}
+
+function hexToRgb(hex) {
+  const m = hex.match(/^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i);
+  return m ? { r: parseInt(m[1],16), g: parseInt(m[2],16), b: parseInt(m[3],16) } : null;
+}
+
+// ===== GUESS SUBMISSION =====
+window.mgDrawerRespond = async (roomId, type) => {
+  try {
+    const roomSnap = await getDoc(doc(db, 'mg_rooms', roomId));
+    if (!roomSnap.exists()) return;
+    const room = roomSnap.data();
+    if (room.drawerId !== currentUser.uid) return;
+    const log = room.guessLog || [];
+    let text = '';
+    if (type === 'benar') text = `✅ Benar! Jawaban: "${room.word}"`;
+    else if (type === 'kurang') text = `🟡 Kurang tepat, coba lagi!`;
+    else text = `❌ Salah, bukan itu!`;
+    log.push({ type: type === 'benar' ? 'correct' : type === 'kurang' ? 'close' : 'wrong', text, at: Date.now() });
+    const updates = { guessLog: log, updatedAt: serverTimestamp() };
+    if (type === 'benar') {
+      updates.roundStatus = 'correct';
+      updates.status = 'finished';
+      updates.endTime = Date.now();
+      // Tambah skor penggambar
+      const scores = room.scores || {};
+      scores[currentUser.uid] = (scores[currentUser.uid] || 0) + 5;
+      updates.scores = scores;
+    }
+    await updateDoc(doc(db, 'mg_rooms', roomId), updates);
+  } catch (e) { showToast('Gagal: ' + e.message); }
+};
+
+// Setup guess input listener via event delegation
+document.addEventListener('click', async (e) => {
+  if (e.target && e.target.id === 'mgGuessBtn') {
+    const input = document.getElementById('mgGuessInput');
+    if (!input) return;
+    const guess = input.value.trim().toLowerCase();
+    if (!guess) return;
+    if (mgGuessSubmitting) return;
+    mgGuessSubmitting = true;
+    try {
+      const roomSnap = await getDoc(doc(db, 'mg_rooms', mgCurrentRoom?.id || ''));
+      if (!roomSnap.exists()) { mgGuessSubmitting = false; return; }
+      const room = roomSnap.data();
+      if (room.drawerId === currentUser.uid) { showToast('Kamu penggambar, tidak bisa menebak!'); mgGuessSubmitting = false; return; }
+      const log = room.guessLog || [];
+      const isCorrect = guess === room.word.toLowerCase();
+      log.push({
+        type: isCorrect ? 'correct' : 'wrong',
+        text: `${isCorrect ? '✅' : '❌'} ${userProfile.username}: "${guess}"`,
+        at: Date.now()
+      });
+      const updates = { guessLog: log, updatedAt: serverTimestamp() };
+      if (isCorrect) {
+        updates.roundStatus = 'correct';
+        updates.status = 'finished';
+        updates.endTime = Date.now();
+        const scores = room.scores || {};
+        scores[currentUser.uid] = (scores[currentUser.uid] || 0) + 10;
+        scores[room.drawerId] = (scores[room.drawerId] || 0) + 5;
+        updates.scores = scores;
+      }
+      await updateDoc(doc(db, 'mg_rooms', room.id), updates);
+      input.value = '';
+    } catch (err) { showToast('Gagal: ' + err.message); }
+    mgGuessSubmitting = false;
+  }
+});
+
+document.addEventListener('keypress', async (e) => {
+  if (e.target && e.target.id === 'mgGuessInput' && e.key === 'Enter') {
+    document.getElementById('mgGuessBtn')?.click();
+  }
+});
+
+window.mgTimeUp = async (roomId) => {
+  try {
+    const roomSnap = await getDoc(doc(db, 'mg_rooms', roomId));
+    if (!roomSnap.exists()) return;
+    const room = roomSnap.data();
+    if (room.status !== 'playing') return;
+    const log = room.guessLog || [];
+    log.push({ type: 'system', text: '⏰ Waktu habis! Tidak ada yang menebak dengan benar.', at: Date.now() });
+    await updateDoc(doc(db, 'mg_rooms', roomId), {
+      status: 'finished',
+      roundStatus: 'timeup',
+      guessLog: log,
+      endTime: Date.now(),
+      updatedAt: serverTimestamp()
+    });
+  } catch (e) {}
+};
+
+// ===== FINISHED ROOM =====
+function renderMgFinished(room) {
+  const container = document.getElementById('mainContent');
+  if (!container) return;
+  const scores = room.scores || {};
+  const players = room.players || [];
+  const sorted = [...players].sort((a, b) => (scores[b] || 0) - (scores[a] || 0));
+  const isCorrect = room.roundStatus === 'correct';
+  const isHost = room.hostId === currentUser.uid;
+
+  container.innerHTML = `
+    <div class="max-w-2xl mx-auto card-anim">
+      <div class="card-bg rounded-2xl p-6 mb-4 text-center ${isCorrect ? 'berlanjut-border' : 'tamat-border'}">
+        <div class="text-5xl mb-3">${isCorrect ? '🎉' : '⏰'}</div>
+        <h2 class="text-2xl font-black ${isCorrect ? 'text-green-400' : 'text-red-400'}">${isCorrect ? 'BENAR!' : 'WAKTU HABIS!'}</h2>
+        <p class="text-slate-400 mt-2">Jawaban yang benar adalah:</p>
+        <div class="mg-answer-reveal mt-3">${room.word}</div>
+      </div>
+
+      <div class="card-bg rounded-2xl p-6 mb-4">
+        <h3 class="font-bold text-lg mb-4 text-amber-400 text-center"><i class="fas fa-trophy mr-2"></i>Papan Skor</h3>
+        <div class="space-y-3">
+          ${sorted.map((pid, i) => {
+            const pName = room.playerNames?.[pid] || 'Player';
+            const pPhoto = room.playerPhotos?.[pid] || '';
+            const sc = scores[pid] || 0;
+            const isDrawerP = pid === room.drawerId;
+            const rankColors = ['bg-gradient-to-br from-yellow-400 to-amber-600 text-black','bg-gradient-to-br from-slate-300 to-slate-500 text-black','bg-gradient-to-br from-amber-700 to-amber-900 text-white'];
+            return `<div class="flex items-center gap-3 bg-slate-800/50 rounded-xl p-3 ${i === 0 ? 'border-2 border-amber-500' : ''}">
+              <div class="leaderboard-rank ${i < 3 ? rankColors[i] : 'bg-slate-700 text-slate-300'}">${i+1}</div>
+              <img src="${pPhoto || 'https://ui-avatars.com/api/?name='+encodeURIComponent(pName)}" class="w-10 h-10 rounded-full border border-slate-600">
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2">
+                  <span class="font-bold text-sm truncate">${pName}${pid === currentUser.uid ? ' (Kamu)' : ''}</span>
+                  ${isDrawerP ? '<span class="text-[10px] bg-green-900/60 text-green-300 px-2 py-0.5 rounded-full">🎨 Penggambar</span>' : ''}
+                </div>
+              </div>
+              <span class="text-amber-400 font-black text-lg">${sc}</span>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>
+
+      <div class="card-bg rounded-2xl p-6 mb-4">
+        <h3 class="font-bold text-sm text-amber-400 mb-3"><i class="fas fa-history mr-1"></i>Riwayat Tebakan</h3>
+        <div class="mg-guess-log max-h-40">
+          ${(room.guessLog || []).slice(-20).map(l => {
+            let cls = 'info';
+            if (l.type === 'correct') cls = 'correct';
+            else if (l.type === 'wrong') cls = 'wrong';
+            else if (l.type === 'close') cls = 'close';
+            else if (l.type === 'system') cls = 'system';
+            return `<div class="${cls} mb-1">${l.text}</div>`;
+          }).join('')}
+        </div>
+      </div>
+
+      <div class="flex gap-3">
+        <button onclick="window.mgLeaveRoom('${room.id}')" class="flex-1 bg-slate-700 text-white font-bold py-3 rounded-full hover:scale-105 transition"><i class="fas fa-sign-out-alt mr-1"></i>Keluar</button>
+        ${isHost ? `<button onclick="window.mgPlayAgain('${room.id}')" class="flex-1 bg-purple-500 text-white font-bold py-3 rounded-full hover:scale-105 transition btn-glow"><i class="fas fa-redo mr-1"></i>Main Lagi</button>` : ''}
+      </div>
+    </div>`;
+}
+
+window.mgLeaveRoom = async (roomId) => {
+  try {
+    const roomSnap = await getDoc(doc(db, 'mg_rooms', roomId));
+    if (!roomSnap.exists()) { window.location.hash = 'minigame'; renderPage(); return; }
+    const room = roomSnap.data();
+    const players = (room.players || []).filter(p => p !== currentUser.uid);
+    const scores = { ...(room.scores || {}) };
+    delete scores[currentUser.uid];
+    const playerNames = { ...(room.playerNames || {}) };
+    delete playerNames[currentUser.uid];
+    const playerPhotos = { ...(room.playerPhotos || {}) };
+    delete playerPhotos[currentUser.uid];
+
+    if (players.length === 0) {
+      await deleteDoc(doc(db, 'mg_rooms', roomId));
+    } else {
+      await updateDoc(doc(db, 'mg_rooms', roomId), {
+        players, scores, playerNames, playerPhotos,
+        updatedAt: serverTimestamp()
+      });
+    }
+    await updateDoc(doc(db, 'users', currentUser.uid), { mgRoomId: null });
+    if (mgUnsubRoom) { mgUnsubRoom(); mgUnsubRoom = null; }
+    if (mgUnsubGuesses) { mgUnsubGuesses(); mgUnsubGuesses = null; }
+    if (mgTimerInterval) { clearInterval(mgTimerInterval); mgTimerInterval = null; }
+    mgCurrentRoom = null; mgMyRole = null;
+    showToast('Keluar dari room');
+    window.location.hash = 'minigame';
+    renderPage();
+  } catch (e) { showToast('Gagal keluar: ' + e.message); }
+};
+
+window.mgPlayAgain = async (roomId) => {
+  try {
+    const roomSnap = await getDoc(doc(db, 'mg_rooms', roomId));
+    if (!roomSnap.exists()) return;
+    const room = roomSnap.data();
+    const players = room.players || [];
+    const drawerId = players[Math.floor(Math.random() * players.length)];
+    const drawerName = room.playerNames?.[drawerId] || 'Player';
+    const word = MG_WORD_LIST[Math.floor(Math.random() * MG_WORD_LIST.length)];
+    const scores = {};
+    players.forEach(p => scores[p] = 0);
+    await updateDoc(doc(db, 'mg_rooms', roomId), {
+      status: 'playing',
+      drawerId, drawerName, word,
+      currentRound: (room.currentRound || 0) + 1,
+      scores,
+      canvasData: '',
+      drawingHistory: [],
+      guessLog: [{ type: 'system', text: `Ronde baru dimulai! ${drawerName} adalah penggambar.`, at: Date.now() }],
+      startTime: Date.now(),
+      endTime: Date.now() + (MG_DRAW_TIME * 1000),
+      roundStatus: 'drawing',
+      updatedAt: serverTimestamp()
+    });
+    showToast('Ronde baru dimulai!');
+  } catch (e) { showToast('Gagal: ' + e.message); }
+};
+
+// ============================================================
+// ===================== END MINIGAME =========================
+// ============================================================
 
 function handleAuthClick() {
   if (currentUser) logout();
