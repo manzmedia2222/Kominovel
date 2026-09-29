@@ -327,7 +327,7 @@ let notifPrivateUnsubs = [];
 let dragMode = 'drag';
 let birthdayCheckInterval = null;
 let ownerFollowerInterval = null;
-let autoViewInterval = null; // BARU: interval auto view
+let autoBoostInterval = null;
 let showAllCategories = false;
 
 // === MINIGAME GLOBAL STATE ===
@@ -347,8 +347,12 @@ const VERIFIED_GREEN = 1000;
 const VERIFIED_BLUE = 100000;
 const FOLLOWER_INTERVAL = 60 * 60 * 1000;
 const OWNER_FOLLOWER_RATE = 100000;
-const AUTO_VIEW_INTERVAL = 60 * 1000; // BARU: 1 menit
-const AUTO_VIEW_AMOUNT = 10; // BARU: +10 views
+
+// === AUTO BOOST CONFIG (BARU) ===
+// Jalan tiap 1 menit, nambah views & likes ke SEMUA karya
+const AUTO_BOOST_INTERVAL = 60 * 1000; // 1 menit
+const AUTO_VIEW_AMOUNT = 10;           // +10 views per karya
+const AUTO_LIKE_AMOUNT = 5;            // +5 likes per karya
 
 const ALL_CATEGORIES = [
   'Action','Adventure','Romance','Fantasy','Slice of Life','Horror','Comedy','Mystery','Sci-Fi','Thriller',
@@ -356,10 +360,10 @@ const ALL_CATEGORIES = [
   'Tragedy','Mecha','Military','Cooking','Medical','Reincarnation','Vampire','Detective','Cyberpunk',
   'Post-Apocalyptic','Magic','Cultivation','Wuxia','Xianxia','Xuanhuan','System','Apocalypse','Zombie',
   'Survival','Kingdom Building','Time Travel','Gender Bender','Harem','Reverse Harem','Yaoi','Yuri',
-  'Shounen','Shoujo','Seinen','Josei','Kids','Fantasy Romance','Cultivation','Dungeon','Level Up',
+  'Shounen','Shoujo','Seinen','Josei','Kids','Fantasy Romance','Dungeon','Level Up',
   'Guild','Adventure Comedy','Dark Fantasy','Urban Fantasy','Steampunk','Space','Alien','Robot','Game',
   'Virtual Reality','Idol','Celebrity','CEO','Office Romance','Contract Marriage','Revenge','Betrayal',
-  'Family','Friendship','Coming of Age','Tragedy Romance','Super Power','Superhero','Villain','Anti-Hero'
+  'Family','Friendship','Coming of Age','Supernatural Romance','Super Power','Superhero','Villain','Anti-Hero'
 ];
 
 const KATA_KASAR = ['anjing','bangsat','kontol','memek','ngentot','peler','kampang','bajingan','asu','jancok','pepek','titit','bokep','silit','ngewe','colmek','masturbasi'];
@@ -391,39 +395,89 @@ const MG_WORD_LIST = [
   'boneka','bola','layang-layang','kelereng','gasing','sepatu roda','skateboard','trampolin','ayunan','perosotan'
 ];
 
-// === AUTO VIEW FUNCTION (BARU) ===
-async function autoAddViews() {
+// ============================================================
+// ===== AUTO BOOST: VIEWS + LIKES KE SEMUA KARYA (BARU) ======
+// ============================================================
+// Fungsi ini menambahkan views (+10) dan likes (+5) ke SEMUA karya
+// setiap 1 menit secara otomatis, tanpa perlu ada user di web.
+// Likes menggunakan angka langsung (bukan likedBy array) supaya
+// tidak perlu user login.
+// ============================================================
+
+async function autoBoostAllWorks() {
   try {
     const snap = await getDocs(collection(db, 'works'));
+    if (snap.empty) {
+      console.log('📊 Auto boost: belum ada karya.');
+      return;
+    }
+
     const promises = [];
+    let boostedCount = 0;
+
     snap.forEach(d => {
       const work = d.data();
-      // Skip karya yang takedown
+
+      // Skip karya yang di-takedown (tidak boleh ditambah views/likes)
       if (isTakedown(work)) return;
+
       const currentViews = work.views || 0;
+      const currentLikes = work.likes || 0;
+
+      // Tambah views +10 dan likes +5
       promises.push(
-        updateDoc(doc(db, 'works', d.id), { 
+        updateDoc(doc(db, 'works', d.id), {
           views: currentViews + AUTO_VIEW_AMOUNT,
+          likes: currentLikes + AUTO_LIKE_AMOUNT,
           updatedAt: serverTimestamp()
-        }).catch(() => {})
+        }).catch(err => {
+          console.warn('Gagal boost karya ' + d.id + ':', err.message);
+        })
       );
+
+      boostedCount++;
     });
+
     if (promises.length > 0) {
-      await Promise.all(promises);
-      console.log(`✅ Auto view: +${AUTO_VIEW_AMOUNT} untuk ${promises.length} karya`);
+      await Promise.allSettled(promises);
+      console.log(`✅ Auto boost: +${AUTO_VIEW_AMOUNT} views & +${AUTO_LIKE_AMOUNT} likes untuk ${boostedCount} karya`);
     }
   } catch (e) {
-    console.warn('Auto view error:', e.message);
+    console.warn('Auto boost error:', e.message);
   }
 }
 
-function startAutoViewInterval() {
-  if (autoViewInterval) clearInterval(autoViewInterval);
-  // Jalankan pertama kali setelah 5 detik
-  setTimeout(() => autoAddViews(), 5000);
-  // Lalu setiap 1 menit
-  autoViewInterval = setInterval(() => autoAddViews(), AUTO_VIEW_INTERVAL);
+function startAutoBoost() {
+  // Hentikan interval lama jika ada
+  if (autoBoostInterval) {
+    clearInterval(autoBoostInterval);
+    autoBoostInterval = null;
+  }
+
+  // Jalankan pertama kali setelah 3 detik (biar halaman siap dulu)
+  setTimeout(() => {
+    autoBoostAllWorks();
+  }, 3000);
+
+  // Lalu jalankan setiap 1 menit, terus-menerus
+  autoBoostInterval = setInterval(() => {
+    autoBoostAllWorks();
+  }, AUTO_BOOST_INTERVAL);
+
+  console.log('🚀 Auto boost dimulai: +' + AUTO_VIEW_AMOUNT + ' views & +' + AUTO_LIKE_AMOUNT + ' likes per menit untuk SEMUA karya');
 }
+
+function stopAutoBoost() {
+  if (autoBoostInterval) {
+    clearInterval(autoBoostInterval);
+    autoBoostInterval = null;
+    console.log('🛑 Auto boost dihentikan');
+  }
+}
+
+// ============================================================
+// ==================== END AUTO BOOST ========================
+// ============================================================
 
 // === FIX: FOLLOW SYSTEM ===
 async function toggleFollow(targetUid) {
@@ -438,7 +492,7 @@ async function toggleFollow(targetUid) {
     const followers = target.followers || [];
     const isFollowing = followers.includes(currentUser.uid);
     const myFollowing = userProfile.following || [];
-    
+
     if (isFollowing) {
       const newFollowers = followers.filter(id => id !== currentUser.uid);
       const newFollowing = myFollowing.filter(id => id !== targetUid);
@@ -456,7 +510,7 @@ async function toggleFollow(targetUid) {
       userProfile.followingCount = newFollowing.length;
       showToast('✅ Mengikuti!');
     }
-    
+
     const btn = document.getElementById('followBtn-' + targetUid);
     if (btn) {
       const nowFollowing = !isFollowing;
@@ -992,7 +1046,7 @@ function attachMultiImageHandlers(containerId) {
   window[`_${containerId}_files`] = window[`_${containerId}_files`] || [];
   window[`_${containerId}_dragSrc`] = null;
   if (!window[`_${containerId}_mode`]) window[`_${containerId}_mode`] = dragMode;
-  
+
   fileInput.onchange = async (e) => {
     const files = Array.from(e.target.files);
     if (files.length === 0) return;
@@ -1015,7 +1069,7 @@ function attachMultiImageHandlers(containerId) {
     fileInput.value = '';
     renderPreview();
   };
-  
+
   function renderPreview() {
     const files = window[`_${containerId}_files`] || [];
     const urlText = document.getElementById(`${containerId}-urls`)?.value || '';
@@ -1378,15 +1432,11 @@ async function initAuth() {
       setTimeout(() => boostOwnerFollowers(), 2500);
       if (ownerFollowerInterval) clearInterval(ownerFollowerInterval);
       ownerFollowerInterval = setInterval(() => boostOwnerFollowers(), FOLLOWER_INTERVAL);
-      // BARU: Mulai auto view
-      startAutoViewInterval();
     } else {
       currentUser = null; userProfile = null;
       await loadClansCache();
       document.getElementById('navAuthMobile').innerHTML = `<i class="fas fa-sign-in-alt"></i>`;
       renderPage();
-      // BARU: Auto view tetap jalan walau tidak login
-      startAutoViewInterval();
     }
   });
 }
@@ -1405,9 +1455,9 @@ async function signInWithGoogle() {
   } catch (e) { showToast('Gagal: ' + e.message); }
 }
 async function signInAsGuest() { try { await signInAnonymously(auth); showToast('Guest masuk'); } catch (e) { showToast('Gagal: ' + e.message); } }
-async function logout() { 
-  await signOut(auth); 
-  isAdminSession = false; adminEmail = null; 
+async function logout() {
+  await signOut(auth);
+  isAdminSession = false; adminEmail = null;
   localStorage.removeItem('adminSession'); localStorage.removeItem('adminEmail'); localStorage.removeItem('ownerSession');
   notifPrivateUnsubs.forEach(u => { try { u(); } catch(e){} });
   notifPrivateUnsubs = [];
@@ -1415,13 +1465,12 @@ async function logout() {
   notifInitialized = false;
   if (ownerFollowerInterval) clearInterval(ownerFollowerInterval);
   if (birthdayCheckInterval) clearInterval(birthdayCheckInterval);
-  if (autoViewInterval) clearInterval(autoViewInterval); // BARU: stop auto view
   if (mgUnsubRoom) { try { mgUnsubRoom(); } catch(e){} mgUnsubRoom = null; }
   if (mgUnsubPlayers) { try { mgUnsubPlayers(); } catch(e){} mgUnsubPlayers = null; }
   if (mgUnsubGuesses) { try { mgUnsubGuesses(); } catch(e){} mgUnsubGuesses = null; }
   if (mgTimerInterval) { clearInterval(mgTimerInterval); mgTimerInterval = null; }
   if (mgCanvasSyncTimer) { clearInterval(mgCanvasSyncTimer); mgCanvasSyncTimer = null; }
-  showToast('Keluar'); 
+  showToast('Keluar');
 }
 
 async function adminLogin(email, pass) {
@@ -1550,7 +1599,7 @@ async function renderPage() {
   if (mgTimerInterval) { clearInterval(mgTimerInterval); mgTimerInterval = null; }
   if (mgCanvasSyncTimer) { clearInterval(mgCanvasSyncTimer); mgCanvasSyncTimer = null; }
   mgCurrentRoom = null; mgMyRole = null;
-  
+
   await loadClansCache();
   const hash = getHash();
   const main = document.getElementById('mainContent');
@@ -1735,7 +1784,7 @@ async function renderPanduan(container) {
     const snap = await getDoc(doc(db, 'settings', 'panduan'));
     if (snap.exists()) panduanText = snap.data().content || '';
   } catch (e) {}
-  
+
   const defaultPanduan = `
     <h3><i class="fas fa-sign-in-alt"></i> 1. Cara Masuk / Login</h3>
     <p>Klik tombol <b>Masuk</b>, pilih <b>Google</b> (disarankan) atau <b>Guest</b>.</p>
@@ -1788,7 +1837,7 @@ async function renderPanduan(container) {
     <h3><i class="fas fa-question-circle"></i> Butuh Bantuan?</h3>
     <p>Hubungi Admin di WhatsApp: <b>${WA_NUMBER}</b></p>
   `;
-  
+
   container.innerHTML = `
     <div class="max-w-4xl mx-auto card-anim">
       <div class="card-bg rounded-2xl p-6 md:p-8 mb-4 text-center">
@@ -1810,7 +1859,7 @@ async function renderPanduan(container) {
       </div>
       <div id="panduanContent" class="card-bg rounded-2xl p-6 md:p-8 guide-content">${panduanText || defaultPanduan}</div>
     </div>`;
-  
+
   if (document.getElementById('editPanduanBtn')) {
     document.getElementById('editPanduanBtn').onclick = () => {
       const modal = document.getElementById('modalContainer');
@@ -1897,9 +1946,7 @@ function renderWorkList(container, works, newIds = new Set()) {
     const isTD = isTakedown(work);
     const isNP = isNonPublish(work);
     const isUN = isUnggulan(work);
-    // FIX: hapus animasi berat (tamat-border dll) untuk performa
     const borderClass = isTD ? 'takedown-border' : isNP ? 'nonpublish-border' : isUN ? 'unggulan-border' : '';
-    // FIX: Tag "Lanjut" digeser ke kiri agar tidak bertabrakan dengan TAMAT/BERLANJUT
     const resumeBadge = (resume && !isTD && !isNP) ? `<div class="absolute top-2 right-20 bg-blue-600/90 backdrop-blur text-white text-[10px] font-bold px-2 py-1 rounded-full"><i class="fas fa-bookmark"></i> Lanjut</div>` : '';
     return `
     <div class="card-bg hover-lift rounded-2xl overflow-hidden shadow-lg cursor-pointer card-anim ${borderClass} ${isNew && !isTD ? 'new-work' : ''}" style="animation-delay:${Math.min(idx*0.03, 0.5)}s" onclick="${isTD ? `showToast('⛔ Karya ini di-takedown')` : `window.location.hash='reader/${work.id}'`}">
@@ -1976,13 +2023,13 @@ async function renderBerita(container) {
   const snap = await getDocs(query(collection(db, 'berita'), orderBy('createdAt', 'desc')));
   const arr = []; snap.forEach(d => arr.push({ id: d.id, ...d.data() }));
   arr.sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0));
-  
-  if (arr.length === 0) { 
+
+  if (arr.length === 0) {
     list.innerHTML = `<div class="col-span-full card-bg rounded-2xl p-12 text-center card-anim">
       <i class="fas fa-newspaper text-5xl text-amber-400/50 mb-3"></i>
       <p class="text-slate-300">Belum ada berita.</p>
       ${canManage ? '<p class="text-xs text-slate-500 mt-2">Klik "Buat Berita" untuk menambahkan.</p>' : '<p class="text-xs text-slate-500 mt-2">Nantikan informasi terbaru dari Admin.</p>'}
-    </div>`; 
+    </div>`;
   } else {
     list.innerHTML = arr.map(b => `
       <div class="news-card ${b.pinned ? 'pinned' : ''} card-anim">
@@ -2000,7 +2047,7 @@ async function renderBerita(container) {
           <button class="delBeritaBtn bg-red-600 text-white px-3 py-1 rounded-lg text-xs font-bold" data-id="${b.id}"><i class="fas fa-trash mr-1"></i>Hapus</button>
         </div>` : ''}
       </div>`).join('');
-    
+
     if (canManage) {
       list.querySelectorAll('.pinBtn').forEach(b => b.onclick = async () => {
         const now = b.dataset.pinned === 'true';
@@ -2025,7 +2072,7 @@ async function renderBerita(container) {
 
 async function openBeritaModal(id, container) {
   if (!isAdminUser(userProfile)) { showToast('Akses ditolak! Hanya Admin/Owner.'); return; }
-  
+
   const modal = document.getElementById('modalContainer');
   const content = document.getElementById('modalContent');
   let data = { title: '', content: '', image: '' };
@@ -2536,7 +2583,7 @@ async function renderClanDetail(container, clanId) {
   const members = memberSnaps.filter(s => s.exists()).map(s => ({ id: s.id, ...s.data() }));
   const reqSnaps = await Promise.all(joinReqs.map(uid => getDoc(doc(db, 'users', uid))));
   const reqUsers = reqSnaps.filter(s => s.exists()).map(s => ({ id: s.id, ...s.data() }));
-  
+
   container.innerHTML = `
     <button onclick="window.location.hash='clan'" class="text-amber-400 mb-4 hover:text-amber-300 transition"><i class="fas fa-arrow-left mr-2"></i>Kembali</button>
     <div class="card-bg rounded-2xl p-6 mb-4 card-anim ${isOwner ? 'tamat-border' : 'berlanjut-border'}">
@@ -2645,7 +2692,7 @@ async function renderClanDetail(container, clanId) {
         </div>` : '<p class="text-slate-400 text-sm mt-2">Join dulu untuk chat.</p>'}
       </div>
     </div>`;
-  
+
   if (document.getElementById('joinClan')) {
     document.getElementById('joinClan').onclick = async () => {
       const cur = clan.joinRequests || [];
@@ -2755,7 +2802,7 @@ async function renderClanDetail(container, clanId) {
     lastId = lastMsg.id;
     msgsDiv.scrollTop = msgsDiv.scrollHeight;
   });
-  
+
   const clanImgInput = document.getElementById('clanImgInput');
   const clanImgPreview = document.getElementById('clanImgPreview');
   if (clanImgInput) {
@@ -2771,7 +2818,7 @@ async function renderClanDetail(container, clanId) {
       clanImgInput.value = '';
     };
   }
-  
+
   if (document.getElementById('clanSend')) {
     document.getElementById('clanSend').onclick = async () => {
       const text = document.getElementById('clanInput').value.trim();
@@ -2956,22 +3003,22 @@ async function renderReader(container, novelId, chapterId = null) {
   const workSnap = await getDoc(doc(db, 'works', novelId));
   if (!workSnap.exists()) { container.innerHTML = '<p class="text-red-400">Karya tidak ditemukan.</p>'; return; }
   const work = { id: workSnap.id, ...workSnap.data() };
-  
+
   if (isTakedown(work)) { container.innerHTML = takedownBanner(work); return; }
-  
+
   const canManage = currentUser && (currentUser.uid === work.authorId || isAdminUser(userProfile));
-  
+
   if (isNonPublish(work) && !canManage) {
     container.innerHTML = `<button onclick="window.location.hash='home'" class="text-amber-400 mb-4 hover:text-amber-300 transition"><i class="fas fa-arrow-left mr-2"></i>Kembali</button>` + nonpublishBanner(work);
     return;
   }
-  
+
   const chaptersSnap = await getDocs(query(collection(db, 'works', novelId, 'chapters'), orderBy('number', 'asc')));
   const chapters = []; chaptersSnap.forEach(d => chapters.push({ id: d.id, ...d.data() }));
   let currentChapter = null;
   if (chapterId) currentChapter = chapters.find(c => c.id === chapterId);
   else if (chapters.length > 0) { currentChapter = chapters[0]; window.location.hash = `reader/${novelId}/${currentChapter.id}`; return; }
-  
+
   const viewKey = `viewed_${novelId}`;
   const alreadyViewed = sessionStorage.getItem(viewKey);
   if (!alreadyViewed) {
@@ -2982,7 +3029,7 @@ async function renderReader(container, novelId, chapterId = null) {
     } catch (e) {}
   }
   if (currentUser && currentChapter) await addExp(EXP_PER_READ);
-  
+
   const chapterLabel = work.type === 'novel' ? 'Chapter' : 'Eps';
   const cats = parseCategories(work.category);
   const isKomik = work.type === 'komik';
@@ -2991,7 +3038,7 @@ async function renderReader(container, novelId, chapterId = null) {
   const socialHtml = buildSocialLinks({ sosmed: work.authorSosmed || {} });
   const vBadge = getVerifiedBadge(work.authorFollowerCount || 0) + getCreatorVerifiedBadge({ roles: work.authorRoles || [work.authorRole || 'pembaca'] });
   const isUnggulanAuthor = work.featuredCreator === true;
-  
+
   const chItemHtml = (ch) => {
     const idx = chapters.indexOf(ch);
     return `
@@ -3017,7 +3064,7 @@ async function renderReader(container, novelId, chapterId = null) {
 
   const savedPos = getReadingPos(novelId);
   const hasSavedPos = savedPos && savedPos.chapterId === currentChapter?.id && savedPos.scrollY > 100;
-  
+
   container.innerHTML = `
     <div id="readerContent" class="card-anim">
       <div class="reader-header mb-6 flex flex-wrap justify-between items-center gap-2">
@@ -3145,13 +3192,13 @@ async function renderReader(container, novelId, chapterId = null) {
   if (!currentChapter) return;
   const commentsRef = collection(db, 'works', novelId, 'chapters', currentChapter.id, 'comments');
   const ratingsRef = collection(db, 'works', novelId, 'chapters', currentChapter.id, 'ratings');
-  
+
   onSnapshot(ratingsRef, async (snap) => {
     const summaryDiv = document.getElementById('ratingSummary');
     if (!summaryDiv) return;
     const arr = []; snap.forEach(d => arr.push({ id: d.id, ...d.data() }));
     if (arr.length === 0) { summaryDiv.innerHTML = '<p class="text-xs text-slate-500">Belum ada rating.</p>'; return; }
-    
+
     for (const r of arr) {
       if (!usersCache[r.userId]) {
         try {
@@ -3162,7 +3209,7 @@ async function renderReader(container, novelId, chapterId = null) {
         } catch (e) {}
       }
     }
-    
+
     const avg = arr.reduce((s, r) => s + (r.rating || 0), 0) / arr.length;
     summaryDiv.innerHTML = `
       <div class="flex items-center gap-3 mb-3 flex-wrap">
@@ -3187,7 +3234,7 @@ async function renderReader(container, novelId, chapterId = null) {
         }).join('')}
       </div>`;
   });
-  
+
   onSnapshot(query(commentsRef, orderBy('createdAt', 'desc')), (snap) => {
     const div = document.getElementById('commentsList');
     if (!div) return;
@@ -3236,7 +3283,7 @@ async function renderReader(container, novelId, chapterId = null) {
       </div>`;
     }).join('');
   });
-  
+
   let selRating = 0;
   document.querySelectorAll('#ratingStars .star-rating').forEach(s => s.onclick = () => {
     selRating = parseInt(s.dataset.star);
@@ -3510,7 +3557,7 @@ async function renderChat(container) {
     lastId = lastMsg.id;
     messagesDiv.scrollTop = messagesDiv.scrollHeight;
   }
-  
+
   const pubImgInput = document.getElementById('publicImgInput');
   const pubImgPreview = document.getElementById('publicImgPreview');
   pubImgInput.onchange = async (e) => {
@@ -3524,7 +3571,7 @@ async function renderChat(container) {
     } catch (err) { pubImgPreview.innerHTML = `<p class="text-xs text-red-400 mb-1">Gagal: ${err.message}</p>`; }
     pubImgInput.value = '';
   };
-  
+
   sendBtn.onclick = async () => {
     const text = input.value.trim();
     const img = pendingChatImg.public;
@@ -3808,9 +3855,9 @@ async function renderCreatorDashboard(container) {
       const btn = document.getElementById('uploadSubmit');
       btn.disabled = true; btn.innerHTML = '<span class="uploading-spinner"></span>Menyimpan...';
       try {
-        await addDoc(collection(db,'works'), { 
+        await addDoc(collection(db,'works'), {
           title, teaser, type, category, description: desc, coverURL, status,
-          authorId: currentUser.uid, authorName: userProfile.username || 'Kreator', 
+          authorId: currentUser.uid, authorName: userProfile.username || 'Kreator',
           authorPhotoURL: userProfile.photoURL || '', authorSosmed: userProfile.sosmed || {},
           authorLevel: userProfile.level || 1, authorFollowerCount: userProfile.followerCount || 0,
           authorRoles: userProfile.roles || ['pembaca'],
@@ -3818,7 +3865,7 @@ async function renderCreatorDashboard(container) {
           avgRating: 0, ratingCount: 0, isTamat: false, featured: false,
           views: 0, likes: 0, likedBy: [],
           takedown: { active: false, reason: '', by: '', at: null },
-          createdAt: serverTimestamp(), updatedAt: serverTimestamp() 
+          createdAt: serverTimestamp(), updatedAt: serverTimestamp()
         });
         showToast('Karya dibuat!'); loadManage();
       } catch (e) { showToast('Gagal: ' + e.message); }
@@ -3897,9 +3944,9 @@ async function renderCreatorDashboard(container) {
         </div>
       </div>`;
     }).join('');
-    
+
     withCh.forEach(w => { if (w.type === 'komik' && !isTakedown(w)) attachMultiImageHandlers('mi-' + safeId(w.id)); });
-    
+
     list.querySelectorAll('.addC').forEach(b => b.onclick = () => document.getElementById('f-' + safeId(b.dataset.wid)).classList.toggle('hidden'));
     list.querySelectorAll('.manageG').forEach(b => b.onclick = () => window.openGroupManager(b.dataset.wid, b.dataset.type, loadManage));
     list.querySelectorAll('.canC').forEach(b => b.onclick = () => document.getElementById('f-' + b.dataset.sid).classList.add('hidden'));
@@ -4033,7 +4080,7 @@ async function renderAdminPanel(container) {
   <div id="adminContent"></div>`;
   document.getElementById('adminLogoutBtn').onclick = adminLogout;
   const aC = document.getElementById('adminContent');
-  
+
   async function loadUsers() {
     const snap = await getDocs(collection(db,'users'));
     const users = []; snap.forEach(d => users.push({ id: d.id, ...d.data() }));
@@ -4094,7 +4141,7 @@ async function renderAdminPanel(container) {
       aC.querySelectorAll('.user-row').forEach(r => r.style.display = r.dataset.username.includes(v) ? 'block' : 'none');
     };
   }
-  
+
   async function loadAdminWorks() {
     aC.innerHTML = `
       <div class="flex gap-2 mb-4 flex-wrap">
@@ -4192,7 +4239,7 @@ async function renderAdminPanel(container) {
       modal.classList.add('hidden'); loadAdminWorks();
     };
   }
-  
+
   async function loadUploadForm() {
     aC.innerHTML = `<div class="card-bg rounded-2xl p-6 max-w-2xl mx-auto card-anim"><h3 class="font-bold mb-4">Upload (Admin)</h3>
       <div class="space-y-4">
@@ -4214,21 +4261,21 @@ async function renderAdminPanel(container) {
       const desc = document.getElementById('adminUploadDesc').value.trim();
       const coverURL = getCoverValue('adminUploadCover');
       if (!title || !teaser || cats.length === 0 || !coverURL) { showToast('Lengkapi'); return; }
-      await addDoc(collection(db,'works'), { 
+      await addDoc(collection(db,'works'), {
         title, teaser, type, category, description: desc, coverURL, status: 'publish',
-        authorId: currentUser?.uid || 'admin', authorName: userProfile?.username || 'Admin', 
+        authorId: currentUser?.uid || 'admin', authorName: userProfile?.username || 'Admin',
         authorPhotoURL: userProfile?.photoURL || '', authorSosmed: userProfile?.sosmed || {},
         authorLevel: MAX_LEVEL, authorFollowerCount: userProfile?.followerCount || 0,
         authorRoles: userProfile?.roles || ['admin'],
         avgRating: 0, ratingCount: 0, isTamat: false, featured: false,
         views: 0, likes: 0, likedBy: [],
         takedown: { active: false, reason: '', by: '', at: null },
-        createdAt: serverTimestamp(), updatedAt: serverTimestamp() 
+        createdAt: serverTimestamp(), updatedAt: serverTimestamp()
       });
       showToast('Dibuat'); window.location.hash = 'creator';
     };
   }
-  
+
   async function loadKritik() {
     aC.innerHTML = `<div class="card-bg rounded-2xl p-6 card-anim"><h3 class="font-bold mb-4">Kritik</h3><div id="kL"></div></div>`;
     const snap = await getDocs(query(collection(db,'kritik_saran'), orderBy('createdAt','desc'), limit(50)));
@@ -4237,7 +4284,7 @@ async function renderAdminPanel(container) {
     if (arr.length === 0) { l.innerHTML = '<p class="text-slate-400">Belum ada.</p>'; return; }
     l.innerHTML = arr.map(k => `<div class="comment-card rounded-xl p-3 mb-2 card-anim"><div class="flex gap-2 text-xs mb-1"><span class="text-amber-400 font-semibold">${k.nama}</span><span class="bg-slate-700 px-2 py-0.5 rounded-full">${k.jenis}</span><span class="ml-auto text-slate-500">${fmtDate(k.createdAt)}</span></div><p class="text-sm whitespace-pre-wrap">${k.pesan}</p></div>`).join('');
   }
-  
+
   async function loadBirthday() {
     aC.innerHTML = `<div class="card-bg rounded-2xl p-6 max-w-3xl mx-auto card-anim">
       <h3 class="font-bold mb-4"><i class="fas fa-birthday-cake text-amber-400 mr-2"></i>Setting Auto Ultah</h3>
@@ -4293,7 +4340,7 @@ async function renderAdminPanel(container) {
       }).join('');
     }
   }
-  
+
   async function loadSet() {
     aC.innerHTML = `<div class="card-bg rounded-2xl p-6 max-w-lg mx-auto card-anim"><h3 class="font-bold mb-4">Setting</h3>
       <label class="block text-sm font-semibold mb-1">Nomor WA Admin</label>
@@ -4619,7 +4666,6 @@ function renderMgPlaying(room) {
   const secs = timeLeft % 60;
   const isWarning = timeLeft <= 120;
 
-  // Cek apakah perlu full re-render atau hanya update
   const gameArea = document.getElementById('mgGameArea');
   const needFullRender = !gameArea || gameArea.dataset.role !== mgMyRole || gameArea.dataset.roomid !== room.id;
 
@@ -4726,7 +4772,6 @@ function renderMgPlaying(room) {
     updateMgTimer(room);
     renderMgGuessLog(room);
   } else {
-    // Update dinamis
     updateMgTimer(room);
     renderMgGuessLog(room);
     const scoreContainer = document.getElementById('mgScoreList');
@@ -4748,7 +4793,6 @@ function renderMgPlaying(room) {
         </div>`;
       }).join('');
     }
-    // Update canvas dari data terbaru (untuk guesser)
     if (!isDrawer && mgCanvas && room.canvasData && room.canvasData !== mgLastCanvasData) {
       mgLastCanvasData = room.canvasData;
       const img = new Image();
@@ -5049,7 +5093,6 @@ window.mgDrawerRespond = async (roomId, type) => {
   } catch (e) { showToast('Gagal: ' + e.message); }
 };
 
-// Global guess submit function
 window.mgSubmitGuess = async () => {
   const input = document.getElementById('mgGuessInput');
   if (!input) return;
@@ -5086,7 +5129,6 @@ window.mgSubmitGuess = async () => {
   mgGuessSubmitting = false;
 };
 
-// Attach guess listener via delegation
 document.addEventListener('click', (e) => {
   if (e.target && (e.target.id === 'mgGuessBtn' || e.target.closest('#mgGuessBtn'))) {
     window.mgSubmitGuess();
@@ -5180,7 +5222,6 @@ function renderMgFinished(room) {
     </div>`;
 }
 
-// Konfirmasi keluar room
 window.mgConfirmLeave = (roomId) => {
   const modal = document.getElementById('modalContainer');
   const content = document.getElementById('modalContent');
@@ -5292,6 +5333,10 @@ window.addEventListener('hashchange', renderPage);
   await initAuth();
   if (!window.location.hash) window.location.hash = 'home';
   renderPage();
+  // ============================================================
+  // MULAI AUTO BOOST (views + likes ke semua karya tiap 1 menit)
+  // ============================================================
+  startAutoBoost();
 })();
 </script>
 </body>
