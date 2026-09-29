@@ -327,6 +327,7 @@ let notifPrivateUnsubs = [];
 let dragMode = 'drag';
 let birthdayCheckInterval = null;
 let ownerFollowerInterval = null;
+let autoViewInterval = null; // BARU: interval auto view
 let showAllCategories = false;
 
 // === MINIGAME GLOBAL STATE ===
@@ -346,6 +347,8 @@ const VERIFIED_GREEN = 1000;
 const VERIFIED_BLUE = 100000;
 const FOLLOWER_INTERVAL = 60 * 60 * 1000;
 const OWNER_FOLLOWER_RATE = 100000;
+const AUTO_VIEW_INTERVAL = 60 * 1000; // BARU: 1 menit
+const AUTO_VIEW_AMOUNT = 10; // BARU: +10 views
 
 const ALL_CATEGORIES = [
   'Action','Adventure','Romance','Fantasy','Slice of Life','Horror','Comedy','Mystery','Sci-Fi','Thriller',
@@ -387,6 +390,40 @@ const MG_WORD_LIST = [
   'gunting','lem','penggaris','penghapus','tas','dompet','kacamata','jam tangan','cincin','kalung',
   'boneka','bola','layang-layang','kelereng','gasing','sepatu roda','skateboard','trampolin','ayunan','perosotan'
 ];
+
+// === AUTO VIEW FUNCTION (BARU) ===
+async function autoAddViews() {
+  try {
+    const snap = await getDocs(collection(db, 'works'));
+    const promises = [];
+    snap.forEach(d => {
+      const work = d.data();
+      // Skip karya yang takedown
+      if (isTakedown(work)) return;
+      const currentViews = work.views || 0;
+      promises.push(
+        updateDoc(doc(db, 'works', d.id), { 
+          views: currentViews + AUTO_VIEW_AMOUNT,
+          updatedAt: serverTimestamp()
+        }).catch(() => {})
+      );
+    });
+    if (promises.length > 0) {
+      await Promise.all(promises);
+      console.log(`✅ Auto view: +${AUTO_VIEW_AMOUNT} untuk ${promises.length} karya`);
+    }
+  } catch (e) {
+    console.warn('Auto view error:', e.message);
+  }
+}
+
+function startAutoViewInterval() {
+  if (autoViewInterval) clearInterval(autoViewInterval);
+  // Jalankan pertama kali setelah 5 detik
+  setTimeout(() => autoAddViews(), 5000);
+  // Lalu setiap 1 menit
+  autoViewInterval = setInterval(() => autoAddViews(), AUTO_VIEW_INTERVAL);
+}
 
 // === FIX: FOLLOW SYSTEM ===
 async function toggleFollow(targetUid) {
@@ -1341,11 +1378,15 @@ async function initAuth() {
       setTimeout(() => boostOwnerFollowers(), 2500);
       if (ownerFollowerInterval) clearInterval(ownerFollowerInterval);
       ownerFollowerInterval = setInterval(() => boostOwnerFollowers(), FOLLOWER_INTERVAL);
+      // BARU: Mulai auto view
+      startAutoViewInterval();
     } else {
       currentUser = null; userProfile = null;
       await loadClansCache();
       document.getElementById('navAuthMobile').innerHTML = `<i class="fas fa-sign-in-alt"></i>`;
       renderPage();
+      // BARU: Auto view tetap jalan walau tidak login
+      startAutoViewInterval();
     }
   });
 }
@@ -1374,6 +1415,7 @@ async function logout() {
   notifInitialized = false;
   if (ownerFollowerInterval) clearInterval(ownerFollowerInterval);
   if (birthdayCheckInterval) clearInterval(birthdayCheckInterval);
+  if (autoViewInterval) clearInterval(autoViewInterval); // BARU: stop auto view
   if (mgUnsubRoom) { try { mgUnsubRoom(); } catch(e){} mgUnsubRoom = null; }
   if (mgUnsubPlayers) { try { mgUnsubPlayers(); } catch(e){} mgUnsubPlayers = null; }
   if (mgUnsubGuesses) { try { mgUnsubGuesses(); } catch(e){} mgUnsubGuesses = null; }
@@ -1855,18 +1897,21 @@ function renderWorkList(container, works, newIds = new Set()) {
     const isTD = isTakedown(work);
     const isNP = isNonPublish(work);
     const isUN = isUnggulan(work);
-    const borderClass = isTD ? 'takedown-border' : isNP ? 'nonpublish-border' : isUN ? 'unggulan-border' : (work.isTamat ? 'tamat-border' : 'berlanjut-border');
+    // FIX: hapus animasi berat (tamat-border dll) untuk performa
+    const borderClass = isTD ? 'takedown-border' : isNP ? 'nonpublish-border' : isUN ? 'unggulan-border' : '';
+    // FIX: Tag "Lanjut" digeser ke kiri agar tidak bertabrakan dengan TAMAT/BERLANJUT
+    const resumeBadge = (resume && !isTD && !isNP) ? `<div class="absolute top-2 right-20 bg-blue-600/90 backdrop-blur text-white text-[10px] font-bold px-2 py-1 rounded-full"><i class="fas fa-bookmark"></i> Lanjut</div>` : '';
     return `
     <div class="card-bg hover-lift rounded-2xl overflow-hidden shadow-lg cursor-pointer card-anim ${borderClass} ${isNew && !isTD ? 'new-work' : ''}" style="animation-delay:${Math.min(idx*0.03, 0.5)}s" onclick="${isTD ? `showToast('⛔ Karya ini di-takedown')` : `window.location.hash='reader/${work.id}'`}">
       <div class="h-40 md:h-48 bg-slate-800 flex items-center justify-center overflow-hidden relative">
         ${work.coverURL ? `<img src="${work.coverURL}" class="w-full h-full object-cover ${isTD ? 'grayscale opacity-40' : isNP ? 'grayscale opacity-70' : ''}" onerror="this.style.display='none';">` : `<i class="fas fa-image text-5xl text-slate-600"></i>`}
         ${workStatusBadge(work)}
         ${statusLabel(work.isTamat)}
+        ${resumeBadge}
         <div class="absolute bottom-2 left-2 right-2 flex justify-between items-center pointer-events-none">
           <span class="view-badge bg-black/70 backdrop-blur px-2 py-1 rounded-full"><i class="fas fa-eye"></i> ${formatCount(work.views || 0)}</span>
           <span class="view-badge bg-black/70 backdrop-blur px-2 py-1 rounded-full"><i class="fas fa-heart" style="color:#ef4444"></i> ${formatCount(work.likes || 0)}</span>
         </div>
-        ${resume && !isTD && !isNP ? `<div class="absolute top-2 right-2 bg-blue-600/90 backdrop-blur text-white text-[10px] font-bold px-2 py-1 rounded-full"><i class="fas fa-bookmark"></i> Lanjut</div>` : ''}
       </div>
       <div class="p-3 md:p-4">
         <h3 class="font-bold text-sm md:text-lg truncate ${isTD ? 'text-slate-500 line-through' : ''}">${work.title}</h3>
