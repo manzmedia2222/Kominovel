@@ -261,6 +261,14 @@ body{font-family:'Inter',sans-serif;background:#0f0f1a;color:#e2e8f0;overflow-x:
 .mg-mode-card:hover{border-color:#fbbf24;transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,0,0,.4)}
 .mg-mode-card.selected{border-color:#fbbf24;background:linear-gradient(135deg,#2a1f0a,#1a1a2e);box-shadow:0 0 20px rgba(251,191,36,.4)}
 .mg-join-input{font-family:monospace;letter-spacing:8px;text-transform:uppercase;font-size:24px;text-align:center;font-weight:900}
+
+/* === ANTI-FLICKER: matikan animasi card saat update === */
+.no-anim .card-anim { animation: none !important; }
+.no-anim .new-work { animation: none !important; }
+
+/* Smooth update untuk angka views/likes */
+.stat-update { transition: color .3s ease; }
+.stat-update.flash-up { color: #fbbf24; }
 </style>
 </head>
 <body class="min-h-screen">
@@ -298,7 +306,7 @@ body{font-family:'Inter',sans-serif;background:#0f0f1a;color:#e2e8f0;overflow-x:
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 import { getAuth, signInAnonymously, GoogleAuthProvider, signInWithPopup, linkWithPopup, onAuthStateChanged, signOut, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, collection, addDoc, getDocs, query, where, orderBy, onSnapshot, serverTimestamp, limit } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, collection, addDoc, getDocs, query, where, orderBy, onSnapshot, serverTimestamp, limit, increment } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDmAEREMEbxAFFBXGzwC25C6_Fty_3x7h0",
@@ -330,6 +338,11 @@ let ownerFollowerInterval = null;
 let autoBoostInterval = null;
 let showAllCategories = false;
 
+// === ANTI-FLICKER: simpan data works & hanya update angka ===
+let currentWorksData = {}; // { id: work }
+let currentWorksOrder = []; // urutan id
+let homeIsFirstRender = true;
+
 // === MINIGAME GLOBAL STATE ===
 let mgUnsubRoom = null, mgUnsubPlayers = null, mgUnsubGuesses = null;
 let mgCanvas = null, mgCtx = null, mgDrawing = false;
@@ -348,11 +361,10 @@ const VERIFIED_BLUE = 100000;
 const FOLLOWER_INTERVAL = 60 * 60 * 1000;
 const OWNER_FOLLOWER_RATE = 100000;
 
-// === AUTO BOOST CONFIG (BARU) ===
-// Jalan tiap 1 menit, nambah views & likes ke SEMUA karya
-const AUTO_BOOST_INTERVAL = 60 * 1000; // 1 menit
-const AUTO_VIEW_AMOUNT = 10;           // +10 views per karya
-const AUTO_LIKE_AMOUNT = 5;            // +5 likes per karya
+// === AUTO BOOST: 5 MENIT, +20 VIEWS & +20 LIKES (FIXED) ===
+const AUTO_BOOST_INTERVAL = 5 * 60 * 1000;
+const AUTO_VIEW_AMOUNT = 20;
+const AUTO_LIKE_AMOUNT = 20;
 
 const ALL_CATEGORIES = [
   'Action','Adventure','Romance','Fantasy','Slice of Life','Horror','Comedy','Mystery','Sci-Fi','Thriller',
@@ -396,48 +408,27 @@ const MG_WORD_LIST = [
 ];
 
 // ============================================================
-// ===== AUTO BOOST: VIEWS + LIKES KE SEMUA KARYA (BARU) ======
+// ===== AUTO BOOST (FIXED: pakai increment atomic) ==========
 // ============================================================
-// Fungsi ini menambahkan views (+10) dan likes (+5) ke SEMUA karya
-// setiap 1 menit secara otomatis, tanpa perlu ada user di web.
-// Likes menggunakan angka langsung (bukan likedBy array) supaya
-// tidak perlu user login.
-// ============================================================
-
 async function autoBoostAllWorks() {
   try {
     const snap = await getDocs(collection(db, 'works'));
-    if (snap.empty) {
-      console.log('📊 Auto boost: belum ada karya.');
-      return;
-    }
-
+    if (snap.empty) return;
     const promises = [];
     let boostedCount = 0;
-
     snap.forEach(d => {
       const work = d.data();
-
-      // Skip karya yang di-takedown (tidak boleh ditambah views/likes)
       if (isTakedown(work)) return;
-
-      const currentViews = work.views || 0;
-      const currentLikes = work.likes || 0;
-
-      // Tambah views +10 dan likes +5
+      // ✅ FIX: pakai increment() atomic — tidak akan menimpa nilai user
       promises.push(
         updateDoc(doc(db, 'works', d.id), {
-          views: currentViews + AUTO_VIEW_AMOUNT,
-          likes: currentLikes + AUTO_LIKE_AMOUNT,
+          views: increment(AUTO_VIEW_AMOUNT),
+          likes: increment(AUTO_LIKE_AMOUNT),
           updatedAt: serverTimestamp()
-        }).catch(err => {
-          console.warn('Gagal boost karya ' + d.id + ':', err.message);
-        })
+        }).catch(() => {})
       );
-
       boostedCount++;
     });
-
     if (promises.length > 0) {
       await Promise.allSettled(promises);
       console.log(`✅ Auto boost: +${AUTO_VIEW_AMOUNT} views & +${AUTO_LIKE_AMOUNT} likes untuk ${boostedCount} karya`);
@@ -448,38 +439,21 @@ async function autoBoostAllWorks() {
 }
 
 function startAutoBoost() {
-  // Hentikan interval lama jika ada
-  if (autoBoostInterval) {
-    clearInterval(autoBoostInterval);
-    autoBoostInterval = null;
-  }
-
-  // Jalankan pertama kali setelah 3 detik (biar halaman siap dulu)
-  setTimeout(() => {
-    autoBoostAllWorks();
-  }, 3000);
-
-  // Lalu jalankan setiap 1 menit, terus-menerus
-  autoBoostInterval = setInterval(() => {
-    autoBoostAllWorks();
-  }, AUTO_BOOST_INTERVAL);
-
-  console.log('🚀 Auto boost dimulai: +' + AUTO_VIEW_AMOUNT + ' views & +' + AUTO_LIKE_AMOUNT + ' likes per menit untuk SEMUA karya');
+  if (autoBoostInterval) { clearInterval(autoBoostInterval); autoBoostInterval = null; }
+  setTimeout(() => { autoBoostAllWorks(); }, 3000);
+  autoBoostInterval = setInterval(() => { autoBoostAllWorks(); }, AUTO_BOOST_INTERVAL);
+  console.log('🚀 Auto boost dimulai (5 menit, +20 views & +20 likes)');
 }
 
 function stopAutoBoost() {
-  if (autoBoostInterval) {
-    clearInterval(autoBoostInterval);
-    autoBoostInterval = null;
-    console.log('🛑 Auto boost dihentikan');
-  }
+  if (autoBoostInterval) { clearInterval(autoBoostInterval); autoBoostInterval = null; }
 }
 
 // ============================================================
 // ==================== END AUTO BOOST ========================
 // ============================================================
 
-// === FIX: FOLLOW SYSTEM ===
+// === FOLLOW SYSTEM ===
 async function toggleFollow(targetUid) {
   if (!currentUser || !userProfile) { showToast('Login dulu untuk follow'); return; }
   if (targetUid === currentUser.uid) { showToast('Tidak bisa follow diri sendiri'); return; }
@@ -492,7 +466,6 @@ async function toggleFollow(targetUid) {
     const followers = target.followers || [];
     const isFollowing = followers.includes(currentUser.uid);
     const myFollowing = userProfile.following || [];
-
     if (isFollowing) {
       const newFollowers = followers.filter(id => id !== currentUser.uid);
       const newFollowing = myFollowing.filter(id => id !== targetUid);
@@ -510,7 +483,6 @@ async function toggleFollow(targetUid) {
       userProfile.followingCount = newFollowing.length;
       showToast('✅ Mengikuti!');
     }
-
     const btn = document.getElementById('followBtn-' + targetUid);
     if (btn) {
       const nowFollowing = !isFollowing;
@@ -523,7 +495,6 @@ async function toggleFollow(targetUid) {
 }
 window.toggleFollow = toggleFollow;
 
-// === FIX: Owner follower boost ===
 async function boostOwnerFollowers() {
   if (!currentUser || !userProfile) return;
   if (!hasRole(userProfile, 'owner')) return;
@@ -539,16 +510,11 @@ async function boostOwnerFollowers() {
   } catch (e) {}
 }
 
-// === FIX: Verified badge penulis novel terlihat ===
 function getCreatorVerifiedBadge(profile) {
   if (!profile) return '';
   const roles = profile.roles || (profile.role ? [profile.role] : ['pembaca']);
-  if (roles.includes('komikus')) {
-    return '<span class="verified-badge oranye" title="Komikus Terverifikasi"><i class="fas fa-check"></i></span>';
-  }
-  if (roles.includes('penulis')) {
-    return '<span class="verified-badge kuning" title="Penulis Terverifikasi"><i class="fas fa-check"></i></span>';
-  }
+  if (roles.includes('komikus')) return '<span class="verified-badge oranye" title="Komikus Terverifikasi"><i class="fas fa-check"></i></span>';
+  if (roles.includes('penulis')) return '<span class="verified-badge kuning" title="Penulis Terverifikasi"><i class="fas fa-check"></i></span>';
   return '';
 }
 
@@ -560,7 +526,6 @@ function showToast(msg, dur = 3000) {
 window.addEventListener('unhandledrejection', (e) => {
   const r = e.reason; const msg = (r && (r.message || r.code)) || String(r);
   console.error('Unhandled:', r);
-  showToast('⚠️ Error: ' + String(msg).slice(0, 160), 8000);
 });
 window.addEventListener('error', (e) => { if (e && e.message && !/ResizeObserver/.test(e.message)) console.error('Error:', e.message); });
 function getLevelTitle(l) { for (const t of LEVEL_TITLES) if (l >= t.min && l <= t.max) return t.title; return 'Dewa Mitos'; }
@@ -638,10 +603,7 @@ window.showImgFullscreen = (src, label = '') => {
   `;
   document.body.appendChild(overlay);
   const escHandler = (e) => {
-    if (e.key === 'Escape') {
-      overlay.remove();
-      document.removeEventListener('keydown', escHandler);
-    }
+    if (e.key === 'Escape') { overlay.remove(); document.removeEventListener('keydown', escHandler); }
   };
   document.addEventListener('keydown', escHandler);
 };
@@ -704,7 +666,7 @@ const IMGBB_KEY = 'ba3afa5b0d8e2ea7a8dc2098ac38aad6';
 const IMGBB_MAX_MB = 32;
 async function uploadToImgbb(file) {
   if (!file || !file.type || !file.type.startsWith('image/')) throw new Error('Bukan gambar');
-  if (file.size > IMGBB_MAX_MB * 1024 * 1024) throw new Error(`Ukuran file > ${IMGBB_MAX_MB} MB (batas ImgBB)`);
+  if (file.size > IMGBB_MAX_MB * 1024 * 1024) throw new Error(`Ukuran file > ${IMGBB_MAX_MB} MB`);
   let lastErr = 'Upload gagal';
   for (let attempt = 1; attempt <= 3; attempt++) {
     try {
@@ -774,9 +736,7 @@ function buildSocialLinks(profile) {
   let html = '';
   links.forEach(l => {
     const url = sosmed[l.key];
-    if (url) {
-      html += `<a href="${url}" target="_blank" rel="noopener" class="social-link ${l.color}" onclick="event.stopPropagation()"><i class="fab ${l.icon}"></i> ${l.label}</a>`;
-    }
+    if (url) html += `<a href="${url}" target="_blank" rel="noopener" class="social-link ${l.color}" onclick="event.stopPropagation()"><i class="fab ${l.icon}"></i> ${l.label}</a>`;
   });
   return html;
 }
@@ -831,17 +791,13 @@ async function checkBirthdays() {
     banner.className = 'birthday-banner';
     banner.innerHTML = `<i class="fas fa-birthday-cake text-xl badge-float"></i><div style="flex:1;text-align:left;max-width:900px">${names}</div><button onclick="document.getElementById('birthdayBanner').remove()"><i class="fas fa-times"></i></button>`;
     document.body.appendChild(banner);
-
     for (const u of bdayUsers) {
       try {
         await addDoc(collection(db, 'birthday_history'), {
-          userId: u.id,
-          username: u.username || 'User',
+          userId: u.id, username: u.username || 'User',
           roles: u.roles || [u.role || 'pembaca'],
-          date: todayMMDD,
-          year: today.getFullYear(),
-          template: template,
-          createdAt: serverTimestamp()
+          date: todayMMDD, year: today.getFullYear(),
+          template: template, createdAt: serverTimestamp()
         });
       } catch (e) {}
     }
@@ -1083,12 +1039,8 @@ function attachMultiImageHandlers(containerId) {
     modeBar.innerHTML = `
       <span class="mode-label"><i class="fas fa-layer-group"></i>Total: ${total} foto</span>
       <div class="mode-btns">
-        <button class="mode-btn ${mode === 'drag' ? 'active' : 'inactive'}" data-mode="drag">
-          <i class="fas fa-hand-rock"></i> 🖐️ Mode Drag
-        </button>
-        <button class="mode-btn ${mode === 'fullscreen' ? 'active' : 'inactive'}" data-mode="fullscreen">
-          <i class="fas fa-expand"></i> 🔍 Mode Fullscreen
-        </button>
+        <button class="mode-btn ${mode === 'drag' ? 'active' : 'inactive'}" data-mode="drag"><i class="fas fa-hand-rock"></i> 🖐️ Mode Drag</button>
+        <button class="mode-btn ${mode === 'fullscreen' ? 'active' : 'inactive'}" data-mode="fullscreen"><i class="fas fa-expand"></i> 🔍 Mode Fullscreen</button>
       </div>
     `;
     preview.appendChild(modeBar);
@@ -1599,6 +1551,7 @@ async function renderPage() {
   if (mgTimerInterval) { clearInterval(mgTimerInterval); mgTimerInterval = null; }
   if (mgCanvasSyncTimer) { clearInterval(mgCanvasSyncTimer); mgCanvasSyncTimer = null; }
   mgCurrentRoom = null; mgMyRole = null;
+  homeIsFirstRender = true;
 
   await loadClansCache();
   const hash = getHash();
@@ -1684,10 +1637,10 @@ async function renderBaru(container) {
     return bTime - aTime;
   });
   if (works.length === 0) {
-    list.innerHTML = `<div class="col-span-full card-bg rounded-2xl p-12 text-center card-anim"><i class="fas fa-clock text-5xl text-blue-400/50 mb-3"></i><p class="text-slate-300">Belum ada karya yang sedang dibuat.</p><p class="text-xs text-slate-500 mt-2">Karya yang di-nonpublish akan muncul di sini.</p></div>`;
+    list.innerHTML = `<div class="col-span-full card-bg rounded-2xl p-12 text-center card-anim"><i class="fas fa-clock text-5xl text-blue-400/50 mb-3"></i><p class="text-slate-300">Belum ada karya yang sedang dibuat.</p></div>`;
     return;
   }
-  renderWorkList(list, works);
+  renderWorkList(list, works, new Set(), true);
 }
 
 async function renderBaruUpload(container) {
@@ -1699,17 +1652,13 @@ async function renderBaruUpload(container) {
   const snap = await getDocs(collection(db, 'works'));
   let works = []; snap.forEach(d => works.push({ id: d.id, ...d.data() }));
   works = works.filter(w => !isTakedown(w) && !isNonPublish(w));
-  works.sort((a, b) => {
-    const aTime = a.createdAt?.toDate?.() || 0;
-    const bTime = b.createdAt?.toDate?.() || 0;
-    return bTime - aTime;
-  });
+  works.sort((a, b) => (b.createdAt?.toDate?.() || 0) - (a.createdAt?.toDate?.() || 0));
   works = works.slice(0, 40);
   if (works.length === 0) {
     list.innerHTML = `<div class="col-span-full card-bg rounded-2xl p-12 text-center card-anim"><i class="fas fa-upload text-5xl text-green-400/50 mb-3"></i><p class="text-slate-300">Belum ada karya yang dipublish.</p></div>`;
     return;
   }
-  renderWorkList(list, works);
+  renderWorkList(list, works, new Set(), true);
 }
 
 async function renderJadiKreator(container) {
@@ -1869,7 +1818,7 @@ async function renderPanduan(container) {
           <h2 class="text-xl font-black text-amber-400"><i class="fas fa-edit mr-2"></i>Edit Panduan</h2>
           <button id="closeEditPanduan" class="text-slate-400 text-2xl hover:rotate-90 transition-transform">&times;</button>
         </div>
-        <p class="text-xs text-slate-400 mb-3">Gunakan HTML untuk formatting. Contoh: &lt;h3&gt;Judul&lt;/h3&gt;, &lt;p&gt;Teks&lt;/p&gt;, &lt;ul&gt;&lt;li&gt;Item&lt;/li&gt;&lt;/ul&gt;</p>
+        <p class="text-xs text-slate-400 mb-3">Gunakan HTML untuk formatting.</p>
         <textarea id="panduanEditor" rows="15" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm font-mono">${panduanText || defaultPanduan}</textarea>
         <div class="flex gap-2 mt-4">
           <button id="savePanduanBtn" class="flex-1 bg-amber-500 text-black font-bold py-2 rounded-full hover:scale-105 transition">Simpan</button>
@@ -1889,6 +1838,9 @@ async function renderPanduan(container) {
   }
 }
 
+// ============================================================
+// ==== RENDER HOME DENGAN ANTI-FLICKER (UPDATE ANGKA SAJA) ====
+// ============================================================
 async function renderHome(container) {
   container.innerHTML = `
     <div class="flex flex-wrap justify-between items-center gap-3 mb-6">
@@ -1919,15 +1871,44 @@ async function renderHome(container) {
       return popB - popA;
     });
     if (currentSearch) works = works.filter(w => w.title.toLowerCase().includes(currentSearch.toLowerCase()));
-    const currentIds = new Set(works.map(w => w.id));
-    const newIds = new Set([...currentIds].filter(id => !lastKnownIds.has(id)));
-    renderWorkList(contentList, works, initialLoad ? new Set() : newIds);
-    lastKnownIds = currentIds;
-    initialLoad = false;
+
+    // ====== ANTI-FLICKER: cek apakah struktur berubah ======
+    const newIds = works.map(w => w.id);
+    const structureChanged = initialLoad || newIds.length !== currentWorksOrder.length || newIds.some((id, i) => id !== currentWorksOrder[i]);
+
+    if (structureChanged) {
+      // Render penuh hanya saat struktur berubah (awal load / karya baru / dihapus)
+      const newIdsSet = new Set([...newIds].filter(id => !lastKnownIds.has(id)));
+      renderWorkList(contentList, works, initialLoad ? new Set() : newIdsSet, false);
+      currentWorksOrder = newIds;
+      currentWorksData = {};
+      works.forEach(w => currentWorksData[w.id] = w);
+      lastKnownIds = new Set(newIds);
+      initialLoad = false;
+    } else {
+      // Struktur sama -> cuma update angka views & likes, tidak re-render
+      // ✅ FIX: update textContent + data-val supaya sinkron
+      works.forEach(w => {
+        currentWorksData[w.id] = w;
+        const viewEl = document.querySelector(`[data-view-id="${w.id}"]`);
+        if (viewEl) {
+          viewEl.textContent = formatCount(w.views || 0);
+          viewEl.dataset.val = w.views || 0;
+        }
+        const likeEl = document.querySelector(`[data-like-id="${w.id}"]`);
+        if (likeEl) {
+          likeEl.textContent = formatCount(w.likes || 0);
+          likeEl.dataset.val = w.likes || 0;
+        }
+      });
+    }
   });
 }
 
-function renderWorkList(container, works, newIds = new Set()) {
+// ============================================================
+// ====== RENDER WORK LIST (support anti-flicker mode) ========
+// ============================================================
+function renderWorkList(container, works, newIds = new Set(), skipAnim = false) {
   if (works.length === 0) {
     container.innerHTML = `<div class="col-span-full card-bg rounded-2xl p-12 text-center empty-animation">
       <i class="fas fa-book-open text-6xl text-amber-400/50 mb-4"></i>
@@ -1948,16 +1929,19 @@ function renderWorkList(container, works, newIds = new Set()) {
     const isUN = isUnggulan(work);
     const borderClass = isTD ? 'takedown-border' : isNP ? 'nonpublish-border' : isUN ? 'unggulan-border' : '';
     const resumeBadge = (resume && !isTD && !isNP) ? `<div class="absolute top-2 right-20 bg-blue-600/90 backdrop-blur text-white text-[10px] font-bold px-2 py-1 rounded-full"><i class="fas fa-bookmark"></i> Lanjut</div>` : '';
+    const animClass = skipAnim ? '' : 'card-anim';
+    const newClass = (isNew && !isTD && !skipAnim) ? 'new-work' : '';
+    const delayStyle = skipAnim ? '' : `animation-delay:${Math.min(idx*0.03, 0.5)}s`;
     return `
-    <div class="card-bg hover-lift rounded-2xl overflow-hidden shadow-lg cursor-pointer card-anim ${borderClass} ${isNew && !isTD ? 'new-work' : ''}" style="animation-delay:${Math.min(idx*0.03, 0.5)}s" onclick="${isTD ? `showToast('⛔ Karya ini di-takedown')` : `window.location.hash='reader/${work.id}'`}">
+    <div class="card-bg hover-lift rounded-2xl overflow-hidden shadow-lg cursor-pointer ${animClass} ${borderClass} ${newClass}" style="${delayStyle}" onclick="${isTD ? `showToast('⛔ Karya ini di-takedown')` : `window.location.hash='reader/${work.id}'`}">
       <div class="h-40 md:h-48 bg-slate-800 flex items-center justify-center overflow-hidden relative">
         ${work.coverURL ? `<img src="${work.coverURL}" class="w-full h-full object-cover ${isTD ? 'grayscale opacity-40' : isNP ? 'grayscale opacity-70' : ''}" onerror="this.style.display='none';">` : `<i class="fas fa-image text-5xl text-slate-600"></i>`}
         ${workStatusBadge(work)}
         ${statusLabel(work.isTamat)}
         ${resumeBadge}
         <div class="absolute bottom-2 left-2 right-2 flex justify-between items-center pointer-events-none">
-          <span class="view-badge bg-black/70 backdrop-blur px-2 py-1 rounded-full"><i class="fas fa-eye"></i> ${formatCount(work.views || 0)}</span>
-          <span class="view-badge bg-black/70 backdrop-blur px-2 py-1 rounded-full"><i class="fas fa-heart" style="color:#ef4444"></i> ${formatCount(work.likes || 0)}</span>
+          <span class="view-badge bg-black/70 backdrop-blur px-2 py-1 rounded-full"><i class="fas fa-eye"></i> <span data-view-id="${work.id}" data-val="${work.views || 0}">${formatCount(work.views || 0)}</span></span>
+          <span class="view-badge bg-black/70 backdrop-blur px-2 py-1 rounded-full"><i class="fas fa-heart" style="color:#ef4444"></i> <span data-like-id="${work.id}" data-val="${work.likes || 0}">${formatCount(work.likes || 0)}</span></span>
         </div>
       </div>
       <div class="p-3 md:p-4">
@@ -1974,7 +1958,7 @@ function renderWorkList(container, works, newIds = new Set()) {
             ${work.authorLevel > 1000 ? '<i class="fas fa-crown text-amber-400 text-[10px] badge-float"></i>' : ''}
           </div>
           <button class="like-btn ${liked ? 'liked' : 'text-slate-400'}" onclick="event.stopPropagation();toggleWorkLike('${work.id}')" title="${liked ? 'Unlike' : 'Like'}" ${isTD ? 'disabled' : ''}>
-            <i class="fas fa-heart"></i> <span id="like-count-${work.id}">${formatCount(work.likes || 0)}</span>
+            <i class="fas fa-heart"></i>
           </button>
           ${work.avgRating ? `<span class="text-amber-400"><i class="fas fa-star text-[10px]"></i> ${work.avgRating.toFixed(1)}</span>` : ''}
         </div>
@@ -1983,6 +1967,7 @@ function renderWorkList(container, works, newIds = new Set()) {
   }).join('');
 }
 
+// ✅ FIX: pakai increment() supaya tidak ketimpa auto boost
 window.toggleWorkLike = async (workId) => {
   if (!currentUser || !userProfile) { showToast('Login dulu untuk like'); return; }
   try {
@@ -1993,11 +1978,28 @@ window.toggleWorkLike = async (workId) => {
     const likedBy = work.likedBy || [];
     const isLiked = likedBy.includes(currentUser.uid);
     let newLikedBy;
-    if (isLiked) { newLikedBy = likedBy.filter(id => id !== currentUser.uid); }
-    else { newLikedBy = [...likedBy, currentUser.uid]; await addExp(EXP_PER_COMMENT); }
-    await updateDoc(workRef, { likedBy: newLikedBy, likes: newLikedBy.length, updatedAt: serverTimestamp() });
-    const el = document.getElementById('like-count-' + workId);
-    if (el) el.textContent = formatCount(newLikedBy.length);
+    let likeDelta;
+    if (isLiked) {
+      newLikedBy = likedBy.filter(id => id !== currentUser.uid);
+      likeDelta = -1;
+    } else {
+      newLikedBy = [...likedBy, currentUser.uid];
+      likeDelta = +1;
+      await addExp(EXP_PER_COMMENT);
+    }
+    // ✅ ATOMIC increment
+    await updateDoc(workRef, {
+      likedBy: newLikedBy,
+      likes: increment(likeDelta),
+      updatedAt: serverTimestamp()
+    });
+    const el = document.querySelector(`[data-like-id="${workId}"]`);
+    if (el) {
+      const cur = parseInt(el.dataset.val || el.textContent.replace(/[^\d]/g, '')) || 0;
+      const next = Math.max(0, cur + likeDelta);
+      el.textContent = formatCount(next);
+      el.dataset.val = next;
+    }
     document.querySelectorAll('.like-btn').forEach(b => {
       if (b.getAttribute('onclick')?.includes(workId)) {
         b.classList.toggle('liked', !isLiked);
@@ -2028,7 +2030,6 @@ async function renderBerita(container) {
     list.innerHTML = `<div class="col-span-full card-bg rounded-2xl p-12 text-center card-anim">
       <i class="fas fa-newspaper text-5xl text-amber-400/50 mb-3"></i>
       <p class="text-slate-300">Belum ada berita.</p>
-      ${canManage ? '<p class="text-xs text-slate-500 mt-2">Klik "Buat Berita" untuk menambahkan.</p>' : '<p class="text-xs text-slate-500 mt-2">Nantikan informasi terbaru dari Admin.</p>'}
     </div>`;
   } else {
     list.innerHTML = arr.map(b => `
@@ -2072,7 +2073,6 @@ async function renderBerita(container) {
 
 async function openBeritaModal(id, container) {
   if (!isAdminUser(userProfile)) { showToast('Akses ditolak! Hanya Admin/Owner.'); return; }
-
   const modal = document.getElementById('modalContainer');
   const content = document.getElementById('modalContent');
   let data = { title: '', content: '', image: '' };
@@ -2098,21 +2098,10 @@ async function openBeritaModal(id, container) {
     window[`_beritaCover_cover`] = data.image;
     const urlInp = document.getElementById('beritaCover-url');
     if (urlInp) urlInp.value = data.image;
-    const pv = document.getElementById('beritaCover-preview');
-    if (pv) {
-      const safeUrl = escAttr(data.image);
-      pv.innerHTML = `
-        <div class="img-preview-wrap">
-          <img src="${data.image}" class="img-preview" style="width:96px;height:128px" onerror="this.src='https://placehold.co/96x128/1a1a2e/64748b?text=Err'" onclick="event.stopPropagation();window.showImgFullscreen('${safeUrl}','Gambar Berita')">
-          <span class="zoom-badge" onclick="event.stopPropagation();window.showImgFullscreen('${safeUrl}','Gambar Berita')"><i class="fas fa-expand"></i></span>
-        </div>`;
-    }
   }
   attachCoverHandler('beritaCover');
   if (data.image) {
     window[`_beritaCover_cover`] = data.image;
-    const urlInp = document.getElementById('beritaCover-url');
-    if (urlInp) urlInp.value = data.image;
     const pv = document.getElementById('beritaCover-preview');
     if (pv) {
       const safeUrl = escAttr(data.image);
@@ -2145,8 +2134,7 @@ async function openBeritaModal(id, container) {
       showToast('Berita disimpan!');
       modal.classList.add('hidden');
       const main = document.getElementById('mainContent');
-      if (main && container) await renderBerita(main);
-      else if (main) await renderBerita(main);
+      if (main) await renderBerita(main);
     } catch (e) {
       showToast('Gagal: ' + e.message);
       btn.disabled = false; btn.textContent = 'Simpan';
@@ -2173,7 +2161,7 @@ async function renderBookmarkPage(container) {
     try { const s = await getDoc(doc(db, 'works', id)); if (s.exists()) works.push({ id: s.id, ...s.data() }); } catch (e) {}
   }
   if (works.length === 0) { list.innerHTML = `<div class="col-span-full card-bg rounded-2xl p-12 text-center"><p class="text-slate-400">Bookmark kosong.</p></div>`; return; }
-  renderWorkList(list, works);
+  renderWorkList(list, works, new Set(), true);
 }
 
 async function renderFollowersPage(container, uid, mode) {
@@ -2351,7 +2339,7 @@ async function renderPublicProfile(container, uid) {
     </div>
     <h3 class="text-xl font-bold mb-3">Karya (${works.length})</h3>
     <div id="pubWorks" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-5"></div>`;
-  renderWorkList(document.getElementById('pubWorks'), works);
+  renderWorkList(document.getElementById('pubWorks'), works, new Set(), true);
   if (document.getElementById('btnAdd')) {
     document.getElementById('btnAdd').onclick = async () => {
       if (!currentUser) { showToast('Login dulu'); return; }
@@ -3023,7 +3011,11 @@ async function renderReader(container, novelId, chapterId = null) {
   const alreadyViewed = sessionStorage.getItem(viewKey);
   if (!alreadyViewed) {
     try {
-      await updateDoc(doc(db, 'works', novelId), { views: (work.views || 0) + 1, updatedAt: serverTimestamp() });
+      // ✅ FIX: pakai increment(1) atomic — tidak akan menimpa auto boost
+      await updateDoc(doc(db, 'works', novelId), {
+        views: increment(1),
+        updatedAt: serverTimestamp()
+      });
       work.views = (work.views || 0) + 1;
       sessionStorage.setItem(viewKey, '1');
     } catch (e) {}
@@ -3071,7 +3063,7 @@ async function renderReader(container, novelId, chapterId = null) {
         <button onclick="window.location.hash='home'" class="text-amber-400 hover:text-amber-300 transition"><i class="fas fa-arrow-left mr-2"></i>Kembali</button>
         <div class="flex gap-2 flex-wrap">
           <button id="bookmarkToggle" class="text-sm font-bold px-4 py-2 rounded-full transition ${isBookmarked ? 'bg-green-600 text-white' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'}"><i class="fas fa-bookmark mr-1"></i>${isBookmarked ? 'Tersimpan' : 'Bookmark'}</button>
-          <button id="readerLikeBtn" class="text-sm font-bold px-4 py-2 rounded-full transition ${isLiked ? 'bg-red-600 text-white' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'}"><i class="fas fa-heart mr-1"></i><span id="readerLikeCount">${formatCount(work.likes || 0)}</span></button>
+          <button id="readerLikeBtn" class="text-sm font-bold px-4 py-2 rounded-full transition ${isLiked ? 'bg-red-600 text-white' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'}"><i class="fas fa-heart mr-1"></i><span id="readerLikeCount" data-val="${work.likes || 0}">${formatCount(work.likes || 0)}</span></button>
         </div>
       </div>
       <div class="reader-header card-bg rounded-2xl p-4 md:p-6 mb-6 ${work.isTamat ? 'tamat-border' : 'berlanjut-border'} ${isUnggulanAuthor ? 'unggulan-border' : ''}">
@@ -3146,26 +3138,42 @@ async function renderReader(container, novelId, chapterId = null) {
     };
   }
 
+  // ✅ FIX: pakai increment() supaya tidak ketimpa auto boost
   const likeBtn = document.getElementById('readerLikeBtn');
   if (likeBtn) {
     likeBtn.onclick = async () => {
       if (!currentUser || !userProfile) { showToast('Login dulu untuk like'); return; }
-      const workRef = doc(db, 'works', novelId);
-      const snap = await getDoc(workRef);
-      if (!snap.exists()) return;
-      const w = snap.data();
-      const likedBy = w.likedBy || [];
-      const isLikedNow = likedBy.includes(currentUser.uid);
-      let newLikedBy = isLikedNow ? likedBy.filter(id => id !== currentUser.uid) : [...likedBy, currentUser.uid];
-      if (!isLikedNow) await addExp(EXP_PER_COMMENT);
-      await updateDoc(workRef, { likedBy: newLikedBy, likes: newLikedBy.length, updatedAt: serverTimestamp() });
-      const cnt = document.getElementById('readerLikeCount');
-      if (cnt) cnt.textContent = formatCount(newLikedBy.length);
-      likeBtn.classList.toggle('bg-red-600', !isLikedNow);
-      likeBtn.classList.toggle('text-white', !isLikedNow);
-      likeBtn.classList.toggle('bg-slate-800', isLikedNow);
-      likeBtn.classList.toggle('text-slate-300', isLikedNow);
-      showToast(isLikedNow ? 'Like dihapus' : '❤️ Disukai!');
+      try {
+        const workRef = doc(db, 'works', novelId);
+        const snap = await getDoc(workRef);
+        if (!snap.exists()) return;
+        const w = snap.data();
+        const likedBy = w.likedBy || [];
+        const isLikedNow = likedBy.includes(currentUser.uid);
+        let newLikedBy = isLikedNow
+          ? likedBy.filter(id => id !== currentUser.uid)
+          : [...likedBy, currentUser.uid];
+        let likeDelta = isLikedNow ? -1 : +1;
+        if (!isLikedNow) await addExp(EXP_PER_COMMENT);
+        // ✅ ATOMIC increment
+        await updateDoc(workRef, {
+          likedBy: newLikedBy,
+          likes: increment(likeDelta),
+          updatedAt: serverTimestamp()
+        });
+        const cnt = document.getElementById('readerLikeCount');
+        if (cnt) {
+          const cur = parseInt(cnt.dataset.val || cnt.textContent.replace(/[^\d]/g, '')) || 0;
+          const next = Math.max(0, cur + likeDelta);
+          cnt.textContent = formatCount(next);
+          cnt.dataset.val = next;
+        }
+        likeBtn.classList.toggle('bg-red-600', !isLikedNow);
+        likeBtn.classList.toggle('text-white', !isLikedNow);
+        likeBtn.classList.toggle('bg-slate-800', isLikedNow);
+        likeBtn.classList.toggle('text-slate-300', isLikedNow);
+        showToast(isLikedNow ? 'Like dihapus' : '❤️ Disukai!');
+      } catch (e) { showToast('Gagal: ' + e.message); }
     };
   }
 
@@ -3203,9 +3211,7 @@ async function renderReader(container, novelId, chapterId = null) {
       if (!usersCache[r.userId]) {
         try {
           const uSnap = await getDoc(doc(db, 'users', r.userId));
-          if (uSnap.exists()) {
-            usersCache[r.userId] = { id: r.userId, ...uSnap.data() };
-          }
+          if (uSnap.exists()) usersCache[r.userId] = { id: r.userId, ...uSnap.data() };
         } catch (e) {}
       }
     }
@@ -3419,7 +3425,7 @@ async function renderKategori(container) {
     if (currentCategory !== 'all') works = works.filter(w => parseCategories(w.category).includes(currentCategory));
     works.sort((a,b) => (b.views || 0) + (b.likes || 0) * 2 - ((a.views || 0) + (a.likes || 0) * 2));
     if (works.length === 0) { list.innerHTML = `<div class="col-span-full card-bg rounded-2xl p-12 text-center card-anim"><i class="fas fa-folder-open text-5xl text-amber-400/50 mb-3"></i><p>Belum ada karya.</p></div>`; return; }
-    renderWorkList(list, works);
+    renderWorkList(list, works, new Set(), true);
   }
   loadKL();
 }
@@ -4288,7 +4294,7 @@ async function renderAdminPanel(container) {
   async function loadBirthday() {
     aC.innerHTML = `<div class="card-bg rounded-2xl p-6 max-w-3xl mx-auto card-anim">
       <h3 class="font-bold mb-4"><i class="fas fa-birthday-cake text-amber-400 mr-2"></i>Setting Auto Ultah</h3>
-      <p class="text-xs text-slate-400 mb-4">Gunakan <code class="bg-slate-700 px-2 py-0.5 rounded">{username}</code> untuk menyebut akun user. Penulis akan otomatis dapat label <span class="text-yellow-400 font-bold">[PENULIS]</span>, Komikus <span class="text-orange-400 font-bold">[KOMIKUS]</span>.</p>
+      <p class="text-xs text-slate-400 mb-4">Gunakan <code class="bg-slate-700 px-2 py-0.5 rounded">{username}</code> untuk menyebut akun user.</p>
       <div id="birthdayTextArea"><p class="text-slate-500 text-sm">Memuat...</p></div>
       <div class="mt-6 border-t border-slate-700 pt-4">
         <h4 class="font-bold mb-3 text-amber-400"><i class="fas fa-history mr-2"></i>Riwayat Ultah</h4>
@@ -4392,13 +4398,7 @@ async function renderMinigame(container) {
         </div>
         <h2 class="text-2xl md:text-3xl font-black text-purple-400">Minigame: Gambar & Tebak</h2>
         <p class="text-slate-400 mt-2">1 orang menggambar, yang lain menebak! Bisa main berdua atau berlima.</p>
-        <div class="flex justify-center gap-4 mt-4 text-xs text-slate-400 flex-wrap">
-          <span><i class="fas fa-clock text-amber-400 mr-1"></i>Waktu gambar: 20 menit</span>
-          <span><i class="fas fa-clock text-amber-400 mr-1"></i>Waktu tebak: 20 menit</span>
-          <span><i class="fas fa-users text-amber-400 mr-1"></i>2-5 pemain</span>
-        </div>
       </div>
-
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
         <div class="card-bg rounded-2xl p-6 hover-lift cursor-pointer card-anim" onclick="document.getElementById('mgCreateSection').classList.remove('hidden');document.getElementById('mgJoinSection').classList.add('hidden')">
           <div class="text-center">
@@ -4544,13 +4544,9 @@ async function renderMgRoom(container, roomId) {
       window.location.hash = 'minigame'; renderPage();
       return;
     }
-    if (r.status === 'waiting') {
-      renderMgWaiting(r);
-    } else if (r.status === 'playing') {
-      renderMgPlaying(r);
-    } else if (r.status === 'finished') {
-      renderMgFinished(r);
-    }
+    if (r.status === 'waiting') renderMgWaiting(r);
+    else if (r.status === 'playing') renderMgPlaying(r);
+    else if (r.status === 'finished') renderMgFinished(r);
   });
 
   if (room.status === 'waiting') renderMgWaiting(room);
@@ -4558,7 +4554,6 @@ async function renderMgRoom(container, roomId) {
   else renderMgFinished(room);
 }
 
-// ===== WAITING ROOM =====
 function renderMgWaiting(room) {
   const container = document.getElementById('mainContent');
   if (!container) return;
@@ -4650,14 +4645,11 @@ function renderMgWaiting(room) {
   }
 }
 
-// ===== PLAYING ROOM =====
 function renderMgPlaying(room) {
   const container = document.getElementById('mainContent');
   if (!container) return;
-
   const isDrawer = room.drawerId === currentUser.uid;
   mgMyRole = isDrawer ? 'drawer' : 'guesser';
-
   const players = room.players || [];
   const scores = room.scores || {};
   const now = Date.now();
@@ -4665,7 +4657,6 @@ function renderMgPlaying(room) {
   const mins = Math.floor(timeLeft / 60);
   const secs = timeLeft % 60;
   const isWarning = timeLeft <= 120;
-
   const gameArea = document.getElementById('mgGameArea');
   const needFullRender = !gameArea || gameArea.dataset.role !== mgMyRole || gameArea.dataset.roomid !== room.id;
 
@@ -4818,9 +4809,7 @@ function updateMgTimer(room) {
   timerEl.classList.toggle('warning', timeLeft <= 120);
   if (timeLeft <= 0) {
     if (mgTimerInterval) { clearInterval(mgTimerInterval); mgTimerInterval = null; }
-    if (room.status === 'playing') {
-      window.mgTimeUp(room.id);
-    }
+    if (room.status === 'playing') window.mgTimeUp(room.id);
   }
 }
 
@@ -4847,7 +4836,6 @@ function initMgCanvas(room, isDrawer) {
   mgCtx = canvas.getContext('2d');
   mgCtx.lineCap = 'round';
   mgCtx.lineJoin = 'round';
-
   if (room.canvasData && room.canvasData.startsWith('data:image')) {
     const img = new Image();
     img.onload = () => {
@@ -4862,12 +4850,7 @@ function initMgCanvas(room, isDrawer) {
     mgDrawingHistory = [canvas.toDataURL()];
     mgHistoryIndex = 0;
   }
-
-  if (!isDrawer) {
-    canvas.style.cursor = 'default';
-    return;
-  }
-
+  if (!isDrawer) { canvas.style.cursor = 'default'; return; }
   const colors = ['#000000','#ffffff','#ef4444','#f97316','#fbbf24','#10b981','#3b82f6','#8b5cf6','#ec4899','#78716c','#0ea5e9','#84cc16'];
   const colorsDiv = document.getElementById('mgColors');
   if (colorsDiv) {
@@ -4880,7 +4863,6 @@ function initMgCanvas(room, isDrawer) {
       };
     });
   }
-
   document.querySelectorAll('.mg-tool-btn[data-tool]').forEach(btn => {
     btn.onclick = () => {
       mgTool = btn.dataset.tool;
@@ -4888,7 +4870,6 @@ function initMgCanvas(room, isDrawer) {
       btn.classList.add('active');
     };
   });
-
   const sizeInput = document.getElementById('mgBrushSize');
   const sizeLabel = document.getElementById('mgBrushSizeLabel');
   if (sizeInput) {
@@ -4897,23 +4878,15 @@ function initMgCanvas(room, isDrawer) {
       sizeLabel.textContent = mgBrushSize + 'px';
     };
   }
-
-  let lastX = 0, lastY = 0;
-  let startX = 0, startY = 0;
-  let snapshot = null;
-
+  let lastX = 0, lastY = 0, startX = 0, startY = 0, snapshot = null;
   const getPos = (e) => {
     const rect = canvas.getBoundingClientRect();
     const scaleX = canvas.width / rect.width;
     const scaleY = canvas.height / rect.height;
     const clientX = e.touches ? e.touches[0].clientX : e.clientX;
     const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-    return {
-      x: (clientX - rect.left) * scaleX,
-      y: (clientY - rect.top) * scaleY
-    };
+    return { x: (clientX - rect.left) * scaleX, y: (clientY - rect.top) * scaleY };
   };
-
   const startDraw = (e) => {
     e.preventDefault();
     if (mgTool === 'fill') {
@@ -4939,7 +4912,6 @@ function initMgCanvas(room, isDrawer) {
       mgCtx.stroke();
     }
   };
-
   const draw = (e) => {
     if (!mgDrawing) return;
     e.preventDefault();
@@ -4982,7 +4954,6 @@ function initMgCanvas(room, isDrawer) {
       mgCtx.stroke();
     }
   };
-
   const endDraw = (e) => {
     if (!mgDrawing) return;
     mgDrawing = false;
@@ -4990,7 +4961,6 @@ function initMgCanvas(room, isDrawer) {
     mgLastDrawTime = Date.now();
     syncCanvas(room.id);
   };
-
   canvas.addEventListener('mousedown', startDraw);
   canvas.addEventListener('mousemove', draw);
   canvas.addEventListener('mouseup', endDraw);
@@ -4998,7 +4968,6 @@ function initMgCanvas(room, isDrawer) {
   canvas.addEventListener('touchstart', startDraw, { passive: false });
   canvas.addEventListener('touchmove', draw, { passive: false });
   canvas.addEventListener('touchend', endDraw);
-
   document.getElementById('mgUndoBtn').onclick = () => {
     if (mgHistoryIndex > 0) {
       mgHistoryIndex--;
@@ -5011,7 +4980,6 @@ function initMgCanvas(room, isDrawer) {
       img.src = mgDrawingHistory[mgHistoryIndex];
     }
   };
-
   document.getElementById('mgClearBtn').onclick = () => {
     if (!confirm('Hapus semua gambar?')) return;
     mgCtx.fillStyle = '#ffffff';
@@ -5033,9 +5001,7 @@ function pushHistory() {
 async function syncCanvas(roomId) {
   if (!mgCanvas || !roomId) return;
   const data = mgCanvas.toDataURL('image/png');
-  try {
-    await updateDoc(doc(db, 'mg_rooms', roomId), { canvasData: data, updatedAt: serverTimestamp() });
-  } catch (e) {}
+  try { await updateDoc(doc(db, 'mg_rooms', roomId), { canvasData: data, updatedAt: serverTimestamp() }); } catch (e) {}
 }
 
 function floodFill(x, y, color) {
@@ -5067,7 +5033,6 @@ function hexToRgb(hex) {
   return m ? { r: parseInt(m[1],16), g: parseInt(m[2],16), b: parseInt(m[3],16) } : null;
 }
 
-// ===== GUESS SUBMISSION =====
 window.mgDrawerRespond = async (roomId, type) => {
   try {
     const roomSnap = await getDoc(doc(db, 'mg_rooms', roomId));
@@ -5108,11 +5073,7 @@ window.mgSubmitGuess = async () => {
     if (room.roundStatus !== 'drawing') { showToast('Ronde sudah selesai'); mgGuessSubmitting = false; return; }
     const log = room.guessLog || [];
     const isCorrect = guess === room.word.toLowerCase();
-    log.push({
-      type: isCorrect ? 'correct' : 'wrong',
-      text: `${isCorrect ? '✅' : '❌'} ${userProfile.username}: "${guess}"`,
-      at: Date.now()
-    });
+    log.push({ type: isCorrect ? 'correct' : 'wrong', text: `${isCorrect ? '✅' : '❌'} ${userProfile.username}: "${guess}"`, at: Date.now() });
     const updates = { guessLog: log, updatedAt: serverTimestamp() };
     if (isCorrect) {
       updates.roundStatus = 'correct';
@@ -5130,14 +5091,10 @@ window.mgSubmitGuess = async () => {
 };
 
 document.addEventListener('click', (e) => {
-  if (e.target && (e.target.id === 'mgGuessBtn' || e.target.closest('#mgGuessBtn'))) {
-    window.mgSubmitGuess();
-  }
+  if (e.target && (e.target.id === 'mgGuessBtn' || e.target.closest('#mgGuessBtn'))) window.mgSubmitGuess();
 });
 document.addEventListener('keypress', (e) => {
-  if (e.target && e.target.id === 'mgGuessInput' && e.key === 'Enter') {
-    window.mgSubmitGuess();
-  }
+  if (e.target && e.target.id === 'mgGuessInput' && e.key === 'Enter') window.mgSubmitGuess();
 });
 
 window.mgTimeUp = async (roomId) => {
@@ -5148,17 +5105,10 @@ window.mgTimeUp = async (roomId) => {
     if (room.status !== 'playing') return;
     const log = room.guessLog || [];
     log.push({ type: 'system', text: '⏰ Waktu habis! Tidak ada yang menebak dengan benar.', at: Date.now() });
-    await updateDoc(doc(db, 'mg_rooms', roomId), {
-      status: 'finished',
-      roundStatus: 'timeup',
-      guessLog: log,
-      endTime: Date.now(),
-      updatedAt: serverTimestamp()
-    });
+    await updateDoc(doc(db, 'mg_rooms', roomId), { status: 'finished', roundStatus: 'timeup', guessLog: log, endTime: Date.now(), updatedAt: serverTimestamp() });
   } catch (e) {}
 };
 
-// ===== FINISHED ROOM =====
 function renderMgFinished(room) {
   const container = document.getElementById('mainContent');
   if (!container) return;
@@ -5167,7 +5117,6 @@ function renderMgFinished(room) {
   const sorted = [...players].sort((a, b) => (scores[b] || 0) - (scores[a] || 0));
   const isCorrect = room.roundStatus === 'correct';
   const isHost = room.hostId === currentUser.uid;
-
   container.innerHTML = `
     <div class="max-w-2xl mx-auto card-anim">
       <div class="card-bg rounded-2xl p-6 mb-4 text-center ${isCorrect ? 'berlanjut-border' : 'tamat-border'}">
@@ -5176,7 +5125,6 @@ function renderMgFinished(room) {
         <p class="text-slate-400 mt-2">Jawaban yang benar adalah:</p>
         <div class="mg-answer-reveal mt-3">${room.word}</div>
       </div>
-
       <div class="card-bg rounded-2xl p-6 mb-4">
         <h3 class="font-bold text-lg mb-4 text-amber-400 text-center"><i class="fas fa-trophy mr-2"></i>Papan Skor</h3>
         <div class="space-y-3">
@@ -5200,7 +5148,6 @@ function renderMgFinished(room) {
           }).join('')}
         </div>
       </div>
-
       <div class="card-bg rounded-2xl p-6 mb-4">
         <h3 class="font-bold text-sm text-amber-400 mb-3"><i class="fas fa-history mr-1"></i>Riwayat Tebakan</h3>
         <div class="mg-guess-log max-h-40">
@@ -5214,7 +5161,6 @@ function renderMgFinished(room) {
           }).join('')}
         </div>
       </div>
-
       <div class="flex gap-3">
         <button onclick="window.mgConfirmLeave('${room.id}')" class="flex-1 bg-slate-700 text-white font-bold py-3 rounded-full hover:scale-105 transition"><i class="fas fa-sign-out-alt mr-1"></i>Keluar</button>
         ${isHost ? `<button onclick="window.mgPlayAgain('${room.id}')" class="flex-1 bg-purple-500 text-white font-bold py-3 rounded-full hover:scale-105 transition btn-glow"><i class="fas fa-redo mr-1"></i>Main Lagi</button>` : ''}
@@ -5227,9 +5173,7 @@ window.mgConfirmLeave = (roomId) => {
   const content = document.getElementById('modalContent');
   content.innerHTML = `
     <div class="text-center">
-      <div class="w-20 h-20 mx-auto rounded-full bg-red-600/20 flex items-center justify-center mb-4">
-        <i class="fas fa-sign-out-alt text-red-500 text-4xl"></i>
-      </div>
+      <div class="w-20 h-20 mx-auto rounded-full bg-red-600/20 flex items-center justify-center mb-4"><i class="fas fa-sign-out-alt text-red-500 text-4xl"></i></div>
       <h2 class="text-2xl font-black text-red-400 mb-2">Keluar dari Room?</h2>
       <p class="text-slate-400 text-sm mb-6">Kamu yakin ingin keluar dari permainan? Progress akan hilang dan tidak bisa dilanjutkan.</p>
       <div class="flex gap-3">
@@ -5239,10 +5183,7 @@ window.mgConfirmLeave = (roomId) => {
     </div>`;
   modal.classList.remove('hidden');
   document.getElementById('mgConfirmLeaveNo').onclick = () => modal.classList.add('hidden');
-  document.getElementById('mgConfirmLeaveYes').onclick = () => {
-    modal.classList.add('hidden');
-    window.mgLeaveRoom(roomId);
-  };
+  document.getElementById('mgConfirmLeaveYes').onclick = () => { modal.classList.add('hidden'); window.mgLeaveRoom(roomId); };
 };
 
 window.mgLeaveRoom = async (roomId) => {
@@ -5251,21 +5192,11 @@ window.mgLeaveRoom = async (roomId) => {
     if (!roomSnap.exists()) { window.location.hash = 'minigame'; renderPage(); return; }
     const room = roomSnap.data();
     const players = (room.players || []).filter(p => p !== currentUser.uid);
-    const scores = { ...(room.scores || {}) };
-    delete scores[currentUser.uid];
-    const playerNames = { ...(room.playerNames || {}) };
-    delete playerNames[currentUser.uid];
-    const playerPhotos = { ...(room.playerPhotos || {}) };
-    delete playerPhotos[currentUser.uid];
-
-    if (players.length === 0) {
-      await deleteDoc(doc(db, 'mg_rooms', roomId));
-    } else {
-      await updateDoc(doc(db, 'mg_rooms', roomId), {
-        players, scores, playerNames, playerPhotos,
-        updatedAt: serverTimestamp()
-      });
-    }
+    const scores = { ...(room.scores || {}) }; delete scores[currentUser.uid];
+    const playerNames = { ...(room.playerNames || {}) }; delete playerNames[currentUser.uid];
+    const playerPhotos = { ...(room.playerPhotos || {}) }; delete playerPhotos[currentUser.uid];
+    if (players.length === 0) await deleteDoc(doc(db, 'mg_rooms', roomId));
+    else await updateDoc(doc(db, 'mg_rooms', roomId), { players, scores, playerNames, playerPhotos, updatedAt: serverTimestamp() });
     await updateDoc(doc(db, 'users', currentUser.uid), { mgRoomId: null });
     if (mgUnsubRoom) { mgUnsubRoom(); mgUnsubRoom = null; }
     if (mgUnsubGuesses) { mgUnsubGuesses(); mgUnsubGuesses = null; }
@@ -5290,17 +5221,12 @@ window.mgPlayAgain = async (roomId) => {
     const scores = {};
     players.forEach(p => scores[p] = 0);
     await updateDoc(doc(db, 'mg_rooms', roomId), {
-      status: 'playing',
-      drawerId, drawerName, word,
-      currentRound: (room.currentRound || 0) + 1,
-      scores,
-      canvasData: '',
-      drawingHistory: [],
+      status: 'playing', drawerId, drawerName, word,
+      currentRound: (room.currentRound || 0) + 1, scores,
+      canvasData: '', drawingHistory: [],
       guessLog: [{ type: 'system', text: `Ronde baru dimulai! ${drawerName} adalah penggambar.`, at: Date.now() }],
-      startTime: Date.now(),
-      endTime: Date.now() + (MG_DRAW_TIME * 1000),
-      roundStatus: 'drawing',
-      updatedAt: serverTimestamp()
+      startTime: Date.now(), endTime: Date.now() + (MG_DRAW_TIME * 1000),
+      roundStatus: 'drawing', updatedAt: serverTimestamp()
     });
     showToast('Ronde baru dimulai!');
   } catch (e) { showToast('Gagal: ' + e.message); }
@@ -5333,9 +5259,6 @@ window.addEventListener('hashchange', renderPage);
   await initAuth();
   if (!window.location.hash) window.location.hash = 'home';
   renderPage();
-  // ============================================================
-  // MULAI AUTO BOOST (views + likes ke semua karya tiap 1 menit)
-  // ============================================================
   startAutoBoost();
 })();
 </script>
