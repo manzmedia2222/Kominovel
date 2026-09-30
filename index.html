@@ -338,9 +338,13 @@ let ownerFollowerInterval = null;
 let autoBoostInterval = null;
 let showAllCategories = false;
 
+// === AUTO BOOST GLOBAL STATE (disimpan di Firestore) ===
+let autoBoostEnabled = true;   // default ON sebelum Firestore load
+let autoBoostUnsub = null;     // listener realtime Firestore
+
 // === ANTI-FLICKER: simpan data works & hanya update angka ===
-let currentWorksData = {}; // { id: work }
-let currentWorksOrder = []; // urutan id
+let currentWorksData = {};
+let currentWorksOrder = [];
 let homeIsFirstRender = true;
 
 // === MINIGAME GLOBAL STATE ===
@@ -361,7 +365,7 @@ const VERIFIED_BLUE = 100000;
 const FOLLOWER_INTERVAL = 60 * 60 * 1000;
 const OWNER_FOLLOWER_RATE = 100000;
 
-// === AUTO BOOST: 5 MENIT, +20 VIEWS & +20 LIKES (FIXED) ===
+// === AUTO BOOST: 5 MENIT, +20 VIEWS & +20 LIKES ===
 const AUTO_BOOST_INTERVAL = 5 * 60 * 1000;
 const AUTO_VIEW_AMOUNT = 20;
 const AUTO_LIKE_AMOUNT = 20;
@@ -408,9 +412,65 @@ const MG_WORD_LIST = [
 ];
 
 // ============================================================
-// ===== AUTO BOOST (FIXED: pakai increment atomic) ==========
+// ===== AUTO BOOST GLOBAL (Firestore) ========================
 // ============================================================
+async function loadAutoBoostStateFromDB() {
+  try {
+    const snap = await getDoc(doc(db, 'settings', 'autoBoost'));
+    if (snap.exists()) {
+      autoBoostEnabled = snap.data().enabled !== false;
+    } else {
+      // Buat dokumen default (ON) kalau belum ada
+      try {
+        await setDoc(doc(db, 'settings', 'autoBoost'), {
+          enabled: true,
+          updatedAt: serverTimestamp(),
+          updatedBy: 'system'
+        }, { merge: true });
+      } catch (e) {}
+      autoBoostEnabled = true;
+    }
+  } catch (e) {
+    console.warn('Gagal load auto boost state:', e.message);
+    autoBoostEnabled = true; // fallback ON
+  }
+  console.log(autoBoostEnabled ? '✅ Auto boost state: ON' : '⏸️ Auto boost state: OFF');
+}
+
+function listenAutoBoostState() {
+  if (autoBoostUnsub) { try { autoBoostUnsub(); } catch(e){} autoBoostUnsub = null; }
+  autoBoostUnsub = onSnapshot(doc(db, 'settings', 'autoBoost'), (snap) => {
+    if (!snap.exists()) return;
+    const newState = snap.data().enabled !== false;
+    const changed = newState !== autoBoostEnabled;
+    autoBoostEnabled = newState;
+    if (changed) {
+      console.log(autoBoostEnabled ? '🚀 Auto boost ON (dari Firestore)' : '⏹️ Auto boost OFF (dari Firestore)');
+      // Update UI kalau user sedang buka tab Boost di Admin Panel
+      const statusEl = document.getElementById('boostStatusLabel');
+      if (statusEl) {
+        const statusIcon = document.getElementById('boostStatusIcon');
+        const statusCard = document.getElementById('boostStatusCard');
+        const toggleBtn = document.getElementById('boostToggleBtn');
+        statusEl.textContent = autoBoostEnabled ? 'AKTIF' : 'NONAKTIF';
+        statusEl.className = autoBoostEnabled ? 'font-black text-green-400 text-lg' : 'font-black text-red-400 text-lg';
+        if (statusIcon) statusIcon.className = autoBoostEnabled ? 'fas fa-toggle-on text-green-400 text-4xl' : 'fas fa-toggle-off text-red-400 text-4xl';
+        if (statusCard) statusCard.className = autoBoostEnabled ? 'card-bg rounded-2xl p-6 card-anim berlanjut-border' : 'card-bg rounded-2xl p-6 card-anim tamat-border';
+        if (toggleBtn) {
+          toggleBtn.textContent = autoBoostEnabled ? '⏸️ Matikan Auto Boost' : '▶️ Jalankan Auto Boost';
+          toggleBtn.className = autoBoostEnabled
+            ? 'w-full bg-red-600 text-white font-bold py-3 rounded-full hover:scale-105 transition btn-glow'
+            : 'w-full bg-green-600 text-white font-bold py-3 rounded-full hover:scale-105 transition btn-glow';
+        }
+      }
+    }
+  }, (err) => {
+    console.warn('Auto boost listener error:', err.message);
+  });
+}
+
 async function autoBoostAllWorks() {
+  if (!autoBoostEnabled) return;
   try {
     const snap = await getDocs(collection(db, 'works'));
     if (snap.empty) return;
@@ -419,7 +479,6 @@ async function autoBoostAllWorks() {
     snap.forEach(d => {
       const work = d.data();
       if (isTakedown(work)) return;
-      // ✅ FIX: pakai increment() atomic — tidak akan menimpa nilai user
       promises.push(
         updateDoc(doc(db, 'works', d.id), {
           views: increment(AUTO_VIEW_AMOUNT),
@@ -440,14 +499,55 @@ async function autoBoostAllWorks() {
 
 function startAutoBoost() {
   if (autoBoostInterval) { clearInterval(autoBoostInterval); autoBoostInterval = null; }
-  setTimeout(() => { autoBoostAllWorks(); }, 3000);
-  autoBoostInterval = setInterval(() => { autoBoostAllWorks(); }, AUTO_BOOST_INTERVAL);
+  if (!autoBoostEnabled) { console.log('⏸️ Auto boost sedang OFF, tidak dijalankan'); return; }
+  setTimeout(() => { if (autoBoostEnabled) autoBoostAllWorks(); }, 3000);
+  autoBoostInterval = setInterval(() => { if (autoBoostEnabled) autoBoostAllWorks(); }, AUTO_BOOST_INTERVAL);
   console.log('🚀 Auto boost dimulai (5 menit, +20 views & +20 likes)');
 }
 
 function stopAutoBoost() {
   if (autoBoostInterval) { clearInterval(autoBoostInterval); autoBoostInterval = null; }
+  console.log('⏹️ Auto boost dihentikan (interval dibersihkan)');
 }
+
+// Toggle GLOBAL — tulis ke Firestore, semua device ikut
+window.toggleAutoBoost = async function() {
+  const newState = !autoBoostEnabled;
+  try {
+    await setDoc(doc(db, 'settings', 'autoBoost'), {
+      enabled: newState,
+      updatedAt: serverTimestamp(),
+      updatedBy: userProfile?.username || adminEmail || 'Admin'
+    }, { merge: true });
+    autoBoostEnabled = newState;
+    if (newState) {
+      startAutoBoost();
+      showToast('✅ Auto boost GLOBAL DIAKTIFKAN — semua device ikut nambah views & likes tiap 5 menit');
+    } else {
+      stopAutoBoost();
+      showToast('⏸️ Auto boost GLOBAL DIMATIKAN — semua device berhenti nambah views & likes');
+    }
+    // Update UI langsung (listener juga akan update, tapi ini biar instan)
+    const statusEl = document.getElementById('boostStatusLabel');
+    const statusIcon = document.getElementById('boostStatusIcon');
+    const statusCard = document.getElementById('boostStatusCard');
+    const toggleBtn = document.getElementById('boostToggleBtn');
+    if (statusEl) {
+      statusEl.textContent = autoBoostEnabled ? 'AKTIF' : 'NONAKTIF';
+      statusEl.className = autoBoostEnabled ? 'font-black text-green-400 text-lg' : 'font-black text-red-400 text-lg';
+    }
+    if (statusIcon) statusIcon.className = autoBoostEnabled ? 'fas fa-toggle-on text-green-400 text-4xl' : 'fas fa-toggle-off text-red-400 text-4xl';
+    if (statusCard) statusCard.className = autoBoostEnabled ? 'card-bg rounded-2xl p-6 card-anim berlanjut-border' : 'card-bg rounded-2xl p-6 card-anim tamat-border';
+    if (toggleBtn) {
+      toggleBtn.textContent = autoBoostEnabled ? '⏸️ Matikan Auto Boost' : '▶️ Jalankan Auto Boost';
+      toggleBtn.className = autoBoostEnabled
+        ? 'w-full bg-red-600 text-white font-bold py-3 rounded-full hover:scale-105 transition btn-glow'
+        : 'w-full bg-green-600 text-white font-bold py-3 rounded-full hover:scale-105 transition btn-glow';
+    }
+  } catch (e) {
+    showToast('Gagal ubah status boost: ' + e.message);
+  }
+};
 
 // ============================================================
 // ==================== END AUTO BOOST ========================
@@ -1872,12 +1972,10 @@ async function renderHome(container) {
     });
     if (currentSearch) works = works.filter(w => w.title.toLowerCase().includes(currentSearch.toLowerCase()));
 
-    // ====== ANTI-FLICKER: cek apakah struktur berubah ======
     const newIds = works.map(w => w.id);
     const structureChanged = initialLoad || newIds.length !== currentWorksOrder.length || newIds.some((id, i) => id !== currentWorksOrder[i]);
 
     if (structureChanged) {
-      // Render penuh hanya saat struktur berubah (awal load / karya baru / dihapus)
       const newIdsSet = new Set([...newIds].filter(id => !lastKnownIds.has(id)));
       renderWorkList(contentList, works, initialLoad ? new Set() : newIdsSet, false);
       currentWorksOrder = newIds;
@@ -1886,8 +1984,6 @@ async function renderHome(container) {
       lastKnownIds = new Set(newIds);
       initialLoad = false;
     } else {
-      // Struktur sama -> cuma update angka views & likes, tidak re-render
-      // ✅ FIX: update textContent + data-val supaya sinkron
       works.forEach(w => {
         currentWorksData[w.id] = w;
         const viewEl = document.querySelector(`[data-view-id="${w.id}"]`);
@@ -1905,9 +2001,6 @@ async function renderHome(container) {
   });
 }
 
-// ============================================================
-// ====== RENDER WORK LIST (support anti-flicker mode) ========
-// ============================================================
 function renderWorkList(container, works, newIds = new Set(), skipAnim = false) {
   if (works.length === 0) {
     container.innerHTML = `<div class="col-span-full card-bg rounded-2xl p-12 text-center empty-animation">
@@ -1967,7 +2060,6 @@ function renderWorkList(container, works, newIds = new Set(), skipAnim = false) 
   }).join('');
 }
 
-// ✅ FIX: pakai increment() supaya tidak ketimpa auto boost
 window.toggleWorkLike = async (workId) => {
   if (!currentUser || !userProfile) { showToast('Login dulu untuk like'); return; }
   try {
@@ -1987,7 +2079,6 @@ window.toggleWorkLike = async (workId) => {
       likeDelta = +1;
       await addExp(EXP_PER_COMMENT);
     }
-    // ✅ ATOMIC increment
     await updateDoc(workRef, {
       likedBy: newLikedBy,
       likes: increment(likeDelta),
@@ -3011,7 +3102,6 @@ async function renderReader(container, novelId, chapterId = null) {
   const alreadyViewed = sessionStorage.getItem(viewKey);
   if (!alreadyViewed) {
     try {
-      // ✅ FIX: pakai increment(1) atomic — tidak akan menimpa auto boost
       await updateDoc(doc(db, 'works', novelId), {
         views: increment(1),
         updatedAt: serverTimestamp()
@@ -3138,7 +3228,6 @@ async function renderReader(container, novelId, chapterId = null) {
     };
   }
 
-  // ✅ FIX: pakai increment() supaya tidak ketimpa auto boost
   const likeBtn = document.getElementById('readerLikeBtn');
   if (likeBtn) {
     likeBtn.onclick = async () => {
@@ -3155,7 +3244,6 @@ async function renderReader(container, novelId, chapterId = null) {
           : [...likedBy, currentUser.uid];
         let likeDelta = isLikedNow ? -1 : +1;
         if (!isLikedNow) await addExp(EXP_PER_COMMENT);
-        // ✅ ATOMIC increment
         await updateDoc(workRef, {
           likedBy: newLikedBy,
           likes: increment(likeDelta),
@@ -4081,6 +4169,7 @@ async function renderAdminPanel(container) {
     <button id="adminTabUpload" class="px-4 py-2 rounded-full bg-slate-800 text-slate-300 text-sm hover:bg-slate-700 transition">Upload</button>
     <button id="adminTabKritik" class="px-4 py-2 rounded-full bg-slate-800 text-slate-300 text-sm hover:bg-slate-700 transition">Kritik</button>
     <button id="adminTabBirthday" class="px-4 py-2 rounded-full bg-slate-800 text-slate-300 text-sm hover:bg-slate-700 transition">Ultah</button>
+    <button id="adminTabBoost" class="px-4 py-2 rounded-full bg-slate-800 text-slate-300 text-sm hover:bg-slate-700 transition"><i class="fas fa-rocket mr-1"></i>Boost</button>
     <button id="adminTabSettings" class="px-4 py-2 rounded-full bg-slate-800 text-slate-300 text-sm hover:bg-slate-700 transition">Setting</button>
   </div>
   <div id="adminContent"></div>`;
@@ -4347,6 +4436,36 @@ async function renderAdminPanel(container) {
     }
   }
 
+  // ====== TAB BOOST (GLOBAL) ======
+  async function loadBoost() {
+    const isOn = autoBoostEnabled;
+    aC.innerHTML = `
+      <div class="max-w-2xl mx-auto card-anim">
+        <div id="boostStatusCard" class="card-bg rounded-2xl p-6 mb-4 ${isOn ? 'berlanjut-border' : 'tamat-border'}">
+          <div class="flex items-center gap-4 mb-4">
+            <i id="boostStatusIcon" class="${isOn ? 'fas fa-toggle-on text-green-400' : 'fas fa-toggle-off text-red-400'} text-4xl"></i>
+            <div>
+              <h3 class="font-black text-lg">Auto Boost Views & Likes</h3>
+              <p id="boostStatusLabel" class="${isOn ? 'font-black text-green-400 text-lg' : 'font-black text-red-400 text-lg'}">${isOn ? 'AKTIF' : 'NONAKTIF'}</p>
+            </div>
+          </div>
+          <div class="bg-slate-900/60 rounded-xl p-4 text-sm space-y-2">
+            <p class="text-slate-300"><i class="fas fa-info-circle text-amber-400 mr-2"></i>Fitur ini otomatis menambah <b class="text-amber-400">+${AUTO_VIEW_AMOUNT} views</b> dan <b class="text-amber-400">+${AUTO_LIKE_AMOUNT} likes</b> ke setiap karya (kecuali yang di-takedown) setiap <b>${AUTO_BOOST_INTERVAL / 60000} menit</b>.</p>
+            <p class="text-xs text-slate-400">💡 Tombol ini <b>GLOBAL</b> — begitu kamu matikan, <b>SEMUA device di dunia</b> yang buka website ini akan berhenti nambah views & likes. Sampai kamu nyalain lagi.</p>
+          </div>
+        </div>
+        <button id="boostToggleBtn" class="${isOn ? 'w-full bg-red-600 text-white font-bold py-3 rounded-full hover:scale-105 transition btn-glow' : 'w-full bg-green-600 text-white font-bold py-3 rounded-full hover:scale-105 transition btn-glow'}">
+          ${isOn ? '⏸️ Matikan Auto Boost' : '▶️ Jalankan Auto Boost'}
+        </button>
+        <div class="mt-4 text-center text-xs text-slate-500">
+          <p>Status tersimpan di <b>Firestore</b>: <code class="bg-slate-800 px-2 py-0.5 rounded">settings/autoBoost</code></p>
+          <p class="mt-1">Interval: ${AUTO_BOOST_INTERVAL / 60000} menit • +${AUTO_VIEW_AMOUNT} views • +${AUTO_LIKE_AMOUNT} likes</p>
+          <p class="mt-1 text-green-400">🌍 Berlaku GLOBAL untuk semua device</p>
+        </div>
+      </div>`;
+    document.getElementById('boostToggleBtn').onclick = () => window.toggleAutoBoost();
+  }
+
   async function loadSet() {
     aC.innerHTML = `<div class="card-bg rounded-2xl p-6 max-w-lg mx-auto card-anim"><h3 class="font-bold mb-4">Setting</h3>
       <label class="block text-sm font-semibold mb-1">Nomor WA Admin</label>
@@ -4362,6 +4481,7 @@ async function renderAdminPanel(container) {
   document.getElementById('adminTabUpload').onclick = loadUploadForm;
   document.getElementById('adminTabKritik').onclick = loadKritik;
   document.getElementById('adminTabBirthday').onclick = loadBirthday;
+  document.getElementById('adminTabBoost').onclick = loadBoost;
   document.getElementById('adminTabSettings').onclick = loadSet;
   loadUsers();
 }
@@ -5257,6 +5377,9 @@ window.addEventListener('hashchange', renderPage);
 
 (async function init() {
   await initAuth();
+  // Load status auto boost GLOBAL dari Firestore + dengarkan perubahan realtime
+  await loadAutoBoostStateFromDB();
+  listenAutoBoostState();
   if (!window.location.hash) window.location.hash = 'home';
   renderPage();
   startAutoBoost();
