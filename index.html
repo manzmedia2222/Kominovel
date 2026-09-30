@@ -14,7 +14,7 @@
 }
 </script>
 <meta name="google-site-verification" content="GvyTGbIx3Zov0CXr0f1voJ2LJnac-ppCl62NStzdY3E">
-<meta name="description" content="KomiNovel - Platform baca & tulis Novel dan Komik online gratis. Versi 1.4">
+<meta name="description" content="KomiNovel - Platform baca & tulis Novel dan Komik online gratis. Versi 1.5">
 <link rel="icon" href="https://i.ibb.co.com/SDTthJ7m/Gemini-Generated-Image-fhupt4fhupt4fhup.jpg">
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -68,6 +68,7 @@ body{font-family:'Inter',sans-serif;background:#0f0f1a;color:#e2e8f0;overflow-x:
 .nonpublish-border{border:2px solid #64748b;box-shadow:0 0 10px rgba(100,116,139,.4);background:linear-gradient(135deg,#1a1a2e,#252540)}
 .unggulan-border{border:2px solid #f59e0b;box-shadow:0 0 15px rgba(245,158,11,.5);background:linear-gradient(135deg,#2a1f0a,#1a1a2e)}
 .baru-border{border:2px solid #3b82f6;box-shadow:0 0 12px rgba(59,130,246,.5);background:linear-gradient(135deg,#0a1628,#1a1a2e)}
+.review-border{border:2px solid #f59e0b;box-shadow:0 0 18px rgba(245,158,11,.6);background:linear-gradient(135deg,#2a1f0a,#1a1a2e)}
 .uploading-spinner{display:inline-block;width:14px;height:14px;border:2px solid #fbbf24;border-top-color:transparent;border-radius:50%;animation:spin .8s linear infinite;margin-right:6px}
 @keyframes spin{to{transform:rotate(360deg)}}
 .guide-step{background:#12121f;border-left:3px solid #fbbf24;padding:12px 16px;border-radius:8px;margin-bottom:10px}
@@ -232,55 +233,55 @@ body{font-family:'Inter',sans-serif;background:#0f0f1a;color:#e2e8f0;overflow-x:
 .owner-shine{border:3px solid #fbbf24;animation:ownerGlow 2.6s infinite ease-in-out;border-radius:50%}
 .owner-shine-card{border:2px solid #fbbf24;animation:ownerGlow 2.6s infinite ease-in-out}
 
-/* === MINIGAME STYLES === */
-.mg-room-code{font-family:monospace;letter-spacing:4px;font-weight:900;font-size:28px;color:#fbbf24;text-shadow:0 0 12px rgba(251,191,36,.6)}
-.mg-canvas-wrap{position:relative;background:#1a1a2e;border:2px solid #2d2d44;border-radius:16px;overflow:hidden}
-.mg-canvas{display:block;width:100%;height:auto;cursor:crosshair;background:#fff;touch-action:none}
-.mg-timer{font-family:monospace;font-weight:900;font-size:18px;color:#fbbf24;background:#0f0f1a;border:1px solid #fbbf24;border-radius:10px;padding:6px 14px}
-.mg-timer.warning{color:#ef4444;border-color:#ef4444;animation:glowPulse 1s infinite}
-.mg-player-chip{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:9999px;font-size:12px;font-weight:700;background:#1a1a2e;border:2px solid #2d2d44;transition:.2s}
-.mg-player-chip.active{border-color:#fbbf24;box-shadow:0 0 12px rgba(251,191,36,.4)}
-.mg-player-chip.drawer{border-color:#10b981;box-shadow:0 0 12px rgba(16,185,129,.4)}
-.mg-player-chip.guessed{border-color:#3b82f6;background:rgba(59,130,246,.15)}
-.mg-player-chip.owner-chip{border-color:#ef4444;box-shadow:0 0 12px rgba(239,68,68,.4)}
-.mg-guess-log{background:#12121f;border:1px solid #2d2d44;border-radius:10px;padding:10px;max-height:200px;overflow-y:auto;font-size:13px}
-.mg-guess-log .correct{color:#10b981;font-weight:700}
-.mg-guess-log .wrong{color:#ef4444}
-.mg-guess-log .close{color:#f59e0b}
-.mg-guess-log .info{color:#94a3b8}
-.mg-guess-log .system{color:#a855f7;font-style:italic}
-.mg-canvas-toolbar{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
-.mg-tool-btn{width:36px;height:36px;border-radius:8px;border:2px solid #2d2d44;background:#1a1a2e;color:#cbd5e1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s;font-size:14px}
-.mg-tool-btn:hover{border-color:#fbbf24;color:#fbbf24}
-.mg-tool-btn.active{border-color:#fbbf24;background:rgba(251,191,36,.15);color:#fbbf24}
-.mg-color-swatch{width:28px;height:28px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:.2s}
-.mg-color-swatch.active{border-color:#fff;transform:scale(1.15)}
-.mg-color-swatch:hover{transform:scale(1.1)}
-.mg-scoreboard{background:#12121f;border:1px solid #2d2d44;border-radius:10px;padding:10px}
-.mg-waiting-pulse{animation:glowPulse 1.8s infinite}
-.mg-answer-reveal{background:linear-gradient(135deg,#10b981,#047857);color:white;padding:12px 20px;border-radius:12px;font-weight:900;font-size:16px;text-align:center;box-shadow:0 0 20px rgba(16,185,129,.5)}
-.mg-mode-card{cursor:pointer;transition:.25s;border:2px solid #2d2d44;border-radius:16px;padding:20px;text-align:center;background:#1a1a2e}
-.mg-mode-card:hover{border-color:#fbbf24;transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,0,0,.4)}
-.mg-mode-card.selected{border-color:#fbbf24;background:linear-gradient(135deg,#2a1f0a,#1a1a2e);box-shadow:0 0 20px rgba(251,191,36,.4)}
-.mg-join-input{font-family:monospace;letter-spacing:8px;text-transform:uppercase;font-size:24px;text-align:center;font-weight:900}
+/* === REVIEW STYLES === */
+.review-card{background:#12121f;border:1px solid #2d2d44;border-radius:12px;padding:12px;margin-bottom:8px}
+.review-img-item{position:relative;display:inline-block;margin:4px}
+.review-img-item img{width:64px;height:64px;object-fit:cover;border-radius:8px;border:2px solid #3b3b5c}
+.review-img-item .order-num{position:absolute;top:-4px;left:-4px;background:#fbbf24;color:#0f0f1a;font-size:10px;font-weight:900;padding:1px 5px;border-radius:4px}
+.review-move-btn{position:absolute;background:rgba(59,130,246,.9);color:white;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;cursor:pointer;border:none;z-index:5}
+.review-move-btn:hover{background:#2563eb;transform:scale(1.15)}
+.review-move-left{top:50%;left:-8px;transform:translateY(-50%)}
+.review-move-right{top:50%;right:-8px;transform:translateY(-50%)}
 
-/* === ANTI-FLICKER === */
-.no-anim .card-anim { animation: none !important; }
-.no-anim .new-work { animation: none !important; }
-
-.stat-update { transition: color .3s ease; }
-.stat-update.flash-up { color: #fbbf24; }
-
-/* === VERSION BADGE === */
-.version-badge{
-  background:linear-gradient(135deg,#3b82f6,#8b5cf6);
-  color:white;font-size:10px;font-weight:900;
-  padding:3px 10px;border-radius:9999px;
-  box-shadow:0 0 10px rgba(59,130,246,.6);
-  letter-spacing:.5px;
-  display:inline-flex;align-items:center;gap:4px;
+/* === REVIEW READER MODE === */
+.review-reader-layout{display:grid;grid-template-columns:1fr;gap:16px}
+@media(min-width:1024px){
+  .review-reader-layout{grid-template-columns:1fr 380px}
 }
-.version-badge i{font-size:9px}
+.review-reader-main{background:#0a0a14;border:2px solid #2d2d44;border-radius:16px;padding:16px;min-height:400px;max-height:75vh;overflow-y:auto;position:relative}
+.review-reader-main img{width:100%;border-radius:8px;margin-bottom:12px;display:block}
+.review-reader-panel{background:#12121f;border:2px solid #2d2d44;border-radius:16px;padding:16px;max-height:75vh;overflow-y:auto}
+.review-reader-panel.drag-mode-active{border-color:#fbbf24;box-shadow:0 0 20px rgba(251,191,36,.4)}
+.review-reader-panel.fullscreen-mode-active{border-color:#3b82f6;box-shadow:0 0 20px rgba(59,130,246,.4)}
+.review-mode-selector{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.review-mode-btn{flex:1;min-width:120px;padding:12px;border-radius:12px;border:2px solid #2d2d44;background:#1a1a2e;color:#cbd5e1;font-weight:900;font-size:12px;cursor:pointer;transition:.25s;display:flex;flex-direction:column;align-items:center;gap:6px}
+.review-mode-btn i{font-size:20px}
+.review-mode-btn:hover{border-color:#fbbf24;transform:translateY(-2px)}
+.review-mode-btn.active-drag{background:linear-gradient(135deg,#fbbf24,#d97706);color:#0f0f1a;border-color:#fbbf24;box-shadow:0 0 16px rgba(251,191,36,.6)}
+.review-mode-btn.active-fs{background:linear-gradient(135deg,#3b82f6,#1d4ed8);color:white;border-color:#3b82f6;box-shadow:0 0 16px rgba(59,130,246,.6)}
+.review-mode-locked{opacity:.5;pointer-events:none}
+.review-panel-locked-notice{background:rgba(239,68,68,.1);border:1px solid #ef4444;border-radius:10px;padding:10px;font-size:11px;color:#fca5a5;text-align:center;margin-bottom:10px}
+.review-img-thumb{position:relative;display:inline-block;margin:4px;transition:transform .15s}
+.review-img-thumb:hover{transform:scale(1.05)}
+.review-img-thumb img{width:70px;height:70px;object-fit:cover;border-radius:8px;border:2px solid #3b3b5c;user-select:none;-webkit-user-drag:none}
+.review-img-thumb.drag-mode img{cursor:grab}
+.review-img-thumb.drag-mode:active img{cursor:grabbing}
+.review-img-thumb.fs-mode img{cursor:zoom-in}
+.review-img-thumb .order-num{position:absolute;top:-4px;left:-4px;background:#fbbf24;color:#0f0f1a;font-size:10px;font-weight:900;padding:1px 5px;border-radius:4px}
+.review-img-thumb .remove-btn{position:absolute;top:-6px;right:-6px;background:#ef4444;color:white;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;cursor:pointer;font-weight:900;border:2px solid #1a1a2e;z-index:5}
+.review-img-thumb .drag-handle{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(251,191,36,.9);color:#0f0f1a;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;cursor:grab!important;opacity:0;transition:opacity .2s;z-index:4}
+.review-img-thumb.drag-mode:hover .drag-handle{opacity:1}
+.review-img-thumb.dragging{opacity:.4}
+.review-img-thumb.drag-over img{border-color:#fbbf24;box-shadow:0 0 12px rgba(251,191,36,.6)}
+.review-mobile-panel-btn{position:fixed;bottom:80px;right:20px;z-index:90;background:linear-gradient(135deg,#fbbf24,#d97706);color:#0f0f1a;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;box-shadow:0 4px 20px rgba(251,191,36,.5);border:none;transition:transform .25s}
+.review-mobile-panel-btn:hover{transform:scale(1.12)}
+@media(min-width:1024px){.review-mobile-panel-btn{display:none!important}}
+.review-mobile-panel{position:fixed;top:0;right:0;height:100vh;width:340px;max-width:90vw;background:#12121f;border-left:2px solid #fbbf24;z-index:95;transform:translateX(100%);transition:transform .35s cubic-bezier(.4,0,.2,1);overflow-y:auto;padding:16px}
+.review-mobile-panel.active{transform:translateX(0)}
+.review-mobile-panel-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:94;display:none}
+.review-mobile-panel-overlay.active{display:block}
+.review-empty-hint{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;min-height:300px;color:#64748b;text-align:center;padding:20px}
+.review-empty-hint i{font-size:48px;margin-bottom:16px;color:#334155}
 </style>
 </head>
 <body class="min-h-screen">
@@ -291,7 +292,7 @@ body{font-family:'Inter',sans-serif;background:#0f0f1a;color:#e2e8f0;overflow-x:
 <img src="https://i.ibb.co.com/SDTthJ7m/Gemini-Generated-Image-fhupt4fhupt4fhup.jpg" class="w-9 h-9 md:w-10 md:h-10 rounded-xl object-cover border-2 border-amber-500 logo-glow">
 <div class="flex flex-col md:flex-row md:items-center md:gap-3">
 <h1 class="text-xl md:text-2xl font-black tracking-tight bg-gradient-to-r from-amber-300 to-orange-500 bg-clip-text text-transparent">KomiNovel</h1>
-<span class="version-badge"><i class="fas fa-code-branch"></i>v1.4</span>
+<span class="version-badge"><i class="fas fa-code-branch"></i>v1.5</span>
 </div>
 </div>
 <div class="flex items-center gap-2">
@@ -303,7 +304,7 @@ body{font-family:'Inter',sans-serif;background:#0f0f1a;color:#e2e8f0;overflow-x:
 <footer class="mt-12 text-center text-xs text-slate-500 border-t border-slate-800 pt-6 space-y-2">
 <div class="flex items-center justify-center gap-2 flex-wrap">
 <span>&copy; <span id="footerYear">2026</span> KomiNovel</span>
-<span class="version-badge"><i class="fas fa-code-branch"></i>v1.4</span>
+<span class="version-badge"><i class="fas fa-code-branch"></i>v1.5</span>
 </div>
 <p class="text-[10px] text-slate-600">Build: 2026 • Platform baca & tulis Novel/Komik Online</p>
 </footer>
@@ -314,7 +315,7 @@ body{font-family:'Inter',sans-serif;background:#0f0f1a;color:#e2e8f0;overflow-x:
 <div class="flex justify-between items-center mb-6 pb-4 border-b border-slate-700">
 <div class="flex items-center gap-2">
 <span class="font-bold text-lg">Menu</span>
-<span class="version-badge"><i class="fas fa-code-branch"></i>v1.4</span>
+<span class="version-badge"><i class="fas fa-code-branch"></i>v1.5</span>
 </div>
 <button id="closeMobileNav" class="text-slate-400 text-2xl hover:rotate-90 transition-transform">&times;</button>
 </div>
@@ -343,8 +344,9 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const googleProvider = new GoogleAuthProvider();
 
-const APP_VERSION = '1.4';
+const APP_VERSION = '1.5';
 const APP_VERSION_NOTES = [
+  'v1.5 — Fitur Review Karya dengan Mode Reader: preview gambar ala reader, panel kontrol drag & fullscreen terpisah (desktop: kiri-kanan, HP: tombol drawer)',
   'v1.4 — Edit Karya (sampul, teaser, deskripsi, genre, judul, status), Genre Custom (ketik sendiri), Badge versi di header & footer',
   'v1.3 — Minigame Gambar & Tebak (2/5 pemain), Auto Boost Global, Perbaikan bug'
 ];
@@ -367,7 +369,7 @@ let autoBoostInterval = null;
 let showAllCategories = false;
 
 // === CUSTOM GENRE STATE ===
-let customCategories = []; // genre custom yang diketik creator
+let customCategories = [];
 let customCategoriesUnsub = null;
 
 // === AUTO BOOST GLOBAL STATE ===
@@ -378,6 +380,15 @@ let autoBoostUnsub = null;
 let currentWorksData = {};
 let currentWorksOrder = [];
 let homeIsFirstRender = true;
+
+// === REVIEW STATE ===
+let reviewWorkId = null;
+let reviewWorkData = null;
+let reviewChaptersData = [];
+let reviewImagesMap = {}; // key: chapterId, value: array of image URLs
+let reviewCurrentChapterId = null;
+let reviewMode = null; // 'drag' | 'fullscreen' | null (belum dipilih)
+let reviewMobilePanelOpen = false;
 
 // === MINIGAME GLOBAL STATE ===
 let mgUnsubRoom = null, mgUnsubPlayers = null, mgUnsubGuesses = null;
@@ -584,7 +595,6 @@ async function loadCustomCategories() {
 async function addCustomCategory(name) {
   const trimmed = name.trim();
   if (!trimmed || trimmed.length < 2) return null;
-  // Cek duplikat (case-insensitive)
   const exists = customCategories.find(c => c.name.toLowerCase() === trimmed.toLowerCase());
   if (exists) return exists.name;
   try {
@@ -597,7 +607,7 @@ async function addCustomCategory(name) {
     customCategories.push({ id: ref.id, name: trimmed });
     return trimmed;
   } catch (e) {
-    return trimmed; // tetap return nama meskipun gagal simpan
+    return trimmed;
   }
 }
 
@@ -1102,7 +1112,6 @@ window.openGroupManager = async (wid, type, onDone) => {
 // ============================================================
 function categoryChipsField(containerId, selected = []) {
   const sel = parseCategories(selected);
-  // Gabung kategori bawaan + custom, hilangkan duplikat
   const allCustom = customCategories.map(c => c.name);
   const allCats = [...new Set([...ALL_CATEGORIES, ...allCustom])];
   const visibleCats = showAllCategories ? allCats : allCats.slice(0, 30);
@@ -1145,17 +1154,14 @@ window.addCustomGenre = async (containerId) => {
   if (!inp) return;
   const val = inp.value.trim();
   if (!val || val.length < 2) { showToast('Genre minimal 2 karakter'); return; }
-  // Cek duplikat di semua kategori
   const allCats = [...new Set([...ALL_CATEGORIES, ...customCategories.map(c => c.name)])];
   const existing = allCats.find(c => c.toLowerCase() === val.toLowerCase());
   if (existing) {
-    // Kalau sudah ada, langsung centang
     const container = document.getElementById(containerId);
     const cbs = container.querySelectorAll('input[type="checkbox"]');
     let found = false;
     cbs.forEach(cb => { if (cb.value.toLowerCase() === val.toLowerCase()) { cb.checked = true; found = true; } });
     if (!found) {
-      // Ada di ALL_CATEGORIES tapi belum tampil (karena limit 30) — tambahkan chip baru
       const label = document.createElement('label');
       label.className = 'cat-chip';
       label.innerHTML = `<input type="checkbox" value="${escHtml(existing)}" checked><span>${escHtml(existing)}</span>`;
@@ -1166,10 +1172,8 @@ window.addCustomGenre = async (containerId) => {
     updateSelectedCount(containerId);
     return;
   }
-  // Simpan ke Firestore sebagai custom category
   const saved = await addCustomCategory(val);
   const finalName = saved || val;
-  // Tambahkan chip baru ke container
   const container = document.getElementById(containerId);
   const label = document.createElement('label');
   label.className = 'cat-chip';
@@ -1199,11 +1203,9 @@ window.toggleAllCategories = async (containerId) => {
   if (!container) return;
   const checked = Array.from(container.querySelectorAll('input:checked')).map(cb => cb.value);
   showAllCategories = true;
-  // Re-render parent
   const parentWrapper = container.closest('.bg-slate-900\\/50');
   if (parentWrapper) {
     parentWrapper.outerHTML = categoryChipsField(containerId, checked);
-    // Re-attach event listeners
     updateSelectedCount(containerId);
   }
 };
@@ -1294,12 +1296,10 @@ window.openEditWorkModal = async (wid) => {
     </div>`;
   modal.classList.remove('hidden');
 
-  // Setup teaser counter
   document.getElementById('editWTeaser').oninput = e => {
     document.getElementById('editTeaserCount').textContent = e.target.value.length;
   };
 
-  // Setup cover handler
   window[`_editWCover_cover`] = w.coverURL || '';
   const fileInput = document.getElementById('editWCover-file');
   const urlInput = document.getElementById('editWCover-url');
@@ -1335,7 +1335,6 @@ window.openEditWorkModal = async (wid) => {
     renderCoverPreview(url);
   };
 
-  // Init custom category counter
   updateSelectedCount('editWCategories');
 
   const close = () => modal.classList.add('hidden');
@@ -1369,7 +1368,6 @@ window.openEditWorkModal = async (wid) => {
       });
       showToast('✅ Karya berhasil diupdate!');
       modal.classList.add('hidden');
-      // Refresh halaman creator
       const main = document.getElementById('mainContent');
       if (main && getHash().startsWith('creator')) {
         await renderCreatorDashboard(main);
@@ -1383,7 +1381,457 @@ window.openEditWorkModal = async (wid) => {
 };
 
 // ============================================================
-// ==================== END EDIT KARYA ========================
+// === REVIEW KARYA MODE READER ===============================
+// ============================================================
+window.openReviewWorkModal = async (wid) => {
+  const snap = await getDoc(doc(db, 'works', wid));
+  if (!snap.exists()) { showToast('Karya tidak ditemukan'); return; }
+  const w = { id: snap.id, ...snap.data() };
+  if (w.authorId !== currentUser?.uid && !isAdminUser(userProfile)) {
+    showToast('Tidak punya akses review karya ini');
+    return;
+  }
+
+  reviewWorkId = wid;
+  reviewWorkData = w;
+  reviewMode = null;
+  reviewMobilePanelOpen = false;
+
+  const cs = await getDocs(query(collection(db, 'works', wid, 'chapters'), orderBy('number', 'asc')));
+  reviewChaptersData = [];
+  cs.forEach(d => reviewChaptersData.push({ id: d.id, ...d.data() }));
+  reviewImagesMap = {};
+  reviewChaptersData.forEach(ch => {
+    if (ch.images && Array.isArray(ch.images)) {
+      reviewImagesMap[ch.id] = [...ch.images];
+    }
+  });
+  reviewCurrentChapterId = reviewChaptersData.length > 0 ? reviewChaptersData[0].id : null;
+
+  renderReviewReaderModal();
+};
+
+function renderReviewReaderModal() {
+  const w = reviewWorkData;
+  const modal = document.getElementById('modalContainer');
+  const content = document.getElementById('modalContent');
+  const isKomik = w.type === 'komik';
+  const currentCh = reviewChaptersData.find(c => c.id === reviewCurrentChapterId);
+  const currentImgs = currentCh ? (reviewImagesMap[currentCh.id] || []) : [];
+  const label = isKomik ? 'Eps' : 'Chapter';
+
+  content.className = 'card-bg rounded-2xl w-full max-w-6xl max-h-[95vh] overflow-hidden p-0 shadow-2xl scrollbar-thin';
+  content.innerHTML = `
+    <div class="flex justify-between items-center p-4 border-b border-slate-700 sticky top-0 bg-[#1a1a2e] z-10">
+      <div class="flex items-center gap-2 min-w-0">
+        <i class="fas fa-clipboard-check text-amber-400 text-xl"></i>
+        <h2 class="text-lg md:text-xl font-black text-amber-400 truncate">Review: ${escHtml(w.title)}</h2>
+        <span class="text-[10px] px-2 py-0.5 rounded-full ${isNonPublish(w) ? 'bg-slate-700 text-slate-300' : 'bg-green-900/60 text-green-300'} whitespace-nowrap">
+          ${isNonPublish(w) ? '🔒 NONPUBLISH' : '✅ PUBLISH'}
+        </span>
+      </div>
+      <button id="closeReview" class="text-slate-400 text-2xl hover:rotate-90 transition-transform flex-shrink-0">&times;</button>
+    </div>
+
+    <div class="p-4 overflow-y-auto" style="max-height:calc(95vh - 70px)">
+      <!-- Info Karya -->
+      <div class="review-card mb-4">
+        <div class="flex items-start gap-3">
+          <div class="w-16 h-22 bg-slate-800 rounded-lg overflow-hidden flex-shrink-0">
+            ${w.coverURL ? `<img src="${w.coverURL}" class="w-full h-full object-cover cover-clickable" onclick="window.showImgFullscreen('${escAttr(w.coverURL)}','Sampul: ${escAttr(w.title)}')">` : `<div class="flex items-center justify-center h-full"><i class="fas fa-image text-2xl text-slate-600"></i></div>`}
+          </div>
+          <div class="flex-1 min-w-0">
+            <h3 class="font-bold text-sm">${escHtml(w.title)}</h3>
+            <p class="text-xs text-slate-400 mt-1 line-clamp-2">${escHtml(w.teaser || '')}</p>
+            <div class="flex flex-wrap gap-1 mt-2">
+              ${parseCategories(w.category).map(c => `<span class="text-[10px] bg-slate-700 px-2 py-0.5 rounded-full">${escHtml(c)}</span>`).join('')}
+            </div>
+            <div class="flex items-center gap-3 mt-2 text-[10px] text-slate-400">
+              <span><i class="fas fa-eye text-amber-400"></i> ${formatCount(w.views || 0)}</span>
+              <span><i class="fas fa-heart" style="color:#ef4444"></i> ${formatCount(w.likes || 0)}</span>
+              <span><i class="fas fa-star text-amber-400"></i> ${formatCount(w.ratingCount || 0)}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pilih Chapter/Eps -->
+      <div class="mb-4">
+        <label class="block text-xs font-bold text-amber-400 mb-2"><i class="fas fa-list mr-1"></i>Pilih ${label} untuk di-review:</label>
+        <select id="reviewChapterSelect" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm">
+          ${reviewChaptersData.length === 0 ? '<option value="">Belum ada konten</option>' : reviewChaptersData.map(ch => `<option value="${ch.id}" ${ch.id === reviewCurrentChapterId ? 'selected' : ''}>${label} ${ch.number}${ch.title ? ': ' + escHtml(ch.title) : ''}</option>`).join('')}
+        </select>
+      </div>
+
+      ${!isKomik ? `
+        <!-- Mode Novel: tampilkan textarea -->
+        <div class="mb-4">
+          <label class="block text-sm font-semibold mb-1">Judul ${label}</label>
+          <input id="reviewEditTitle" type="text" value="${escHtml(currentCh?.title || '')}" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm mb-3">
+          <label class="block text-sm font-semibold mb-1">Isi Cerita</label>
+          <textarea id="reviewEditContent" rows="12" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm">${escHtml(currentCh?.content || '')}</textarea>
+        </div>
+      ` : `
+        <!-- Mode Komik: reader layout -->
+        <div id="reviewModeNotice" class="review-panel-locked-notice mb-3">
+          <i class="fas fa-hand-pointer mr-1"></i> Pilih mode dulu di panel kanan: <b>🖐️ Mode Drag</b> atau <b>🔍 Mode Fullscreen</b>
+        </div>
+
+        <div class="review-reader-layout">
+          <!-- KIRI: READER PREVIEW -->
+          <div class="review-reader-main" id="reviewReaderMain">
+            ${currentImgs.length === 0 
+              ? `<div class="review-empty-hint"><i class="fas fa-images"></i><p class="text-sm">Belum ada gambar untuk ${label} ini.</p></div>`
+              : currentImgs.map((img, idx) => `
+                  <div class="relative group">
+                    <img src="${img}" alt="Gambar ${idx+1}" onerror="this.src='https://placehold.co/800x600/1a1a2e/64748b?text=Gambar+Error'">
+                    <span class="absolute top-2 left-2 bg-black/70 text-amber-400 text-xs font-black px-2 py-1 rounded-full">#${idx+1}</span>
+                  </div>
+                `).join('')
+            }
+          </div>
+
+          <!-- KANAN: PANEL KONTROL (desktop) -->
+          <div class="review-reader-panel hidden lg:block" id="reviewReaderPanel">
+            ${renderReviewPanelContent()}
+          </div>
+        </div>
+
+        <!-- TOMBOL MOBILE: buka panel -->
+        <button class="review-mobile-panel-btn" id="reviewMobilePanelBtn" title="Buka Panel Kontrol">
+          <i class="fas fa-sliders-h"></i>
+        </button>
+
+        <!-- PANEL MOBILE (drawer) -->
+        <div class="review-mobile-panel-overlay" id="reviewMobilePanelOverlay"></div>
+        <div class="review-mobile-panel" id="reviewMobilePanel">
+          <div class="flex justify-between items-center mb-3">
+            <h3 class="font-bold text-amber-400"><i class="fas fa-sliders-h mr-1"></i>Panel Kontrol</h3>
+            <button id="closeReviewMobilePanel" class="text-slate-400 text-2xl hover:rotate-90 transition-transform">&times;</button>
+          </div>
+          ${renderReviewPanelContent()}
+        </div>
+      `}
+
+      <!-- Tombol Aksi -->
+      <div class="flex flex-col gap-2 mt-4">
+        ${isNonPublish(w) ? `
+          <button id="reviewPublishBtn" class="w-full bg-green-600 text-white font-bold py-3 rounded-full hover:scale-105 transition btn-glow">
+            <i class="fas fa-check-circle mr-2"></i>Publish Sekarang
+          </button>
+        ` : `
+          <div class="bg-green-900/30 border border-green-600/50 rounded-xl p-3 text-center">
+            <p class="text-sm text-green-300"><i class="fas fa-check-circle mr-1"></i>Karya sudah dipublish. Kamu masih bisa review & perbaiki di sini.</p>
+          </div>
+        `}
+        <button id="reviewSaveAllBtn" class="w-full bg-amber-500 text-black font-bold py-3 rounded-full hover:scale-105 transition">
+          <i class="fas fa-save mr-2"></i>Simpan Semua Perubahan
+        </button>
+        <button id="reviewCloseBtn" class="w-full bg-slate-700 text-white font-bold py-3 rounded-full hover:scale-105 transition">Tutup</button>
+      </div>
+    </div>
+  `;
+  modal.classList.remove('hidden');
+
+  // Event handlers
+  document.getElementById('closeReview').onclick = closeReviewModal;
+  document.getElementById('reviewCloseBtn').onclick = closeReviewModal;
+
+  const sel = document.getElementById('reviewChapterSelect');
+  if (sel) {
+    sel.onchange = () => {
+      reviewCurrentChapterId = sel.value;
+      reviewMode = null;
+      reviewMobilePanelOpen = false;
+      renderReviewReaderModal();
+    };
+  }
+
+  // Mode selector handlers
+  document.querySelectorAll('#reviewReaderPanel .review-mode-btn, #reviewMobilePanel .review-mode-btn').forEach(btn => {
+    btn.onclick = () => {
+      const mode = btn.dataset.mode;
+      reviewMode = mode;
+      showToast(mode === 'drag' ? '🖐️ Mode Drag aktif — geser gambar untuk ubah urutan' : '🔍 Mode Fullscreen aktif — klik gambar untuk perbesar');
+      renderReviewReaderModal();
+    };
+  });
+
+  // Drag & drop handlers
+  if (reviewMode === 'drag' && isKomik) {
+    initReviewDragDrop();
+  }
+
+  // Mobile panel toggle
+  const mobileBtn = document.getElementById('reviewMobilePanelBtn');
+  const mobilePanel = document.getElementById('reviewMobilePanel');
+  const mobileOverlay = document.getElementById('reviewMobilePanelOverlay');
+  const closeMobilePanel = document.getElementById('closeReviewMobilePanel');
+  if (mobileBtn && mobilePanel) {
+    mobileBtn.onclick = () => {
+      mobilePanel.classList.add('active');
+      mobileOverlay.classList.add('active');
+      reviewMobilePanelOpen = true;
+    };
+  }
+  if (closeMobilePanel) {
+    closeMobilePanel.onclick = () => {
+      mobilePanel.classList.remove('active');
+      mobileOverlay.classList.remove('active');
+      reviewMobilePanelOpen = false;
+    };
+  }
+  if (mobileOverlay) {
+    mobileOverlay.onclick = () => {
+      mobilePanel.classList.remove('active');
+      mobileOverlay.classList.remove('active');
+      reviewMobilePanelOpen = false;
+    };
+  }
+
+  // Novel: save title & content
+  if (!isKomik && currentCh) {
+    const saveBtn = document.getElementById('reviewSaveAllBtn');
+    if (saveBtn) {
+      saveBtn.onclick = async () => {
+        const title = document.getElementById('reviewEditTitle').value.trim();
+        const content = document.getElementById('reviewEditContent').value.trim();
+        if (!title) { showToast('Judul wajib!'); return; }
+        try {
+          await updateDoc(doc(db, 'works', reviewWorkId, 'chapters', currentCh.id), { title, content, updatedAt: serverTimestamp() });
+          showToast('✅ Konten disimpan!');
+        } catch (e) { showToast('Gagal: ' + e.message); }
+      };
+    }
+  }
+
+  // Publish button
+  const pubBtn = document.getElementById('reviewPublishBtn');
+  if (pubBtn) {
+    pubBtn.onclick = async () => {
+      if (!confirm('Publish karya ini? Pembaca akan bisa membaca semua chapter/eps.')) return;
+      try {
+        await updateDoc(doc(db, 'works', reviewWorkId), { status: 'publish', updatedAt: serverTimestamp() });
+        showToast('✅ Karya berhasil dipublish!');
+        closeReviewModal();
+        const main = document.getElementById('mainContent');
+        if (main && getHash().startsWith('creator')) await renderCreatorDashboard(main);
+      } catch (e) { showToast('Gagal publish: ' + e.message); }
+    };
+  }
+
+  // Save all (komik)
+  if (isKomik) {
+    const saveBtn = document.getElementById('reviewSaveAllBtn');
+    if (saveBtn) {
+      saveBtn.onclick = async () => {
+        try {
+          for (const ch of reviewChaptersData) {
+            const imgs = reviewImagesMap[ch.id] || [];
+            if (imgs.length > 0) {
+              await updateDoc(doc(db, 'works', reviewWorkId, 'chapters', ch.id), { images: imgs, coverImage: imgs[0] || '' });
+            }
+          }
+          showToast('✅ Semua perubahan gambar disimpan!');
+          const cs2 = await getDocs(query(collection(db, 'works', reviewWorkId, 'chapters'), orderBy('number', 'asc')));
+          reviewChaptersData = [];
+          cs2.forEach(d => reviewChaptersData.push({ id: d.id, ...d.data() }));
+          reviewImagesMap = {};
+          reviewChaptersData.forEach(ch => {
+            if (ch.images && Array.isArray(ch.images)) reviewImagesMap[ch.id] = [...ch.images];
+          });
+          renderReviewReaderModal();
+        } catch (e) { showToast('Gagal menyimpan: ' + e.message); }
+      };
+    }
+  }
+}
+
+function renderReviewPanelContent() {
+  const w = reviewWorkData;
+  const currentCh = reviewChaptersData.find(c => c.id === reviewCurrentChapterId);
+  const imgs = currentCh ? (reviewImagesMap[currentCh.id] || []) : [];
+  const isKomik = w.type === 'komik';
+  const label = isKomik ? 'Eps' : 'Chapter';
+  const mode = reviewMode;
+  const modeClass = mode === 'drag' ? 'drag-mode-active' : mode === 'fullscreen' ? 'fullscreen-mode-active' : '';
+
+  if (!isKomik) {
+    return `
+      <div class="text-center py-8">
+        <i class="fas fa-book-open text-4xl text-blue-400 mb-3"></i>
+        <p class="text-sm text-slate-400">Mode Novel: edit langsung di form sebelah kiri.</p>
+      </div>
+    `;
+  }
+
+  return `
+    <div class="${modeClass}" style="padding:0;background:transparent;border:none;box-shadow:none">
+      <h3 class="font-bold text-sm text-amber-400 mb-3"><i class="fas fa-sliders-h mr-1"></i>Panel Kontrol Gambar</h3>
+      
+      <!-- Mode Selector -->
+      <div class="review-mode-selector">
+        <button class="review-mode-btn ${mode === 'drag' ? 'active-drag' : ''}" data-mode="drag">
+          <i class="fas fa-hand-rock"></i>
+          <span>🖐️ Mode Drag</span>
+          <span style="font-size:9px;opacity:.8">Ubah urutan gambar</span>
+        </button>
+        <button class="review-mode-btn ${mode === 'fullscreen' ? 'active-fs' : ''}" data-mode="fullscreen">
+          <i class="fas fa-expand"></i>
+          <span>🔍 Mode Fullscreen</span>
+          <span style="font-size:9px;opacity:.8">Klik gambar untuk perbesar</span>
+        </button>
+      </div>
+
+      ${mode === null ? `
+        <div class="review-panel-locked-notice">
+          <i class="fas fa-lock mr-1"></i> Pilih mode di atas dulu untuk mengaktifkan panel gambar.
+        </div>
+      ` : ''}
+
+      <div class="${mode === null ? 'review-mode-locked' : ''}">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs text-slate-400"><i class="fas fa-layer-group mr-1"></i>${imgs.length} gambar di ${label} ${currentCh?.number || '-'}</span>
+          ${mode === 'drag' ? '<span class="text-[10px] text-amber-400"><i class="fas fa-info-circle"></i> Geser untuk ubah urutan</span>' : ''}
+          ${mode === 'fullscreen' ? '<span class="text-[10px] text-blue-400"><i class="fas fa-info-circle"></i> Klik untuk perbesar</span>' : ''}
+        </div>
+
+        <div id="reviewImageGrid" class="flex flex-wrap gap-2 max-h-[45vh] overflow-y-auto scrollbar-thin bg-slate-900/50 border border-slate-700 rounded-lg p-3">
+          ${imgs.length === 0 
+            ? '<p class="text-xs text-slate-500 italic w-full text-center py-4">Tidak ada gambar.</p>'
+            : imgs.map((img, idx) => `
+                <div class="review-img-thumb ${mode === 'drag' ? 'drag-mode' : mode === 'fullscreen' ? 'fs-mode' : ''}" 
+                     data-idx="${idx}" draggable="${mode === 'drag' ? 'true' : 'false'}">
+                  <img src="${img}" alt="Gambar ${idx+1}" 
+                       ${mode === 'fullscreen' ? `onclick="event.stopPropagation();window.showImgFullscreen('${escAttr(img)}','Gambar #${idx+1} dari ${imgs.length}')"` : ''}
+                       onerror="this.src='https://placehold.co/70x70/1a1a2e/64748b?text=Err'">
+                  <span class="order-num">#${idx+1}</span>
+                  ${mode === 'drag' ? '<span class="drag-handle" title="Tahan & geser"><i class="fas fa-arrows-alt"></i></span>' : ''}
+                  <span class="remove-btn" onclick="event.stopPropagation();window.reviewRemoveImage('${currentCh.id}',${idx})" title="Hapus gambar">×</span>
+                </div>
+              `).join('')
+          }
+        </div>
+      </div>
+
+      ${mode === 'drag' ? `
+        <button onclick="window.reviewSaveOrder()" class="w-full mt-3 bg-green-600 text-white font-bold py-2 rounded-lg text-sm hover:scale-105 transition">
+          <i class="fas fa-save mr-1"></i>Simpan Urutan
+        </button>
+      ` : ''}
+    </div>
+  `;
+}
+
+function initReviewDragDrop() {
+  const grid = document.getElementById('reviewImageGrid');
+  if (!grid) return;
+  let dragSrcIdx = null;
+
+  grid.querySelectorAll('.review-img-thumb').forEach((thumb) => {
+    thumb.addEventListener('dragstart', (e) => {
+      dragSrcIdx = parseInt(thumb.dataset.idx);
+      thumb.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+      try { e.dataTransfer.setData('text/plain', String(dragSrcIdx)); } catch (err) {}
+    });
+    thumb.addEventListener('dragend', () => {
+      thumb.classList.remove('dragging');
+      grid.querySelectorAll('.review-img-thumb').forEach(t => t.classList.remove('drag-over'));
+    });
+    thumb.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      thumb.classList.add('drag-over');
+    });
+    thumb.addEventListener('dragleave', () => {
+      thumb.classList.remove('drag-over');
+    });
+    thumb.addEventListener('drop', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      thumb.classList.remove('drag-over');
+      const toIdx = parseInt(thumb.dataset.idx);
+      if (dragSrcIdx === null || dragSrcIdx === toIdx) return;
+      const cid = reviewCurrentChapterId;
+      const arr = [...(reviewImagesMap[cid] || [])];
+      const item = arr.splice(dragSrcIdx, 1)[0];
+      arr.splice(toIdx, 0, item);
+      reviewImagesMap[cid] = arr;
+      renderReviewReaderModal();
+      showToast('✅ Urutan diubah. Klik "Simpan Urutan" untuk menyimpan.');
+    });
+  });
+
+  // Touch drag untuk mobile
+  let touchSrcIdx = null;
+  grid.querySelectorAll('.review-img-thumb').forEach((thumb) => {
+    thumb.addEventListener('touchstart', (e) => {
+      touchSrcIdx = parseInt(thumb.dataset.idx);
+      thumb.classList.add('dragging');
+    }, { passive: true });
+    thumb.addEventListener('touchmove', (e) => {
+      e.preventDefault();
+      const touch = e.touches[0];
+      const el = document.elementFromPoint(touch.clientX, touch.clientY);
+      const targetThumb = el ? el.closest('.review-img-thumb') : null;
+      grid.querySelectorAll('.review-img-thumb').forEach(t => t.classList.remove('drag-over'));
+      if (targetThumb && targetThumb !== thumb) targetThumb.classList.add('drag-over');
+    }, { passive: false });
+    thumb.addEventListener('touchend', (e) => {
+      thumb.classList.remove('dragging');
+      const touch = e.changedTouches[0];
+      const el = document.elementFromPoint(touch.clientX, touch.clientY);
+      const targetThumb = el ? el.closest('.review-img-thumb') : null;
+      if (targetThumb && targetThumb !== thumb && touchSrcIdx !== null) {
+        const toIdx = parseInt(targetThumb.dataset.idx);
+        const cid = reviewCurrentChapterId;
+        const arr = [...(reviewImagesMap[cid] || [])];
+        const item = arr.splice(touchSrcIdx, 1)[0];
+        arr.splice(toIdx, 0, item);
+        reviewImagesMap[cid] = arr;
+        renderReviewReaderModal();
+        showToast('✅ Urutan diubah. Klik "Simpan Urutan" untuk menyimpan.');
+      }
+      grid.querySelectorAll('.review-img-thumb').forEach(t => t.classList.remove('drag-over'));
+      touchSrcIdx = null;
+    });
+  });
+}
+
+window.reviewRemoveImage = (chapterId, idx) => {
+  if (!confirm('Hapus gambar ini?')) return;
+  const arr = [...(reviewImagesMap[chapterId] || [])];
+  arr.splice(idx, 1);
+  reviewImagesMap[chapterId] = arr;
+  renderReviewReaderModal();
+  showToast('🗑️ Gambar dihapus. Klik "Simpan Semua Perubahan" untuk menyimpan.');
+};
+
+window.reviewSaveOrder = async () => {
+  const currentCh = reviewChaptersData.find(c => c.id === reviewCurrentChapterId);
+  if (!currentCh) return;
+  try {
+    const imgs = reviewImagesMap[currentCh.id] || [];
+    await updateDoc(doc(db, 'works', reviewWorkId, 'chapters', currentCh.id), { images: imgs, coverImage: imgs[0] || '', updatedAt: serverTimestamp() });
+    showToast('✅ Urutan gambar disimpan!');
+  } catch (e) { showToast('Gagal: ' + e.message); }
+};
+
+function closeReviewModal() {
+  document.getElementById('modalContainer').classList.add('hidden');
+  document.getElementById('modalContent').className = 'card-bg rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-6 shadow-2xl scrollbar-thin';
+  reviewWorkId = null;
+  reviewWorkData = null;
+  reviewChaptersData = [];
+  reviewImagesMap = {};
+  reviewCurrentChapterId = null;
+  reviewMode = null;
+  reviewMobilePanelOpen = false;
+}
+
+// ============================================================
+// ==================== END REVIEW KARYA ======================
 // ============================================================
 
 async function loadClansCache() {
@@ -1664,7 +2112,7 @@ function renderAdminLogin(c) {
     <div class="text-center mb-6">
       <img src="${LOGO_URL}" class="w-20 h-20 mx-auto rounded-2xl mb-3 border-2 border-amber-500 logo-glow">
       <h2 class="text-2xl font-black">Admin Login</h2>
-      <div class="mt-2"><span class="version-badge"><i class="fas fa-code-branch"></i>v1.4</span></div>
+      <div class="mt-2"><span class="version-badge"><i class="fas fa-code-branch"></i>v1.5</span></div>
     </div>
     <div class="space-y-4">
       <input id="adminEmailInput" type="email" placeholder="Email admin" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm">
@@ -1797,11 +2245,11 @@ async function renderPanduan(container) {
 
   const defaultPanduan = `
     <h3><i class="fas fa-code-branch"></i> 0. Versi Website</h3>
-    <p>KomiNovel saat ini versi <b>v1.4</b>. Update terbaru:</p>
+    <p>KomiNovel saat ini versi <b>v1.5</b>. Update terbaru:</p>
     <ul>
-      <li>✅ <b>Edit Karya</b> — Creator bisa edit sampul, teaser, deskripsi, genre, judul, status, dan status tamat</li>
-      <li>✅ <b>Genre Custom</b> — Creator bisa ketik genre sendiri (tidak harus pilih dari daftar)</li>
-      <li>✅ Badge versi di header & footer</li>
+      <li>✅ <b>Review Karya Mode Reader</b> — Preview gambar ala reader, panel kontrol terpisah untuk drag & fullscreen</li>
+      <li>✅ <b>Edit Karya</b> — Creator bisa edit sampul, teaser, deskripsi, genre, judul, status</li>
+      <li>✅ <b>Genre Custom</b> — Creator bisa ketik genre sendiri</li>
     </ul>
 
     <h3><i class="fas fa-sign-in-alt"></i> 1. Cara Masuk / Login</h3>
@@ -1809,45 +2257,40 @@ async function renderPanduan(container) {
     <div class="tip">💡 Login Google supaya data tersimpan permanen.</div>
 
     <h3><i class="fas fa-home"></i> 2. Beranda</h3>
-    <p>Lihat daftar <b>Komik</b> (default) & <b>Novel</b>. Komik paling populer muncul paling atas.</p>
+    <p>Lihat daftar <b>Komik</b> (default) & <b>Novel</b>. Karya yang sudah dipublish saja yang tampil di beranda.</p>
 
-    <h3><i class="fas fa-clock"></i> 3. Baru-baru Ini</h3>
-    <p>Karya yang sedang dalam proses pembuatan (belum dipublish). Karya yang di-nonpublish akan muncul di sini.</p>
+    <h3><i class="fas fa-clipboard-check"></i> 3. Review & Publish Karya — PENTING!</h3>
+    <p>Semua karya baru otomatis berstatus <b>NONPUBLISH</b>. Creator <b>wajib review & publish manual</b> lewat tombol <b>Review & Publish</b> di Creator → Kelola.</p>
+    <p>Di dalam <b>Review Karya Mode Reader</b>:</p>
+    <ul>
+      <li><b>Desktop/Laptop</b>: Gambar preview besar di kiri, panel kontrol di kanan</li>
+      <li><b>HP</b>: Gambar full width, ada tombol ⚙️ untuk buka panel kontrol</li>
+      <li>Pilih <b>Mode Drag</b> (🖐️) dulu untuk mengubah urutan gambar</li>
+      <li>Pilih <b>Mode Fullscreen</b> (🔍) dulu untuk memperbesar gambar</li>
+      <li>Klik <b>Publish Sekarang</b> jika semua sudah benar</li>
+    </ul>
+    <div class="warning">⚠️ Jangan publish sebelum yakin. Cek urutan gambar komik karena pembaca akan melihat sesuai urutan yang kamu atur.</div>
 
-    <h3><i class="fas fa-upload"></i> 4. Baru Upload</h3>
+    <h3><i class="fas fa-clock"></i> 4. Baru-baru Ini</h3>
+    <p>Karya yang sedang dalam proses pembuatan (belum dipublish).</p>
+
+    <h3><i class="fas fa-upload"></i> 5. Baru Upload</h3>
     <p>Karya yang baru saja dipublish oleh kreator.</p>
 
-    <h3><i class="fas fa-newspaper"></i> 5. Berita</h3>
-    <p>Informasi terbaru dari Admin. Berita yang disematkan (pinned) muncul paling atas dengan border emas.</p>
+    <h3><i class="fas fa-newspaper"></i> 6. Berita</h3>
+    <p>Informasi terbaru dari Admin.</p>
 
-    <h3><i class="fas fa-tags"></i> 6. Kategori</h3>
-    <p>Filter karya berdasarkan genre. Ada puluhan kategori, klik "Lihat Selengkapnya" untuk melihat semua.</p>
+    <h3><i class="fas fa-tags"></i> 7. Kategori</h3>
+    <p>Filter karya berdasarkan genre.</p>
 
-    <h3><i class="fas fa-star"></i> 7. Status Komik</h3>
-    <ul>
-      <li><b>Publish</b> — pembaca bisa baca semua chapter</li>
-      <li><b>Nonpublish</b> — pembaca hanya bisa lihat sampul, teaser, deskripsi</li>
-    </ul>
+    <h3><i class="fas fa-edit"></i> 8. Edit Karya</h3>
+    <p>Di halaman <b>Creator</b> → <b>Kelola</b>, setiap karya ada tombol <b>Edit Karya</b>.</p>
 
-    <h3><i class="fas fa-edit"></i> 8. Edit Karya (BARU v1.4)</h3>
-    <p>Di halaman <b>Creator</b> → <b>Kelola</b>, setiap karya ada tombol <b>Edit</b> (ikon pensil biru). Klik untuk mengubah:</p>
-    <ul>
-      <li>Judul karya</li>
-      <li>Teaser (maks 150 karakter)</li>
-      <li>Tipe (Novel/Komik)</li>
-      <li>Status (Publish/Nonpublish)</li>
-      <li>Status Tamat (Berlanjut/Tamat)</li>
-      <li>Genre — bisa pilih dari daftar atau <b>ketik sendiri</b></li>
-      <li>Deskripsi</li>
-      <li>Sampul / Cover</li>
-    </ul>
-
-    <h3><i class="fas fa-pen-fancy"></i> 9. Genre Custom (BARU v1.4)</h3>
-    <p>Saat upload atau edit karya, klik tombol <b>+ Tambah Genre Sendiri</b> (hijau) di bagian genre. Ketik genre baru, klik ✓, dan genre otomatis tersimpan + terpilih.</p>
-    <div class="tip">💡 Genre custom yang dibuat akan muncul di daftar genre untuk semua user!</div>
+    <h3><i class="fas fa-pen-fancy"></i> 9. Genre Custom</h3>
+    <p>Saat upload atau edit karya, klik tombol <b>+ Tambah Genre Sendiri</b> (hijau).</p>
 
     <h3><i class="fas fa-crown"></i> 10. Kreator Unggulan</h3>
-    <p>Admin/Owner bisa menandai kreator sebagai <b>Unggulan</b> (⭐). Kreator unggulan mendapat border emas di profil dan karyanya.</p>
+    <p>Admin/Owner bisa menandai kreator sebagai <b>Unggulan</b> (⭐).</p>
 
     <h3><i class="fas fa-check-circle"></i> 11. Centang Verified</h3>
     <ul>
@@ -1858,16 +2301,16 @@ async function renderPanduan(container) {
     </ul>
 
     <h3><i class="fas fa-comments"></i> 12. Komentar & Rating</h3>
-    <p>Di halaman baca komik/novel, kamu bisa komentar, rating bintang 1-5, lihat rating user lain, edit/hapus komentar sendiri.</p>
+    <p>Di halaman baca komik/novel, kamu bisa komentar, rating bintang 1-5.</p>
 
     <h3><i class="fas fa-users"></i> 13. Clan</h3>
-    <p>Buat atau join clan. Join clan perlu <b>persetujuan Admin/Owner clan</b>. Owner clan bisa promote max 2 admin.</p>
+    <p>Buat atau join clan.</p>
 
     <h3><i class="fas fa-birthday-cake"></i> 14. Auto Ultah</h3>
-    <p>Penulis & Komikus yang isi tanggal lahir akan dapat banner ucapan otomatis di hari ulang tahunnya.</p>
+    <p>Penulis & Komikus yang isi tanggal lahir akan dapat banner ucapan otomatis.</p>
 
     <h3><i class="fas fa-gamepad"></i> 15. Minigame Gambar & Tebak</h3>
-    <p>Main game gambar bareng! 1 orang jadi penggambar, yang lain nebak. Bisa main berdua atau berlima.</p>
+    <p>Main game gambar bareng! 1 orang jadi penggambar, yang lain nebak.</p>
 
     <h3><i class="fas fa-question-circle"></i> Butuh Bantuan?</h3>
     <p>Hubungi Admin di WhatsApp: <b>${WA_NUMBER}</b></p>
@@ -1881,7 +2324,7 @@ async function renderPanduan(container) {
         </div>
         <h2 class="text-2xl md:text-3xl font-black text-amber-400">Buku Panduan KomiNovel</h2>
         <p class="text-slate-400 mt-2">Semua yang perlu kamu tau tentang KomiNovel 📚</p>
-        <div class="mt-3 flex justify-center"><span class="version-badge"><i class="fas fa-code-branch"></i>v1.4</span></div>
+        <div class="mt-3 flex justify-center"><span class="version-badge"><i class="fas fa-code-branch"></i>v1.5</span></div>
         ${isAdminUser(userProfile) ? `<button id="editPanduanBtn" class="mt-3 bg-blue-600 text-white font-bold px-4 py-2 rounded-full text-sm hover:scale-105 transition"><i class="fas fa-edit mr-1"></i>Edit Panduan</button>` : ''}
       </div>
       <div class="warning-hard mb-4">
@@ -1952,6 +2395,7 @@ async function renderHome(container) {
   worksUnsub = onSnapshot(q, (snapshot) => {
     let works = [];
     snapshot.forEach(d => works.push({ id: d.id, ...d.data() }));
+    works = works.filter(w => !isNonPublish(w) && !isTakedown(w));
     works.sort((a, b) => {
       const popA = (a.views || 0) + (a.likes || 0) * 2 + (a.avgRating || 0) * 10;
       const popB = (b.views || 0) + (b.likes || 0) * 2 + (b.avgRating || 0) * 10;
@@ -2013,7 +2457,7 @@ function renderWorkList(container, works, newIds = new Set(), skipAnim = false) 
     const newClass = (isNew && !isTD && !skipAnim) ? 'new-work' : '';
     const delayStyle = skipAnim ? '' : `animation-delay:${Math.min(idx*0.03, 0.5)}s`;
     return `
-    <div class="card-bg hover-lift rounded-2xl overflow-hidden shadow-lg cursor-pointer ${animClass} ${borderClass} ${newClass}" style="${delayStyle}" onclick="${isTD ? `showToast('⛔ Karya ini di-takedown')` : `window.location.hash='reader/${work.id}'`}">
+    <div class="card-bg hover-lift rounded-2xl overflow-hidden shadow-lg cursor-pointer ${animClass} ${borderClass} ${newClass}" style="${delayStyle}" onclick="${isTD ? `showToast('⛔ Karya ini di-takedown')` : isNP ? `showToast('🔒 Karya belum dipublish')` : `window.location.hash='reader/${work.id}'`}">
       <div class="h-40 md:h-48 bg-slate-800 flex items-center justify-center overflow-hidden relative">
         ${work.coverURL ? `<img src="${work.coverURL}" class="w-full h-full object-cover ${isTD ? 'grayscale opacity-40' : isNP ? 'grayscale opacity-70' : ''}" onerror="this.style.display='none';">` : `<i class="fas fa-image text-5xl text-slate-600"></i>`}
         ${workStatusBadge(work)}
@@ -3139,6 +3583,7 @@ async function renderReader(container, novelId, chapterId = null) {
       <div class="reader-header mb-6 flex flex-wrap justify-between items-center gap-2">
         <button onclick="window.location.hash='home'" class="text-amber-400 hover:text-amber-300 transition"><i class="fas fa-arrow-left mr-2"></i>Kembali</button>
         <div class="flex gap-2 flex-wrap">
+          ${isNonPublish(work) && canManage ? `<span class="bg-slate-700 text-slate-300 text-xs font-bold px-3 py-2 rounded-full"><i class="fas fa-eye-slash mr-1"></i>NONPUBLISH</span>` : ''}
           <button id="bookmarkToggle" class="text-sm font-bold px-4 py-2 rounded-full transition ${isBookmarked ? 'bg-green-600 text-white' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'}"><i class="fas fa-bookmark mr-1"></i>${isBookmarked ? 'Tersimpan' : 'Bookmark'}</button>
           <button id="readerLikeBtn" class="text-sm font-bold px-4 py-2 rounded-full transition ${isLiked ? 'bg-red-600 text-white' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'}"><i class="fas fa-heart mr-1"></i><span id="readerLikeCount" data-val="${work.likes || 0}">${formatCount(work.likes || 0)}</span></button>
         </div>
@@ -3498,6 +3943,7 @@ async function renderKategori(container) {
     const list = document.getElementById('kategoriList');
     const snap = await getDocs(collection(db, 'works'));
     let works = []; snap.forEach(d => works.push({ id: d.id, ...d.data() }));
+    works = works.filter(w => !isNonPublish(w) && !isTakedown(w));
     if (currentCategory !== 'all') works = works.filter(w => parseCategories(w.category).includes(currentCategory));
     works.sort((a,b) => (b.views || 0) + (b.likes || 0) * 2 - ((a.views || 0) + (a.likes || 0) * 2));
     if (works.length === 0) { list.innerHTML = `<div class="col-span-full card-bg rounded-2xl p-12 text-center card-anim"><i class="fas fa-folder-open text-5xl text-amber-400/50 mb-3"></i><p>Belum ada karya.</p></div>`; return; }
@@ -3720,7 +4166,7 @@ async function renderKritikSaran(container) {
       <div class="text-center mb-6">
         <img src="${LOGO_URL}" class="w-16 h-16 mx-auto rounded-xl mb-3 border-2 border-amber-500 logo-glow">
         <h2 class="text-2xl font-black">Kritik & Saran</h2>
-        <div class="mt-2"><span class="version-badge"><i class="fas fa-code-branch"></i>v1.4</span></div>
+        <div class="mt-2"><span class="version-badge"><i class="fas fa-code-branch"></i>v1.5</span></div>
       </div>
       <div class="space-y-4">
         <input id="kritikNama" type="text" placeholder="Nama" value="${userProfile?.username || ''}" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm">
@@ -3755,7 +4201,7 @@ async function renderProfil(container) {
     container.innerHTML = `<div class="card-bg rounded-2xl p-8 text-center max-w-md mx-auto card-anim">
       <img src="${LOGO_URL}" class="w-20 h-20 mx-auto rounded-2xl mb-4 border-2 border-amber-500 logo-glow">
       <h2 class="text-xl font-bold mb-4">Masuk KomiNovel</h2>
-      <div class="mt-2 mb-4"><span class="version-badge"><i class="fas fa-code-branch"></i>v1.4</span></div>
+      <div class="mt-2 mb-4"><span class="version-badge"><i class="fas fa-code-branch"></i>v1.5</span></div>
       <div class="flex flex-col gap-3">
         <button id="loginGoogle" class="bg-white text-black font-bold py-3 rounded-full hover:scale-105 transition"><i class="fab fa-google mr-2"></i>Google</button>
         <button id="loginGuest" class="bg-slate-700 text-slate-300 font-bold py-2 rounded-full text-xs">Guest</button>
@@ -3885,14 +4331,14 @@ async function renderProfil(container) {
 }
 
 // ============================================================
-// ==== CREATOR DASHBOARD — DENGAN EDIT KARYA =================
+// ==== CREATOR DASHBOARD — DENGAN EDIT & REVIEW KARYA ========
 // ============================================================
 async function renderCreatorDashboard(container) {
   container.innerHTML = `
     <div class="flex justify-between items-center mb-6 flex-wrap gap-2">
       <h2 class="text-xl md:text-2xl font-bold"><i class="fas fa-pen-fancy text-blue-400 mr-2"></i>Creator</h2>
       <div class="flex gap-2 flex-wrap items-center">
-        <span class="version-badge"><i class="fas fa-code-branch"></i>v1.4</span>
+        <span class="version-badge"><i class="fas fa-code-branch"></i>v1.5</span>
         ${hasRole(userProfile,'penulis') ? '<span class="penulis-tag text-xs px-3 py-1">PENULIS</span>' : ''}
         ${hasRole(userProfile,'komikus') ? '<span class="komikus-tag text-xs px-3 py-1">KOMIKUS</span>' : ''}
         <button id="openGuideBtn" class="bg-blue-600 text-white text-xs font-bold px-3 py-2 rounded-full hover:scale-105 transition"><i class="fas fa-question-circle mr-1"></i>Panduan</button>
@@ -3913,20 +4359,17 @@ async function renderCreatorDashboard(container) {
     if (!opts) opts = '<option value="novel">Novel</option>';
     cC.innerHTML = `<div class="card-bg rounded-2xl p-6 max-w-2xl mx-auto card-anim">
       <h3 class="font-bold text-lg mb-4">Buat Karya Baru</h3>
+      <div class="bg-amber-900/20 border border-amber-600/40 rounded-xl p-3 mb-4">
+        <p class="text-xs text-amber-200"><i class="fas fa-info-circle mr-1"></i>Karya baru otomatis berstatus <b>NONPUBLISH</b>. Setelah dibuat, buka <b>Creator → Kelola → Review & Publish</b> untuk cek dan publish.</p>
+      </div>
       <div class="space-y-4">
         <div><label class="block text-sm font-semibold mb-1">Judul <span class="text-red-400">*</span></label><input id="uploadTitle" type="text" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm focus:border-amber-500 transition"></div>
         <div><label class="block text-sm font-semibold mb-1">Teaser <span class="text-red-400">*</span> <span class="text-xs text-slate-500">(maks 150)</span></label><input id="uploadTeaser" type="text" maxlength="150" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm focus:border-amber-500 transition"><p class="text-xs text-slate-500 mt-1"><span id="teaserCount">0</span>/150</p></div>
         <div><label class="block text-sm font-semibold mb-1">Tipe <span class="text-red-400">*</span></label><select id="uploadType" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm">${opts}</select></div>
-        <div><label class="block text-sm font-semibold mb-1">Status <span class="text-red-400">*</span></label>
-          <select id="uploadStatus" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm">
-            <option value="publish">✅ Publish (bisa dibaca)</option>
-            <option value="nonpublish">🔒 Nonpublish (hanya lihat info)</option>
-          </select>
-        </div>
         ${categoryChipsField('uploadCategories')}
         <div><label class="block text-sm font-semibold mb-1">Deskripsi</label><textarea id="uploadDesc" rows="3" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm"></textarea></div>
         ${coverField('uploadCover')}
-        <button id="uploadSubmit" class="w-full bg-amber-500 text-black font-bold py-3 rounded-full btn-glow">Buat Karya</button>
+        <button id="uploadSubmit" class="w-full bg-amber-500 text-black font-bold py-3 rounded-full btn-glow">Buat Karya (Nonpublish)</button>
       </div></div>`;
     document.getElementById('uploadTeaser').oninput = e => document.getElementById('teaserCount').textContent = e.target.value.length;
     attachCoverHandler('uploadCover');
@@ -3935,7 +4378,6 @@ async function renderCreatorDashboard(container) {
       const title = document.getElementById('uploadTitle').value.trim();
       const teaser = document.getElementById('uploadTeaser').value.trim();
       const type = document.getElementById('uploadType').value;
-      const status = document.getElementById('uploadStatus').value;
       const cats = getSelectedCats('uploadCategories');
       const category = cats.join(', ');
       const desc = document.getElementById('uploadDesc').value.trim();
@@ -3946,7 +4388,7 @@ async function renderCreatorDashboard(container) {
       btn.disabled = true; btn.innerHTML = '<span class="uploading-spinner"></span>Menyimpan...';
       try {
         await addDoc(collection(db,'works'), {
-          title, teaser, type, category, description: desc, coverURL, status,
+          title, teaser, type, category, description: desc, coverURL, status: 'nonpublish',
           authorId: currentUser.uid, authorName: userProfile.username || 'Kreator',
           authorPhotoURL: userProfile.photoURL || '', authorSosmed: userProfile.sosmed || {},
           authorLevel: userProfile.level || 1, authorFollowerCount: userProfile.followerCount || 0,
@@ -3957,10 +4399,10 @@ async function renderCreatorDashboard(container) {
           takedown: { active: false, reason: '', by: '', at: null },
           createdAt: serverTimestamp(), updatedAt: serverTimestamp()
         });
-        showToast('✅ Karya dibuat!');
+        showToast('✅ Karya dibuat! Status: NONPUBLISH. Silakan review & publish di menu Kelola.');
         loadManage();
       } catch (e) { showToast('Gagal: ' + e.message); }
-      finally { btn.disabled = false; btn.innerHTML = 'Buat Karya'; }
+      finally { btn.disabled = false; btn.innerHTML = 'Buat Karya (Nonpublish)'; }
     };
   }
 
@@ -4013,18 +4455,18 @@ async function renderCreatorDashboard(container) {
             </div>
           </div>
         </div>
-        ${isNP ? `<div class="bg-slate-700/40 border border-slate-500 rounded-lg p-2 mb-3"><p class="text-xs text-slate-300"><i class="fas fa-eye-slash mr-1"></i><b>NONPUBLISH</b> — Pembaca hanya bisa lihat sampul, teaser, deskripsi.</p></div>` : ''}
+        ${isNP ? `<div class="bg-amber-900/30 border border-amber-600/50 rounded-lg p-3 mb-3">
+          <p class="text-xs text-amber-200"><i class="fas fa-clipboard-check mr-1"></i><b>MENUNGGU REVIEW</b> — Karya belum dipublish. Klik <b>Review & Publish</b> untuk cek dan publish manual.</p>
+        </div>` : ''}
         ${isTD ? `<div class="bg-red-950/40 border border-red-800 rounded-lg p-3 mb-3">
           <p class="text-xs text-red-400 font-bold mb-1"><i class="fas fa-ban mr-1"></i>KARYA DI-TAKEDOWN</p>
           <p class="text-xs text-red-300 mb-1"><b>Alasan:</b> ${sensor(w.takedown.reason || '-')}</p>
         </div>` : ''}
         <div class="flex flex-wrap gap-2 mb-3">
+          ${!isTD ? `<button class="reviewWorkBtn ${isNP ? 'bg-green-600' : 'bg-amber-600'} text-white px-4 py-2 rounded-lg text-xs font-bold hover:scale-105 transition" data-wid="${w.id}" title="Review & Publish"><i class="fas fa-clipboard-check mr-1"></i>${isNP ? 'Review & Publish' : 'Review Karya'}</button>` : ''}
           <button class="editWorkBtn bg-purple-600 text-white px-4 py-2 rounded-lg text-xs font-bold hover:scale-105 transition" data-wid="${w.id}" title="Edit info karya"><i class="fas fa-edit mr-1"></i>Edit Karya</button>
           <button class="addC bg-amber-500 text-black px-4 py-2 rounded-lg text-xs font-bold flex-1 hover:scale-105 transition" data-wid="${w.id}" data-type="${w.type}" ${isTD ? 'disabled' : ''}>+ ${lbl}</button>
           <button class="manageG bg-blue-600 text-white px-4 py-2 rounded-lg text-xs font-bold hover:scale-105 transition" data-wid="${w.id}" data-type="${w.type}" ${isTD ? 'disabled' : ''}><i class="fas fa-folder-open mr-1"></i>${gl}</button>
-          <button class="statusToggle ${isNP ? 'bg-green-600' : 'bg-slate-600'} text-white px-4 py-2 rounded-lg text-xs font-bold hover:scale-105 transition" data-wid="${w.id}" data-status="${isNP ? 'nonpublish' : 'publish'}" ${isTD ? 'disabled' : ''}>
-            <i class="fas ${isNP ? 'fa-eye' : 'fa-eye-slash'} mr-1"></i>${isNP ? 'Publish' : 'Nonpublish'}
-          </button>
           <button class="tamatB ${w.isTamat ? 'bg-yellow-600' : 'bg-red-600'} text-white px-4 py-2 rounded-lg text-xs font-bold hover:scale-105 transition" data-wid="${w.id}" data-t="${w.isTamat ? 'true' : 'false'}" ${isTD ? 'disabled' : ''}>${w.isTamat ? 'Batal' : 'Tamatkan'}</button>
           <button class="delW bg-red-800 text-white px-4 py-2 rounded-lg text-xs font-bold hover:scale-105 transition" data-wid="${w.id}" data-title="${escAttr(w.title)}"><i class="fas fa-trash"></i></button>
         </div>
@@ -4040,17 +4482,11 @@ async function renderCreatorDashboard(container) {
 
     withCh.forEach(w => { if (w.type === 'komik' && !isTakedown(w)) attachMultiImageHandlers('mi-' + safeId(w.id)); });
 
+    list.querySelectorAll('.reviewWorkBtn').forEach(b => b.onclick = () => window.openReviewWorkModal(b.dataset.wid));
     list.querySelectorAll('.editWorkBtn').forEach(b => b.onclick = () => window.openEditWorkModal(b.dataset.wid));
     list.querySelectorAll('.addC').forEach(b => b.onclick = () => document.getElementById('f-' + safeId(b.dataset.wid)).classList.toggle('hidden'));
     list.querySelectorAll('.manageG').forEach(b => b.onclick = () => window.openGroupManager(b.dataset.wid, b.dataset.type, loadManage));
     list.querySelectorAll('.canC').forEach(b => b.onclick = () => document.getElementById('f-' + b.dataset.sid).classList.add('hidden'));
-    list.querySelectorAll('.statusToggle').forEach(b => b.onclick = async () => {
-      const currentStatus = b.dataset.status;
-      const newStatus = currentStatus === 'nonpublish' ? 'publish' : 'nonpublish';
-      await updateDoc(doc(db, 'works', b.dataset.wid), { status: newStatus, updatedAt: serverTimestamp() });
-      showToast(newStatus === 'publish' ? '✅ Karya dipublish!' : '🔒 Karya di-nonpublish');
-      loadManage();
-    });
     list.querySelectorAll('.tamatB').forEach(b => b.onclick = async () => { const n = b.dataset.t === 'true'; if (!confirm(n ? 'Batal?' : 'Tamatkan?')) return; await updateDoc(doc(db,'works',b.dataset.wid), { isTamat: !n, updatedAt: serverTimestamp() }); loadManage(); });
     list.querySelectorAll('.delW').forEach(b => b.onclick = async () => {
       if (!confirm(`Hapus "${b.dataset.title}"?`)) return;
@@ -4165,7 +4601,7 @@ async function renderAdminPanel(container) {
   container.innerHTML = `<div class="flex justify-between items-center mb-4 flex-wrap gap-2">
     <div class="flex items-center gap-2">
       <h2 class="text-xl md:text-2xl font-bold"><i class="fas fa-crown text-amber-400 mr-2"></i>Admin</h2>
-      <span class="version-badge"><i class="fas fa-code-branch"></i>v1.4</span>
+      <span class="version-badge"><i class="fas fa-code-branch"></i>v1.5</span>
     </div>
     <button id="adminLogoutBtn" class="bg-red-900/50 text-red-300 font-bold py-2 px-4 rounded-full text-xs hover:bg-red-800 transition">Logout</button>
   </div>
@@ -5377,16 +5813,16 @@ function showUploadGuide() {
   const content = document.getElementById('modalContent');
   content.innerHTML = `
     <div class="flex justify-between items-center mb-4">
-      <h2 class="text-2xl font-black text-amber-400"><i class="fas fa-book-reader mr-2"></i>Panduan Upload</h2>
+      <h2 class="text-2xl font-black text-amber-400"><i class="fas fa-book-reader mr-2"></i>Panduan Upload & Review</h2>
       <button id="closeGuide" class="text-slate-400 hover:text-white text-2xl hover:rotate-90 transition-transform">&times;</button>
     </div>
     <div class="space-y-3">
       <div class="guide-step"><p class="font-bold text-amber-400 mb-1"><span class="guide-step-num">1</span>Login Google</p><p class="text-sm text-slate-300">Login Google supaya akun & PP permanen.</p></div>
       <div class="guide-step"><p class="font-bold text-amber-400 mb-1"><span class="guide-step-num">2</span>Jadi Kreator</p><p class="text-sm text-slate-300">Menu <b>Jadi Kreator</b> → minta role via WA admin.</p></div>
-      <div class="guide-step"><p class="font-bold text-amber-400 mb-1"><span class="guide-step-num">3</span>Buat Karya</p><p class="text-sm text-slate-300">Creator → Buat Baru. Isi judul, teaser, genre, deskripsi, sampul.</p></div>
-      <div class="guide-step"><p class="font-bold text-amber-400 mb-1"><span class="guide-step-num">4</span>Genre Custom (BARU v1.4)</p><p class="text-sm text-slate-300">Di bagian genre, klik tombol <b>+ Tambah Genre Sendiri</b>. Ketik genre baru, klik ✓. Genre otomatis tersimpan & terpilih.</p></div>
-      <div class="guide-step"><p class="font-bold text-amber-400 mb-1"><span class="guide-step-num">5</span>Edit Karya (BARU v1.4)</p><p class="text-sm text-slate-300">Di <b>Creator → Kelola</b>, klik tombol <b>Edit Karya</b> (ungu). Bisa ubah sampul, teaser, deskripsi, genre, judul, status, dan status tamat.</p></div>
-      <div class="guide-step"><p class="font-bold text-amber-400 mb-1"><span class="guide-step-num">6</span>Chapter/Eps</p><p class="text-sm text-slate-300">Novel: judul + teks. Komik: judul opsional + gambar sebanyak apa pun. <b>Gambar pertama jadi sampul</b>.</p></div>
+      <div class="guide-step"><p class="font-bold text-amber-400 mb-1"><span class="guide-step-num">3</span>Buat Karya (Nonpublish)</p><p class="text-sm text-slate-300">Creator → Buat Baru. Isi judul, teaser, genre, deskripsi, sampul. Karya otomatis berstatus <b>NONPUBLISH</b>.</p></div>
+      <div class="guide-step"><p class="font-bold text-amber-400 mb-1"><span class="guide-step-num">4</span>Review & Publish Mode Reader (v1.5) — PENTING!</p><p class="text-sm text-slate-300">Di <b>Creator → Kelola</b>, klik tombol <b>Review & Publish</b>. Preview gambar ala reader di kiri. Panel kontrol di kanan (desktop) atau tombol ⚙️ (HP). <b>Pilih mode dulu</b>: 🖐️ Drag atau 🔍 Fullscreen.</p></div>
+      <div class="guide-step"><p class="font-bold text-amber-400 mb-1"><span class="guide-step-num">5</span>Urutan Gambar Komik</p><p class="text-sm text-slate-300">Pilih <b>Mode Drag</b>, geser gambar untuk ubah urutan. Klik <b>Simpan Urutan</b>. Gambar #1 jadi sampul Eps.</p></div>
+      <div class="guide-step"><p class="font-bold text-amber-400 mb-1"><span class="guide-step-num">6</span>Edit Karya</p><p class="text-sm text-slate-300">Tombol <b>Edit Karya</b> (ungu) untuk ubah sampul, teaser, deskripsi, genre, judul, status, dan status tamat.</p></div>
     </div>
     <div class="flex gap-2 mt-6">
       <a href="https://imgbb.com" target="_blank" class="flex-1 bg-amber-500 text-black font-bold py-3 rounded-full text-center"><i class="fas fa-external-link-alt mr-2"></i>Buka ImgBB</a>
@@ -5727,7 +6163,7 @@ function handleAuthClick() {
   else {
     const m = document.getElementById('modalContainer');
     const c = document.getElementById('modalContent');
-    c.innerHTML = `<div class="text-center mb-4"><img src="${LOGO_URL}" class="w-20 h-20 mx-auto rounded-2xl mb-3 border-2 border-amber-500 logo-glow"><h3 class="text-xl font-bold">Masuk</h3><div class="mt-2"><span class="version-badge"><i class="fas fa-code-branch"></i>v1.4</span></div></div>
+    c.innerHTML = `<div class="text-center mb-4"><img src="${LOGO_URL}" class="w-20 h-20 mx-auto rounded-2xl mb-3 border-2 border-amber-500 logo-glow"><h3 class="text-xl font-bold">Masuk</h3><div class="mt-2"><span class="version-badge"><i class="fas fa-code-branch"></i>v1.5</span></div></div>
       <div class="flex flex-col gap-3">
         <button id="mg" class="bg-white text-black font-bold py-3 rounded-full hover:scale-105 transition"><i class="fab fa-google mr-2"></i>Google</button>
         <button id="mgu" class="bg-slate-700 text-slate-300 font-bold py-2 rounded-full text-xs">Guest</button>
@@ -5749,7 +6185,7 @@ window.addEventListener('hashchange', renderPage);
   renderPage();
   startAutoBoost();
   console.log(`%c🚀 KomiNovel v${APP_VERSION} loaded`, 'background:linear-gradient(135deg,#fbbf24,#d97706);color:#0f0f1a;font-weight:900;padding:4px 12px;border-radius:8px;');
-  console.log('%c✨ Fitur baru v1.4:', 'color:#fbbf24;font-weight:bold;');
+  console.log('%c✨ Fitur baru v1.5:', 'color:#fbbf24;font-weight:bold;');
   APP_VERSION_NOTES.forEach(n => console.log('  •', n));
 })();
 </script>
