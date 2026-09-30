@@ -14,7 +14,7 @@
 }
 </script>
 <meta name="google-site-verification" content="GvyTGbIx3Zov0CXr0f1voJ2LJnac-ppCl62NStzdY3E">
-<meta name="description" content="KomiNovel - Platform baca & tulis Novel dan Komik online gratis.">
+<meta name="description" content="KomiNovel - Platform baca & tulis Novel dan Komik online gratis. Versi 1.4">
 <link rel="icon" href="https://i.ibb.co.com/SDTthJ7m/Gemini-Generated-Image-fhupt4fhupt4fhup.jpg">
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -77,6 +77,8 @@ body{font-family:'Inter',sans-serif;background:#0f0f1a;color:#e2e8f0;overflow-x:
 .cat-chip input{display:none}
 .cat-chip:has(input:checked){background:#fbbf24;color:#0f0f1a;border-color:#fbbf24;transform:scale(1.03)}
 .cat-chip input:checked + span::after{content:' ✓';font-weight:900}
+.cat-chip-remove{background:rgba(239,68,68,.15);border:2px solid #ef4444;color:#fca5a5;font-size:10px;font-weight:900;padding:2px 8px;border-radius:20px;cursor:pointer;transition:.2s;margin-left:4px}
+.cat-chip-remove:hover{background:#ef4444;color:white}
 .nav-btn{position:relative;transition:all .25s}
 .nav-btn:hover{transform:translateY(-2px)}
 .nav-btn.nav-active{color:#fbbf24!important;background:rgba(251,191,36,.15);box-shadow:0 0 12px rgba(251,191,36,.2)}
@@ -262,13 +264,23 @@ body{font-family:'Inter',sans-serif;background:#0f0f1a;color:#e2e8f0;overflow-x:
 .mg-mode-card.selected{border-color:#fbbf24;background:linear-gradient(135deg,#2a1f0a,#1a1a2e);box-shadow:0 0 20px rgba(251,191,36,.4)}
 .mg-join-input{font-family:monospace;letter-spacing:8px;text-transform:uppercase;font-size:24px;text-align:center;font-weight:900}
 
-/* === ANTI-FLICKER: matikan animasi card saat update === */
+/* === ANTI-FLICKER === */
 .no-anim .card-anim { animation: none !important; }
 .no-anim .new-work { animation: none !important; }
 
-/* Smooth update untuk angka views/likes */
 .stat-update { transition: color .3s ease; }
 .stat-update.flash-up { color: #fbbf24; }
+
+/* === VERSION BADGE === */
+.version-badge{
+  background:linear-gradient(135deg,#3b82f6,#8b5cf6);
+  color:white;font-size:10px;font-weight:900;
+  padding:3px 10px;border-radius:9999px;
+  box-shadow:0 0 10px rgba(59,130,246,.6);
+  letter-spacing:.5px;
+  display:inline-flex;align-items:center;gap:4px;
+}
+.version-badge i{font-size:9px}
 </style>
 </head>
 <body class="min-h-screen">
@@ -277,7 +289,10 @@ body{font-family:'Inter',sans-serif;background:#0f0f1a;color:#e2e8f0;overflow-x:
 <header class="flex justify-between items-center mb-4 md:mb-6 card-bg rounded-2xl p-3 md:p-4 shadow-xl">
 <div class="flex items-center gap-2 md:gap-3 cursor-pointer hover:opacity-80 transition" onclick="window.location.hash='home'">
 <img src="https://i.ibb.co.com/SDTthJ7m/Gemini-Generated-Image-fhupt4fhupt4fhup.jpg" class="w-9 h-9 md:w-10 md:h-10 rounded-xl object-cover border-2 border-amber-500 logo-glow">
+<div class="flex flex-col md:flex-row md:items-center md:gap-3">
 <h1 class="text-xl md:text-2xl font-black tracking-tight bg-gradient-to-r from-amber-300 to-orange-500 bg-clip-text text-transparent">KomiNovel</h1>
+<span class="version-badge"><i class="fas fa-code-branch"></i>v1.4</span>
+</div>
 </div>
 <div class="flex items-center gap-2">
 <button id="navAuthMobile" class="bg-amber-500 text-black font-bold py-2 px-3 rounded-full text-xs"><i class="fas fa-sign-in-alt"></i></button>
@@ -285,15 +300,22 @@ body{font-family:'Inter',sans-serif;background:#0f0f1a;color:#e2e8f0;overflow-x:
 </div>
 </header>
 <main id="mainContent" class="min-h-[70vh]"></main>
-<footer class="mt-12 text-center text-xs text-slate-500 border-t border-slate-800 pt-6">
-&copy; <span id="footerYear">2026</span> KomiNovel
+<footer class="mt-12 text-center text-xs text-slate-500 border-t border-slate-800 pt-6 space-y-2">
+<div class="flex items-center justify-center gap-2 flex-wrap">
+<span>&copy; <span id="footerYear">2026</span> KomiNovel</span>
+<span class="version-badge"><i class="fas fa-code-branch"></i>v1.4</span>
+</div>
+<p class="text-[10px] text-slate-600">Build: 2026 • Platform baca & tulis Novel/Komik Online</p>
 </footer>
 </div>
 
 <div id="mobileNavOverlay" class="mobile-nav-overlay"></div>
 <div id="mobileNavDrawer" class="mobile-nav-drawer">
 <div class="flex justify-between items-center mb-6 pb-4 border-b border-slate-700">
+<div class="flex items-center gap-2">
 <span class="font-bold text-lg">Menu</span>
+<span class="version-badge"><i class="fas fa-code-branch"></i>v1.4</span>
+</div>
 <button id="closeMobileNav" class="text-slate-400 text-2xl hover:rotate-90 transition-transform">&times;</button>
 </div>
 <div id="mobileNavItems"></div>
@@ -321,6 +343,12 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const googleProvider = new GoogleAuthProvider();
 
+const APP_VERSION = '1.4';
+const APP_VERSION_NOTES = [
+  'v1.4 — Edit Karya (sampul, teaser, deskripsi, genre, judul, status), Genre Custom (ketik sendiri), Badge versi di header & footer',
+  'v1.3 — Minigame Gambar & Tebak (2/5 pemain), Auto Boost Global, Perbaikan bug'
+];
+
 let currentUser = null, userProfile = null;
 let isAdminSession = false, adminEmail = null;
 let currentContentType = 'komik', currentCategory = 'all', currentSearch = '';
@@ -338,11 +366,15 @@ let ownerFollowerInterval = null;
 let autoBoostInterval = null;
 let showAllCategories = false;
 
-// === AUTO BOOST GLOBAL STATE (disimpan di Firestore) ===
-let autoBoostEnabled = true;   // default ON sebelum Firestore load
-let autoBoostUnsub = null;     // listener realtime Firestore
+// === CUSTOM GENRE STATE ===
+let customCategories = []; // genre custom yang diketik creator
+let customCategoriesUnsub = null;
 
-// === ANTI-FLICKER: simpan data works & hanya update angka ===
+// === AUTO BOOST GLOBAL STATE ===
+let autoBoostEnabled = true;
+let autoBoostUnsub = null;
+
+// === ANTI-FLICKER ===
 let currentWorksData = {};
 let currentWorksOrder = [];
 let homeIsFirstRender = true;
@@ -365,7 +397,6 @@ const VERIFIED_BLUE = 100000;
 const FOLLOWER_INTERVAL = 60 * 60 * 1000;
 const OWNER_FOLLOWER_RATE = 100000;
 
-// === AUTO BOOST: 5 MENIT, +20 VIEWS & +20 LIKES ===
 const AUTO_BOOST_INTERVAL = 5 * 60 * 1000;
 const AUTO_VIEW_AMOUNT = 20;
 const AUTO_LIKE_AMOUNT = 20;
@@ -393,7 +424,6 @@ const OWNER_EMAIL = 'owner@kominovel.com', OWNER_PASSWORD = 'owner123';
 const WA_NUMBER = '082254388144';
 const LOGO_URL = 'https://i.ibb.co.com/SDTthJ7m/Gemini-Generated-Image-fhupt4fhupt4fhup.jpg';
 
-// === MINIGAME CONSTANTS ===
 const MG_DRAW_TIME = 20 * 60;
 const MG_GUESS_TIME = 20 * 60;
 const MG_MAX_PLAYERS = 5;
@@ -412,7 +442,7 @@ const MG_WORD_LIST = [
 ];
 
 // ============================================================
-// ===== AUTO BOOST GLOBAL (Firestore) ========================
+// ===== AUTO BOOST GLOBAL ====================================
 // ============================================================
 async function loadAutoBoostStateFromDB() {
   try {
@@ -420,7 +450,6 @@ async function loadAutoBoostStateFromDB() {
     if (snap.exists()) {
       autoBoostEnabled = snap.data().enabled !== false;
     } else {
-      // Buat dokumen default (ON) kalau belum ada
       try {
         await setDoc(doc(db, 'settings', 'autoBoost'), {
           enabled: true,
@@ -432,9 +461,8 @@ async function loadAutoBoostStateFromDB() {
     }
   } catch (e) {
     console.warn('Gagal load auto boost state:', e.message);
-    autoBoostEnabled = true; // fallback ON
+    autoBoostEnabled = true;
   }
-  console.log(autoBoostEnabled ? '✅ Auto boost state: ON' : '⏸️ Auto boost state: OFF');
 }
 
 function listenAutoBoostState() {
@@ -445,8 +473,6 @@ function listenAutoBoostState() {
     const changed = newState !== autoBoostEnabled;
     autoBoostEnabled = newState;
     if (changed) {
-      console.log(autoBoostEnabled ? '🚀 Auto boost ON (dari Firestore)' : '⏹️ Auto boost OFF (dari Firestore)');
-      // Update UI kalau user sedang buka tab Boost di Admin Panel
       const statusEl = document.getElementById('boostStatusLabel');
       if (statusEl) {
         const statusIcon = document.getElementById('boostStatusIcon');
@@ -490,7 +516,6 @@ async function autoBoostAllWorks() {
     });
     if (promises.length > 0) {
       await Promise.allSettled(promises);
-      console.log(`✅ Auto boost: +${AUTO_VIEW_AMOUNT} views & +${AUTO_LIKE_AMOUNT} likes untuk ${boostedCount} karya`);
     }
   } catch (e) {
     console.warn('Auto boost error:', e.message);
@@ -499,18 +524,15 @@ async function autoBoostAllWorks() {
 
 function startAutoBoost() {
   if (autoBoostInterval) { clearInterval(autoBoostInterval); autoBoostInterval = null; }
-  if (!autoBoostEnabled) { console.log('⏸️ Auto boost sedang OFF, tidak dijalankan'); return; }
+  if (!autoBoostEnabled) return;
   setTimeout(() => { if (autoBoostEnabled) autoBoostAllWorks(); }, 3000);
   autoBoostInterval = setInterval(() => { if (autoBoostEnabled) autoBoostAllWorks(); }, AUTO_BOOST_INTERVAL);
-  console.log('🚀 Auto boost dimulai (5 menit, +20 views & +20 likes)');
 }
 
 function stopAutoBoost() {
   if (autoBoostInterval) { clearInterval(autoBoostInterval); autoBoostInterval = null; }
-  console.log('⏹️ Auto boost dihentikan (interval dibersihkan)');
 }
 
-// Toggle GLOBAL — tulis ke Firestore, semua device ikut
 window.toggleAutoBoost = async function() {
   const newState = !autoBoostEnabled;
   try {
@@ -522,12 +544,11 @@ window.toggleAutoBoost = async function() {
     autoBoostEnabled = newState;
     if (newState) {
       startAutoBoost();
-      showToast('✅ Auto boost GLOBAL DIAKTIFKAN — semua device ikut nambah views & likes tiap 5 menit');
+      showToast('✅ Auto boost GLOBAL DIAKTIFKAN');
     } else {
       stopAutoBoost();
-      showToast('⏸️ Auto boost GLOBAL DIMATIKAN — semua device berhenti nambah views & likes');
+      showToast('⏸️ Auto boost GLOBAL DIMATIKAN');
     }
-    // Update UI langsung (listener juga akan update, tapi ini biar instan)
     const statusEl = document.getElementById('boostStatusLabel');
     const statusIcon = document.getElementById('boostStatusIcon');
     const statusCard = document.getElementById('boostStatusCard');
@@ -550,10 +571,40 @@ window.toggleAutoBoost = async function() {
 };
 
 // ============================================================
+// ===== CUSTOM GENRE (CREATOR BISA KETIK SENDIRI) ============
+// ============================================================
+async function loadCustomCategories() {
+  try {
+    const snap = await getDocs(collection(db, 'custom_categories'));
+    customCategories = [];
+    snap.forEach(d => customCategories.push({ id: d.id, ...d.data() }));
+  } catch (e) { customCategories = []; }
+}
+
+async function addCustomCategory(name) {
+  const trimmed = name.trim();
+  if (!trimmed || trimmed.length < 2) return null;
+  // Cek duplikat (case-insensitive)
+  const exists = customCategories.find(c => c.name.toLowerCase() === trimmed.toLowerCase());
+  if (exists) return exists.name;
+  try {
+    const ref = await addDoc(collection(db, 'custom_categories'), {
+      name: trimmed,
+      createdBy: currentUser?.uid || null,
+      createdByName: userProfile?.username || 'User',
+      createdAt: serverTimestamp()
+    });
+    customCategories.push({ id: ref.id, name: trimmed });
+    return trimmed;
+  } catch (e) {
+    return trimmed; // tetap return nama meskipun gagal simpan
+  }
+}
+
+// ============================================================
 // ==================== END AUTO BOOST ========================
 // ============================================================
 
-// === FOLLOW SYSTEM ===
 async function toggleFollow(targetUid) {
   if (!currentUser || !userProfile) { showToast('Login dulu untuk follow'); return; }
   if (targetUid === currentUser.uid) { showToast('Tidak bisa follow diri sendiri'); return; }
@@ -1046,387 +1097,294 @@ window.openGroupManager = async (wid, type, onDone) => {
   await load();
 };
 
-function showUploadGuide() {
-  const modal = document.getElementById('modalContainer');
-  const content = document.getElementById('modalContent');
-  content.innerHTML = `
-    <div class="flex justify-between items-center mb-4">
-      <h2 class="text-2xl font-black text-amber-400"><i class="fas fa-book-reader mr-2"></i>Panduan Upload</h2>
-      <button id="closeGuide" class="text-slate-400 hover:text-white text-2xl hover:rotate-90 transition-transform">&times;</button>
-    </div>
-    <div class="space-y-3">
-      <div class="guide-step"><p class="font-bold text-amber-400 mb-1"><span class="guide-step-num">1</span>Login Google</p><p class="text-sm text-slate-300">Login Google supaya akun & PP permanen.</p></div>
-      <div class="guide-step"><p class="font-bold text-amber-400 mb-1"><span class="guide-step-num">2</span>Jadi Kreator</p><p class="text-sm text-slate-300">Menu <b>Jadi Kreator</b> → minta role via WA admin.</p></div>
-      <div class="guide-step"><p class="font-bold text-amber-400 mb-1"><span class="guide-step-num">3</span>Upload Gambar (tanpa batas)</p>
-        <p class="text-sm text-slate-300 mb-2">Pilih dari perangkat, otomatis diupload ke ImgBB (tanpa batas jumlah). Atau paste URL gambar.</p>
-        <p class="text-xs text-amber-400 mt-2">💡 Ada 2 MODE di preview gambar:<br>
-        <b>🖐️ Mode Drag</b> = gambar bisa di-drag untuk ubah urutan (fullscreen mati)<br>
-        <b>🔍 Mode Fullscreen</b> = klik gambar untuk lihat fullscreen (drag mati)</p>
-      </div>
-      <div class="guide-step"><p class="font-bold text-amber-400 mb-1"><span class="guide-step-num">4</span>Buat Karya</p><p class="text-sm text-slate-300">Creator → Buat Baru. Isi semua field *.</p></div>
-      <div class="guide-step"><p class="font-bold text-amber-400 mb-1"><span class="guide-step-num">5</span>Status Publish</p><p class="text-sm text-slate-300">Komik bisa diset <b>Publish</b> atau <b>Nonpublish</b>. Nonpublish = pembaca hanya bisa lihat sampul, teaser, deskripsi (tidak bisa baca).</p></div>
-      <div class="guide-step"><p class="font-bold text-amber-400 mb-1"><span class="guide-step-num">6</span>Chapter/Eps</p><p class="text-sm text-slate-300">Novel: judul + teks. Komik: judul opsional + gambar sebanyak apa pun. <b>Gambar pertama jadi sampul</b>.</p></div>
-      <div class="guide-step"><p class="font-bold text-amber-400 mb-1"><span class="guide-step-num">7</span>Kirim Gambar di Chat</p><p class="text-sm text-slate-300">Klik ikon <i class="fas fa-image"></i> di chat untuk kirim gambar (publik, DM, clan).</p></div>
-    </div>
-    <div class="flex gap-2 mt-6">
-      <a href="https://imgbb.com" target="_blank" class="flex-1 bg-amber-500 text-black font-bold py-3 rounded-full text-center"><i class="fas fa-external-link-alt mr-2"></i>Buka ImgBB</a>
-      <button id="closeGuide2" class="flex-1 bg-slate-700 text-white font-bold py-3 rounded-full">Mengerti</button>
-    </div>`;
-  modal.classList.remove('hidden');
-  const close = () => modal.classList.add('hidden');
-  document.getElementById('closeGuide').onclick = close;
-  document.getElementById('closeGuide2').onclick = close;
-}
-
-function multiImageField(containerId) {
-  return `<div class="bg-slate-900/50 border border-amber-500/30 rounded-xl p-3 mt-2">
-    <label class="text-xs font-semibold text-amber-400 block mb-2">Gambar (tanpa batas jumlah, urutan = pilihan)</label>
-    <div class="flex flex-wrap gap-2 mb-2">
-      <label class="cursor-pointer bg-amber-500 text-black px-3 py-2 rounded-lg text-xs font-bold hover:scale-105 transition">
-        <i class="fas fa-upload mr-1"></i>Pilih Foto (bisa banyak)
-        <input type="file" id="${containerId}-file" accept="image/*" multiple class="hidden">
-      </label>
-      <a href="https://imgbb.com" target="_blank" class="bg-slate-700 text-slate-300 px-3 py-2 rounded-lg text-xs font-bold hover:bg-slate-600 transition"><i class="fas fa-external-link-alt mr-1"></i>ImgBB</a>
-    </div>
-    <textarea id="${containerId}-urls" rows="2" placeholder="Atau paste URL gambar, 1 per baris" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs font-mono"></textarea>
-    <div id="${containerId}-preview" class="mt-2"></div>
-    <div id="${containerId}-progress" class="upload-progress hidden"></div>
-  </div>`;
-}
-
-function attachMultiImageHandlers(containerId) {
-  const fileInput = document.getElementById(`${containerId}-file`);
-  const preview = document.getElementById(`${containerId}-preview`);
-  const progress = document.getElementById(`${containerId}-progress`);
-  if (!fileInput) return;
-  window[`_${containerId}_files`] = window[`_${containerId}_files`] || [];
-  window[`_${containerId}_dragSrc`] = null;
-  if (!window[`_${containerId}_mode`]) window[`_${containerId}_mode`] = dragMode;
-
-  fileInput.onchange = async (e) => {
-    const files = Array.from(e.target.files);
-    if (files.length === 0) return;
-    progress.classList.remove('hidden');
-    progress.innerHTML = `Mengupload ${files.length} foto ke ImgBB...<br>`;
-    const newFiles = [];
-    for (let i = 0; i < files.length; i++) {
-      const f = files[i];
-      progress.innerHTML += `[${i+1}/${files.length}] ${f.name}...<br>`;
-      try {
-        const dataUrl = await uploadToImgbb(f);
-        newFiles.push({ name: f.name, dataUrl, preview: URL.createObjectURL(f) });
-        progress.innerHTML += `&nbsp;&nbsp;✅ ${(f.size/1024).toFixed(0)} KB terupload<br>`;
-      } catch (err) {
-        progress.innerHTML += `&nbsp;&nbsp;❌ ${err.message}<br>`;
-      }
-    }
-    window[`_${containerId}_files`] = [...(window[`_${containerId}_files`] || []), ...newFiles];
-    progress.innerHTML += `<br>Total: ${window[`_${containerId}_files`].length} foto`;
-    fileInput.value = '';
-    renderPreview();
-  };
-
-  function renderPreview() {
-    const files = window[`_${containerId}_files`] || [];
-    const urlText = document.getElementById(`${containerId}-urls`)?.value || '';
-    const urls = parseImgbbUrls(urlText);
-    const total = files.length + urls.length;
-    const mode = window[`_${containerId}_mode`] || 'drag';
-    preview.innerHTML = '';
-    if (total === 0) return;
-    const modeBar = document.createElement('div');
-    modeBar.className = 'img-preview-mode-bar';
-    modeBar.innerHTML = `
-      <span class="mode-label"><i class="fas fa-layer-group"></i>Total: ${total} foto</span>
-      <div class="mode-btns">
-        <button class="mode-btn ${mode === 'drag' ? 'active' : 'inactive'}" data-mode="drag"><i class="fas fa-hand-rock"></i> 🖐️ Mode Drag</button>
-        <button class="mode-btn ${mode === 'fullscreen' ? 'active' : 'inactive'}" data-mode="fullscreen"><i class="fas fa-expand"></i> 🔍 Mode Fullscreen</button>
-      </div>
-    `;
-    preview.appendChild(modeBar);
-    modeBar.querySelectorAll('.mode-btn').forEach(btn => {
-      btn.onclick = (e) => {
-        e.stopPropagation();
-        const newMode = btn.dataset.mode;
-        window[`_${containerId}_mode`] = newMode;
-        dragMode = newMode;
-        showToast(newMode === 'drag' ? '🖐️ Mode Drag aktif' : '🔍 Mode Fullscreen aktif');
-        renderPreview();
-      };
-    });
-    const hint = document.createElement('div');
-    hint.className = 'w-full text-[11px] mb-2 ' + (mode === 'drag' ? 'text-amber-400' : 'text-blue-400');
-    hint.innerHTML = mode === 'drag' 
-      ? '<i class="fas fa-hand-rock mr-1"></i> <b>Mode Drag:</b> Geser gambar untuk ubah urutan.'
-      : '<i class="fas fa-expand mr-1"></i> <b>Mode Fullscreen:</b> Klik gambar untuk perbesar.';
-    preview.appendChild(hint);
-    function setupDragEvents(wrap, type, index) {
-      wrap.dataset.dragType = type;
-      wrap.dataset.dragIndex = index;
-      wrap.dataset.dragCid = containerId;
-      if (mode === 'drag') {
-        wrap.draggable = true;
-        wrap.classList.add('draggable-ready');
-        wrap.addEventListener('dragstart', (e) => {
-          e.dataTransfer.effectAllowed = 'move';
-          try { e.dataTransfer.setData('text/plain', JSON.stringify({ cid: containerId, type, idx: index })); } catch (err) {}
-          window[`_${containerId}_dragSrc`] = { type, idx: index };
-          wrap.classList.add('dragging');
-          setTimeout(() => { wrap.style.opacity = '0.4'; }, 0);
-        });
-        wrap.addEventListener('dragend', () => {
-          wrap.classList.remove('dragging');
-          wrap.style.opacity = '';
-          window[`_${containerId}_dragSrc`] = null;
-          preview.querySelectorAll('.img-preview-wrap').forEach(w => { w.style.borderColor = ''; w.style.transform = ''; });
-        });
-        wrap.addEventListener('dragover', (e) => {
-          e.preventDefault();
-          e.dataTransfer.dropEffect = 'move';
-          if (window[`_${containerId}_dragSrc`]) { wrap.style.borderColor = '#fbbf24'; wrap.style.transform = 'scale(1.1)'; }
-        });
-        wrap.addEventListener('dragleave', () => { wrap.style.borderColor = ''; wrap.style.transform = ''; });
-        wrap.addEventListener('drop', (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          wrap.style.borderColor = '';
-          wrap.style.transform = '';
-          let data = window[`_${containerId}_dragSrc`];
-          if (!data) return;
-          reorderImages(containerId, data.type, data.idx, type, index);
-        });
-      } else {
-        wrap.draggable = false;
-      }
-    }
-    files.forEach((f, i) => {
-      const wrap = document.createElement('div');
-      wrap.className = 'img-preview-wrap' + (mode === 'drag' ? ' no-fullscreen' : '');
-      wrap.innerHTML = `
-        <img src="${f.preview || f.dataUrl}" class="img-preview" draggable="false" ${mode === 'fullscreen' ? `onclick="event.stopPropagation();window.showImgFullscreen('${f.dataUrl}','Gambar #${i+1} dari ${total}')"` : ''}>
-        <span class="order-num">#${i+1}</span>
-        ${mode === 'fullscreen' ? `<span class="zoom-badge" onclick="event.stopPropagation();window.showImgFullscreen('${f.dataUrl}','Gambar #${i+1} dari ${total}')"><i class="fas fa-expand"></i></span>` : ''}
-        <span class="remove-btn" onclick="event.stopPropagation();removeImg('${containerId}',${i})">×</span>
-        ${mode === 'drag' ? `<span class="drag-handle" title="Tahan & geser"><i class="fas fa-arrows-alt"></i></span>` : ''}
-      `;
-      setupDragEvents(wrap, 'file', i);
-      preview.appendChild(wrap);
-    });
-    urls.forEach((url, i) => {
-      const wrap = document.createElement('div');
-      wrap.className = 'img-preview-wrap' + (mode === 'drag' ? ' no-fullscreen' : '');
-      const safeUrl = escAttr(url);
-      wrap.innerHTML = `
-        <img src="${url}" class="img-preview" draggable="false" onerror="this.src='https://placehold.co/80x80/1a1a2e/64748b?text=Err'" ${mode === 'fullscreen' ? `onclick="event.stopPropagation();window.showImgFullscreen('${safeUrl}','Gambar #${files.length + i + 1} dari ${total}')"` : ''}>
-        <span class="order-num">#${files.length + i + 1}</span>
-        ${mode === 'fullscreen' ? `<span class="zoom-badge" onclick="event.stopPropagation();window.showImgFullscreen('${safeUrl}','Gambar #${files.length + i + 1} dari ${total}')"><i class="fas fa-expand"></i></span>` : ''}
-        <span class="remove-btn" onclick="event.stopPropagation();removeUrl('${containerId}',${i})">×</span>
-        ${mode === 'drag' ? `<span class="drag-handle" title="Tahan & geser"><i class="fas fa-arrows-alt"></i></span>` : ''}
-      `;
-      setupDragEvents(wrap, 'url', i);
-      preview.appendChild(wrap);
-    });
-  }
-  const urlTextarea = document.getElementById(`${containerId}-urls`);
-  if (urlTextarea) urlTextarea.oninput = renderPreview;
-  window[`_${containerId}_render`] = renderPreview;
-  renderPreview();
-}
-
-function attachExistingImagesHandler(cid, images) {
-  const preview = document.getElementById(`editExistingPreview-${cid}`);
-  const countEl = document.getElementById(`editExistingCount-${cid}`);
-  if (!preview) return;
-  if (!window[`_existing_${cid}_images`]) window[`_existing_${cid}_images`] = [...images];
-  if (!window[`_existing_${cid}_mode`]) window[`_existing_${cid}_mode`] = dragMode;
-  window[`_existing_${cid}_dragSrc`] = null;
-  function render() {
-    const imgs = window[`_existing_${cid}_images`] || [];
-    const mode = window[`_existing_${cid}_mode`] || 'drag';
-    const total = imgs.length;
-    preview.innerHTML = '';
-    if (countEl) countEl.textContent = total;
-    if (total === 0) { preview.innerHTML = '<p class="text-xs text-slate-500 italic mt-2">Tidak ada gambar.</p>'; return; }
-    const modeBar = document.createElement('div');
-    modeBar.className = 'img-preview-mode-bar';
-    modeBar.innerHTML = `
-      <span class="mode-label"><i class="fas fa-layer-group"></i>Total: ${total} gambar</span>
-      <div class="mode-btns">
-        <button class="mode-btn ${mode === 'drag' ? 'active' : 'inactive'}" data-mode="drag"><i class="fas fa-hand-rock"></i> 🖐️ Mode Drag</button>
-        <button class="mode-btn ${mode === 'fullscreen' ? 'active' : 'inactive'}" data-mode="fullscreen"><i class="fas fa-expand"></i> 🔍 Mode Fullscreen</button>
-      </div>
-    `;
-    preview.appendChild(modeBar);
-    modeBar.querySelectorAll('.mode-btn').forEach(btn => {
-      btn.onclick = (e) => { e.stopPropagation(); window[`_existing_${cid}_mode`] = btn.dataset.mode; dragMode = btn.dataset.mode; render(); };
-    });
-    const grid = document.createElement('div');
-    grid.className = 'flex flex-wrap gap-2 max-h-60 overflow-y-auto scrollbar-thin bg-slate-900/50 border border-slate-700 rounded-lg p-2';
-    preview.appendChild(grid);
-    function setupDrag(wrap, index) {
-      if (mode === 'drag') {
-        wrap.draggable = true;
-        wrap.addEventListener('dragstart', (e) => {
-          e.dataTransfer.effectAllowed = 'move';
-          window[`_existing_${cid}_dragSrc`] = index;
-          wrap.classList.add('dragging');
-          setTimeout(() => { wrap.style.opacity = '0.4'; }, 0);
-        });
-        wrap.addEventListener('dragend', () => {
-          wrap.classList.remove('dragging');
-          wrap.style.opacity = '';
-          window[`_existing_${cid}_dragSrc`] = null;
-        });
-        wrap.addEventListener('dragover', (e) => { e.preventDefault(); wrap.style.borderColor = '#fbbf24'; });
-        wrap.addEventListener('dragleave', () => { wrap.style.borderColor = ''; });
-        wrap.addEventListener('drop', (e) => {
-          e.preventDefault();
-          wrap.style.borderColor = '';
-          const fromIdx = window[`_existing_${cid}_dragSrc`];
-          if (fromIdx === null || fromIdx === undefined || fromIdx === index) return;
-          const imgs = [...(window[`_existing_${cid}_images`] || [])];
-          const item = imgs.splice(fromIdx, 1)[0];
-          imgs.splice(index, 0, item);
-          window[`_existing_${cid}_images`] = imgs;
-          render();
-        });
-      }
-    }
-    imgs.forEach((img, i) => {
-      const wrap = document.createElement('div');
-      wrap.className = 'img-preview-wrap' + (mode === 'drag' ? ' no-fullscreen' : '');
-      wrap.innerHTML = `
-        <img src="${img}" class="img-preview" draggable="false" onerror="this.src='https://placehold.co/80x80/1a1a2e/64748b?text=Err'" ${mode === 'fullscreen' ? `onclick="window.showImgFullscreen('${escAttr(img)}','Gambar #${i+1}')"` : ''}>
-        <span class="order-num">#${i+1}</span>
-        <span class="remove-btn" onclick="event.stopPropagation();window.removeExistingImage('${cid}',${i})">×</span>
-      `;
-      setupDrag(wrap, i);
-      grid.appendChild(wrap);
-    });
-  }
-  render();
-}
-
-window.removeExistingImage = (cid, index) => {
-  if (!confirm('Hapus gambar ini?')) return;
-  const imgs = window[`_existing_${cid}_images`] || [];
-  imgs.splice(index, 1);
-  window[`_existing_${cid}_images`] = imgs;
-  attachExistingImagesHandler(cid, imgs);
-};
-
-function reorderImages(containerId, fromType, fromIdx, toType, toIdx) {
-  if (fromType === toType && fromIdx === toIdx) return;
-  const files = [...(window[`_${containerId}_files`] || [])];
-  const urlTextarea = document.getElementById(`${containerId}-urls`);
-  const urls = [...parseImgbbUrls(urlTextarea.value)];
-  let item;
-  if (fromType === 'file') item = files.splice(fromIdx, 1)[0];
-  else item = urls.splice(fromIdx, 1)[0];
-  if (toType === 'file') {
-    if (fromType === 'url') files.splice(toIdx, 0, { name: 'url-item', dataUrl: item });
-    else files.splice(toIdx, 0, item);
-  } else {
-    if (fromType === 'file') urls.splice(toIdx, 0, item.dataUrl || item);
-    else urls.splice(toIdx, 0, item);
-  }
-  window[`_${containerId}_files`] = files;
-  urlTextarea.value = urls.join('\n');
-  window[`_${containerId}_render`]?.();
-  showToast('✅ Urutan diubah!');
-}
-
-window.removeImg = (cid, idx) => { const files = window[`_${cid}_files`] || []; files.splice(idx, 1); window[`_${cid}_files`] = files; window[`_${cid}_render`]?.(); };
-window.removeUrl = (cid, idx) => { const ta = document.getElementById(`${cid}-urls`); const urls = parseImgbbUrls(ta.value); urls.splice(idx, 1); ta.value = urls.join('\n'); window[`_${cid}_render`]?.(); };
-
-function getMultiImages(containerId) {
-  const files = window[`_${containerId}_files`] || [];
-  const urlText = document.getElementById(`${containerId}-urls`)?.value || '';
-  const urls = parseImgbbUrls(urlText);
-  const result = [];
-  files.forEach(f => result.push(f.dataUrl));
-  urls.forEach(u => result.push(u));
-  return result;
-}
-
-function coverField(id) {
-  return `<div class="bg-slate-900/50 border border-amber-500/30 rounded-xl p-3 mt-2">
-    <label class="text-xs font-semibold text-amber-400 block mb-2">Sampul / Cover <span class="text-red-400">*</span></label>
-    <div class="flex flex-wrap gap-2 mb-2">
-      <label class="cursor-pointer bg-amber-500 text-black px-3 py-2 rounded-lg text-xs font-bold hover:scale-105 transition">
-        <i class="fas fa-upload mr-1"></i>Upload dari Perangkat
-        <input type="file" id="${id}-file" accept="image/*" class="hidden">
-      </label>
-      <a href="https://imgbb.com" target="_blank" class="bg-slate-700 text-slate-300 px-3 py-2 rounded-lg text-xs font-bold hover:bg-slate-600 transition"><i class="fas fa-external-link-alt mr-1"></i>ImgBB</a>
-    </div>
-    <input type="text" id="${id}-url" placeholder="Atau paste URL ImgBB" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm">
-    <div id="${id}-preview" class="mt-2"></div>
-  </div>`;
-}
-
-function attachCoverHandler(id) {
-  const fileInput = document.getElementById(`${id}-file`);
-  const urlInput = document.getElementById(`${id}-url`);
-  const preview = document.getElementById(`${id}-preview`);
-  window[`_${id}_cover`] = null;
-  if (fileInput) {
-    fileInput.onchange = async (e) => {
-      const f = e.target.files[0];
-      if (!f) return;
-      preview.innerHTML = '<span class="text-xs text-amber-400">Mengupload ke ImgBB...</span>';
-      try {
-        const dataUrl = await compressImage(f);
-        window[`_${id}_cover`] = dataUrl;
-        preview.innerHTML = `
-          <div class="img-preview-wrap">
-            <img src="${dataUrl}" class="img-preview" style="width:96px;height:128px" onclick="event.stopPropagation();window.showImgFullscreen('${dataUrl}','Sampul / Cover')">
-            <span class="zoom-badge" onclick="event.stopPropagation();window.showImgFullscreen('${dataUrl}','Sampul / Cover')"><i class="fas fa-expand"></i></span>
-          </div>
-          <p class="text-xs text-green-400 mt-1">✅ Terupload ke ImgBB • Klik untuk fullscreen</p>
-        `;
-      } catch (err) { preview.innerHTML = `<span class="text-xs text-red-400">Gagal: ${err.message}</span>`; }
-    };
-  }
-  urlInput.oninput = () => {
-    if (urlInput.value.trim()) {
-      const url = urlInput.value.trim();
-      const safeUrl = escAttr(url);
-      window[`_${id}_cover`] = url;
-      preview.innerHTML = `
-        <div class="img-preview-wrap">
-          <img src="${url}" class="img-preview" style="width:96px;height:128px" onerror="this.src='https://placehold.co/96x128/1a1a2e/64748b?text=Err'" onclick="event.stopPropagation();window.showImgFullscreen('${safeUrl}','Sampul / Cover')">
-          <span class="zoom-badge" onclick="event.stopPropagation();window.showImgFullscreen('${safeUrl}','Sampul / Cover')"><i class="fas fa-expand"></i></span>
-        </div>
-      `;
-    }
-  };
-}
-function getCoverValue(id) { return window[`_${id}_cover`] || document.getElementById(`${id}-url`)?.value.trim() || ''; }
-
+// ============================================================
+// === CATEGORY CHIPS FIELD — DENGAN CUSTOM GENRE =============
+// ============================================================
 function categoryChipsField(containerId, selected = []) {
   const sel = parseCategories(selected);
-  const visibleCats = showAllCategories ? ALL_CATEGORIES : ALL_CATEGORIES.slice(0, 30);
+  // Gabung kategori bawaan + custom, hilangkan duplikat
+  const allCustom = customCategories.map(c => c.name);
+  const allCats = [...new Set([...ALL_CATEGORIES, ...allCustom])];
+  const visibleCats = showAllCategories ? allCats : allCats.slice(0, 30);
+  
   return `<div class="bg-slate-900/50 border border-amber-500/30 rounded-xl p-3 mt-2">
-    <label class="text-xs font-semibold text-amber-400 block mb-2">Pilih Kategori <span class="text-red-400">* (bisa &gt;1)</span></label>
-    <div id="${containerId}" class="flex flex-wrap gap-2 max-h-48 overflow-y-auto scrollbar-thin p-1">
-      ${visibleCats.map(cat => `<label class="cat-chip"><input type="checkbox" value="${cat}" ${sel.includes(cat) ? 'checked' : ''}><span>${cat}</span></label>`).join('')}
+    <div class="flex justify-between items-center mb-2 flex-wrap gap-2">
+      <label class="text-xs font-semibold text-amber-400">Pilih Genre <span class="text-red-400">* (bisa &gt;1)</span></label>
+      <button type="button" class="text-xs font-bold text-green-400 hover:text-green-300 transition bg-green-900/30 px-3 py-1.5 rounded-full border border-green-600/50" onclick="window.toggleCustomGenreInput('${containerId}')">
+        <i class="fas fa-plus-circle mr-1"></i>Tambah Genre Sendiri
+      </button>
     </div>
-    ${!showAllCategories && ALL_CATEGORIES.length > 30 ? `<button type="button" class="mt-2 text-amber-400 text-xs font-bold hover:text-amber-300 transition" onclick="window.toggleAllCategories('${containerId}')">Lihat Selengkapnya <i class="fas fa-chevron-down ml-1"></i></button>` : ''}
+    
+    <div id="${containerId}-custom-input" class="hidden mb-3 bg-green-900/20 border border-green-600/40 rounded-lg p-3">
+      <label class="text-xs font-semibold text-green-400 block mb-1.5"><i class="fas fa-pen mr-1"></i>Ketik Genre Baru</label>
+      <div class="flex gap-2">
+        <input type="text" id="${containerId}-custom-text" placeholder="Contoh: Kingdom Building, Cultivation, dll" maxlength="40" class="flex-1 bg-slate-800 border border-green-600/50 rounded-lg px-3 py-2 text-sm focus:border-green-500 transition">
+        <button type="button" onclick="window.addCustomGenre('${containerId}')" class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:scale-105 transition"><i class="fas fa-check"></i></button>
+        <button type="button" onclick="window.toggleCustomGenreInput('${containerId}')" class="bg-slate-700 text-slate-300 px-3 py-2 rounded-lg text-sm font-bold"><i class="fas fa-times"></i></button>
+      </div>
+      <p class="text-[10px] text-green-300 mt-1.5"><i class="fas fa-info-circle mr-1"></i>Genre akan otomatis ditambahkan ke daftar & langsung terpilih.</p>
+    </div>
+
+    <div id="${containerId}" class="flex flex-wrap gap-2 max-h-48 overflow-y-auto scrollbar-thin p-1">
+      ${visibleCats.map(cat => `<label class="cat-chip"><input type="checkbox" value="${escHtml(cat)}" ${sel.includes(cat) ? 'checked' : ''}><span>${escHtml(cat)}</span></label>`).join('')}
+    </div>
+    ${!showAllCategories && allCats.length > 30 ? `<button type="button" class="mt-2 text-amber-400 text-xs font-bold hover:text-amber-300 transition" onclick="window.toggleAllCategories('${containerId}')">Lihat Selengkapnya <i class="fas fa-chevron-down ml-1"></i></button>` : ''}
+    <p class="text-[10px] text-slate-500 mt-2"><i class="fas fa-lightbulb text-amber-400 mr-1"></i>Sudah dipilih: <span id="${containerId}-selected-count">${sel.length}</span> genre</p>
   </div>`;
 }
-window.toggleAllCategories = (containerId) => {
+
+window.toggleCustomGenreInput = (containerId) => {
+  const el = document.getElementById(containerId + '-custom-input');
+  if (el) el.classList.toggle('hidden');
+  const inp = document.getElementById(containerId + '-custom-text');
+  if (inp && !el.classList.contains('hidden')) setTimeout(() => inp.focus(), 100);
+};
+
+window.addCustomGenre = async (containerId) => {
+  const inp = document.getElementById(containerId + '-custom-text');
+  if (!inp) return;
+  const val = inp.value.trim();
+  if (!val || val.length < 2) { showToast('Genre minimal 2 karakter'); return; }
+  // Cek duplikat di semua kategori
+  const allCats = [...new Set([...ALL_CATEGORIES, ...customCategories.map(c => c.name)])];
+  const existing = allCats.find(c => c.toLowerCase() === val.toLowerCase());
+  if (existing) {
+    // Kalau sudah ada, langsung centang
+    const container = document.getElementById(containerId);
+    const cbs = container.querySelectorAll('input[type="checkbox"]');
+    let found = false;
+    cbs.forEach(cb => { if (cb.value.toLowerCase() === val.toLowerCase()) { cb.checked = true; found = true; } });
+    if (!found) {
+      // Ada di ALL_CATEGORIES tapi belum tampil (karena limit 30) — tambahkan chip baru
+      const label = document.createElement('label');
+      label.className = 'cat-chip';
+      label.innerHTML = `<input type="checkbox" value="${escHtml(existing)}" checked><span>${escHtml(existing)}</span>`;
+      container.appendChild(label);
+    }
+    showToast(`"${existing}" sudah ada, otomatis dipilih`);
+    inp.value = '';
+    updateSelectedCount(containerId);
+    return;
+  }
+  // Simpan ke Firestore sebagai custom category
+  const saved = await addCustomCategory(val);
+  const finalName = saved || val;
+  // Tambahkan chip baru ke container
+  const container = document.getElementById(containerId);
+  const label = document.createElement('label');
+  label.className = 'cat-chip';
+  label.innerHTML = `<input type="checkbox" value="${escHtml(finalName)}" checked><span>${escHtml(finalName)}</span>`;
+  container.appendChild(label);
+  showToast(`✅ Genre "${finalName}" ditambahkan & dipilih`);
+  inp.value = '';
+  document.getElementById(containerId + '-custom-input').classList.add('hidden');
+  updateSelectedCount(containerId);
+};
+
+function updateSelectedCount(containerId) {
+  const container = document.getElementById(containerId);
+  const countEl = document.getElementById(containerId + '-selected-count');
+  if (!container || !countEl) return;
+  const checked = container.querySelectorAll('input:checked').length;
+  countEl.textContent = checked;
+  const handler = () => updateSelectedCount(containerId);
+  container.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+    cb.removeEventListener('change', handler);
+    cb.addEventListener('change', handler);
+  });
+}
+
+window.toggleAllCategories = async (containerId) => {
   const container = document.getElementById(containerId);
   if (!container) return;
   const checked = Array.from(container.querySelectorAll('input:checked')).map(cb => cb.value);
-  const parent = container.parentElement;
   showAllCategories = true;
-  parent.outerHTML = categoryChipsField(containerId, checked);
+  // Re-render parent
+  const parentWrapper = container.closest('.bg-slate-900\\/50');
+  if (parentWrapper) {
+    parentWrapper.outerHTML = categoryChipsField(containerId, checked);
+    // Re-attach event listeners
+    updateSelectedCount(containerId);
+  }
 };
+
 function getSelectedCats(containerId) {
   const c = document.getElementById(containerId);
   if (!c) return [];
   return Array.from(c.querySelectorAll('input:checked')).map(cb => cb.value);
 }
+
+// ============================================================
+// === EDIT KARYA (CREATOR BISA EDIT SAMPUL/TEASER/DESKRIPSI/GENRE) ===
+// ============================================================
+window.openEditWorkModal = async (wid) => {
+  const snap = await getDoc(doc(db, 'works', wid));
+  if (!snap.exists()) { showToast('Karya tidak ditemukan'); return; }
+  const w = snap.data();
+  if (w.authorId !== currentUser?.uid && !isAdminUser(userProfile)) {
+    showToast('Tidak punya akses edit karya ini');
+    return;
+  }
+  const canN = hasRole(userProfile,'penulis') || isAdminSession;
+  const canK = hasRole(userProfile,'komikus') || isAdminSession;
+  let opts = ''; 
+  if (canN) opts += `<option value="novel" ${w.type === 'novel' ? 'selected' : ''}>Novel</option>`; 
+  if (canK) opts += `<option value="komik" ${w.type === 'komik' ? 'selected' : ''}>Komik</option>`;
+  if (!opts) opts = `<option value="${w.type}">${w.type}</option>`;
+
+  const modal = document.getElementById('modalContainer');
+  const content = document.getElementById('modalContent');
+  content.innerHTML = `
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-2xl font-black text-amber-400"><i class="fas fa-edit mr-2"></i>Edit Karya</h2>
+      <button id="closeEditW" class="text-slate-400 text-2xl hover:rotate-90 transition-transform">&times;</button>
+    </div>
+    <p class="text-xs text-slate-400 mb-3">Ubah informasi karya yang sudah ada. Perubahan langsung tersimpan.</p>
+    <div class="space-y-4">
+      <div>
+        <label class="block text-sm font-semibold mb-1">Judul <span class="text-red-400">*</span></label>
+        <input id="editWTitle" type="text" value="${escHtml(w.title || '')}" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm focus:border-amber-500 transition">
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1">Teaser <span class="text-red-400">*</span> <span class="text-xs text-slate-500">(maks 150)</span></label>
+        <input id="editWTeaser" type="text" maxlength="150" value="${escHtml(w.teaser || '')}" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm focus:border-amber-500 transition">
+        <p class="text-xs text-slate-500 mt-1"><span id="editTeaserCount">${(w.teaser || '').length}</span>/150</p>
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1">Tipe <span class="text-red-400">*</span></label>
+        <select id="editWType" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm">${opts}</select>
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1">Status <span class="text-red-400">*</span></label>
+        <select id="editWStatus" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm">
+          <option value="publish" ${w.status !== 'nonpublish' ? 'selected' : ''}>✅ Publish (bisa dibaca)</option>
+          <option value="nonpublish" ${w.status === 'nonpublish' ? 'selected' : ''}>🔒 Nonpublish (hanya lihat info)</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1">Status Tamat <span class="text-red-400">*</span></label>
+        <select id="editWTamat" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm">
+          <option value="false" ${!w.isTamat ? 'selected' : ''}>🟢 Berlanjut</option>
+          <option value="true" ${w.isTamat ? 'selected' : ''}>🔴 Tamat</option>
+        </select>
+      </div>
+      ${categoryChipsField('editWCategories', parseCategories(w.category))}
+      <div>
+        <label class="block text-sm font-semibold mb-1">Deskripsi</label>
+        <textarea id="editWDesc" rows="3" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm focus:border-amber-500 transition">${escHtml(w.description || '')}</textarea>
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1">Sampul / Cover <span class="text-red-400">*</span></label>
+        <div class="bg-slate-900/50 border border-amber-500/30 rounded-xl p-3 mt-2">
+          <div class="flex flex-wrap gap-2 mb-2">
+            <label class="cursor-pointer bg-amber-500 text-black px-3 py-2 rounded-lg text-xs font-bold hover:scale-105 transition">
+              <i class="fas fa-upload mr-1"></i>Ganti Sampul
+              <input type="file" id="editWCover-file" accept="image/*" class="hidden">
+            </label>
+            <a href="https://imgbb.com" target="_blank" class="bg-slate-700 text-slate-300 px-3 py-2 rounded-lg text-xs font-bold hover:bg-slate-600 transition"><i class="fas fa-external-link-alt mr-1"></i>ImgBB</a>
+          </div>
+          <input type="text" id="editWCover-url" placeholder="Atau paste URL ImgBB baru" value="${escHtml(w.coverURL || '')}" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm">
+          <div id="editWCover-preview" class="mt-2"></div>
+        </div>
+      </div>
+      <div class="flex gap-2 pt-2">
+        <button id="saveEditW" class="flex-1 bg-amber-500 text-black font-bold py-3 rounded-full hover:scale-105 transition"><i class="fas fa-save mr-1"></i>Simpan Perubahan</button>
+        <button id="cancelEditW" class="bg-slate-700 text-slate-300 px-6 py-3 rounded-full font-bold">Batal</button>
+      </div>
+    </div>`;
+  modal.classList.remove('hidden');
+
+  // Setup teaser counter
+  document.getElementById('editWTeaser').oninput = e => {
+    document.getElementById('editTeaserCount').textContent = e.target.value.length;
+  };
+
+  // Setup cover handler
+  window[`_editWCover_cover`] = w.coverURL || '';
+  const fileInput = document.getElementById('editWCover-file');
+  const urlInput = document.getElementById('editWCover-url');
+  const preview = document.getElementById('editWCover-preview');
+  
+  function renderCoverPreview(url) {
+    if (!url) { preview.innerHTML = ''; return; }
+    const safeUrl = escAttr(url);
+    preview.innerHTML = `
+      <div class="img-preview-wrap">
+        <img src="${url}" class="img-preview" style="width:96px;height:128px" onerror="this.src='https://placehold.co/96x128/1a1a2e/64748b?text=Err'" onclick="event.stopPropagation();window.showImgFullscreen('${safeUrl}','Sampul Baru')">
+        <span class="zoom-badge" onclick="event.stopPropagation();window.showImgFullscreen('${safeUrl}','Sampul Baru')"><i class="fas fa-expand"></i></span>
+      </div>
+      <p class="text-xs text-green-400 mt-1">✅ Sampul siap</p>`;
+  }
+  renderCoverPreview(w.coverURL || '');
+
+  fileInput.onchange = async (e) => {
+    const f = e.target.files[0];
+    if (!f) return;
+    preview.innerHTML = '<span class="text-xs text-amber-400">Mengupload...</span>';
+    try {
+      const dataUrl = await uploadToImgbb(f);
+      window[`_editWCover_cover`] = dataUrl;
+      urlInput.value = dataUrl;
+      renderCoverPreview(dataUrl);
+      showToast('✅ Sampul baru terupload');
+    } catch (err) { preview.innerHTML = `<span class="text-xs text-red-400">Gagal: ${err.message}</span>`; }
+  };
+  urlInput.oninput = () => {
+    const url = urlInput.value.trim();
+    window[`_editWCover_cover`] = url;
+    renderCoverPreview(url);
+  };
+
+  // Init custom category counter
+  updateSelectedCount('editWCategories');
+
+  const close = () => modal.classList.add('hidden');
+  document.getElementById('closeEditW').onclick = close;
+  document.getElementById('cancelEditW').onclick = close;
+
+  document.getElementById('saveEditW').onclick = async () => {
+    const title = document.getElementById('editWTitle').value.trim();
+    const teaser = document.getElementById('editWTeaser').value.trim();
+    const type = document.getElementById('editWType').value;
+    const status = document.getElementById('editWStatus').value;
+    const isTamat = document.getElementById('editWTamat').value === 'true';
+    const cats = getSelectedCats('editWCategories');
+    const category = cats.join(', ');
+    const desc = document.getElementById('editWDesc').value.trim();
+    const coverURL = window[`_editWCover_cover`] || urlInput.value.trim();
+
+    if (!title || !teaser || cats.length === 0 || !coverURL) {
+      showToast('Lengkapi semua field bertanda *');
+      return;
+    }
+    if (teaser.length > 150) { showToast('Teaser max 150'); return; }
+    const btn = document.getElementById('saveEditW');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="uploading-spinner"></span>Menyimpan...';
+    try {
+      await updateDoc(doc(db, 'works', wid), {
+        title, teaser, type, category, description: desc,
+        coverURL, status, isTamat,
+        updatedAt: serverTimestamp()
+      });
+      showToast('✅ Karya berhasil diupdate!');
+      modal.classList.add('hidden');
+      // Refresh halaman creator
+      const main = document.getElementById('mainContent');
+      if (main && getHash().startsWith('creator')) {
+        await renderCreatorDashboard(main);
+      }
+    } catch (e) {
+      showToast('Gagal: ' + e.message);
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-save mr-1"></i>Simpan Perubahan';
+    }
+  };
+};
+
+// ============================================================
+// ==================== END EDIT KARYA ========================
+// ============================================================
 
 async function loadClansCache() {
   try {
@@ -1477,6 +1435,7 @@ async function initAuth() {
         if (userProfile.banned) { showToast('Akun diblokir!', 5000); await signOut(auth); return; }
       }
       await loadClansCache();
+      await loadCustomCategories();
       document.getElementById('navAuthMobile').innerHTML = `<i class="fas fa-sign-out-alt"></i>`;
       renderPage();
       setTimeout(() => initNotifListener(), 2000);
@@ -1487,6 +1446,7 @@ async function initAuth() {
     } else {
       currentUser = null; userProfile = null;
       await loadClansCache();
+      await loadCustomCategories();
       document.getElementById('navAuthMobile').innerHTML = `<i class="fas fa-sign-in-alt"></i>`;
       renderPage();
     }
@@ -1704,6 +1664,7 @@ function renderAdminLogin(c) {
     <div class="text-center mb-6">
       <img src="${LOGO_URL}" class="w-20 h-20 mx-auto rounded-2xl mb-3 border-2 border-amber-500 logo-glow">
       <h2 class="text-2xl font-black">Admin Login</h2>
+      <div class="mt-2"><span class="version-badge"><i class="fas fa-code-branch"></i>v1.4</span></div>
     </div>
     <div class="space-y-4">
       <input id="adminEmailInput" type="email" placeholder="Email admin" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm">
@@ -1835,6 +1796,14 @@ async function renderPanduan(container) {
   } catch (e) {}
 
   const defaultPanduan = `
+    <h3><i class="fas fa-code-branch"></i> 0. Versi Website</h3>
+    <p>KomiNovel saat ini versi <b>v1.4</b>. Update terbaru:</p>
+    <ul>
+      <li>✅ <b>Edit Karya</b> — Creator bisa edit sampul, teaser, deskripsi, genre, judul, status, dan status tamat</li>
+      <li>✅ <b>Genre Custom</b> — Creator bisa ketik genre sendiri (tidak harus pilih dari daftar)</li>
+      <li>✅ Badge versi di header & footer</li>
+    </ul>
+
     <h3><i class="fas fa-sign-in-alt"></i> 1. Cara Masuk / Login</h3>
     <p>Klik tombol <b>Masuk</b>, pilih <b>Google</b> (disarankan) atau <b>Guest</b>.</p>
     <div class="tip">💡 Login Google supaya data tersimpan permanen.</div>
@@ -1860,10 +1829,27 @@ async function renderPanduan(container) {
       <li><b>Nonpublish</b> — pembaca hanya bisa lihat sampul, teaser, deskripsi</li>
     </ul>
 
-    <h3><i class="fas fa-crown"></i> 8. Kreator Unggulan</h3>
+    <h3><i class="fas fa-edit"></i> 8. Edit Karya (BARU v1.4)</h3>
+    <p>Di halaman <b>Creator</b> → <b>Kelola</b>, setiap karya ada tombol <b>Edit</b> (ikon pensil biru). Klik untuk mengubah:</p>
+    <ul>
+      <li>Judul karya</li>
+      <li>Teaser (maks 150 karakter)</li>
+      <li>Tipe (Novel/Komik)</li>
+      <li>Status (Publish/Nonpublish)</li>
+      <li>Status Tamat (Berlanjut/Tamat)</li>
+      <li>Genre — bisa pilih dari daftar atau <b>ketik sendiri</b></li>
+      <li>Deskripsi</li>
+      <li>Sampul / Cover</li>
+    </ul>
+
+    <h3><i class="fas fa-pen-fancy"></i> 9. Genre Custom (BARU v1.4)</h3>
+    <p>Saat upload atau edit karya, klik tombol <b>+ Tambah Genre Sendiri</b> (hijau) di bagian genre. Ketik genre baru, klik ✓, dan genre otomatis tersimpan + terpilih.</p>
+    <div class="tip">💡 Genre custom yang dibuat akan muncul di daftar genre untuk semua user!</div>
+
+    <h3><i class="fas fa-crown"></i> 10. Kreator Unggulan</h3>
     <p>Admin/Owner bisa menandai kreator sebagai <b>Unggulan</b> (⭐). Kreator unggulan mendapat border emas di profil dan karyanya.</p>
 
-    <h3><i class="fas fa-check-circle"></i> 9. Centang Verified</h3>
+    <h3><i class="fas fa-check-circle"></i> 11. Centang Verified</h3>
     <ul>
       <li><b>🟡 Centang Kuning</b> — Penulis Novel terverifikasi</li>
       <li><b>🟠 Centang Oranye</b> — Pembuat Komik terverifikasi</li>
@@ -1871,17 +1857,17 @@ async function renderPanduan(container) {
       <li><b>🔵 Centang Biru</b> — 100.000+ followers</li>
     </ul>
 
-    <h3><i class="fas fa-comments"></i> 10. Komentar & Rating</h3>
+    <h3><i class="fas fa-comments"></i> 12. Komentar & Rating</h3>
     <p>Di halaman baca komik/novel, kamu bisa komentar, rating bintang 1-5, lihat rating user lain, edit/hapus komentar sendiri.</p>
 
-    <h3><i class="fas fa-users"></i> 11. Clan</h3>
+    <h3><i class="fas fa-users"></i> 13. Clan</h3>
     <p>Buat atau join clan. Join clan perlu <b>persetujuan Admin/Owner clan</b>. Owner clan bisa promote max 2 admin.</p>
 
-    <h3><i class="fas fa-birthday-cake"></i> 12. Auto Ultah</h3>
-    <p>Penulis & Komikus yang isi tanggal lahir akan dapat banner ucapan otomatis di hari ulang tahunnya. Ada riwayat ultah di Admin Panel.</p>
+    <h3><i class="fas fa-birthday-cake"></i> 14. Auto Ultah</h3>
+    <p>Penulis & Komikus yang isi tanggal lahir akan dapat banner ucapan otomatis di hari ulang tahunnya.</p>
 
-    <h3><i class="fas fa-gamepad"></i> 13. Minigame Gambar & Tebak</h3>
-    <p>Main game gambar bareng! 1 orang jadi penggambar, yang lain nebak. Bisa main berdua atau berlima. Buat room, bagikan kode, dan mainkan!</p>
+    <h3><i class="fas fa-gamepad"></i> 15. Minigame Gambar & Tebak</h3>
+    <p>Main game gambar bareng! 1 orang jadi penggambar, yang lain nebak. Bisa main berdua atau berlima.</p>
 
     <h3><i class="fas fa-question-circle"></i> Butuh Bantuan?</h3>
     <p>Hubungi Admin di WhatsApp: <b>${WA_NUMBER}</b></p>
@@ -1895,6 +1881,7 @@ async function renderPanduan(container) {
         </div>
         <h2 class="text-2xl md:text-3xl font-black text-amber-400">Buku Panduan KomiNovel</h2>
         <p class="text-slate-400 mt-2">Semua yang perlu kamu tau tentang KomiNovel 📚</p>
+        <div class="mt-3 flex justify-center"><span class="version-badge"><i class="fas fa-code-branch"></i>v1.4</span></div>
         ${isAdminUser(userProfile) ? `<button id="editPanduanBtn" class="mt-3 bg-blue-600 text-white font-bold px-4 py-2 rounded-full text-sm hover:scale-105 transition"><i class="fas fa-edit mr-1"></i>Edit Panduan</button>` : ''}
       </div>
       <div class="warning-hard mb-4">
@@ -1939,7 +1926,7 @@ async function renderPanduan(container) {
 }
 
 // ============================================================
-// ==== RENDER HOME DENGAN ANTI-FLICKER (UPDATE ANGKA SAJA) ====
+// ==== RENDER HOME DENGAN ANTI-FLICKER ========================
 // ============================================================
 async function renderHome(container) {
   container.innerHTML = `
@@ -3494,11 +3481,12 @@ window.sendFriendRequest = async (uid) => {
 };
 
 async function renderKategori(container) {
+  const allCats = [...new Set([...ALL_CATEGORIES, ...customCategories.map(c => c.name)])];
   container.innerHTML = `
     <h2 class="text-2xl font-bold mb-4">Kategori</h2>
     <div class="flex flex-wrap gap-2 mb-6" id="catContainer">
       <button class="cat-btn px-4 py-2 rounded-full bg-amber-500 text-black font-bold text-sm hover:scale-105 transition" data-cat="all">Semua</button>
-      ${ALL_CATEGORIES.map(c => `<button class="cat-btn px-4 py-2 rounded-full bg-slate-800 text-sm hover:bg-slate-700 transition" data-cat="${c}">${c}</button>`).join('')}
+      ${allCats.map(c => `<button class="cat-btn px-4 py-2 rounded-full bg-slate-800 text-sm hover:bg-slate-700 transition" data-cat="${escHtml(c)}">${escHtml(c)}</button>`).join('')}
     </div>
     <div id="kategoriList" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-5"></div>`;
   document.querySelectorAll('.cat-btn').forEach(b => b.onclick = () => {
@@ -3732,6 +3720,7 @@ async function renderKritikSaran(container) {
       <div class="text-center mb-6">
         <img src="${LOGO_URL}" class="w-16 h-16 mx-auto rounded-xl mb-3 border-2 border-amber-500 logo-glow">
         <h2 class="text-2xl font-black">Kritik & Saran</h2>
+        <div class="mt-2"><span class="version-badge"><i class="fas fa-code-branch"></i>v1.4</span></div>
       </div>
       <div class="space-y-4">
         <input id="kritikNama" type="text" placeholder="Nama" value="${userProfile?.username || ''}" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm">
@@ -3766,6 +3755,7 @@ async function renderProfil(container) {
     container.innerHTML = `<div class="card-bg rounded-2xl p-8 text-center max-w-md mx-auto card-anim">
       <img src="${LOGO_URL}" class="w-20 h-20 mx-auto rounded-2xl mb-4 border-2 border-amber-500 logo-glow">
       <h2 class="text-xl font-bold mb-4">Masuk KomiNovel</h2>
+      <div class="mt-2 mb-4"><span class="version-badge"><i class="fas fa-code-branch"></i>v1.4</span></div>
       <div class="flex flex-col gap-3">
         <button id="loginGoogle" class="bg-white text-black font-bold py-3 rounded-full hover:scale-105 transition"><i class="fab fa-google mr-2"></i>Google</button>
         <button id="loginGuest" class="bg-slate-700 text-slate-300 font-bold py-2 rounded-full text-xs">Guest</button>
@@ -3894,11 +3884,15 @@ async function renderProfil(container) {
   document.getElementById('logoutBtn').onclick = logout;
 }
 
+// ============================================================
+// ==== CREATOR DASHBOARD — DENGAN EDIT KARYA =================
+// ============================================================
 async function renderCreatorDashboard(container) {
   container.innerHTML = `
     <div class="flex justify-between items-center mb-6 flex-wrap gap-2">
       <h2 class="text-xl md:text-2xl font-bold"><i class="fas fa-pen-fancy text-blue-400 mr-2"></i>Creator</h2>
       <div class="flex gap-2 flex-wrap items-center">
+        <span class="version-badge"><i class="fas fa-code-branch"></i>v1.4</span>
         ${hasRole(userProfile,'penulis') ? '<span class="penulis-tag text-xs px-3 py-1">PENULIS</span>' : ''}
         ${hasRole(userProfile,'komikus') ? '<span class="komikus-tag text-xs px-3 py-1">KOMIKUS</span>' : ''}
         <button id="openGuideBtn" class="bg-blue-600 text-white text-xs font-bold px-3 py-2 rounded-full hover:scale-105 transition"><i class="fas fa-question-circle mr-1"></i>Panduan</button>
@@ -3911,13 +3905,14 @@ async function renderCreatorDashboard(container) {
     <div id="creatorContent"></div>`;
   document.getElementById('openGuideBtn').onclick = showUploadGuide;
   const cC = document.getElementById('creatorContent');
+
   async function loadUploadForm() {
     const canN = hasRole(userProfile,'penulis') || isAdminSession;
     const canK = hasRole(userProfile,'komikus') || isAdminSession;
     let opts = ''; if (canN) opts += '<option value="novel">Novel</option>'; if (canK) opts += '<option value="komik">Komik</option>';
     if (!opts) opts = '<option value="novel">Novel</option>';
     cC.innerHTML = `<div class="card-bg rounded-2xl p-6 max-w-2xl mx-auto card-anim">
-      <h3 class="font-bold text-lg mb-4">Buat Karya</h3>
+      <h3 class="font-bold text-lg mb-4">Buat Karya Baru</h3>
       <div class="space-y-4">
         <div><label class="block text-sm font-semibold mb-1">Judul <span class="text-red-400">*</span></label><input id="uploadTitle" type="text" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm focus:border-amber-500 transition"></div>
         <div><label class="block text-sm font-semibold mb-1">Teaser <span class="text-red-400">*</span> <span class="text-xs text-slate-500">(maks 150)</span></label><input id="uploadTeaser" type="text" maxlength="150" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm focus:border-amber-500 transition"><p class="text-xs text-slate-500 mt-1"><span id="teaserCount">0</span>/150</p></div>
@@ -3931,10 +3926,11 @@ async function renderCreatorDashboard(container) {
         ${categoryChipsField('uploadCategories')}
         <div><label class="block text-sm font-semibold mb-1">Deskripsi</label><textarea id="uploadDesc" rows="3" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm"></textarea></div>
         ${coverField('uploadCover')}
-        <button id="uploadSubmit" class="w-full bg-amber-500 text-black font-bold py-3 rounded-full btn-glow">Buat</button>
+        <button id="uploadSubmit" class="w-full bg-amber-500 text-black font-bold py-3 rounded-full btn-glow">Buat Karya</button>
       </div></div>`;
     document.getElementById('uploadTeaser').oninput = e => document.getElementById('teaserCount').textContent = e.target.value.length;
     attachCoverHandler('uploadCover');
+    updateSelectedCount('uploadCategories');
     document.getElementById('uploadSubmit').onclick = async () => {
       const title = document.getElementById('uploadTitle').value.trim();
       const teaser = document.getElementById('uploadTeaser').value.trim();
@@ -3961,17 +3957,19 @@ async function renderCreatorDashboard(container) {
           takedown: { active: false, reason: '', by: '', at: null },
           createdAt: serverTimestamp(), updatedAt: serverTimestamp()
         });
-        showToast('Karya dibuat!'); loadManage();
+        showToast('✅ Karya dibuat!');
+        loadManage();
       } catch (e) { showToast('Gagal: ' + e.message); }
-      finally { btn.disabled = false; btn.innerHTML = 'Buat'; }
+      finally { btn.disabled = false; btn.innerHTML = 'Buat Karya'; }
     };
   }
+
   async function loadManage() {
     cC.innerHTML = `<div class="card-bg rounded-2xl p-6 card-anim"><h3 class="font-bold mb-4">Karya Saya</h3><div id="mW" class="space-y-4">Memuat...</div></div>`;
     const snap = await getDocs(query(collection(db,'works'), where('authorId','==',currentUser.uid)));
     const works = []; snap.forEach(d => works.push({ id: d.id, ...d.data() }));
     const list = document.getElementById('mW');
-    if (works.length === 0) { list.innerHTML = '<p class="text-slate-400">Belum ada.</p>'; return; }
+    if (works.length === 0) { list.innerHTML = '<p class="text-slate-400">Belum ada karya. Klik "Buat Baru" untuk mulai!</p>'; return; }
     const withCh = await Promise.all(works.map(async w => {
       const cs = await getDocs(query(collection(db,'works',w.id,'chapters'), orderBy('number','asc')));
       const chapters = []; cs.forEach(d => chapters.push({ id: d.id, ...d.data() }));
@@ -4021,13 +4019,14 @@ async function renderCreatorDashboard(container) {
           <p class="text-xs text-red-300 mb-1"><b>Alasan:</b> ${sensor(w.takedown.reason || '-')}</p>
         </div>` : ''}
         <div class="flex flex-wrap gap-2 mb-3">
+          <button class="editWorkBtn bg-purple-600 text-white px-4 py-2 rounded-lg text-xs font-bold hover:scale-105 transition" data-wid="${w.id}" title="Edit info karya"><i class="fas fa-edit mr-1"></i>Edit Karya</button>
           <button class="addC bg-amber-500 text-black px-4 py-2 rounded-lg text-xs font-bold flex-1 hover:scale-105 transition" data-wid="${w.id}" data-type="${w.type}" ${isTD ? 'disabled' : ''}>+ ${lbl}</button>
           <button class="manageG bg-blue-600 text-white px-4 py-2 rounded-lg text-xs font-bold hover:scale-105 transition" data-wid="${w.id}" data-type="${w.type}" ${isTD ? 'disabled' : ''}><i class="fas fa-folder-open mr-1"></i>${gl}</button>
           <button class="statusToggle ${isNP ? 'bg-green-600' : 'bg-slate-600'} text-white px-4 py-2 rounded-lg text-xs font-bold hover:scale-105 transition" data-wid="${w.id}" data-status="${isNP ? 'nonpublish' : 'publish'}" ${isTD ? 'disabled' : ''}>
             <i class="fas ${isNP ? 'fa-eye' : 'fa-eye-slash'} mr-1"></i>${isNP ? 'Publish' : 'Nonpublish'}
           </button>
           <button class="tamatB ${w.isTamat ? 'bg-yellow-600' : 'bg-red-600'} text-white px-4 py-2 rounded-lg text-xs font-bold hover:scale-105 transition" data-wid="${w.id}" data-t="${w.isTamat ? 'true' : 'false'}" ${isTD ? 'disabled' : ''}>${w.isTamat ? 'Batal' : 'Tamatkan'}</button>
-          <button class="delW bg-red-800 text-white px-4 py-2 rounded-lg text-xs font-bold hover:scale-105 transition" data-wid="${w.id}" data-title="${w.title}"><i class="fas fa-trash"></i></button>
+          <button class="delW bg-red-800 text-white px-4 py-2 rounded-lg text-xs font-bold hover:scale-105 transition" data-wid="${w.id}" data-title="${escAttr(w.title)}"><i class="fas fa-trash"></i></button>
         </div>
         <div class="border-t border-slate-700 pt-3 max-h-72 overflow-y-auto scrollbar-thin space-y-1">${listInner}</div>
         <div id="f-${sid}" class="hidden border-t border-slate-700 pt-4 space-y-3 mt-3">
@@ -4041,6 +4040,7 @@ async function renderCreatorDashboard(container) {
 
     withCh.forEach(w => { if (w.type === 'komik' && !isTakedown(w)) attachMultiImageHandlers('mi-' + safeId(w.id)); });
 
+    list.querySelectorAll('.editWorkBtn').forEach(b => b.onclick = () => window.openEditWorkModal(b.dataset.wid));
     list.querySelectorAll('.addC').forEach(b => b.onclick = () => document.getElementById('f-' + safeId(b.dataset.wid)).classList.toggle('hidden'));
     list.querySelectorAll('.manageG').forEach(b => b.onclick = () => window.openGroupManager(b.dataset.wid, b.dataset.type, loadManage));
     list.querySelectorAll('.canC').forEach(b => b.onclick = () => document.getElementById('f-' + b.dataset.sid).classList.add('hidden'));
@@ -4158,9 +4158,15 @@ async function renderCreatorDashboard(container) {
   loadManage();
 }
 
+// ============================================================
+// ================ ADMIN PANEL ===============================
+// ============================================================
 async function renderAdminPanel(container) {
   container.innerHTML = `<div class="flex justify-between items-center mb-4 flex-wrap gap-2">
-    <h2 class="text-xl md:text-2xl font-bold"><i class="fas fa-crown text-amber-400 mr-2"></i>Admin</h2>
+    <div class="flex items-center gap-2">
+      <h2 class="text-xl md:text-2xl font-bold"><i class="fas fa-crown text-amber-400 mr-2"></i>Admin</h2>
+      <span class="version-badge"><i class="fas fa-code-branch"></i>v1.4</span>
+    </div>
     <button id="adminLogoutBtn" class="bg-red-900/50 text-red-300 font-bold py-2 px-4 rounded-full text-xs hover:bg-red-800 transition">Logout</button>
   </div>
   <div class="flex flex-wrap gap-2 mb-6">
@@ -4347,6 +4353,7 @@ async function renderAdminPanel(container) {
         <button id="adminUploadSubmit" class="w-full bg-amber-500 text-black font-bold py-3 rounded-full hover:scale-105 transition">Upload</button>
       </div></div>`;
     attachCoverHandler('adminUploadCover');
+    updateSelectedCount('adminUploadCategories');
     document.getElementById('adminUploadSubmit').onclick = async () => {
       const title = document.getElementById('adminUploadTitle').value.trim();
       const teaser = document.getElementById('adminUploadTeaser').value.trim();
@@ -4436,7 +4443,6 @@ async function renderAdminPanel(container) {
     }
   }
 
-  // ====== TAB BOOST (GLOBAL) ======
   async function loadBoost() {
     const isOn = autoBoostEnabled;
     aC.innerHTML = `
@@ -4451,7 +4457,7 @@ async function renderAdminPanel(container) {
           </div>
           <div class="bg-slate-900/60 rounded-xl p-4 text-sm space-y-2">
             <p class="text-slate-300"><i class="fas fa-info-circle text-amber-400 mr-2"></i>Fitur ini otomatis menambah <b class="text-amber-400">+${AUTO_VIEW_AMOUNT} views</b> dan <b class="text-amber-400">+${AUTO_LIKE_AMOUNT} likes</b> ke setiap karya (kecuali yang di-takedown) setiap <b>${AUTO_BOOST_INTERVAL / 60000} menit</b>.</p>
-            <p class="text-xs text-slate-400">💡 Tombol ini <b>GLOBAL</b> — begitu kamu matikan, <b>SEMUA device di dunia</b> yang buka website ini akan berhenti nambah views & likes. Sampai kamu nyalain lagi.</p>
+            <p class="text-xs text-slate-400">💡 Tombol ini <b>GLOBAL</b> — begitu kamu matikan, <b>SEMUA device di dunia</b> yang buka website ini akan berhenti nambah views & likes.</p>
           </div>
         </div>
         <button id="boostToggleBtn" class="${isOn ? 'w-full bg-red-600 text-white font-bold py-3 rounded-full hover:scale-105 transition btn-glow' : 'w-full bg-green-600 text-white font-bold py-3 rounded-full hover:scale-105 transition btn-glow'}">
@@ -4467,10 +4473,21 @@ async function renderAdminPanel(container) {
   }
 
   async function loadSet() {
-    aC.innerHTML = `<div class="card-bg rounded-2xl p-6 max-w-lg mx-auto card-anim"><h3 class="font-bold mb-4">Setting</h3>
+    aC.innerHTML = `<div class="card-bg rounded-2xl p-6 max-w-lg mx-auto card-anim">
+      <h3 class="font-bold mb-4">Setting</h3>
+      <div class="bg-blue-900/20 border border-blue-600/40 rounded-xl p-4 mb-4">
+        <div class="flex items-center gap-2 mb-2">
+          <span class="version-badge"><i class="fas fa-code-branch"></i>v${APP_VERSION}</span>
+        </div>
+        <p class="text-xs text-slate-400 mb-2">Catatan update:</p>
+        <ul class="text-xs text-slate-300 space-y-1">
+          ${APP_VERSION_NOTES.map(n => `<li>• ${n}</li>`).join('')}
+        </ul>
+      </div>
       <label class="block text-sm font-semibold mb-1">Nomor WA Admin</label>
       <input id="adminWANumber" type="text" value="${localStorage.getItem('adminWA') || WA_NUMBER}" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm">
-      <button id="saveSettings" class="mt-4 w-full bg-amber-500 text-black font-bold py-2 rounded-full hover:scale-105 transition">Simpan</button></div>`;
+      <button id="saveSettings" class="mt-4 w-full bg-amber-500 text-black font-bold py-2 rounded-full hover:scale-105 transition">Simpan</button>
+    </div>`;
     document.getElementById('saveSettings').onclick = () => {
       localStorage.setItem('adminWA', document.getElementById('adminWANumber').value.trim());
       showToast('Disimpan');
@@ -4489,7 +4506,6 @@ async function renderAdminPanel(container) {
 // ============================================================
 // ================ MINIGAME: GAMBAR & TEBAK =================
 // ============================================================
-
 async function renderMinigame(container) {
   if (!currentUser || !userProfile) {
     container.innerHTML = `<div class="card-bg rounded-2xl p-8 text-center card-anim max-w-md mx-auto">
@@ -4701,7 +4717,7 @@ function renderMgWaiting(room) {
 
         <h3 class="font-bold mb-3 text-amber-400"><i class="fas fa-users mr-2"></i>Pemain (${players.length}/${maxP})</h3>
         <div class="grid grid-cols-2 gap-3 mb-6">
-          ${players.map((pid, i) => {
+          ${players.map((pid) => {
             const pName = room.playerNames?.[pid] || 'Player';
             const pPhoto = room.playerPhotos?.[pid] || '';
             const isMe = pid === currentUser.uid;
@@ -5074,7 +5090,7 @@ function initMgCanvas(room, isDrawer) {
       mgCtx.stroke();
     }
   };
-  const endDraw = (e) => {
+  const endDraw = () => {
     if (!mgDrawing) return;
     mgDrawing = false;
     pushHistory();
@@ -5356,12 +5372,362 @@ window.mgPlayAgain = async (roomId) => {
 // ===================== END MINIGAME =========================
 // ============================================================
 
+function showUploadGuide() {
+  const modal = document.getElementById('modalContainer');
+  const content = document.getElementById('modalContent');
+  content.innerHTML = `
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-2xl font-black text-amber-400"><i class="fas fa-book-reader mr-2"></i>Panduan Upload</h2>
+      <button id="closeGuide" class="text-slate-400 hover:text-white text-2xl hover:rotate-90 transition-transform">&times;</button>
+    </div>
+    <div class="space-y-3">
+      <div class="guide-step"><p class="font-bold text-amber-400 mb-1"><span class="guide-step-num">1</span>Login Google</p><p class="text-sm text-slate-300">Login Google supaya akun & PP permanen.</p></div>
+      <div class="guide-step"><p class="font-bold text-amber-400 mb-1"><span class="guide-step-num">2</span>Jadi Kreator</p><p class="text-sm text-slate-300">Menu <b>Jadi Kreator</b> → minta role via WA admin.</p></div>
+      <div class="guide-step"><p class="font-bold text-amber-400 mb-1"><span class="guide-step-num">3</span>Buat Karya</p><p class="text-sm text-slate-300">Creator → Buat Baru. Isi judul, teaser, genre, deskripsi, sampul.</p></div>
+      <div class="guide-step"><p class="font-bold text-amber-400 mb-1"><span class="guide-step-num">4</span>Genre Custom (BARU v1.4)</p><p class="text-sm text-slate-300">Di bagian genre, klik tombol <b>+ Tambah Genre Sendiri</b>. Ketik genre baru, klik ✓. Genre otomatis tersimpan & terpilih.</p></div>
+      <div class="guide-step"><p class="font-bold text-amber-400 mb-1"><span class="guide-step-num">5</span>Edit Karya (BARU v1.4)</p><p class="text-sm text-slate-300">Di <b>Creator → Kelola</b>, klik tombol <b>Edit Karya</b> (ungu). Bisa ubah sampul, teaser, deskripsi, genre, judul, status, dan status tamat.</p></div>
+      <div class="guide-step"><p class="font-bold text-amber-400 mb-1"><span class="guide-step-num">6</span>Chapter/Eps</p><p class="text-sm text-slate-300">Novel: judul + teks. Komik: judul opsional + gambar sebanyak apa pun. <b>Gambar pertama jadi sampul</b>.</p></div>
+    </div>
+    <div class="flex gap-2 mt-6">
+      <a href="https://imgbb.com" target="_blank" class="flex-1 bg-amber-500 text-black font-bold py-3 rounded-full text-center"><i class="fas fa-external-link-alt mr-2"></i>Buka ImgBB</a>
+      <button id="closeGuide2" class="flex-1 bg-slate-700 text-white font-bold py-3 rounded-full">Mengerti</button>
+    </div>`;
+  modal.classList.remove('hidden');
+  const close = () => modal.classList.add('hidden');
+  document.getElementById('closeGuide').onclick = close;
+  document.getElementById('closeGuide2').onclick = close;
+}
+
+function multiImageField(containerId) {
+  return `<div class="bg-slate-900/50 border border-amber-500/30 rounded-xl p-3 mt-2">
+    <label class="text-xs font-semibold text-amber-400 block mb-2">Gambar (tanpa batas jumlah, urutan = pilihan)</label>
+    <div class="flex flex-wrap gap-2 mb-2">
+      <label class="cursor-pointer bg-amber-500 text-black px-3 py-2 rounded-lg text-xs font-bold hover:scale-105 transition">
+        <i class="fas fa-upload mr-1"></i>Pilih Foto (bisa banyak)
+        <input type="file" id="${containerId}-file" accept="image/*" multiple class="hidden">
+      </label>
+      <a href="https://imgbb.com" target="_blank" class="bg-slate-700 text-slate-300 px-3 py-2 rounded-lg text-xs font-bold hover:bg-slate-600 transition"><i class="fas fa-external-link-alt mr-1"></i>ImgBB</a>
+    </div>
+    <textarea id="${containerId}-urls" rows="2" placeholder="Atau paste URL gambar, 1 per baris" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs font-mono"></textarea>
+    <div id="${containerId}-preview" class="mt-2"></div>
+    <div id="${containerId}-progress" class="upload-progress hidden"></div>
+  </div>`;
+}
+
+function attachMultiImageHandlers(containerId) {
+  const fileInput = document.getElementById(`${containerId}-file`);
+  const preview = document.getElementById(`${containerId}-preview`);
+  const progress = document.getElementById(`${containerId}-progress`);
+  if (!fileInput) return;
+  window[`_${containerId}_files`] = window[`_${containerId}_files`] || [];
+  window[`_${containerId}_dragSrc`] = null;
+  if (!window[`_${containerId}_mode`]) window[`_${containerId}_mode`] = dragMode;
+
+  fileInput.onchange = async (e) => {
+    const files = Array.from(e.target.files);
+    if (files.length === 0) return;
+    progress.classList.remove('hidden');
+    progress.innerHTML = `Mengupload ${files.length} foto ke ImgBB...<br>`;
+    const newFiles = [];
+    for (let i = 0; i < files.length; i++) {
+      const f = files[i];
+      progress.innerHTML += `[${i+1}/${files.length}] ${f.name}...<br>`;
+      try {
+        const dataUrl = await uploadToImgbb(f);
+        newFiles.push({ name: f.name, dataUrl, preview: URL.createObjectURL(f) });
+        progress.innerHTML += `&nbsp;&nbsp;✅ ${(f.size/1024).toFixed(0)} KB terupload<br>`;
+      } catch (err) {
+        progress.innerHTML += `&nbsp;&nbsp;❌ ${err.message}<br>`;
+      }
+    }
+    window[`_${containerId}_files`] = [...(window[`_${containerId}_files`] || []), ...newFiles];
+    progress.innerHTML += `<br>Total: ${window[`_${containerId}_files`].length} foto`;
+    fileInput.value = '';
+    renderPreview();
+  };
+
+  function renderPreview() {
+    const files = window[`_${containerId}_files`] || [];
+    const urlText = document.getElementById(`${containerId}-urls`)?.value || '';
+    const urls = parseImgbbUrls(urlText);
+    const total = files.length + urls.length;
+    const mode = window[`_${containerId}_mode`] || 'drag';
+    preview.innerHTML = '';
+    if (total === 0) return;
+    const modeBar = document.createElement('div');
+    modeBar.className = 'img-preview-mode-bar';
+    modeBar.innerHTML = `
+      <span class="mode-label"><i class="fas fa-layer-group"></i>Total: ${total} foto</span>
+      <div class="mode-btns">
+        <button class="mode-btn ${mode === 'drag' ? 'active' : 'inactive'}" data-mode="drag"><i class="fas fa-hand-rock"></i> 🖐️ Mode Drag</button>
+        <button class="mode-btn ${mode === 'fullscreen' ? 'active' : 'inactive'}" data-mode="fullscreen"><i class="fas fa-expand"></i> 🔍 Mode Fullscreen</button>
+      </div>
+    `;
+    preview.appendChild(modeBar);
+    modeBar.querySelectorAll('.mode-btn').forEach(btn => {
+      btn.onclick = (e) => {
+        e.stopPropagation();
+        const newMode = btn.dataset.mode;
+        window[`_${containerId}_mode`] = newMode;
+        dragMode = newMode;
+        showToast(newMode === 'drag' ? '🖐️ Mode Drag aktif' : '🔍 Mode Fullscreen aktif');
+        renderPreview();
+      };
+    });
+    const hint = document.createElement('div');
+    hint.className = 'w-full text-[11px] mb-2 ' + (mode === 'drag' ? 'text-amber-400' : 'text-blue-400');
+    hint.innerHTML = mode === 'drag' 
+      ? '<i class="fas fa-hand-rock mr-1"></i> <b>Mode Drag:</b> Geser gambar untuk ubah urutan.'
+      : '<i class="fas fa-expand mr-1"></i> <b>Mode Fullscreen:</b> Klik gambar untuk perbesar.';
+    preview.appendChild(hint);
+    function setupDragEvents(wrap, type, index) {
+      wrap.dataset.dragType = type;
+      wrap.dataset.dragIndex = index;
+      wrap.dataset.dragCid = containerId;
+      if (mode === 'drag') {
+        wrap.draggable = true;
+        wrap.classList.add('draggable-ready');
+        wrap.addEventListener('dragstart', (e) => {
+          e.dataTransfer.effectAllowed = 'move';
+          try { e.dataTransfer.setData('text/plain', JSON.stringify({ cid: containerId, type, idx: index })); } catch (err) {}
+          window[`_${containerId}_dragSrc`] = { type, idx: index };
+          wrap.classList.add('dragging');
+          setTimeout(() => { wrap.style.opacity = '0.4'; }, 0);
+        });
+        wrap.addEventListener('dragend', () => {
+          wrap.classList.remove('dragging');
+          wrap.style.opacity = '';
+          window[`_${containerId}_dragSrc`] = null;
+          preview.querySelectorAll('.img-preview-wrap').forEach(w => { w.style.borderColor = ''; w.style.transform = ''; });
+        });
+        wrap.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          e.dataTransfer.dropEffect = 'move';
+          if (window[`_${containerId}_dragSrc`]) { wrap.style.borderColor = '#fbbf24'; wrap.style.transform = 'scale(1.1)'; }
+        });
+        wrap.addEventListener('dragleave', () => { wrap.style.borderColor = ''; wrap.style.transform = ''; });
+        wrap.addEventListener('drop', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          wrap.style.borderColor = '';
+          wrap.style.transform = '';
+          let data = window[`_${containerId}_dragSrc`];
+          if (!data) return;
+          reorderImages(containerId, data.type, data.idx, type, index);
+        });
+      } else {
+        wrap.draggable = false;
+      }
+    }
+    files.forEach((f, i) => {
+      const wrap = document.createElement('div');
+      wrap.className = 'img-preview-wrap' + (mode === 'drag' ? ' no-fullscreen' : '');
+      wrap.innerHTML = `
+        <img src="${f.preview || f.dataUrl}" class="img-preview" draggable="false" ${mode === 'fullscreen' ? `onclick="event.stopPropagation();window.showImgFullscreen('${f.dataUrl}','Gambar #${i+1} dari ${total}')"` : ''}>
+        <span class="order-num">#${i+1}</span>
+        ${mode === 'fullscreen' ? `<span class="zoom-badge" onclick="event.stopPropagation();window.showImgFullscreen('${f.dataUrl}','Gambar #${i+1} dari ${total}')"><i class="fas fa-expand"></i></span>` : ''}
+        <span class="remove-btn" onclick="event.stopPropagation();removeImg('${containerId}',${i})">×</span>
+        ${mode === 'drag' ? `<span class="drag-handle" title="Tahan & geser"><i class="fas fa-arrows-alt"></i></span>` : ''}
+      `;
+      setupDragEvents(wrap, 'file', i);
+      preview.appendChild(wrap);
+    });
+    urls.forEach((url, i) => {
+      const wrap = document.createElement('div');
+      wrap.className = 'img-preview-wrap' + (mode === 'drag' ? ' no-fullscreen' : '');
+      const safeUrl = escAttr(url);
+      wrap.innerHTML = `
+        <img src="${url}" class="img-preview" draggable="false" onerror="this.src='https://placehold.co/80x80/1a1a2e/64748b?text=Err'" ${mode === 'fullscreen' ? `onclick="event.stopPropagation();window.showImgFullscreen('${safeUrl}','Gambar #${files.length + i + 1} dari ${total}')"` : ''}>
+        <span class="order-num">#${files.length + i + 1}</span>
+        ${mode === 'fullscreen' ? `<span class="zoom-badge" onclick="event.stopPropagation();window.showImgFullscreen('${safeUrl}','Gambar #${files.length + i + 1} dari ${total}')"><i class="fas fa-expand"></i></span>` : ''}
+        <span class="remove-btn" onclick="event.stopPropagation();removeUrl('${containerId}',${i})">×</span>
+        ${mode === 'drag' ? `<span class="drag-handle" title="Tahan & geser"><i class="fas fa-arrows-alt"></i></span>` : ''}
+      `;
+      setupDragEvents(wrap, 'url', i);
+      preview.appendChild(wrap);
+    });
+  }
+  const urlTextarea = document.getElementById(`${containerId}-urls`);
+  if (urlTextarea) urlTextarea.oninput = renderPreview;
+  window[`_${containerId}_render`] = renderPreview;
+  renderPreview();
+}
+
+function attachExistingImagesHandler(cid, images) {
+  const preview = document.getElementById(`editExistingPreview-${cid}`);
+  const countEl = document.getElementById(`editExistingCount-${cid}`);
+  if (!preview) return;
+  if (!window[`_existing_${cid}_images`]) window[`_existing_${cid}_images`] = [...images];
+  if (!window[`_existing_${cid}_mode`]) window[`_existing_${cid}_mode`] = dragMode;
+  window[`_existing_${cid}_dragSrc`] = null;
+  function render() {
+    const imgs = window[`_existing_${cid}_images`] || [];
+    const mode = window[`_existing_${cid}_mode`] || 'drag';
+    const total = imgs.length;
+    preview.innerHTML = '';
+    if (countEl) countEl.textContent = total;
+    if (total === 0) { preview.innerHTML = '<p class="text-xs text-slate-500 italic mt-2">Tidak ada gambar.</p>'; return; }
+    const modeBar = document.createElement('div');
+    modeBar.className = 'img-preview-mode-bar';
+    modeBar.innerHTML = `
+      <span class="mode-label"><i class="fas fa-layer-group"></i>Total: ${total} gambar</span>
+      <div class="mode-btns">
+        <button class="mode-btn ${mode === 'drag' ? 'active' : 'inactive'}" data-mode="drag"><i class="fas fa-hand-rock"></i> 🖐️ Mode Drag</button>
+        <button class="mode-btn ${mode === 'fullscreen' ? 'active' : 'inactive'}" data-mode="fullscreen"><i class="fas fa-expand"></i> 🔍 Mode Fullscreen</button>
+      </div>
+    `;
+    preview.appendChild(modeBar);
+    modeBar.querySelectorAll('.mode-btn').forEach(btn => {
+      btn.onclick = (e) => { e.stopPropagation(); window[`_existing_${cid}_mode`] = btn.dataset.mode; dragMode = btn.dataset.mode; render(); };
+    });
+    const grid = document.createElement('div');
+    grid.className = 'flex flex-wrap gap-2 max-h-60 overflow-y-auto scrollbar-thin bg-slate-900/50 border border-slate-700 rounded-lg p-2';
+    preview.appendChild(grid);
+    function setupDrag(wrap, index) {
+      if (mode === 'drag') {
+        wrap.draggable = true;
+        wrap.addEventListener('dragstart', () => {
+          window[`_existing_${cid}_dragSrc`] = index;
+          wrap.classList.add('dragging');
+          setTimeout(() => { wrap.style.opacity = '0.4'; }, 0);
+        });
+        wrap.addEventListener('dragend', () => {
+          wrap.classList.remove('dragging');
+          wrap.style.opacity = '';
+          window[`_existing_${cid}_dragSrc`] = null;
+        });
+        wrap.addEventListener('dragover', (e) => { e.preventDefault(); wrap.style.borderColor = '#fbbf24'; });
+        wrap.addEventListener('dragleave', () => { wrap.style.borderColor = ''; });
+        wrap.addEventListener('drop', (e) => {
+          e.preventDefault();
+          wrap.style.borderColor = '';
+          const fromIdx = window[`_existing_${cid}_dragSrc`];
+          if (fromIdx === null || fromIdx === undefined || fromIdx === index) return;
+          const imgs = [...(window[`_existing_${cid}_images`] || [])];
+          const item = imgs.splice(fromIdx, 1)[0];
+          imgs.splice(index, 0, item);
+          window[`_existing_${cid}_images`] = imgs;
+          render();
+        });
+      }
+    }
+    imgs.forEach((img, i) => {
+      const wrap = document.createElement('div');
+      wrap.className = 'img-preview-wrap' + (mode === 'drag' ? ' no-fullscreen' : '');
+      wrap.innerHTML = `
+        <img src="${img}" class="img-preview" draggable="false" onerror="this.src='https://placehold.co/80x80/1a1a2e/64748b?text=Err'" ${mode === 'fullscreen' ? `onclick="window.showImgFullscreen('${escAttr(img)}','Gambar #${i+1}')"` : ''}>
+        <span class="order-num">#${i+1}</span>
+        <span class="remove-btn" onclick="event.stopPropagation();window.removeExistingImage('${cid}',${i})">×</span>
+      `;
+      setupDrag(wrap, i);
+      grid.appendChild(wrap);
+    });
+  }
+  render();
+}
+
+window.removeExistingImage = (cid, index) => {
+  if (!confirm('Hapus gambar ini?')) return;
+  const imgs = window[`_existing_${cid}_images`] || [];
+  imgs.splice(index, 1);
+  window[`_existing_${cid}_images`] = imgs;
+  attachExistingImagesHandler(cid, imgs);
+};
+
+function reorderImages(containerId, fromType, fromIdx, toType, toIdx) {
+  if (fromType === toType && fromIdx === toIdx) return;
+  const files = [...(window[`_${containerId}_files`] || [])];
+  const urlTextarea = document.getElementById(`${containerId}-urls`);
+  const urls = [...parseImgbbUrls(urlTextarea.value)];
+  let item;
+  if (fromType === 'file') item = files.splice(fromIdx, 1)[0];
+  else item = urls.splice(fromIdx, 1)[0];
+  if (toType === 'file') {
+    if (fromType === 'url') files.splice(toIdx, 0, { name: 'url-item', dataUrl: item });
+    else files.splice(toIdx, 0, item);
+  } else {
+    if (fromType === 'file') urls.splice(toIdx, 0, item.dataUrl || item);
+    else urls.splice(toIdx, 0, item);
+  }
+  window[`_${containerId}_files`] = files;
+  urlTextarea.value = urls.join('\n');
+  window[`_${containerId}_render`]?.();
+  showToast('✅ Urutan diubah!');
+}
+
+window.removeImg = (cid, idx) => { const files = window[`_${cid}_files`] || []; files.splice(idx, 1); window[`_${cid}_files`] = files; window[`_${cid}_render`]?.(); };
+window.removeUrl = (cid, idx) => { const ta = document.getElementById(`${cid}-urls`); const urls = parseImgbbUrls(ta.value); urls.splice(idx, 1); ta.value = urls.join('\n'); window[`_${cid}_render`]?.(); };
+
+function getMultiImages(containerId) {
+  const files = window[`_${containerId}_files`] || [];
+  const urlText = document.getElementById(`${containerId}-urls`)?.value || '';
+  const urls = parseImgbbUrls(urlText);
+  const result = [];
+  files.forEach(f => result.push(f.dataUrl));
+  urls.forEach(u => result.push(u));
+  return result;
+}
+
+function coverField(id) {
+  return `<div class="bg-slate-900/50 border border-amber-500/30 rounded-xl p-3 mt-2">
+    <label class="text-xs font-semibold text-amber-400 block mb-2">Sampul / Cover <span class="text-red-400">*</span></label>
+    <div class="flex flex-wrap gap-2 mb-2">
+      <label class="cursor-pointer bg-amber-500 text-black px-3 py-2 rounded-lg text-xs font-bold hover:scale-105 transition">
+        <i class="fas fa-upload mr-1"></i>Upload dari Perangkat
+        <input type="file" id="${id}-file" accept="image/*" class="hidden">
+      </label>
+      <a href="https://imgbb.com" target="_blank" class="bg-slate-700 text-slate-300 px-3 py-2 rounded-lg text-xs font-bold hover:bg-slate-600 transition"><i class="fas fa-external-link-alt mr-1"></i>ImgBB</a>
+    </div>
+    <input type="text" id="${id}-url" placeholder="Atau paste URL ImgBB" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm">
+    <div id="${id}-preview" class="mt-2"></div>
+  </div>`;
+}
+
+function attachCoverHandler(id) {
+  const fileInput = document.getElementById(`${id}-file`);
+  const urlInput = document.getElementById(`${id}-url`);
+  const preview = document.getElementById(`${id}-preview`);
+  window[`_${id}_cover`] = null;
+  if (fileInput) {
+    fileInput.onchange = async (e) => {
+      const f = e.target.files[0];
+      if (!f) return;
+      preview.innerHTML = '<span class="text-xs text-amber-400">Mengupload ke ImgBB...</span>';
+      try {
+        const dataUrl = await compressImage(f);
+        window[`_${id}_cover`] = dataUrl;
+        preview.innerHTML = `
+          <div class="img-preview-wrap">
+            <img src="${dataUrl}" class="img-preview" style="width:96px;height:128px" onclick="event.stopPropagation();window.showImgFullscreen('${dataUrl}','Sampul / Cover')">
+            <span class="zoom-badge" onclick="event.stopPropagation();window.showImgFullscreen('${dataUrl}','Sampul / Cover')"><i class="fas fa-expand"></i></span>
+          </div>
+          <p class="text-xs text-green-400 mt-1">✅ Terupload ke ImgBB • Klik untuk fullscreen</p>
+        `;
+      } catch (err) { preview.innerHTML = `<span class="text-xs text-red-400">Gagal: ${err.message}</span>`; }
+    };
+  }
+  urlInput.oninput = () => {
+    if (urlInput.value.trim()) {
+      const url = urlInput.value.trim();
+      const safeUrl = escAttr(url);
+      window[`_${id}_cover`] = url;
+      preview.innerHTML = `
+        <div class="img-preview-wrap">
+          <img src="${url}" class="img-preview" style="width:96px;height:128px" onerror="this.src='https://placehold.co/96x128/1a1a2e/64748b?text=Err'" onclick="event.stopPropagation();window.showImgFullscreen('${safeUrl}','Sampul / Cover')">
+          <span class="zoom-badge" onclick="event.stopPropagation();window.showImgFullscreen('${safeUrl}','Sampul / Cover')"><i class="fas fa-expand"></i></span>
+        </div>
+      `;
+    }
+  };
+}
+function getCoverValue(id) { return window[`_${id}_cover`] || document.getElementById(`${id}-url`)?.value.trim() || ''; }
+
 function handleAuthClick() {
   if (currentUser) logout();
   else {
     const m = document.getElementById('modalContainer');
     const c = document.getElementById('modalContent');
-    c.innerHTML = `<div class="text-center mb-4"><img src="${LOGO_URL}" class="w-20 h-20 mx-auto rounded-2xl mb-3 border-2 border-amber-500 logo-glow"><h3 class="text-xl font-bold">Masuk</h3></div>
+    c.innerHTML = `<div class="text-center mb-4"><img src="${LOGO_URL}" class="w-20 h-20 mx-auto rounded-2xl mb-3 border-2 border-amber-500 logo-glow"><h3 class="text-xl font-bold">Masuk</h3><div class="mt-2"><span class="version-badge"><i class="fas fa-code-branch"></i>v1.4</span></div></div>
       <div class="flex flex-col gap-3">
         <button id="mg" class="bg-white text-black font-bold py-3 rounded-full hover:scale-105 transition"><i class="fab fa-google mr-2"></i>Google</button>
         <button id="mgu" class="bg-slate-700 text-slate-300 font-bold py-2 rounded-full text-xs">Guest</button>
@@ -5377,12 +5743,14 @@ window.addEventListener('hashchange', renderPage);
 
 (async function init() {
   await initAuth();
-  // Load status auto boost GLOBAL dari Firestore + dengarkan perubahan realtime
   await loadAutoBoostStateFromDB();
   listenAutoBoostState();
   if (!window.location.hash) window.location.hash = 'home';
   renderPage();
   startAutoBoost();
+  console.log(`%c🚀 KomiNovel v${APP_VERSION} loaded`, 'background:linear-gradient(135deg,#fbbf24,#d97706);color:#0f0f1a;font-weight:900;padding:4px 12px;border-radius:8px;');
+  console.log('%c✨ Fitur baru v1.4:', 'color:#fbbf24;font-weight:bold;');
+  APP_VERSION_NOTES.forEach(n => console.log('  •', n));
 })();
 </script>
 </body>
