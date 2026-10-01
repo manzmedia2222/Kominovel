@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>KomiNovel - Baca & Tulis Novel/Komik Online Gratis</title>
 <meta property="og:site_name" content="KomiNovel" />
 <script type="application/ld+json">
@@ -14,17 +14,19 @@
 }
 </script>
 <meta name="google-site-verification" content="GvyTGbIx3Zov0CXr0f1voJ2LJnac-ppCl62NStzdY3E">
-<meta name="description" content="KomiNovel - Platform baca & tulis Novel dan Komik online gratis. Versi 1.5">
+<meta name="description" content="KomiNovel - Platform baca & tulis Novel dan Komik online gratis. Versi 1.6">
 <link rel="icon" href="https://i.ibb.co.com/SDTthJ7m/Gemini-Generated-Image-fhupt4fhupt4fhup.jpg">
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
-body{font-family:'Inter',sans-serif;background:#0f0f1a;color:#e2e8f0;overflow-x:hidden}
+*{-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%}
+body{font-family:'Inter',sans-serif;background:#0f0f1a;color:#e2e8f0;overflow-x:hidden;padding-bottom:80px}
 .gold-glow{text-shadow:0 0 8px #fbbf24,0 0 20px #f59e0b;color:#fbbf24}
 .gold-badge{background:linear-gradient(135deg,#fbbf24,#d97706);color:#0f0f1a;font-weight:bold;box-shadow:0 0 15px rgba(251,191,36,.6)}
 .card-bg{background:#1a1a2e;border:1px solid #2d2d44}
-.scrollbar-thin::-webkit-scrollbar{width:6px}
+.scrollbar-thin::-webkit-scrollbar{width:6px;height:6px}
 .scrollbar-thin::-webkit-scrollbar-thumb{background:#3b3b5c;border-radius:8px}
 .modal-overlay{background:rgba(0,0,0,.8);backdrop-filter:blur(4px);animation:fadeIn .2s ease-out}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
@@ -56,8 +58,8 @@ body{font-family:'Inter',sans-serif;background:#0f0f1a;color:#e2e8f0;overflow-x:
 .star-rating:hover{transform:scale(1.25) rotate(8deg)}
 .comment-card{background:#12121f;border:1px solid #2d2d44}
 .reply-indent{border-left:2px solid #fbbf24;padding-left:12px;margin-left:12px}
-.leaderboard-rank{width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:50%;font-weight:900}
-.role-checkbox{appearance:none;width:16px;height:16px;border:2px solid #475569;border-radius:4px;cursor:pointer;position:relative}
+.leaderboard-rank{width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:50%;font-weight:900;flex-shrink:0}
+.role-checkbox{appearance:none;width:16px;height:16px;border:2px solid #475569;border-radius:4px;cursor:pointer;position:relative;flex-shrink:0}
 .role-checkbox:checked{background:#fbbf24;border-color:#fbbf24}
 .role-checkbox:checked::after{content:'✓';position:absolute;top:-3px;left:2px;color:#0f0f1a;font-weight:900;font-size:12px}
 .chapter-textarea{line-height:1.9;font-size:15px}
@@ -99,9 +101,9 @@ body{font-family:'Inter',sans-serif;background:#0f0f1a;color:#e2e8f0;overflow-x:
 .reader-fullscreen .reader-header,.reader-fullscreen .reader-sidebar,.reader-fullscreen .reader-comments{display:none!important}
 .reader-fullscreen .reader-images img{border-radius:0!important;margin:0!important;width:100%!important}
 .reader-fullscreen .reader-images{gap:0!important}
-.fullscreen-btn{position:fixed;bottom:20px;right:20px;z-index:101;background:#fbbf24;color:#0f0f1a;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;box-shadow:0 4px 20px rgba(251,191,36,.5);border:none;transition:transform .25s}
+.fullscreen-btn{position:fixed;bottom:100px;right:16px;z-index:101;background:#fbbf24;color:#0f0f1a;width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;box-shadow:0 4px 20px rgba(251,191,36,.5);border:none;transition:transform .25s}
 .fullscreen-btn:hover{transform:scale(1.12) rotate(10deg)}
-.fullscreen-close{position:fixed;top:20px;right:20px;z-index:102;background:rgba(0,0,0,.7);color:white;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;border:1px solid rgba(255,255,255,.3)}
+.fullscreen-close{position:fixed;top:16px;right:16px;z-index:102;background:rgba(0,0,0,.7);color:white;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;border:1px solid rgba(255,255,255,.3)}
 @keyframes chatPop{0%{opacity:0;transform:translateY(20px) scale(.85)}60%{opacity:1;transform:translateY(-3px) scale(1.02)}100%{opacity:1;transform:translateY(0) scale(1)}}
 .chat-msg-new{animation:chatPop .4s cubic-bezier(.34,1.56,.64,1)}
 @keyframes chatSlideIn{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:translateX(0)}}
@@ -168,7 +170,7 @@ body{font-family:'Inter',sans-serif;background:#0f0f1a;color:#e2e8f0;overflow-x:
 .img-fullscreen-close{position:fixed;top:20px;right:20px;background:rgba(251,191,36,.95);color:#0f0f1a;width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;border:none;z-index:301;font-weight:900;transition:transform .2s}
 .img-fullscreen-close:hover{transform:scale(1.1) rotate(90deg)}
 .img-fullscreen-info{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:rgba(15,15,26,.9);border:1px solid #fbbf24;color:#fbbf24;padding:8px 20px;border-radius:9999px;font-size:12px;font-weight:700;z-index:301}
-.resume-banner{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#fbbf24,#d97706);color:#0f0f1a;padding:12px 20px;border-radius:9999px;font-weight:900;font-size:13px;box-shadow:0 8px 32px rgba(251,191,36,.6);z-index:105;display:flex;align-items:center;gap:10px;cursor:pointer;animation:resumeSlide .4s cubic-bezier(.34,1.56,.64,1);max-width:90vw}
+.resume-banner{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#fbbf24,#d97706);color:#0f0f1a;padding:12px 20px;border-radius:9999px;font-weight:900;font-size:13px;box-shadow:0 8px 32px rgba(251,191,36,.6);z-index:105;display:flex;align-items:center;gap:10px;cursor:pointer;animation:resumeSlide .4s cubic-bezier(.34,1.56,.64,1);max-width:90vw}
 @keyframes resumeSlide{from{transform:translate(-50%,30px);opacity:0}to{transform:translate(-50%,0);opacity:1}}
 .resume-banner:hover{transform:translate(-50%,-4px)}
 .resume-banner button{background:rgba(0,0,0,.2);border:none;color:#0f0f1a;width:24px;height:24px;border-radius:50%;cursor:pointer;font-weight:900;display:flex;align-items:center;justify-content:center}
@@ -205,7 +207,7 @@ body{font-family:'Inter',sans-serif;background:#0f0f1a;color:#e2e8f0;overflow-x:
 .birthday-banner button{background:rgba(0,0,0,.25);border:none;color:#0f0f1a;width:26px;height:26px;border-radius:50%;cursor:pointer;font-weight:900;display:flex;align-items:center;justify-content:center}
 .birthday-banner button:hover{background:rgba(0,0,0,.4)}
 .guide-content h3{color:#fbbf24;font-size:16px;font-weight:900;margin:16px 0 8px;display:flex;align-items:center;gap:8px}
-.guide-content h3 i{background:rgba(251,191,36,.2);width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px}
+.guide-content h3 i{background:rgba(251,191,36,.2);width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
 .guide-content p{font-size:13px;color:#cbd5e1;line-height:1.7;margin:6px 0}
 .guide-content ul{list-style:none;padding-left:0;margin:8px 0}
 .guide-content ul li{font-size:13px;color:#cbd5e1;padding:6px 0 6px 24px;position:relative}
@@ -273,7 +275,7 @@ body{font-family:'Inter',sans-serif;background:#0f0f1a;color:#e2e8f0;overflow-x:
 .review-img-thumb.drag-mode:hover .drag-handle{opacity:1}
 .review-img-thumb.dragging{opacity:.4}
 .review-img-thumb.drag-over img{border-color:#fbbf24;box-shadow:0 0 12px rgba(251,191,36,.6)}
-.review-mobile-panel-btn{position:fixed;bottom:80px;right:20px;z-index:90;background:linear-gradient(135deg,#fbbf24,#d97706);color:#0f0f1a;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;box-shadow:0 4px 20px rgba(251,191,36,.5);border:none;transition:transform .25s}
+.review-mobile-panel-btn{position:fixed;bottom:100px;right:16px;z-index:90;background:linear-gradient(135deg,#fbbf24,#d97706);color:#0f0f1a;width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;box-shadow:0 4px 20px rgba(251,191,36,.5);border:none;transition:transform .25s}
 .review-mobile-panel-btn:hover{transform:scale(1.12)}
 @media(min-width:1024px){.review-mobile-panel-btn{display:none!important}}
 .review-mobile-panel{position:fixed;top:0;right:0;height:100vh;width:340px;max-width:90vw;background:#12121f;border-left:2px solid #fbbf24;z-index:95;transform:translateX(100%);transition:transform .35s cubic-bezier(.4,0,.2,1);overflow-y:auto;padding:16px}
@@ -282,6 +284,149 @@ body{font-family:'Inter',sans-serif;background:#0f0f1a;color:#e2e8f0;overflow-x:
 .review-mobile-panel-overlay.active{display:block}
 .review-empty-hint{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;min-height:300px;color:#64748b;text-align:center;padding:20px}
 .review-empty-hint i{font-size:48px;margin-bottom:16px;color:#334155}
+
+/* ============================================================
+   === BOTTOM NAVIGATION - REDESIGN RAPI SEMUA PERANGKAT ===
+   ============================================================ */
+:root{
+  --nav-height:64px;
+  --nav-safe-bottom:env(safe-area-inset-bottom,0px);
+}
+.nav-bottom{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  z-index:50;
+  background:#1a1a2e;
+  border-top:1px solid #2d2d44;
+  box-shadow:0 -4px 20px rgba(0,0,0,.5);
+  padding-bottom:var(--nav-safe-bottom);
+  display:grid;
+  grid-template-columns:repeat(7,1fr);
+  align-items:stretch;
+  height:calc(var(--nav-height) + var(--nav-safe-bottom));
+}
+.nav-bottom-item{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:3px;
+  padding:6px 2px;
+  font-size:9px;
+  font-weight:700;
+  cursor:pointer;
+  color:#94a3b8;
+  transition:.2s;
+  background:transparent;
+  border:none;
+  position:relative;
+  height:100%;
+  overflow:hidden;
+  text-align:center;
+  line-height:1.1;
+}
+.nav-bottom-item:hover{color:#fbbf24;background:rgba(251,191,36,.08)}
+.nav-bottom-item.active{color:#fbbf24;background:rgba(251,191,36,.12)}
+.nav-bottom-item.active::after{content:'';position:absolute;top:0;left:25%;right:25%;height:3px;background:#fbbf24;border-radius:0 0 3px 3px;box-shadow:0 0 6px rgba(251,191,36,.8)}
+.nav-bottom-item i{font-size:17px;line-height:1}
+.nav-bottom-item span{
+  font-size:9px;
+  line-height:1.1;
+  max-width:100%;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  padding:0 2px;
+}
+/* Center button (Home) - now part of the grid */
+.nav-bottom-center{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  background:linear-gradient(135deg,#fbbf24,#d97706);
+  color:#0f0f1a;
+  cursor:pointer;
+  border:none;
+  transition:.25s;
+  position:relative;
+  height:100%;
+}
+.nav-bottom-center:hover{filter:brightness(1.1)}
+.nav-bottom-center i{
+  font-size:22px;
+  line-height:1;
+  margin-bottom:2px;
+}
+.nav-bottom-center span{
+  font-size:9px;
+  font-weight:900;
+  line-height:1;
+}
+.nav-bottom-center::before{
+  content:'';
+  position:absolute;
+  top:-8px;
+  left:50%;
+  transform:translateX(-50%);
+  width:46px;
+  height:46px;
+  background:linear-gradient(135deg,#fbbf24,#d97706);
+  border-radius:50%;
+  border:3px solid #0f0f1a;
+  box-shadow:0 4px 18px rgba(251,191,36,.6);
+  z-index:-1;
+}
+.nav-bottom-center i,
+.nav-bottom-center span{
+  position:relative;
+  z-index:1;
+  color:#0f0f1a;
+}
+
+/* Tablet & Desktop - show more spacing */
+@media(min-width:640px){
+  .nav-bottom-item{font-size:10px;gap:4px;padding:8px 6px}
+  .nav-bottom-item i{font-size:19px}
+  .nav-bottom-item span{font-size:10px}
+  .nav-bottom-center i{font-size:24px}
+  .nav-bottom-center span{font-size:10px}
+}
+
+@media(min-width:768px){
+  :root{--nav-height:72px}
+  .nav-bottom-item{font-size:11px;padding:8px 10px}
+  .nav-bottom-item i{font-size:21px}
+  .nav-bottom-item span{font-size:11px}
+  .nav-bottom-center::before{width:52px;height:52px;top:-10px}
+  .nav-bottom-center i{font-size:26px}
+}
+
+/* Very small phones */
+@media(max-width:360px){
+  .nav-bottom-item span{font-size:8px}
+  .nav-bottom-item i{font-size:16px}
+  .nav-bottom-center i{font-size:20px}
+  .nav-bottom-center span{font-size:8px}
+}
+
+/* Slide sections */
+.slide-section{overflow:hidden;position:relative}
+.slide-track{display:flex;gap:12px;overflow-x:auto;scroll-behavior:smooth;padding:4px 2px 12px;scrollbar-width:thin;-ms-overflow-style:none}
+.slide-track::-webkit-scrollbar{height:5px}
+.slide-track::-webkit-scrollbar-thumb{background:#3b3b5c;border-radius:8px}
+.slide-track::-webkit-scrollbar-track{background:transparent}
+.slide-track .slide-card{flex:0 0 auto;width:160px;scroll-snap-align:start}
+@media(min-width:640px){.slide-track .slide-card{width:180px}}
+@media(min-width:768px){.slide-track .slide-card{width:200px}}
+.slide-track .slide-card .card-bg{height:100%}
+.slide-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;padding:0 2px}
+.slide-header h2{font-size:16px;font-weight:900;display:flex;align-items:center;gap:6px}
+.slide-nav-btn{background:#2d2d44;color:#cbd5e1;border:none;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.2s;font-size:12px;flex-shrink:0}
+.slide-nav-btn:hover{background:#fbbf24;color:#0f0f1a;transform:scale(1.1)}
+.slide-nav-btn:disabled{opacity:.3;pointer-events:none}
 </style>
 </head>
 <body class="min-h-screen">
@@ -292,32 +437,53 @@ body{font-family:'Inter',sans-serif;background:#0f0f1a;color:#e2e8f0;overflow-x:
 <img src="https://i.ibb.co.com/SDTthJ7m/Gemini-Generated-Image-fhupt4fhupt4fhup.jpg" class="w-9 h-9 md:w-10 md:h-10 rounded-xl object-cover border-2 border-amber-500 logo-glow">
 <div class="flex flex-col md:flex-row md:items-center md:gap-3">
 <h1 class="text-xl md:text-2xl font-black tracking-tight bg-gradient-to-r from-amber-300 to-orange-500 bg-clip-text text-transparent">KomiNovel</h1>
-<span class="version-badge"><i class="fas fa-code-branch"></i>v1.5</span>
 </div>
 </div>
 <div class="flex items-center gap-2">
 <button id="navAuthMobile" class="bg-amber-500 text-black font-bold py-2 px-3 rounded-full text-xs"><i class="fas fa-sign-in-alt"></i></button>
-<button id="mobileMenuBtn" class="text-white bg-slate-800 p-2.5 rounded-xl border border-slate-700 hover:bg-slate-700 transition"><i class="fas fa-bars text-lg"></i></button>
 </div>
 </header>
 <main id="mainContent" class="min-h-[70vh]"></main>
 <footer class="mt-12 text-center text-xs text-slate-500 border-t border-slate-800 pt-6 space-y-2">
 <div class="flex items-center justify-center gap-2 flex-wrap">
 <span>&copy; <span id="footerYear">2026</span> KomiNovel</span>
-<span class="version-badge"><i class="fas fa-code-branch"></i>v1.5</span>
 </div>
-<p class="text-[10px] text-slate-600">Build: 2026 • Platform baca & tulis Novel/Komik Online</p>
+<p class="text-[10px] text-slate-600">v1.6</p>
 </footer>
 </div>
+
+<!-- BOTTOM NAVIGATION - 7 items dalam grid rapi -->
+<nav id="bottomNav" class="nav-bottom">
+  <button class="nav-bottom-item" data-nav="clan" onclick="window.location.hash='clan'">
+    <i class="fas fa-users"></i><span>Clan</span>
+  </button>
+  <button class="nav-bottom-item" data-nav="chat" onclick="window.location.hash='chat'">
+    <i class="fas fa-comments"></i><span>Chat</span>
+  </button>
+  <button class="nav-bottom-item" data-nav="berita" onclick="window.location.hash='berita'">
+    <i class="fas fa-newspaper"></i><span>Berita</span>
+  </button>
+  <button class="nav-bottom-center" data-nav="home" onclick="window.location.hash='home'" title="Beranda">
+    <i class="fas fa-home"></i><span>Home</span>
+  </button>
+  <button class="nav-bottom-item" data-nav="creator" onclick="window.location.hash='creator'">
+    <i class="fas fa-pen-fancy"></i><span>Kreator</span>
+  </button>
+  <button class="nav-bottom-item" data-nav="jadi-kreator" onclick="window.location.hash='jadi-kreator'">
+    <i class="fas fa-star"></i><span>Daftar</span>
+  </button>
+  <button type="button" id="bottomMenuBtn" class="nav-bottom-item" title="Menu" aria-label="Buka menu">
+    <i class="fas fa-bars"></i><span>Menu</span>
+  </button>
+</nav>
 
 <div id="mobileNavOverlay" class="mobile-nav-overlay"></div>
 <div id="mobileNavDrawer" class="mobile-nav-drawer">
 <div class="flex justify-between items-center mb-6 pb-4 border-b border-slate-700">
 <div class="flex items-center gap-2">
 <span class="font-bold text-lg">Menu</span>
-<span class="version-badge"><i class="fas fa-code-branch"></i>v1.5</span>
 </div>
-<button id="closeMobileNav" class="text-slate-400 text-2xl hover:rotate-90 transition-transform">&times;</button>
+<button type="button" id="closeMobileNav" aria-label="Tutup menu" title="Tutup" class="text-slate-300 text-3xl leading-none w-10 h-10 flex items-center justify-center rounded-full hover:bg-slate-700 hover:text-amber-400 hover:rotate-90 transition">&times;</button>
 </div>
 <div id="mobileNavItems"></div>
 </div>
@@ -325,7 +491,7 @@ body{font-family:'Inter',sans-serif;background:#0f0f1a;color:#e2e8f0;overflow-x:
 <div id="modalContainer" class="fixed inset-0 flex items-center justify-center z-50 hidden modal-overlay p-4">
 <div id="modalContent" class="card-bg rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-6 shadow-2xl scrollbar-thin"></div>
 </div>
-<div id="toast" class="fixed bottom-6 right-6 z-50 hidden bg-slate-800 border border-amber-500 rounded-xl px-5 py-3 shadow-2xl text-sm"></div>
+<div id="toast" class="fixed bottom-24 right-6 z-50 hidden bg-slate-800 border border-amber-500 rounded-xl px-5 py-3 shadow-2xl text-sm"></div>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 import { getAuth, signInAnonymously, GoogleAuthProvider, signInWithPopup, linkWithPopup, onAuthStateChanged, signOut, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
@@ -344,8 +510,9 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const googleProvider = new GoogleAuthProvider();
 
-const APP_VERSION = '1.5';
+const APP_VERSION = '1.6';
 const APP_VERSION_NOTES = [
+  'v1.6 — Perbaikan layout navbar bawah: sekarang menggunakan grid 7 kolom yang rapi di semua perangkat (HP, tablet, desktop), tombol Home di tengah dengan style khusus, safe-area support untuk iPhone notch',
   'v1.5 — Fitur Review Karya dengan Mode Reader: preview gambar ala reader, panel kontrol drag & fullscreen terpisah (desktop: kiri-kanan, HP: tombol drawer)',
   'v1.4 — Edit Karya (sampul, teaser, deskripsi, genre, judul, status), Genre Custom (ketik sendiri), Badge versi di header & footer',
   'v1.3 — Minigame Gambar & Tebak (2/5 pemain), Auto Boost Global, Perbaikan bug'
@@ -385,9 +552,9 @@ let homeIsFirstRender = true;
 let reviewWorkId = null;
 let reviewWorkData = null;
 let reviewChaptersData = [];
-let reviewImagesMap = {}; // key: chapterId, value: array of image URLs
+let reviewImagesMap = {};
 let reviewCurrentChapterId = null;
-let reviewMode = null; // 'drag' | 'fullscreen' | null (belum dipilih)
+let reviewMode = null;
 let reviewMobilePanelOpen = false;
 
 // === MINIGAME GLOBAL STATE ===
@@ -684,6 +851,7 @@ function showToast(msg, dur = 3000) {
   t.textContent = msg; t.classList.remove('hidden');
   setTimeout(() => t.classList.add('hidden'), dur);
 }
+window.showToast = showToast;
 window.addEventListener('unhandledrejection', (e) => {
   const r = e.reason; const msg = (r && (r.message || r.code)) || String(r);
   console.error('Unhandled:', r);
@@ -965,29 +1133,25 @@ async function checkBirthdays() {
   } catch (e) {}
 }
 
+// NAV_MAP yang sudah diupdate - HAPUS Chat & Clan, TAMBAH Panduan
 const NAV_MAP = [
-  { id:'home', icon:'fa-home', label:'Beranda' },
-  { id:'baru', icon:'fa-clock', label:'Baru-baru Ini' },
-  { id:'baruupload', icon:'fa-upload', label:'Baru Upload' },
-  { id:'berita', icon:'fa-newspaper', label:'Berita' },
   { id:'kategori', icon:'fa-tags', label:'Kategori' },
-  { id:'leaderboard', icon:'fa-trophy', label:'Leaderboard' },
-  { id:'followers', icon:'fa-users', label:'Top Followers' },
-  { id:'bookmark', icon:'fa-bookmark', label:'Bookmark' },
-  { id:'chat', icon:'fa-comments', label:'Chat Publik' },
-  { id:'clan', icon:'fa-users', label:'Clan' },
-  { id:'teman', icon:'fa-user-friends', label:'Teman & DM' },
-  { id:'minigame', icon:'fa-gamepad', label:'Minigame', color:'text-purple-400' },
-  { id:'jadi-kreator', icon:'fa-star', label:'Jadi Kreator', color:'text-green-400' },
   { id:'panduan', icon:'fa-book', label:'Panduan', color:'text-amber-300' },
+  { id:'minigame', icon:'fa-gamepad', label:'Mini Game', color:'text-purple-400' },
+  { id:'bookmark', icon:'fa-bookmark', label:'Bookmark' },
+  { id:'followers', icon:'fa-users', label:'Top Followers' },
+  { id:'leaderboard', icon:'fa-trophy', label:'Leaderboard' },
+  { id:'baru', icon:'fa-clock', label:'Proses Pengerjaan' },
+  { id:'teman', icon:'fa-user-friends', label:'Teman & DM' },
   { id:'kritik', icon:'fa-envelope', label:'Kritik & Saran' },
   { id:'profil', icon:'fa-user-circle', label:'Profil' },
-  { id:'creator', icon:'fa-pen-fancy', label:'Creator', color:'text-blue-400', roleCheck:() => isCreator(userProfile) || isAdminSession },
   { id:'admin', icon:'fa-crown', label:'Admin Panel', color:'text-amber-400', roleCheck:() => isAdminUser(userProfile) }
 ];
 function updateActiveNav() {
   const base = getHash().split('/')[0];
   document.querySelectorAll('.mobile-nav-item').forEach(b => b.classList.toggle('active', b.dataset.nav === base));
+  document.querySelectorAll('.nav-bottom-item').forEach(b => b.classList.toggle('active', b.dataset.nav === base));
+  document.querySelectorAll('.nav-bottom-center').forEach(b => b.classList.toggle('active', b.dataset.nav === base));
 }
 function renderMobileNav() {
   const items = document.getElementById('mobileNavItems');
@@ -1003,9 +1167,19 @@ function renderMobileNav() {
 }
 function openMobileNav() { renderMobileNav(); document.getElementById('mobileNavOverlay').classList.add('active'); document.getElementById('mobileNavDrawer').classList.add('active'); }
 function closeMobileNav() { document.getElementById('mobileNavOverlay').classList.remove('active'); document.getElementById('mobileNavDrawer').classList.remove('active'); }
-document.getElementById('mobileMenuBtn').onclick = openMobileNav;
+document.getElementById('mobileMenuBtn')?.addEventListener('click', openMobileNav);
 document.getElementById('closeMobileNav').onclick = closeMobileNav;
 document.getElementById('mobileNavOverlay').onclick = closeMobileNav;
+
+window.openMobileNav = openMobileNav;
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMobileNav(); });
+window.closeMobileNav = closeMobileNav;
+window.renderMobileNav = renderMobileNav;
+document.getElementById('bottomMenuBtn')?.addEventListener('click', (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  openMobileNav();
+});
 
 window.toggleFullscreenReader = () => {
   isFullscreenReader = !isFullscreenReader;
@@ -1533,7 +1707,6 @@ function renderReviewReaderModal() {
   `;
   modal.classList.remove('hidden');
 
-  // Event handlers
   document.getElementById('closeReview').onclick = closeReviewModal;
   document.getElementById('reviewCloseBtn').onclick = closeReviewModal;
 
@@ -1547,7 +1720,6 @@ function renderReviewReaderModal() {
     };
   }
 
-  // Mode selector handlers
   document.querySelectorAll('#reviewReaderPanel .review-mode-btn, #reviewMobilePanel .review-mode-btn').forEach(btn => {
     btn.onclick = () => {
       const mode = btn.dataset.mode;
@@ -1557,12 +1729,10 @@ function renderReviewReaderModal() {
     };
   });
 
-  // Drag & drop handlers
   if (reviewMode === 'drag' && isKomik) {
     initReviewDragDrop();
   }
 
-  // Mobile panel toggle
   const mobileBtn = document.getElementById('reviewMobilePanelBtn');
   const mobilePanel = document.getElementById('reviewMobilePanel');
   const mobileOverlay = document.getElementById('reviewMobilePanelOverlay');
@@ -1589,7 +1759,6 @@ function renderReviewReaderModal() {
     };
   }
 
-  // Novel: save title & content
   if (!isKomik && currentCh) {
     const saveBtn = document.getElementById('reviewSaveAllBtn');
     if (saveBtn) {
@@ -1605,7 +1774,6 @@ function renderReviewReaderModal() {
     }
   }
 
-  // Publish button
   const pubBtn = document.getElementById('reviewPublishBtn');
   if (pubBtn) {
     pubBtn.onclick = async () => {
@@ -1620,7 +1788,6 @@ function renderReviewReaderModal() {
     };
   }
 
-  // Save all (komik)
   if (isKomik) {
     const saveBtn = document.getElementById('reviewSaveAllBtn');
     if (saveBtn) {
@@ -1763,7 +1930,6 @@ function initReviewDragDrop() {
     });
   });
 
-  // Touch drag untuk mobile
   let touchSrcIdx = null;
   grid.querySelectorAll('.review-img-thumb').forEach((thumb) => {
     thumb.addEventListener('touchstart', (e) => {
@@ -2112,7 +2278,6 @@ function renderAdminLogin(c) {
     <div class="text-center mb-6">
       <img src="${LOGO_URL}" class="w-20 h-20 mx-auto rounded-2xl mb-3 border-2 border-amber-500 logo-glow">
       <h2 class="text-2xl font-black">Admin Login</h2>
-      <div class="mt-2"><span class="version-badge"><i class="fas fa-code-branch"></i>v1.5</span></div>
     </div>
     <div class="space-y-4">
       <input id="adminEmailInput" type="email" placeholder="Email admin" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm">
@@ -2133,7 +2298,7 @@ function renderAdminLogin(c) {
 
 async function renderBaru(container) {
   container.innerHTML = `
-    <h2 class="text-2xl font-bold mb-4"><i class="fas fa-clock text-blue-400 mr-2"></i>Baru-baru Ini</h2>
+    <h2 class="text-2xl font-bold mb-4"><i class="fas fa-clock text-blue-400 mr-2"></i>Proses Pengerjaan</h2>
     <p class="text-sm text-slate-400 mb-6">Karya yang sedang dalam proses pembuatan (belum dipublish).</p>
     <div id="baruList" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-5"></div>`;
   const list = document.getElementById('baruList');
@@ -2245,11 +2410,13 @@ async function renderPanduan(container) {
 
   const defaultPanduan = `
     <h3><i class="fas fa-code-branch"></i> 0. Versi Website</h3>
-    <p>KomiNovel saat ini versi <b>v1.5</b>. Update terbaru:</p>
+    <p>KomiNovel saat ini versi <b>v1.6</b>. Update terbaru:</p>
     <ul>
+      <li>🛠️ <b>Perbaikan Layout Navbar</b> — Navbar bawah sekarang rapi di semua perangkat (HP, tablet, desktop) dengan grid 7 kolom</li>
       <li>✅ <b>Review Karya Mode Reader</b> — Preview gambar ala reader, panel kontrol terpisah untuk drag & fullscreen</li>
       <li>✅ <b>Edit Karya</b> — Creator bisa edit sampul, teaser, deskripsi, genre, judul, status</li>
       <li>✅ <b>Genre Custom</b> — Creator bisa ketik genre sendiri</li>
+      <li>✅ <b>Menu Hamburger Baru</b> — Chat & Clan dipindah ke bottom nav, menu Panduan ditambahkan</li>
     </ul>
 
     <h3><i class="fas fa-sign-in-alt"></i> 1. Cara Masuk / Login</h3>
@@ -2258,6 +2425,11 @@ async function renderPanduan(container) {
 
     <h3><i class="fas fa-home"></i> 2. Beranda</h3>
     <p>Lihat daftar <b>Komik</b> (default) & <b>Novel</b>. Karya yang sudah dipublish saja yang tampil di beranda.</p>
+    <p>Ada 2 bagian utama:</p>
+    <ul>
+      <li><b>Terpopuler</b> — Karya dengan views, likes, & rating tertinggi</li>
+      <li><b>Baru Upload</b> — Karya yang baru saja dipublish</li>
+    </ul>
 
     <h3><i class="fas fa-clipboard-check"></i> 3. Review & Publish Karya — PENTING!</h3>
     <p>Semua karya baru otomatis berstatus <b>NONPUBLISH</b>. Creator <b>wajib review & publish manual</b> lewat tombol <b>Review & Publish</b> di Creator → Kelola.</p>
@@ -2271,7 +2443,7 @@ async function renderPanduan(container) {
     </ul>
     <div class="warning">⚠️ Jangan publish sebelum yakin. Cek urutan gambar komik karena pembaca akan melihat sesuai urutan yang kamu atur.</div>
 
-    <h3><i class="fas fa-clock"></i> 4. Baru-baru Ini</h3>
+    <h3><i class="fas fa-clock"></i> 4. Proses Pengerjaan</h3>
     <p>Karya yang sedang dalam proses pembuatan (belum dipublish).</p>
 
     <h3><i class="fas fa-upload"></i> 5. Baru Upload</h3>
@@ -2285,12 +2457,35 @@ async function renderPanduan(container) {
 
     <h3><i class="fas fa-edit"></i> 8. Edit Karya</h3>
     <p>Di halaman <b>Creator</b> → <b>Kelola</b>, setiap karya ada tombol <b>Edit Karya</b>.</p>
+    <p>Kamu bisa mengubah:</p>
+    <ul>
+      <li>Judul</li>
+      <li>Teaser (maks 150 karakter)</li>
+      <li>Tipe (Novel/Komik)</li>
+      <li>Status (Publish/Nonpublish)</li>
+      <li>Status Tamat (Berlanjut/Tamat)</li>
+      <li>Genre (bisa pilih banyak atau tambah sendiri)</li>
+      <li>Deskripsi</li>
+      <li>Sampul/Cover</li>
+    </ul>
 
     <h3><i class="fas fa-pen-fancy"></i> 9. Genre Custom</h3>
     <p>Saat upload atau edit karya, klik tombol <b>+ Tambah Genre Sendiri</b> (hijau).</p>
+    <ul>
+      <li>Ketik nama genre baru</li>
+      <li>Klik tombol centang</li>
+      <li>Genre otomatis ditambahkan & langsung terpilih</li>
+      <li>Genre juga tersimpan untuk digunakan kreator lain</li>
+    </ul>
 
     <h3><i class="fas fa-crown"></i> 10. Kreator Unggulan</h3>
     <p>Admin/Owner bisa menandai kreator sebagai <b>Unggulan</b> (⭐).</p>
+    <p>Kreator unggulan akan:</p>
+    <ul>
+      <li>Mendapat border emas di profil & karya</li>
+      <li>Tampil di filter "⭐ Unggulan" di Top Followers</li>
+      <li>Lebih menonjol di daftar karya</li>
+    </ul>
 
     <h3><i class="fas fa-check-circle"></i> 11. Centang Verified</h3>
     <ul>
@@ -2302,15 +2497,89 @@ async function renderPanduan(container) {
 
     <h3><i class="fas fa-comments"></i> 12. Komentar & Rating</h3>
     <p>Di halaman baca komik/novel, kamu bisa komentar, rating bintang 1-5.</p>
+    <ul>
+      <li>Komentar bisa dibalas (nested reply)</li>
+      <li>Komentar bisa di-edit & dihapus oleh pemilik</li>
+      <li>Admin bisa hapus komentar apapun</li>
+      <li>Like komentar orang lain</li>
+    </ul>
 
     <h3><i class="fas fa-users"></i> 13. Clan</h3>
-    <p>Buat atau join clan.</p>
+    <p>Buat atau join clan. Fitur clan:</p>
+    <ul>
+      <li>Buat clan (3-20 karakter)</li>
+      <li>Join request (harus disetujui Admin/Owner clan)</li>
+      <li>Chat clan dengan gambar</li>
+      <li>Max 2 Admin per clan</li>
+      <li>Level clan naik dari aktivitas chat</li>
+    </ul>
 
     <h3><i class="fas fa-birthday-cake"></i> 14. Auto Ultah</h3>
     <p>Penulis & Komikus yang isi tanggal lahir akan dapat banner ucapan otomatis.</p>
+    <p>Format tanggal lahir: <b>DD-MM</b> (contoh: 17-08)</p>
 
     <h3><i class="fas fa-gamepad"></i> 15. Minigame Gambar & Tebak</h3>
     <p>Main game gambar bareng! 1 orang jadi penggambar, yang lain nebak.</p>
+    <ul>
+      <li>Mode Main Berdua (2 pemain)</li>
+      <li>Mode Main Berlima (5 pemain)</li>
+      <li>Penggambar punya waktu 20 menit</li>
+      <li>Poin untuk jawaban benar & penggambar</li>
+      <li>Tools: brush, eraser, line, rect, circle, fill</li>
+      <li>Warna lengkap & undo/redo</li>
+    </ul>
+
+    <h3><i class="fas fa-bookmark"></i> 16. Bookmark</h3>
+    <p>Simpan karya favoritmu dengan klik tombol <b>Bookmark</b> di halaman baca.</p>
+    <p>Akses bookmark di menu <b>Bookmark</b>.</p>
+
+    <h3><i class="fas fa-bookmark"></i> 17. Lanjut Baca</h3>
+    <p>KomiNovel otomatis menyimpan posisi bacaan terakhir. Saat kembali ke karya yang sama, akan muncul banner <b>"Lanjut baca dari posisi terakhir?"</b>.</p>
+
+    <h3><i class="fas fa-user-friends"></i> 18. Teman & DM</h3>
+    <p>Cari teman, kirim request, dan chat pribadi (DM).</p>
+    <ul>
+      <li>Cari user berdasarkan username</li>
+      <li>Kirim request pertemanan</li>
+      <li>Chat pribadi dengan gambar</li>
+    </ul>
+
+    <h3><i class="fas fa-trophy"></i> 19. Leaderboard</h3>
+    <p>Peringkat karya berdasarkan rating tertinggi.</p>
+    <ul>
+      <li>Filter Komik/Novel</li>
+      <li>Top 20 karya</li>
+      <li>Sort by avg rating & rating count</li>
+    </ul>
+
+    <h3><i class="fas fa-users"></i> 20. Top Followers</h3>
+    <p>Peringkat user berdasarkan followers.</p>
+    <ul>
+      <li>Filter: Semua, Kreator, ⭐ Unggulan, Staff</li>
+      <li>Top 30 user</li>
+      <li>Bisa klik untuk lihat profil</li>
+    </ul>
+
+    <h3><i class="fas fa-rocket"></i> 21. Auto Boost Global</h3>
+    <p>Fitur Admin/Owner untuk menambah views & likes otomatis ke semua karya.</p>
+    <ul>
+      <li>+20 views per 5 menit</li>
+      <li>+20 likes per 5 menit</li>
+      <li>Berlaku GLOBAL untuk semua device</li>
+      <li>Bisa dimatikan kapan saja</li>
+    </ul>
+
+    <h3><i class="fas fa-crown"></i> 22. Admin Panel</h3>
+    <p>Khusus untuk Admin & Owner:</p>
+    <ul>
+      <li><b>User</b> — Kelola role, ban/unban, jadikan kreator unggulan</li>
+      <li><b>Karya</b> — Takedown/restore, jadikan unggulan, lihat</li>
+      <li><b>Upload</b> — Upload karya langsung sebagai admin</li>
+      <li><b>Kritik</b> — Lihat kritik & saran dari user</li>
+      <li><b>Ultah</b> — Setting text auto ultah & lihat riwayat</li>
+      <li><b>Boost</b> — Toggle auto boost global</li>
+      <li><b>Setting</b> — Nomor WA admin & info versi</li>
+    </ul>
 
     <h3><i class="fas fa-question-circle"></i> Butuh Bantuan?</h3>
     <p>Hubungi Admin di WhatsApp: <b>${WA_NUMBER}</b></p>
@@ -2324,7 +2593,6 @@ async function renderPanduan(container) {
         </div>
         <h2 class="text-2xl md:text-3xl font-black text-amber-400">Buku Panduan KomiNovel</h2>
         <p class="text-slate-400 mt-2">Semua yang perlu kamu tau tentang KomiNovel 📚</p>
-        <div class="mt-3 flex justify-center"><span class="version-badge"><i class="fas fa-code-branch"></i>v1.5</span></div>
         ${isAdminUser(userProfile) ? `<button id="editPanduanBtn" class="mt-3 bg-blue-600 text-white font-bold px-4 py-2 rounded-full text-sm hover:scale-105 transition"><i class="fas fa-edit mr-1"></i>Edit Panduan</button>` : ''}
       </div>
       <div class="warning-hard mb-4">
@@ -2369,67 +2637,185 @@ async function renderPanduan(container) {
 }
 
 // ============================================================
-// ==== RENDER HOME DENGAN ANTI-FLICKER ========================
+// ==== RENDER HOME — LAYOUT BARU: TERPOPULER + BARU UPLOAD ====
 // ============================================================
 async function renderHome(container) {
   container.innerHTML = `
-    <div class="flex flex-wrap justify-between items-center gap-3 mb-6">
-      <div class="flex gap-2">
-        <button id="tabKomik" class="px-4 py-2 rounded-full font-bold transition text-sm ${currentContentType === 'komik' ? 'bg-orange-500 text-white' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'}">Komik</button>
-        <button id="tabNovel" class="px-4 py-2 rounded-full font-bold transition text-sm ${currentContentType === 'novel' ? 'bg-amber-500 text-black' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'}">Novel</button>
+    <div class="mb-5">
+      <h1 class="text-2xl md:text-3xl font-black text-center mb-1">
+        <span class="bg-gradient-to-r from-amber-300 to-orange-500 bg-clip-text text-transparent">KomiNovel</span>
+      </h1>
+      <p class="text-center text-xs text-slate-400 mb-4">Baca & Tulis Novel/Komik Online Gratis</p>
+      <div class="flex gap-2 max-w-xl mx-auto">
+        <input id="searchInput" type="text" placeholder="Cari judul komik/novel..." value="${currentSearch}" class="flex-1 bg-slate-800 border border-slate-700 rounded-full px-4 py-2.5 text-sm focus:border-amber-500 transition">
+        <button id="searchBtn" class="bg-amber-500 text-black px-5 py-2.5 rounded-full font-bold text-sm hover:scale-105 transition"><i class="fas fa-search"></i></button>
       </div>
-      <div class="flex gap-2 w-full md:w-auto">
-        <input id="searchInput" type="text" placeholder="Cari judul..." value="${currentSearch}" class="bg-slate-800 border border-slate-700 rounded-full px-4 py-2 text-sm w-full md:w-64 focus:border-amber-500 transition">
-        <button id="searchBtn" class="bg-amber-500 text-black px-4 py-2 rounded-full font-bold text-sm hover:scale-105 transition"><i class="fas fa-search"></i></button>
+      <div class="flex gap-2 justify-center mt-3">
+        <button id="tabKomik" class="px-4 py-1.5 rounded-full font-bold transition text-xs ${currentContentType === 'komik' ? 'bg-orange-500 text-white' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'}">Komik</button>
+        <button id="tabNovel" class="px-4 py-1.5 rounded-full font-bold transition text-xs ${currentContentType === 'novel' ? 'bg-amber-500 text-black' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'}">Novel</button>
       </div>
     </div>
-    <div id="contentList" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-5"></div>`;
+
+    <!-- BAGIAN TERPOPULER -->
+    <section class="slide-section mb-8" id="sectionPopuler">
+      <div class="slide-header">
+        <h2 class="text-amber-400"><i class="fas fa-fire mr-1"></i>Terpopuler</h2>
+        <div class="flex gap-1">
+          <button class="slide-nav-btn" id="popPrev" title="Geser kiri"><i class="fas fa-chevron-left"></i></button>
+          <button class="slide-nav-btn" id="popNext" title="Geser kanan"><i class="fas fa-chevron-right"></i></button>
+        </div>
+      </div>
+      <div class="slide-track" id="populerTrack"></div>
+    </section>
+
+    <!-- BAGIAN BARU UPLOAD -->
+    <section class="slide-section" id="sectionBaru">
+      <div class="slide-header">
+        <h2 class="text-green-400"><i class="fas fa-upload mr-1"></i>Baru Upload</h2>
+        <div class="flex gap-1">
+          <button class="slide-nav-btn" id="baruPrev" title="Geser kiri"><i class="fas fa-chevron-left"></i></button>
+          <button class="slide-nav-btn" id="baruNext" title="Geser kanan"><i class="fas fa-chevron-right"></i></button>
+        </div>
+      </div>
+      <div class="slide-track" id="baruTrack"></div>
+    </section>
+
+    <div id="homeEmpty" class="hidden card-bg rounded-2xl p-12 text-center empty-animation mt-4">
+      <i class="fas fa-book-open text-6xl text-amber-400/50 mb-4"></i>
+      <h3 class="text-xl font-bold">Belum ada ${currentContentType === 'novel' ? 'Novel' : 'Komik'}.</h3>
+      <p class="text-slate-400 mt-2">Jadilah yang pertama!</p>
+      ${isCreator(userProfile) || isAdminSession ? `<button class="mt-4 bg-amber-500 text-black px-6 py-2 rounded-full font-bold btn-glow" onclick="window.location.hash='creator'">Upload Karya</button>` : `<button class="mt-4 bg-green-600 text-white px-6 py-2 rounded-full font-bold hover:scale-105 transition" onclick="window.location.hash='jadi-kreator'"><i class="fas fa-star mr-1"></i>Jadi Kreator</button>`}
+    </div>
+  `;
+
   document.getElementById('tabKomik').onclick = () => { currentContentType = 'komik'; renderPage(); };
   document.getElementById('tabNovel').onclick = () => { currentContentType = 'novel'; renderPage(); };
   document.getElementById('searchBtn').onclick = () => { currentSearch = document.getElementById('searchInput').value.trim(); renderPage(); };
   document.getElementById('searchInput').addEventListener('keypress', e => { if (e.key === 'Enter') { currentSearch = e.target.value.trim(); renderPage(); } });
-  const contentList = document.getElementById('contentList');
+
+  const populerTrack = document.getElementById('populerTrack');
+  const baruTrack = document.getElementById('baruTrack');
+  const homeEmpty = document.getElementById('homeEmpty');
   const q = query(collection(db, 'works'), where('type', '==', currentContentType));
+
   let initialLoad = true;
   let lastKnownIds = new Set();
+
   worksUnsub = onSnapshot(q, (snapshot) => {
     let works = [];
     snapshot.forEach(d => works.push({ id: d.id, ...d.data() }));
     works = works.filter(w => !isNonPublish(w) && !isTakedown(w));
-    works.sort((a, b) => {
+
+    if (currentSearch) {
+      works = works.filter(w => w.title.toLowerCase().includes(currentSearch.toLowerCase()));
+    }
+
+    const populer = [...works].sort((a, b) => {
       const popA = (a.views || 0) + (a.likes || 0) * 2 + (a.avgRating || 0) * 10;
       const popB = (b.views || 0) + (b.likes || 0) * 2 + (b.avgRating || 0) * 10;
       return popB - popA;
     });
-    if (currentSearch) works = works.filter(w => w.title.toLowerCase().includes(currentSearch.toLowerCase()));
+
+    const baru = [...works].sort((a, b) => (b.createdAt?.toDate?.() || 0) - (a.createdAt?.toDate?.() || 0));
+
+    if (works.length === 0) {
+      populerTrack.innerHTML = '';
+      baruTrack.innerHTML = '';
+      homeEmpty.classList.remove('hidden');
+      document.getElementById('sectionPopuler').style.display = 'none';
+      document.getElementById('sectionBaru').style.display = 'none';
+      return;
+    }
+
+    homeEmpty.classList.add('hidden');
+    document.getElementById('sectionPopuler').style.display = '';
+    document.getElementById('sectionBaru').style.display = '';
 
     const newIds = works.map(w => w.id);
     const structureChanged = initialLoad || newIds.length !== currentWorksOrder.length || newIds.some((id, i) => id !== currentWorksOrder[i]);
 
-    if (structureChanged) {
-      const newIdsSet = new Set([...newIds].filter(id => !lastKnownIds.has(id)));
-      renderWorkList(contentList, works, initialLoad ? new Set() : newIdsSet, false);
+    if (structureChanged || initialLoad) {
+      populerTrack.innerHTML = populer.map((work, idx) => renderSlideCard(work, idx, initialLoad ? new Set() : new Set([...newIds].filter(id => !lastKnownIds.has(id))))).join('');
+      baruTrack.innerHTML = baru.map((work, idx) => renderSlideCard(work, idx, initialLoad ? new Set() : new Set([...newIds].filter(id => !lastKnownIds.has(id))))).join('');
       currentWorksOrder = newIds;
       currentWorksData = {};
       works.forEach(w => currentWorksData[w.id] = w);
       lastKnownIds = new Set(newIds);
       initialLoad = false;
+      attachSlideNav('popPrev', 'popNext', 'populerTrack');
+      attachSlideNav('baruPrev', 'baruNext', 'baruTrack');
     } else {
       works.forEach(w => {
         currentWorksData[w.id] = w;
         const viewEl = document.querySelector(`[data-view-id="${w.id}"]`);
-        if (viewEl) {
-          viewEl.textContent = formatCount(w.views || 0);
-          viewEl.dataset.val = w.views || 0;
-        }
+        if (viewEl) { viewEl.textContent = formatCount(w.views || 0); viewEl.dataset.val = w.views || 0; }
         const likeEl = document.querySelector(`[data-like-id="${w.id}"]`);
-        if (likeEl) {
-          likeEl.textContent = formatCount(w.likes || 0);
-          likeEl.dataset.val = w.likes || 0;
-        }
+        if (likeEl) { likeEl.textContent = formatCount(w.likes || 0); likeEl.dataset.val = w.likes || 0; }
       });
     }
   });
+}
+
+function renderSlideCard(work, idx, newIds = new Set()) {
+  const cats = parseCategories(work.category);
+  const isNew = newIds && newIds.has(work.id);
+  const liked = currentUser && (work.likedBy || []).includes(currentUser.uid);
+  const resume = getReadingPos(work.id);
+  const vBadge = getVerifiedBadge(work.authorFollowerCount || 0) + getCreatorVerifiedBadge({ roles: work.authorRoles || [work.authorRole || 'pembaca'] });
+  const isTD = isTakedown(work);
+  const isNP = isNonPublish(work);
+  const isUN = isUnggulan(work);
+  const borderClass = isTD ? 'takedown-border' : isNP ? 'nonpublish-border' : isUN ? 'unggulan-border' : '';
+  const resumeBadge = (resume && !isTD && !isNP) ? `<div class="absolute top-2 right-2 bg-blue-600/90 backdrop-blur text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full"><i class="fas fa-bookmark"></i></div>` : '';
+  const newClass = (isNew && !isTD) ? 'new-work' : '';
+  const delayStyle = `animation-delay:${Math.min(idx*0.03, 0.5)}s`;
+  return `
+    <div class="slide-card card-anim ${newClass}" style="${delayStyle}">
+      <div class="card-bg hover-lift rounded-2xl overflow-hidden shadow-lg cursor-pointer ${borderClass} h-full" onclick="${isTD ? `showToast('⛔ Karya ini di-takedown')` : `window.location.hash='reader/${work.id}'`}">
+        <div class="h-36 md:h-44 bg-slate-800 flex items-center justify-center overflow-hidden relative">
+          ${work.coverURL ? `<img src="${work.coverURL}" class="w-full h-full object-cover ${isTD ? 'grayscale opacity-40' : ''}" onerror="this.style.display='none';">` : `<i class="fas fa-image text-4xl text-slate-600"></i>`}
+          ${workStatusBadge(work)}
+          ${statusLabel(work.isTamat)}
+          ${resumeBadge}
+          <div class="absolute bottom-1 left-1 right-1 flex justify-between items-center pointer-events-none">
+            <span class="view-badge bg-black/70 backdrop-blur px-1.5 py-0.5 rounded-full text-[9px]"><i class="fas fa-eye"></i> <span data-view-id="${work.id}" data-val="${work.views || 0}">${formatCount(work.views || 0)}</span></span>
+            <span class="view-badge bg-black/70 backdrop-blur px-1.5 py-0.5 rounded-full text-[9px]"><i class="fas fa-heart" style="color:#ef4444"></i> <span data-like-id="${work.id}" data-val="${work.likes || 0}">${formatCount(work.likes || 0)}</span></span>
+          </div>
+        </div>
+        <div class="p-2.5">
+          <h3 class="font-bold text-xs md:text-sm truncate ${isTD ? 'text-slate-500 line-through' : ''}">${work.title}</h3>
+          <p class="text-[10px] md:text-xs text-slate-400 line-clamp-2 mt-0.5">${work.teaser || ''}</p>
+          <div class="flex flex-wrap gap-1 mt-1.5">
+            ${cats.slice(0,2).map(c => `<span class="text-[9px] bg-slate-700 px-1.5 py-0.5 rounded-full">${c}</span>`).join('')}
+          </div>
+          <div class="mt-1.5 flex items-center gap-1 text-[10px] text-slate-500">
+            <div class="flex items-center gap-1 flex-1 min-w-0 cursor-pointer hover:opacity-80" onclick="event.stopPropagation();window.location.hash='user/${work.authorId}'">
+              <img src="${work.authorPhotoURL || 'https://ui-avatars.com/api/?name='+encodeURIComponent(work.authorName||'U')}" class="w-4 h-4 rounded-full border border-slate-700">
+              <span class="truncate max-w-[60px] hover:text-amber-400">${work.authorName || 'Anonim'}${vBadge}</span>
+            </div>
+            <button class="like-btn ${liked ? 'liked' : 'text-slate-400'}" onclick="event.stopPropagation();toggleWorkLike('${work.id}')" ${isTD ? 'disabled' : ''}>
+              <i class="fas fa-heart text-xs"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function attachSlideNav(prevId, nextId, trackId) {
+  const prev = document.getElementById(prevId);
+  const next = document.getElementById(nextId);
+  const track = document.getElementById(trackId);
+  if (!prev || !next || !track) return;
+  const scrollAmount = 400;
+  prev.onclick = () => track.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+  next.onclick = () => track.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+  const updateBtns = () => {
+    prev.disabled = track.scrollLeft <= 5;
+    next.disabled = track.scrollLeft >= track.scrollWidth - track.clientWidth - 5;
+  };
+  track.addEventListener('scroll', updateBtns, { passive: true });
+  setTimeout(updateBtns, 100);
 }
 
 function renderWorkList(container, works, newIds = new Set(), skipAnim = false) {
@@ -4166,7 +4552,6 @@ async function renderKritikSaran(container) {
       <div class="text-center mb-6">
         <img src="${LOGO_URL}" class="w-16 h-16 mx-auto rounded-xl mb-3 border-2 border-amber-500 logo-glow">
         <h2 class="text-2xl font-black">Kritik & Saran</h2>
-        <div class="mt-2"><span class="version-badge"><i class="fas fa-code-branch"></i>v1.5</span></div>
       </div>
       <div class="space-y-4">
         <input id="kritikNama" type="text" placeholder="Nama" value="${userProfile?.username || ''}" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm">
@@ -4201,7 +4586,6 @@ async function renderProfil(container) {
     container.innerHTML = `<div class="card-bg rounded-2xl p-8 text-center max-w-md mx-auto card-anim">
       <img src="${LOGO_URL}" class="w-20 h-20 mx-auto rounded-2xl mb-4 border-2 border-amber-500 logo-glow">
       <h2 class="text-xl font-bold mb-4">Masuk KomiNovel</h2>
-      <div class="mt-2 mb-4"><span class="version-badge"><i class="fas fa-code-branch"></i>v1.5</span></div>
       <div class="flex flex-col gap-3">
         <button id="loginGoogle" class="bg-white text-black font-bold py-3 rounded-full hover:scale-105 transition"><i class="fab fa-google mr-2"></i>Google</button>
         <button id="loginGuest" class="bg-slate-700 text-slate-300 font-bold py-2 rounded-full text-xs">Guest</button>
@@ -4338,7 +4722,6 @@ async function renderCreatorDashboard(container) {
     <div class="flex justify-between items-center mb-6 flex-wrap gap-2">
       <h2 class="text-xl md:text-2xl font-bold"><i class="fas fa-pen-fancy text-blue-400 mr-2"></i>Creator</h2>
       <div class="flex gap-2 flex-wrap items-center">
-        <span class="version-badge"><i class="fas fa-code-branch"></i>v1.5</span>
         ${hasRole(userProfile,'penulis') ? '<span class="penulis-tag text-xs px-3 py-1">PENULIS</span>' : ''}
         ${hasRole(userProfile,'komikus') ? '<span class="komikus-tag text-xs px-3 py-1">KOMIKUS</span>' : ''}
         <button id="openGuideBtn" class="bg-blue-600 text-white text-xs font-bold px-3 py-2 rounded-full hover:scale-105 transition"><i class="fas fa-question-circle mr-1"></i>Panduan</button>
@@ -4601,7 +4984,6 @@ async function renderAdminPanel(container) {
   container.innerHTML = `<div class="flex justify-between items-center mb-4 flex-wrap gap-2">
     <div class="flex items-center gap-2">
       <h2 class="text-xl md:text-2xl font-bold"><i class="fas fa-crown text-amber-400 mr-2"></i>Admin</h2>
-      <span class="version-badge"><i class="fas fa-code-branch"></i>v1.5</span>
     </div>
     <button id="adminLogoutBtn" class="bg-red-900/50 text-red-300 font-bold py-2 px-4 rounded-full text-xs hover:bg-red-800 transition">Logout</button>
   </div>
@@ -5820,7 +6202,7 @@ function showUploadGuide() {
       <div class="guide-step"><p class="font-bold text-amber-400 mb-1"><span class="guide-step-num">1</span>Login Google</p><p class="text-sm text-slate-300">Login Google supaya akun & PP permanen.</p></div>
       <div class="guide-step"><p class="font-bold text-amber-400 mb-1"><span class="guide-step-num">2</span>Jadi Kreator</p><p class="text-sm text-slate-300">Menu <b>Jadi Kreator</b> → minta role via WA admin.</p></div>
       <div class="guide-step"><p class="font-bold text-amber-400 mb-1"><span class="guide-step-num">3</span>Buat Karya (Nonpublish)</p><p class="text-sm text-slate-300">Creator → Buat Baru. Isi judul, teaser, genre, deskripsi, sampul. Karya otomatis berstatus <b>NONPUBLISH</b>.</p></div>
-      <div class="guide-step"><p class="font-bold text-amber-400 mb-1"><span class="guide-step-num">4</span>Review & Publish Mode Reader (v1.5) — PENTING!</p><p class="text-sm text-slate-300">Di <b>Creator → Kelola</b>, klik tombol <b>Review & Publish</b>. Preview gambar ala reader di kiri. Panel kontrol di kanan (desktop) atau tombol ⚙️ (HP). <b>Pilih mode dulu</b>: 🖐️ Drag atau 🔍 Fullscreen.</p></div>
+      <div class="guide-step"><p class="font-bold text-amber-400 mb-1"><span class="guide-step-num">4</span>Review & Publish Mode Reader — PENTING!</p><p class="text-sm text-slate-300">Di <b>Creator → Kelola</b>, klik tombol <b>Review & Publish</b>. Preview gambar ala reader di kiri. Panel kontrol di kanan (desktop) atau tombol ⚙️ (HP). <b>Pilih mode dulu</b>: 🖐️ Drag atau 🔍 Fullscreen.</p></div>
       <div class="guide-step"><p class="font-bold text-amber-400 mb-1"><span class="guide-step-num">5</span>Urutan Gambar Komik</p><p class="text-sm text-slate-300">Pilih <b>Mode Drag</b>, geser gambar untuk ubah urutan. Klik <b>Simpan Urutan</b>. Gambar #1 jadi sampul Eps.</p></div>
       <div class="guide-step"><p class="font-bold text-amber-400 mb-1"><span class="guide-step-num">6</span>Edit Karya</p><p class="text-sm text-slate-300">Tombol <b>Edit Karya</b> (ungu) untuk ubah sampul, teaser, deskripsi, genre, judul, status, dan status tamat.</p></div>
     </div>
@@ -6163,7 +6545,7 @@ function handleAuthClick() {
   else {
     const m = document.getElementById('modalContainer');
     const c = document.getElementById('modalContent');
-    c.innerHTML = `<div class="text-center mb-4"><img src="${LOGO_URL}" class="w-20 h-20 mx-auto rounded-2xl mb-3 border-2 border-amber-500 logo-glow"><h3 class="text-xl font-bold">Masuk</h3><div class="mt-2"><span class="version-badge"><i class="fas fa-code-branch"></i>v1.5</span></div></div>
+    c.innerHTML = `<div class="text-center mb-4"><img src="${LOGO_URL}" class="w-20 h-20 mx-auto rounded-2xl mb-3 border-2 border-amber-500 logo-glow"><h3 class="text-xl font-bold">Masuk</h3></div>
       <div class="flex flex-col gap-3">
         <button id="mg" class="bg-white text-black font-bold py-3 rounded-full hover:scale-105 transition"><i class="fab fa-google mr-2"></i>Google</button>
         <button id="mgu" class="bg-slate-700 text-slate-300 font-bold py-2 rounded-full text-xs">Guest</button>
@@ -6185,7 +6567,7 @@ window.addEventListener('hashchange', renderPage);
   renderPage();
   startAutoBoost();
   console.log(`%c🚀 KomiNovel v${APP_VERSION} loaded`, 'background:linear-gradient(135deg,#fbbf24,#d97706);color:#0f0f1a;font-weight:900;padding:4px 12px;border-radius:8px;');
-  console.log('%c✨ Fitur baru v1.5:', 'color:#fbbf24;font-weight:bold;');
+  console.log('%c✨ Update v1.6:', 'color:#fbbf24;font-weight:bold;');
   APP_VERSION_NOTES.forEach(n => console.log('  •', n));
 })();
 </script>
