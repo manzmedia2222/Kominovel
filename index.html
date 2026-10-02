@@ -1133,7 +1133,7 @@ async function checkBirthdays() {
   } catch (e) {}
 }
 
-// NAV_MAP yang sudah diupdate - HAPUS Chat & Clan, TAMBAH Panduan
+// NAV_MAP yang sudah diupdate - "baru" (Proses Pengerjaan) DIHAPUS dari hamburger menu
 const NAV_MAP = [
   { id:'kategori', icon:'fa-tags', label:'Kategori' },
   { id:'panduan', icon:'fa-book', label:'Panduan', color:'text-amber-300' },
@@ -1141,7 +1141,6 @@ const NAV_MAP = [
   { id:'bookmark', icon:'fa-bookmark', label:'Bookmark' },
   { id:'followers', icon:'fa-users', label:'Top Followers' },
   { id:'leaderboard', icon:'fa-trophy', label:'Leaderboard' },
-  { id:'baru', icon:'fa-clock', label:'Proses Pengerjaan' },
   { id:'teman', icon:'fa-user-friends', label:'Teman & DM' },
   { id:'kritik', icon:'fa-envelope', label:'Kritik & Saran' },
   { id:'profil', icon:'fa-user-circle', label:'Profil' },
@@ -2417,6 +2416,7 @@ async function renderPanduan(container) {
       <li>✅ <b>Edit Karya</b> — Creator bisa edit sampul, teaser, deskripsi, genre, judul, status</li>
       <li>✅ <b>Genre Custom</b> — Creator bisa ketik genre sendiri</li>
       <li>✅ <b>Menu Hamburger Baru</b> — Chat & Clan dipindah ke bottom nav, menu Panduan ditambahkan</li>
+      <li>✅ <b>Proses Pengerjaan di Beranda</b> — Karya nonpublish kini tampil di beranda</li>
     </ul>
 
     <h3><i class="fas fa-sign-in-alt"></i> 1. Cara Masuk / Login</h3>
@@ -2425,10 +2425,11 @@ async function renderPanduan(container) {
 
     <h3><i class="fas fa-home"></i> 2. Beranda</h3>
     <p>Lihat daftar <b>Komik</b> (default) & <b>Novel</b>. Karya yang sudah dipublish saja yang tampil di beranda.</p>
-    <p>Ada 2 bagian utama:</p>
+    <p>Ada 3 bagian utama:</p>
     <ul>
       <li><b>Terpopuler</b> — Karya dengan views, likes, & rating tertinggi</li>
       <li><b>Baru Upload</b> — Karya yang baru saja dipublish</li>
+      <li><b>Proses Pengerjaan</b> — Karya yang sedang dibuat (belum dipublish)</li>
     </ul>
 
     <h3><i class="fas fa-clipboard-check"></i> 3. Review & Publish Karya — PENTING!</h3>
@@ -2444,7 +2445,7 @@ async function renderPanduan(container) {
     <div class="warning">⚠️ Jangan publish sebelum yakin. Cek urutan gambar komik karena pembaca akan melihat sesuai urutan yang kamu atur.</div>
 
     <h3><i class="fas fa-clock"></i> 4. Proses Pengerjaan</h3>
-    <p>Karya yang sedang dalam proses pembuatan (belum dipublish).</p>
+    <p>Karya yang sedang dalam proses pembuatan (belum dipublish). Kini tampil di <b>beranda</b> setelah section Baru Upload.</p>
 
     <h3><i class="fas fa-upload"></i> 5. Baru Upload</h3>
     <p>Karya yang baru saja dipublish oleh kreator.</p>
@@ -2637,7 +2638,7 @@ async function renderPanduan(container) {
 }
 
 // ============================================================
-// ==== RENDER HOME — LAYOUT BARU: TERPOPULER + BARU UPLOAD ====
+// ==== RENDER HOME — LAYOUT: TERPOPULER + BARU UPLOAD + PROSES PENGERJAAN ====
 // ============================================================
 async function renderHome(container) {
   container.innerHTML = `
@@ -2669,7 +2670,7 @@ async function renderHome(container) {
     </section>
 
     <!-- BAGIAN BARU UPLOAD -->
-    <section class="slide-section" id="sectionBaru">
+    <section class="slide-section mb-8" id="sectionBaru">
       <div class="slide-header">
         <h2 class="text-green-400"><i class="fas fa-upload mr-1"></i>Baru Upload</h2>
         <div class="flex gap-1">
@@ -2678,6 +2679,18 @@ async function renderHome(container) {
         </div>
       </div>
       <div class="slide-track" id="baruTrack"></div>
+    </section>
+
+    <!-- BAGIAN PROSES PENGERJAAN (NONPUBLISH) -->
+    <section class="slide-section mb-8" id="sectionProses">
+      <div class="slide-header">
+        <h2 class="text-blue-400"><i class="fas fa-clock mr-1"></i>Proses Pengerjaan</h2>
+        <div class="flex gap-1">
+          <button class="slide-nav-btn" id="prosesPrev" title="Geser kiri"><i class="fas fa-chevron-left"></i></button>
+          <button class="slide-nav-btn" id="prosesNext" title="Geser kanan"><i class="fas fa-chevron-right"></i></button>
+        </div>
+      </div>
+      <div class="slide-track" id="prosesTrack"></div>
     </section>
 
     <div id="homeEmpty" class="hidden card-bg rounded-2xl p-12 text-center empty-animation mt-4">
@@ -2695,6 +2708,7 @@ async function renderHome(container) {
 
   const populerTrack = document.getElementById('populerTrack');
   const baruTrack = document.getElementById('baruTrack');
+  const prosesTrack = document.getElementById('prosesTrack');
   const homeEmpty = document.getElementById('homeEmpty');
   const q = query(collection(db, 'works'), where('type', '==', currentContentType));
 
@@ -2702,50 +2716,65 @@ async function renderHome(container) {
   let lastKnownIds = new Set();
 
   worksUnsub = onSnapshot(q, (snapshot) => {
-    let works = [];
-    snapshot.forEach(d => works.push({ id: d.id, ...d.data() }));
-    works = works.filter(w => !isNonPublish(w) && !isTakedown(w));
+    let allWorks = [];
+    snapshot.forEach(d => allWorks.push({ id: d.id, ...d.data() }));
+
+    let published = allWorks.filter(w => !isNonPublish(w) && !isTakedown(w));
+    let nonpublished = allWorks.filter(w => isNonPublish(w) && !isTakedown(w));
 
     if (currentSearch) {
-      works = works.filter(w => w.title.toLowerCase().includes(currentSearch.toLowerCase()));
+      published = published.filter(w => w.title.toLowerCase().includes(currentSearch.toLowerCase()));
+      nonpublished = nonpublished.filter(w => w.title.toLowerCase().includes(currentSearch.toLowerCase()));
     }
 
-    const populer = [...works].sort((a, b) => {
+    const populer = [...published].sort((a, b) => {
       const popA = (a.views || 0) + (a.likes || 0) * 2 + (a.avgRating || 0) * 10;
       const popB = (b.views || 0) + (b.likes || 0) * 2 + (b.avgRating || 0) * 10;
       return popB - popA;
     });
 
-    const baru = [...works].sort((a, b) => (b.createdAt?.toDate?.() || 0) - (a.createdAt?.toDate?.() || 0));
+    const baru = [...published].sort((a, b) => (b.createdAt?.toDate?.() || 0) - (a.createdAt?.toDate?.() || 0));
 
-    if (works.length === 0) {
+    const proses = [...nonpublished].sort((a, b) => {
+      const aTime = a.updatedAt?.toDate?.() || a.createdAt?.toDate?.() || 0;
+      const bTime = b.updatedAt?.toDate?.() || b.createdAt?.toDate?.() || 0;
+      return bTime - aTime;
+    });
+
+    if (allWorks.length === 0) {
       populerTrack.innerHTML = '';
       baruTrack.innerHTML = '';
+      prosesTrack.innerHTML = '';
       homeEmpty.classList.remove('hidden');
       document.getElementById('sectionPopuler').style.display = 'none';
       document.getElementById('sectionBaru').style.display = 'none';
+      document.getElementById('sectionProses').style.display = 'none';
       return;
     }
 
     homeEmpty.classList.add('hidden');
     document.getElementById('sectionPopuler').style.display = '';
     document.getElementById('sectionBaru').style.display = '';
+    document.getElementById('sectionProses').style.display = '';
 
-    const newIds = works.map(w => w.id);
+    const newIds = allWorks.map(w => w.id);
     const structureChanged = initialLoad || newIds.length !== currentWorksOrder.length || newIds.some((id, i) => id !== currentWorksOrder[i]);
 
     if (structureChanged || initialLoad) {
-      populerTrack.innerHTML = populer.map((work, idx) => renderSlideCard(work, idx, initialLoad ? new Set() : new Set([...newIds].filter(id => !lastKnownIds.has(id))))).join('');
-      baruTrack.innerHTML = baru.map((work, idx) => renderSlideCard(work, idx, initialLoad ? new Set() : new Set([...newIds].filter(id => !lastKnownIds.has(id))))).join('');
+      const newSet = initialLoad ? new Set() : new Set([...newIds].filter(id => !lastKnownIds.has(id)));
+      populerTrack.innerHTML = populer.map((work, idx) => renderSlideCard(work, idx, newSet)).join('') || '<p class="text-slate-500 text-xs italic px-2">Belum ada karya terpopuler.</p>';
+      baruTrack.innerHTML = baru.map((work, idx) => renderSlideCard(work, idx, newSet)).join('') || '<p class="text-slate-500 text-xs italic px-2">Belum ada karya baru.</p>';
+      prosesTrack.innerHTML = proses.map((work, idx) => renderSlideCard(work, idx, newSet)).join('') || '<p class="text-slate-500 text-xs italic px-2">Belum ada karya dalam proses.</p>';
       currentWorksOrder = newIds;
       currentWorksData = {};
-      works.forEach(w => currentWorksData[w.id] = w);
+      allWorks.forEach(w => currentWorksData[w.id] = w);
       lastKnownIds = new Set(newIds);
       initialLoad = false;
       attachSlideNav('popPrev', 'popNext', 'populerTrack');
       attachSlideNav('baruPrev', 'baruNext', 'baruTrack');
+      attachSlideNav('prosesPrev', 'prosesNext', 'prosesTrack');
     } else {
-      works.forEach(w => {
+      allWorks.forEach(w => {
         currentWorksData[w.id] = w;
         const viewEl = document.querySelector(`[data-view-id="${w.id}"]`);
         if (viewEl) { viewEl.textContent = formatCount(w.views || 0); viewEl.dataset.val = w.views || 0; }
@@ -2771,9 +2800,9 @@ function renderSlideCard(work, idx, newIds = new Set()) {
   const delayStyle = `animation-delay:${Math.min(idx*0.03, 0.5)}s`;
   return `
     <div class="slide-card card-anim ${newClass}" style="${delayStyle}">
-      <div class="card-bg hover-lift rounded-2xl overflow-hidden shadow-lg cursor-pointer ${borderClass} h-full" onclick="${isTD ? `showToast('⛔ Karya ini di-takedown')` : `window.location.hash='reader/${work.id}'`}">
+      <div class="card-bg hover-lift rounded-2xl overflow-hidden shadow-lg cursor-pointer ${borderClass} h-full" onclick="${isTD ? `showToast('⛔ Karya ini di-takedown')` : isNP ? `showToast('🔒 Karya belum dipublish')` : `window.location.hash='reader/${work.id}'`}">
         <div class="h-36 md:h-44 bg-slate-800 flex items-center justify-center overflow-hidden relative">
-          ${work.coverURL ? `<img src="${work.coverURL}" class="w-full h-full object-cover ${isTD ? 'grayscale opacity-40' : ''}" onerror="this.style.display='none';">` : `<i class="fas fa-image text-4xl text-slate-600"></i>`}
+          ${work.coverURL ? `<img src="${work.coverURL}" class="w-full h-full object-cover ${isTD ? 'grayscale opacity-40' : isNP ? 'grayscale opacity-70' : ''}" onerror="this.style.display='none';">` : `<i class="fas fa-image text-4xl text-slate-600"></i>`}
           ${workStatusBadge(work)}
           ${statusLabel(work.isTamat)}
           ${resumeBadge}
