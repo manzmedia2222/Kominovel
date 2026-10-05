@@ -14,7 +14,7 @@
 }
 </script>
 <meta name="google-site-verification" content="GvyTGbIx3Zov0CXr0f1voJ2LJnac-ppCl62NStzdY3E">
-<meta name="description" content="KomiNovel - Platform baca & tulis Novel dan Komik online gratis. Versi 1.6">
+<meta name="description" content="KomiNovel - Platform baca & tulis Novel dan Komik online gratis. Versi 1.7">
 <link rel="icon" href="https://i.ibb.co.com/SDTthJ7m/Gemini-Generated-Image-fhupt4fhupt4fhup.jpg">
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -340,7 +340,6 @@ body{font-family:'Inter',sans-serif;background:#0f0f1a;color:#e2e8f0;overflow-x:
   white-space:nowrap;
   padding:0 2px;
 }
-/* Center button (Home) - now part of the grid */
 .nav-bottom-center{
   display:flex;
   flex-direction:column;
@@ -355,16 +354,8 @@ body{font-family:'Inter',sans-serif;background:#0f0f1a;color:#e2e8f0;overflow-x:
   height:100%;
 }
 .nav-bottom-center:hover{filter:brightness(1.1)}
-.nav-bottom-center i{
-  font-size:22px;
-  line-height:1;
-  margin-bottom:2px;
-}
-.nav-bottom-center span{
-  font-size:9px;
-  font-weight:900;
-  line-height:1;
-}
+.nav-bottom-center i{font-size:22px;line-height:1;margin-bottom:2px}
+.nav-bottom-center span{font-size:9px;font-weight:900;line-height:1}
 .nav-bottom-center::before{
   content:'';
   position:absolute;
@@ -386,7 +377,6 @@ body{font-family:'Inter',sans-serif;background:#0f0f1a;color:#e2e8f0;overflow-x:
   color:#0f0f1a;
 }
 
-/* Tablet & Desktop - show more spacing */
 @media(min-width:640px){
   .nav-bottom-item{font-size:10px;gap:4px;padding:8px 6px}
   .nav-bottom-item i{font-size:19px}
@@ -404,7 +394,6 @@ body{font-family:'Inter',sans-serif;background:#0f0f1a;color:#e2e8f0;overflow-x:
   .nav-bottom-center i{font-size:26px}
 }
 
-/* Very small phones */
 @media(max-width:360px){
   .nav-bottom-item span{font-size:8px}
   .nav-bottom-item i{font-size:16px}
@@ -427,9 +416,119 @@ body{font-family:'Inter',sans-serif;background:#0f0f1a;color:#e2e8f0;overflow-x:
 .slide-nav-btn{background:#2d2d44;color:#cbd5e1;border:none;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.2s;font-size:12px;flex-shrink:0}
 .slide-nav-btn:hover{background:#fbbf24;color:#0f0f1a;transform:scale(1.1)}
 .slide-nav-btn:disabled{opacity:.3;pointer-events:none}
+
+/* ============================================================
+   === MAINTENANCE MODE STYLES v1.7 ===
+   ============================================================ */
+.maintenance-overlay{
+  position:fixed;inset:0;z-index:500;
+  background:linear-gradient(135deg,#0f0f1a 0%,#1a0a0a 50%,#0f0f1a 100%);
+  display:flex;align-items:center;justify-content:center;padding:20px;
+  animation:fadeIn .4s ease-out;overflow-y:auto;
+}
+.maintenance-box{
+  max-width:560px;width:100%;background:#1a1a2e;
+  border:2px solid #ef4444;border-radius:24px;padding:32px 24px;
+  text-align:center;box-shadow:0 0 60px rgba(239,68,68,.5),0 20px 60px rgba(0,0,0,.6);
+  animation:maintenancePulse 3s infinite ease-in-out;
+}
+@keyframes maintenancePulse{
+  0%,100%{box-shadow:0 0 40px rgba(239,68,68,.4),0 20px 60px rgba(0,0,0,.6);border-color:#ef4444}
+  50%{box-shadow:0 0 70px rgba(239,68,68,.8),0 20px 60px rgba(0,0,0,.6);border-color:#f87171}
+}
+.maintenance-icon{
+  width:100px;height:100px;margin:0 auto 20px;border-radius:50%;
+  background:linear-gradient(135deg,#ef4444,#b91c1c);
+  display:flex;align-items:center;justify-content:center;
+  font-size:48px;color:white;
+  box-shadow:0 0 40px rgba(239,68,68,.7);
+  animation:maintenanceShake 2.5s infinite;
+}
+@keyframes maintenanceShake{
+  0%,100%{transform:rotate(0)}
+  10%{transform:rotate(-10deg)}
+  20%{transform:rotate(10deg)}
+  30%{transform:rotate(-8deg)}
+  40%{transform:rotate(8deg)}
+  50%{transform:rotate(0)}
+}
+.maintenance-title{
+  font-size:28px;font-weight:900;color:#ef4444;
+  margin-bottom:8px;letter-spacing:1px;
+  text-shadow:0 0 20px rgba(239,68,68,.6);
+}
+.maintenance-subtitle{font-size:14px;color:#94a3b8;margin-bottom:20px}
+.maintenance-reason-box{
+  background:linear-gradient(135deg,rgba(127,29,29,.4),rgba(239,68,68,.15));
+  border:1px solid rgba(239,68,68,.5);border-radius:16px;
+  padding:16px;margin:16px 0;text-align:left;
+}
+.maintenance-reason-box .label{
+  font-size:11px;color:#fca5a5;font-weight:900;
+  letter-spacing:1px;margin-bottom:6px;
+  display:flex;align-items:center;gap:6px;
+}
+.maintenance-reason-box .reason-text{
+  font-size:15px;color:#fecaca;line-height:1.6;
+  white-space:pre-wrap;word-break:break-word;
+}
+.maintenance-info-row{
+  display:flex;align-items:center;gap:8px;justify-content:center;
+  font-size:12px;color:#94a3b8;margin:8px 0;flex-wrap:wrap;
+}
+.maintenance-info-row i{color:#fbbf24}
+.maintenance-btns{display:flex;flex-direction:column;gap:10px;margin-top:20px}
+.maintenance-btn{
+  padding:14px 20px;border-radius:9999px;font-weight:900;font-size:14px;
+  border:none;cursor:pointer;transition:.25s;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.maintenance-btn:hover{transform:scale(1.03)}
+.maintenance-btn-berita{
+  background:linear-gradient(135deg,#10b981,#047857);color:white;
+  box-shadow:0 4px 20px rgba(16,185,129,.4);
+}
+.maintenance-btn-wa{
+  background:linear-gradient(135deg,#25d366,#128c7e);color:white;
+  text-decoration:none;box-shadow:0 4px 20px rgba(37,211,102,.4);
+}
+.maintenance-btn-admin{
+  background:linear-gradient(135deg,#fbbf24,#d97706);color:#0f0f1a;
+  box-shadow:0 4px 20px rgba(251,191,36,.4);
+}
+.maintenance-status-dot{
+  display:inline-block;width:8px;height:8px;border-radius:50%;
+  background:#ef4444;margin-right:6px;
+  animation:dotPulse 1.5s infinite;
+}
+@keyframes dotPulse{
+  0%,100%{opacity:1;box-shadow:0 0 8px rgba(239,68,68,.9)}
+  50%{opacity:.4;box-shadow:0 0 2px rgba(239,68,68,.3)}
+}
+.maintenance-banner-top{
+  position:fixed;top:0;left:0;right:0;z-index:190;
+  background:linear-gradient(90deg,#ef4444,#b91c1c,#ef4444);
+  background-size:200% 100%;animation:maintenanceBannerShine 3s infinite;
+  color:white;font-weight:900;font-size:13px;
+  padding:10px 16px;text-align:center;
+  box-shadow:0 4px 20px rgba(239,68,68,.6);
+  display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;
+}
+@keyframes maintenanceBannerShine{
+  0%{background-position:0% 0}
+  100%{background-position:200% 0}
+}
+.maintenance-banner-top a{
+  color:#fff;text-decoration:underline;font-weight:900;
+  background:rgba(0,0,0,.25);padding:3px 10px;border-radius:9999px;
+}
+.maintenance-banner-top button{
+  background:rgba(0,0,0,.3);border:none;color:white;
+  width:22px;height:22px;border-radius:50%;cursor:pointer;font-weight:900;
+  display:flex;align-items:center;justify-content:center;
+}
 </style>
-</head>
-<body class="min-h-screen">
+</head><body class="min-h-screen">
 
 <div id="app" class="max-w-7xl mx-auto p-3 md:p-4 pb-24">
 <header class="flex justify-between items-center mb-4 md:mb-6 card-bg rounded-2xl p-3 md:p-4 shadow-xl">
@@ -448,11 +547,10 @@ body{font-family:'Inter',sans-serif;background:#0f0f1a;color:#e2e8f0;overflow-x:
 <div class="flex items-center justify-center gap-2 flex-wrap">
 <span>&copy; <span id="footerYear">2026</span> KomiNovel</span>
 </div>
-<p class="text-[10px] text-slate-600">v1.6</p>
+<p class="text-[10px] text-slate-600">v1.7</p>
 </footer>
 </div>
 
-<!-- BOTTOM NAVIGATION - 7 items dalam grid rapi -->
 <nav id="bottomNav" class="nav-bottom">
   <button class="nav-bottom-item" data-nav="clan" onclick="window.location.hash='clan'">
     <i class="fas fa-users"></i><span>Clan</span>
@@ -510,11 +608,12 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const googleProvider = new GoogleAuthProvider();
 
-const APP_VERSION = '1.6';
+const APP_VERSION = '1.7';
 const APP_VERSION_NOTES = [
-  'v1.6 — Perbaikan layout navbar bawah: sekarang menggunakan grid 7 kolom yang rapi di semua perangkat (HP, tablet, desktop), tombol Home di tengah dengan style khusus, safe-area support untuk iPhone notch',
-  'v1.5 — Fitur Review Karya dengan Mode Reader: preview gambar ala reader, panel kontrol drag & fullscreen terpisah (desktop: kiri-kanan, HP: tombol drawer)',
-  'v1.4 — Edit Karya (sampul, teaser, deskripsi, genre, judul, status), Genre Custom (ketik sendiri), Badge versi di header & footer',
+  'v1.7 — FITUR OFF KAN WEB: Admin/Owner bisa mematikan website sementara dengan alasan kustom. Saat off, semua halaman terkunci (maintenance screen), TAPI halaman Berita tetap bisa diakses. Admin tetap bisa masuk untuk kontrol.',
+  'v1.6 — Perbaikan layout navbar bawah: grid 7 kolom rapi, tombol Home di tengah, safe-area support iPhone notch',
+  'v1.5 — Fitur Review Karya dengan Mode Reader: preview gambar ala reader, panel kontrol drag & fullscreen terpisah',
+  'v1.4 — Edit Karya (sampul, teaser, deskripsi, genre, judul, status), Genre Custom, Badge versi',
   'v1.3 — Minigame Gambar & Tebak (2/5 pemain), Auto Boost Global, Perbaikan bug'
 ];
 
@@ -522,6 +621,7 @@ let currentUser = null, userProfile = null;
 let isAdminSession = false, adminEmail = null;
 let currentContentType = 'komik', currentCategory = 'all', currentSearch = '';
 let chatUnsub = null, chatUsersUnsub = null, clanChatUnsub = null, privateChatUnsub = null, worksUnsub = null;
+let usersCacheUnsub = null;
 let usersCache = {}, clansCache = {}, isFullscreenReader = false;
 let replyingToPublic = null, replyingToClan = null;
 let notifInitialized = false;
@@ -535,20 +635,16 @@ let ownerFollowerInterval = null;
 let autoBoostInterval = null;
 let showAllCategories = false;
 
-// === CUSTOM GENRE STATE ===
 let customCategories = [];
 let customCategoriesUnsub = null;
 
-// === AUTO BOOST GLOBAL STATE ===
 let autoBoostEnabled = true;
 let autoBoostUnsub = null;
 
-// === ANTI-FLICKER ===
 let currentWorksData = {};
 let currentWorksOrder = [];
 let homeIsFirstRender = true;
 
-// === REVIEW STATE ===
 let reviewWorkId = null;
 let reviewWorkData = null;
 let reviewChaptersData = [];
@@ -557,7 +653,6 @@ let reviewCurrentChapterId = null;
 let reviewMode = null;
 let reviewMobilePanelOpen = false;
 
-// === MINIGAME GLOBAL STATE ===
 let mgUnsubRoom = null, mgUnsubPlayers = null, mgUnsubGuesses = null;
 let mgCanvas = null, mgCtx = null, mgDrawing = false;
 let mgCurrentRoom = null, mgMyRole = null;
@@ -569,6 +664,12 @@ let mgIsUndoRedo = false;
 let mgGuessSubmitting = false;
 let mgLastCanvasData = '';
 let mgCanvasSyncTimer = null;
+
+// ===== MAINTENANCE MODE STATE (v1.7) =====
+let webMaintenance = false;
+let maintenanceData = { enabled: false, reason: '', endTime: '', by: '', at: null };
+let maintenanceUnsub = null;
+let maintenanceBannerDismissed = false;
 
 const VERIFIED_GREEN = 1000;
 const VERIFIED_BLUE = 100000;
@@ -618,6 +719,570 @@ const MG_WORD_LIST = [
   'gunting','lem','penggaris','penghapus','tas','dompet','kacamata','jam tangan','cincin','kalung',
   'boneka','bola','layang-layang','kelereng','gasing','sepatu roda','skateboard','trampolin','ayunan','perosotan'
 ];
+
+// ============================================================
+// ===== HELPER UMUM ==========================================
+// ============================================================
+function showToast(msg, dur = 3000) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.remove('hidden');
+  setTimeout(() => t.classList.add('hidden'), dur);
+}
+window.showToast = showToast;
+window.addEventListener('unhandledrejection', (e) => {
+  const r = e.reason; const msg = (r && (r.message || r.code)) || String(r);
+  console.error('Unhandled:', r);
+});
+window.addEventListener('error', (e) => { if (e && e.message && !/ResizeObserver/.test(e.message)) console.error('Error:', e.message); });
+function getLevelTitle(l) { for (const t of LEVEL_TITLES) if (l >= t.min && l <= t.max) return t.title; return 'Dewa Mitos'; }
+function getClanLevelTitle(l) { for (const t of CLAN_LEVEL_TITLES) if (l >= t.min && l <= t.max) return t.title; return 'Legendaris'; }
+function isGolden(l) { return l > 1000; }
+function sensor(text) { if (!text) return ''; let r = text; KATA_KASAR.forEach(k => r = r.replace(new RegExp(`\\b${k}\\b`,'gi'), m => '*'.repeat(m.length))); return r; }
+function getLevelFromExp(e) { return Math.min(MAX_LEVEL, Math.floor(e/20)+1); }
+function getClanLevelFromExp(e) { return Math.min(MAX_CLAN_LEVEL, Math.floor(e/10)+1); }
+function fmtDate(ts) { if (!ts) return ''; const d = ts.toDate ? ts.toDate() : new Date(ts); return d.toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}); }
+function hasRole(p, r) { if (!p) return false; const roles = p.roles || (p.role ? [p.role] : ['pembaca']); return roles.includes(r); }
+function isCreator(p) { return hasRole(p,'penulis') || hasRole(p,'komikus'); }
+function isAdminUser(p) { return hasRole(p,'admin') || hasRole(p,'owner') || isAdminSession; }
+function isOwnerUser(p) { return hasRole(p,'owner'); }
+function safeId(s) { return String(s).replace(/[^a-zA-Z0-9_-]/g,''); }
+function escHtml(s) { return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function linkify(text){ return escHtml(text).replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener" class="text-amber-400 underline hover:text-amber-300">$1</a>'); }
+function escAttr(s) { return String(s || '').replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'&quot;'); }
+function formatCount(n) {
+  if (!n || n === 0) return '0';
+  if (n >= 1000000000) return (n/1000000000).toFixed(1) + 'B';
+  if (n >= 1000000) return (n/1000000).toFixed(1) + 'M';
+  if (n >= 1000) return (n/1000).toFixed(1) + 'K';
+  return String(n);
+}
+function getHash() { return window.location.hash.replace('#','') || 'home'; }
+function parseCategories(c) { if (!c) return []; if (Array.isArray(c)) return c; return String(c).split(',').map(x => x.trim()).filter(x => x); }
+function parseImgbbUrls(t) { return t.split('\n').map(u => u.trim()).filter(u => u.startsWith('http')); }
+function getVerifiedBadge(followers) {
+  if (!followers) followers = 0;
+  if (followers >= VERIFIED_BLUE) return '<span class="verified-badge blue" title="Verified 100K+"><i class="fas fa-check"></i></span>';
+  if (followers >= VERIFIED_GREEN) return '<span class="verified-badge green" title="Verified 1K+"><i class="fas fa-check"></i></span>';
+  return '';
+}
+function getCreatorVerifiedBadge(profile) {
+  if (!profile) return '';
+  const roles = profile.roles || (profile.role ? [profile.role] : ['pembaca']);
+  if (roles.includes('komikus')) return '<span class="verified-badge oranye" title="Komikus Terverifikasi"><i class="fas fa-check"></i></span>';
+  if (roles.includes('penulis')) return '<span class="verified-badge kuning" title="Penulis Terverifikasi"><i class="fas fa-check"></i></span>';
+  return '';
+}
+function isTakedown(work) { return work && work.takedown && work.takedown.active === true; }
+function isNonPublish(work) { return work && work.status === 'nonpublish'; }
+function isUnggulan(work) { return work && work.featured === true; }
+function isKreatorUnggulan(user) { return user && user.featuredCreator === true; }
+
+// ============================================================
+// ===== MAINTENANCE MODE (v1.7) ==============================
+// ============================================================
+async function loadMaintenanceState() {
+  try {
+    const snap = await getDoc(doc(db, 'settings', 'maintenance'));
+    if (snap.exists()) {
+      const d = snap.data();
+      webMaintenance = d.enabled === true;
+      maintenanceData = {
+        enabled: d.enabled === true,
+        reason: d.reason || '',
+        endTime: d.endTime || '',
+        by: d.by || '',
+        at: d.at || null
+      };
+    } else {
+      webMaintenance = false;
+      maintenanceData = { enabled: false, reason: '', endTime: '', by: '', at: null };
+    }
+  } catch (e) {
+    console.warn('Gagal load maintenance state:', e.message);
+    webMaintenance = false;
+  }
+}
+
+function listenMaintenanceState() {
+  if (maintenanceUnsub) { try { maintenanceUnsub(); } catch(e){} maintenanceUnsub = null; }
+  maintenanceUnsub = onSnapshot(doc(db, 'settings', 'maintenance'), (snap) => {
+    if (!snap.exists()) {
+      const wasOn = webMaintenance;
+      webMaintenance = false;
+      maintenanceData = { enabled: false, reason: '', endTime: '', by: '', at: null };
+      if (wasOn) {
+        // Web baru dinyalakan lagi
+        document.querySelectorAll('.maintenance-overlay, .maintenance-banner-top').forEach(el => el.remove());
+        renderPage();
+        showToast('✅ Website kembali ONLINE!', 4000);
+      }
+      return;
+    }
+    const d = snap.data();
+    const newState = d.enabled === true;
+    const changed = newState !== webMaintenance;
+    webMaintenance = newState;
+    maintenanceData = {
+      enabled: newState,
+      reason: d.reason || '',
+      endTime: d.endTime || '',
+      by: d.by || '',
+      at: d.at || null
+    };
+    if (changed) {
+      maintenanceBannerDismissed = false;
+      if (newState) {
+        showToast('⚠️ Website dimatikan sementara oleh Admin', 5000);
+      } else {
+        document.querySelectorAll('.maintenance-overlay, .maintenance-banner-top').forEach(el => el.remove());
+        showToast('✅ Website kembali ONLINE!', 4000);
+      }
+      renderPage();
+    }
+  }, (err) => {
+    console.warn('Maintenance listener error:', err.message);
+  });
+}
+
+function isMaintenanceBlocked() {
+  // Blocked jika maintenance ON, DAN bukan halaman berita, DAN bukan admin
+  if (!webMaintenance) return false;
+  const hash = getHash();
+  const base = hash.split('/')[0];
+  if (base === 'berita') return false;
+  if (isAdminUser(userProfile) || isAdminSession) return false;
+  return true;
+}
+
+function renderMaintenanceScreen(container) {
+  const reason = maintenanceData.reason || 'Website sedang dalam perbaikan. Mohon tunggu beberapa saat lagi.';
+  const endTime = maintenanceData.endTime || '';
+  const by = maintenanceData.by || 'Admin';
+  const at = maintenanceData.at ? fmtDate(maintenanceData.at) : '';
+  const waUrl = `https://wa.me/${WA_NUMBER.replace(/^0/,'62')}?text=${encodeURIComponent('Halo Admin KomiNovel! Saya mau tanya tentang maintenance website.\n\nAlasan: ' + reason)}`;
+  
+  container.innerHTML = `
+    <div class="maintenance-overlay">
+      <div class="maintenance-box">
+        <div class="maintenance-icon">
+          <i class="fas fa-tools"></i>
+        </div>
+        <h1 class="maintenance-title">WEBSITE SEDANG DIMATIKAN</h1>
+        <p class="maintenance-subtitle"><span class="maintenance-status-dot"></span>Mode Maintenance Aktif</p>
+        
+        <div class="maintenance-reason-box">
+          <div class="label"><i class="fas fa-exclamation-circle"></i> ALASAN:</div>
+          <div class="reason-text">${escHtml(reason)}</div>
+        </div>
+        
+        ${endTime ? `
+        <div class="maintenance-info-row">
+          <i class="fas fa-clock"></i>
+          <span>Estimasi selesai: <b class="text-amber-400">${escHtml(endTime)}</b></span>
+        </div>` : ''}
+        
+        <div class="maintenance-info-row">
+          <i class="fas fa-user-shield"></i>
+          <span>Dimatikan oleh: <b class="text-amber-400">${escHtml(by)}</b></span>
+        </div>
+        
+        ${at ? `<div class="maintenance-info-row">
+          <i class="fas fa-calendar"></i>
+          <span>Sejak: ${escHtml(at)}</span>
+        </div>` : ''}
+        
+        <div class="bg-amber-500/10 border border-amber-500/30 rounded-xl p-3 mt-4 mb-2 text-left">
+          <p class="text-xs text-amber-200"><i class="fas fa-info-circle mr-1"></i><b>Info:</b> Saat maintenance, kamu <b>tetap bisa membaca Berita</b> terbaru dari Admin. Fitur baca komik/novel, chat, clan, dan lainnya sementara dinonaktifkan.</p>
+        </div>
+        
+        <div class="maintenance-btns">
+          <button class="maintenance-btn maintenance-btn-berita" onclick="window.location.hash='berita'">
+            <i class="fas fa-newspaper"></i> Baca Berita (Tetap Bisa)
+          </button>
+          <a href="${waUrl}" target="_blank" rel="noopener" class="maintenance-btn maintenance-btn-wa">
+            <i class="fab fa-whatsapp"></i> Hubungi Admin
+          </a>
+          ${isAdminSession || isAdminUser(userProfile) ? `
+          <button class="maintenance-btn maintenance-btn-admin" onclick="window.location.hash='admin'">
+            <i class="fas fa-crown"></i> Buka Admin Panel
+          </button>` : ''}
+        </div>
+        
+        <p class="text-[10px] text-slate-600 mt-6">
+          <i class="fas fa-shield-alt mr-1"></i>KomiNovel v${APP_VERSION} • Maintenance Mode
+        </p>
+      </div>
+    </div>
+  `;
+}
+
+function renderMaintenanceBanner() {
+  // Banner kecil di atas saat user di halaman berita (yang tetap bisa diakses)
+  if (!webMaintenance) return;
+  if (maintenanceBannerDismissed) return;
+  if (isAdminUser(userProfile) || isAdminSession) return;
+  const existing = document.getElementById('maintenanceBannerTop');
+  if (existing) existing.remove();
+  const banner = document.createElement('div');
+  banner.id = 'maintenanceBannerTop';
+  banner.className = 'maintenance-banner-top';
+  banner.innerHTML = `
+    <i class="fas fa-tools"></i>
+    <span>⚠️ Website sedang maintenance — hanya Berita yang bisa diakses</span>
+    <a href="#" onclick="event.preventDefault();window.location.hash='berita'">Ke Berita</a>
+    <button onclick="event.stopPropagation();this.parentElement.remove();window.maintenanceBannerDismissed=true" title="Tutup"><i class="fas fa-times"></i></button>
+  `;
+  document.body.appendChild(banner);
+  document.body.style.paddingTop = '44px';
+  const removeBanner = () => {
+    const b = document.getElementById('maintenanceBannerTop');
+    if (b) b.remove();
+    document.body.style.paddingTop = '';
+  };
+  window.maintenanceBannerDismissed = () => { removeBanner(); maintenanceBannerDismissed = true; };
+}
+
+window.toggleMaintenance = async function(enable) {
+  const isOwner = hasRole(userProfile, 'owner');
+  const isAdmin = hasRole(userProfile, 'admin');
+  if (!isOwner && !isAdmin && !isAdminSession) {
+    showToast('Akses ditolak!');
+    return;
+  }
+  try {
+    if (enable) {
+      // Buka modal untuk input alasan
+      const modal = document.getElementById('modalContainer');
+      const content = document.getElementById('modalContent');
+      content.innerHTML = `
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-2xl font-black text-red-400"><i class="fas fa-power-off mr-2"></i>Matikan Website</h2>
+          <button id="closeMaintModal" class="text-slate-400 text-2xl hover:rotate-90 transition-transform">&times;</button>
+        </div>
+        <div class="warning-hard mb-4">
+          <h4><i class="fas fa-exclamation-triangle"></i> PERINGATAN</h4>
+          <ul>
+            <li>Semua pengunjung TIDAK BISA mengakses website (kecuali halaman Berita)</li>
+            <li>Fitur baca komik/novel, chat, clan, minigame, dll akan DINONAKTIFKAN</li>
+            <li>Hanya Admin/Owner yang tetap bisa akses penuh</li>
+            <li>Kamu bisa nyalakan kembali kapan saja dari panel ini</li>
+          </ul>
+        </div>
+        <label class="block text-sm font-semibold mb-1 text-amber-400">Alasan Maintenance <span class="text-red-400">*</span></label>
+        <textarea id="maintReason" rows="4" placeholder="Contoh: Sedang perbaikan server, update fitur baru, dll..." class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm mb-3">${escHtml(maintenanceData.reason || '')}</textarea>
+        <label class="block text-sm font-semibold mb-1 text-amber-400">Estimasi Selesai <span class="text-xs text-slate-500">(opsional)</span></label>
+        <input id="maintEndTime" type="text" placeholder="Contoh: Hari ini jam 20:00 WIB" value="${escHtml(maintenanceData.endTime || '')}" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm mb-4">
+        <div class="flex gap-2">
+          <button id="confirmMaintOn" class="flex-1 bg-red-600 text-white font-bold py-3 rounded-full hover:scale-105 transition"><i class="fas fa-power-off mr-1"></i>Matikan Website</button>
+          <button id="cancelMaint" class="bg-slate-700 text-slate-300 px-6 py-3 rounded-full font-bold">Batal</button>
+        </div>
+      `;
+      modal.classList.remove('hidden');
+      const close = () => modal.classList.add('hidden');
+      document.getElementById('closeMaintModal').onclick = close;
+      document.getElementById('cancelMaint').onclick = close;
+      document.getElementById('confirmMaintOn').onclick = async () => {
+        const reason = document.getElementById('maintReason').value.trim();
+        const endTime = document.getElementById('maintEndTime').value.trim();
+        if (!reason) { showToast('Alasan wajib diisi!'); return; }
+        const by = userProfile?.username || adminEmail || 'Admin';
+        try {
+          await setDoc(doc(db, 'settings', 'maintenance'), {
+            enabled: true,
+            reason: sensor(reason),
+            endTime: endTime || '',
+            by: by,
+            at: serverTimestamp()
+          }, { merge: true });
+          showToast('⛔ Website DIMATIKAN sementara', 4000);
+          close();
+        } catch (e) {
+          showToast('Gagal: ' + e.message);
+        }
+      };
+    } else {
+      // Nyalakan kembali
+      if (!confirm('Nyalakan website kembali? Semua user akan bisa akses lagi.')) return;
+      try {
+        await setDoc(doc(db, 'settings', 'maintenance'), {
+          enabled: false,
+          reason: '',
+          endTime: '',
+          by: userProfile?.username || adminEmail || 'Admin',
+          at: serverTimestamp()
+        }, { merge: true });
+        document.querySelectorAll('.maintenance-overlay, .maintenance-banner-top').forEach(el => el.remove());
+        document.body.style.paddingTop = '';
+        showToast('✅ Website DINYALAKAN kembali!', 4000);
+        renderPage();
+      } catch (e) {
+        showToast('Gagal: ' + e.message);
+      }
+    }
+  } catch (e) {
+    showToast('Gagal: ' + e.message);
+  }
+};
+
+// ============================================================
+// ===== USERS CACHE - SELALU UP-TO-DATE ======================
+// ============================================================
+async function loadAllUsersCache() {
+  if (usersCacheUnsub) { try { usersCacheUnsub(); } catch(e){} usersCacheUnsub = null; }
+  return new Promise((resolve) => {
+    usersCacheUnsub = onSnapshot(collection(db, 'users'), snap => {
+      snap.forEach(d => {
+        usersCache[d.id] = { id: d.id, ...d.data() };
+      });
+      if (currentUser && usersCache[currentUser.uid] && userProfile) {
+        const fresh = usersCache[currentUser.uid];
+        userProfile.roles = fresh.roles || userProfile.roles;
+        userProfile.role = fresh.role || userProfile.role;
+        userProfile.username = fresh.username || userProfile.username;
+        userProfile.photoURL = fresh.photoURL || userProfile.photoURL;
+        userProfile.level = fresh.level ?? userProfile.level;
+        userProfile.followerCount = fresh.followerCount ?? userProfile.followerCount;
+        userProfile.featuredCreator = fresh.featuredCreator ?? userProfile.featuredCreator;
+        userProfile.clanId = fresh.clanId ?? userProfile.clanId;
+      }
+      resolve();
+    }, err => {
+      console.warn('usersCache listener error:', err.message);
+      resolve();
+    });
+  });
+}
+
+// ============================================================
+// ===== HELPER: TAG ROLE DARI UID (SELALU UP-TO-DATE) ========
+// ============================================================
+function getRoleTagsForUid(uid, fallbackProfile = null) {
+  if (!uid) return '';
+  let profile = usersCache[uid];
+  if (!profile && currentUser && uid === currentUser.uid && userProfile) {
+    profile = userProfile;
+  }
+  if (!profile && fallbackProfile) {
+    profile = fallbackProfile;
+  }
+  if (!profile) return '';
+  const roles = profile.roles || (profile.role ? [profile.role] : ['pembaca']);
+  const isOwner = roles.includes('owner');
+  const isAdmin = roles.includes('admin');
+  const isPenulis = roles.includes('penulis');
+  const isKomikus = roles.includes('komikus');
+  const isPembaca = roles.includes('pembaca');
+  const hasHighRole = isOwner || isAdmin || isPenulis || isKomikus;
+  let html = '';
+  if (isOwner) html += '<span class="owner-tag">👑 OWNER</span> ';
+  if (isAdmin) html += '<span class="admin-tag">ADMIN</span> ';
+  if (isPenulis) html += '<span class="penulis-tag">PENULIS</span> ';
+  if (isKomikus) html += '<span class="komikus-tag">KOMIKUS</span> ';
+  if (isPembaca && !hasHighRole) html += '<span class="pembaca-tag">PEMBACA</span> ';
+  if (profile.clanId && clansCache[profile.clanId]) {
+    const clan = clansCache[profile.clanId];
+    const clanIsOwner = clan.leader === uid;
+    const clanIsAdmin = (clan.admins || []).includes(uid);
+    if (clanIsOwner) html += `<span class="clan-owner-tag cursor-pointer" onclick="event.stopPropagation();window.location.hash='clan/${profile.clanId}'">👑 ${clan.name}</span> `;
+    else if (clanIsAdmin) html += `<span class="clan-admin-tag cursor-pointer" onclick="event.stopPropagation();window.location.hash='clan/${profile.clanId}'">⚔️ ${clan.name}</span> `;
+    else html += `<span class="clan-tag cursor-pointer" onclick="event.stopPropagation();window.location.hash='clan/${profile.clanId}'">${clan.name}</span> `;
+  }
+  return html;
+}
+window.getRoleTagsForUid = getRoleTagsForUid;
+
+function buildUserTags(profile, userId) {
+  if (!profile && !userId) return '';
+  const uid = userId || profile?.uid || profile?.id;
+  return getRoleTagsForUid(uid, profile);
+}
+
+// ============================================================
+// ===== STATUS & WORK BADGES =================================
+// ============================================================
+function statusLabel(isTamat) {
+  return isTamat 
+    ? '<span class="tamat-tag absolute top-2 right-2">TAMAT</span>' 
+    : '<span class="berlanjut-tag absolute top-2 right-2">BERLANJUT</span>';
+}
+function workStatusBadge(work) {
+  if (isTakedown(work)) return '<span class="takedown-tag absolute top-2 left-2">TAKEDOWN</span>';
+  if (isNonPublish(work)) return '<span class="nonpublish-tag absolute top-2 left-2">NONPUBLISH</span>';
+  if (isUnggulan(work)) return '<span class="unggulan-tag absolute top-2 left-2">⭐ UNGGULAN</span>';
+  return '';
+}
+document.getElementById('footerYear').textContent = new Date().getFullYear();
+
+function buildSocialLinks(profile) {
+  if (!profile) return '';
+  const sosmed = profile.sosmed || {};
+  const links = [
+    { key: 'saweria', icon: 'fa-coffee', label: 'Saweria', color: 'bg-orange-500 text-white' },
+    { key: 'trakteer', icon: 'fa-mug-hot', label: 'Trakteer', color: 'bg-red-500 text-white' },
+    { key: 'facebook', icon: 'fa-facebook', label: 'Facebook', color: 'bg-blue-600 text-white' },
+    { key: 'tiktok', icon: 'fa-tiktok', label: 'TikTok', color: 'bg-black text-white border border-slate-600' },
+    { key: 'instagram', icon: 'fa-instagram', label: 'Instagram', color: 'bg-gradient-to-br from-pink-500 via-red-500 to-yellow-500 text-white' },
+    { key: 'threads', icon: 'fa-at', label: 'Threads', color: 'bg-black text-white border border-slate-600' },
+    { key: 'twitter', icon: 'fa-twitter', label: 'Twitter', color: 'bg-sky-500 text-white' },
+    { key: 'youtube', icon: 'fa-youtube', label: 'YouTube', color: 'bg-red-600 text-white' },
+    { key: 'website', icon: 'fa-globe', label: 'Website', color: 'bg-slate-600 text-white' }
+  ];
+  let html = '';
+  links.forEach(l => {
+    const url = sosmed[l.key];
+    if (url) html += `<a href="${url}" target="_blank" rel="noopener" class="social-link ${l.color}" onclick="event.stopPropagation()"><i class="fab ${l.icon}"></i> ${l.label}</a>`;
+  });
+  return html;
+}
+
+function showNotifBar(text, color = 'green') {
+  const existing = document.getElementById('notifBar');
+  if (existing) existing.remove();
+  const bar = document.createElement('div');
+  bar.id = 'notifBar';
+  bar.className = `fixed top-4 left-1/2 -translate-x-1/2 z-[200] px-6 py-3 rounded-full shadow-2xl text-sm font-bold flex items-center gap-2 ${
+    color === 'green' ? 'bg-green-600 text-white' : color === 'blue' ? 'bg-blue-600 text-white' : 'bg-amber-500 text-black'
+  }`;
+  bar.style.animation = 'notifSlideDown 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)';
+  bar.innerHTML = `<i class="fas fa-bell"></i> ${text}`;
+  document.body.appendChild(bar);
+  setTimeout(() => {
+    bar.style.animation = 'notifSlideUp 0.3s ease-in forwards';
+    setTimeout(() => bar.remove(), 300);
+  }, 3000);
+}
+
+// ============================================================
+// ===== GROUP / CHAPTER HELPERS ==============================
+// ============================================================
+const GROUP_LABELS = { komik: 'Chapter', novel: 'Volume' };
+function groupLabel(type) { return GROUP_LABELS[type] || 'Chapter'; }
+function getGroups(work) {
+  const g = Array.isArray(work && work.chapterGroups) ? work.chapterGroups : [];
+  return g.slice().sort((a, b) => (Number(a.number) || 0) - (Number(b.number) || 0));
+}
+function newGroupId() { return 'g' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
+function groupTitleText(g, type) { return `${groupLabel(type)} ${g.number}${g.title ? ': ' + g.title : ''}`; }
+function groupChapters(chapters, work) {
+  const groups = getGroups(work);
+  if (!groups.length) return [{ group: null, loose: false, items: chapters }];
+  const byId = {}; groups.forEach(g => byId[g.id] = []);
+  const loose = [];
+  chapters.forEach(c => { if (c.groupId && byId[c.groupId]) byId[c.groupId].push(c); else loose.push(c); });
+  const out = groups.map(g => ({ group: g, loose: false, items: byId[g.id] }));
+  if (loose.length) out.push({ group: null, loose: true, items: loose });
+  return out;
+}
+function groupSelectHtml(id, groups, selected, type) {
+  return `<select id="${id}" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm">
+    <option value="">— Tanpa ${groupLabel(type)} —</option>
+    ${groups.map(g => `<option value="${g.id}" ${g.id === selected ? 'selected' : ''}>${escHtml(groupTitleText(g, type))}</option>`).join('')}
+  </select>`;
+}
+
+// ============================================================
+// ===== IMAGE FULLSCREEN =====================================
+// ============================================================
+window.showImgFullscreen = (src, label = '') => {
+  const existing = document.getElementById('imgFsOverlay');
+  if (existing) existing.remove();
+  const overlay = document.createElement('div');
+  overlay.id = 'imgFsOverlay';
+  overlay.className = 'img-fullscreen-overlay';
+  overlay.onclick = (e) => { if (e.target === overlay) overlay.remove(); };
+  overlay.innerHTML = `
+    <button class="img-fullscreen-close" onclick="document.getElementById('imgFsOverlay').remove()"><i class="fas fa-times"></i></button>
+    <img src="${src}" alt="Preview" onclick="event.stopPropagation()">
+    ${label ? `<div class="img-fullscreen-info"><i class="fas fa-image mr-2"></i>${label}</div>` : ''}
+  `;
+  document.body.appendChild(overlay);
+  const escHandler = (e) => {
+    if (e.key === 'Escape') { overlay.remove(); document.removeEventListener('keydown', escHandler); }
+  };
+  document.addEventListener('keydown', escHandler);
+};
+
+// ============================================================
+// ===== READING POSITION =====================================
+// ============================================================
+const READING_POS_KEY = 'kominovel_reading_pos';
+function saveReadingPos(workId, chapterId, scrollY) {
+  try {
+    const data = JSON.parse(localStorage.getItem(READING_POS_KEY) || '{}');
+    data[workId] = { chapterId, scrollY, ts: Date.now() };
+    const keys = Object.keys(data).sort((a,b) => data[b].ts - data[a].ts);
+    if (keys.length > 50) keys.slice(50).forEach(k => delete data[k]);
+    localStorage.setItem(READING_POS_KEY, JSON.stringify(data));
+  } catch (e) {}
+}
+function getReadingPos(workId) {
+  try {
+    const data = JSON.parse(localStorage.getItem(READING_POS_KEY) || '{}');
+    return data[workId] || null;
+  } catch (e) { return null; }
+}
+window.clearReadingPos = (workId) => {
+  try {
+    const data = JSON.parse(localStorage.getItem(READING_POS_KEY) || '{}');
+    delete data[workId];
+    localStorage.setItem(READING_POS_KEY, JSON.stringify(data));
+  } catch (e) {}
+};
+
+// ============================================================
+// ===== IMGBB UPLOAD =========================================
+// ============================================================
+function ibbChain(url) {
+  const m = String(url || '').match(/^https?:\/\/i\.ibb\.co(?:\.com)?\/(.+)$/);
+  if (!m) return null;
+  return ['https://i.ibb.co.com/' + m[1], 'https://i.ibb.co/' + m[1], 'https://wsrv.nl/?url=' + encodeURIComponent('i.ibb.co/' + m[1])];
+}
+function ibbFix(u) { const c = ibbChain(u); return c ? c[0] : u; }
+function testImgLoad(url, ms = 5000) {
+  return new Promise(res => {
+    const i = new Image(); let done = false;
+    const f = ok => { if (!done) { done = true; res(ok); } };
+    i.onload = () => f(true); i.onerror = () => f(false);
+    setTimeout(() => f(false), ms);
+    i.src = url;
+  });
+}
+async function pickWorkingUrl(u) {
+  const chain = ibbChain(u);
+  if (!chain) return u;
+  for (const c of chain) { if (await testImgLoad(c)) return c; }
+  return chain[0];
+}
+document.addEventListener('error', (e) => {
+  const t = e.target;
+  if (!t || t.tagName !== 'IMG') return;
+  const chain = ibbChain(t.src);
+  if (!chain) return;
+  let idx = chain.indexOf(t.src); if (idx < 0) idx = 0;
+  const next = chain[idx + 1];
+  if (next) { e.stopImmediatePropagation(); t.src = next; }
+}, true);
+const IMGBB_KEY = 'ba3afa5b0d8e2ea7a8dc2098ac38aad6';
+const IMGBB_MAX_MB = 32;
+async function uploadToImgbb(file) {
+  if (!file || !file.type || !file.type.startsWith('image/')) throw new Error('Bukan gambar');
+  if (file.size > IMGBB_MAX_MB * 1024 * 1024) throw new Error(`Ukuran file > ${IMGBB_MAX_MB} MB`);
+  let lastErr = 'Upload gagal';
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    try {
+      const fd = new FormData();
+      fd.append('image', file);
+      const res = await fetch('https://api.imgbb.com/1/upload?key=' + IMGBB_KEY, { method: 'POST', body: fd });
+      const json = await res.json().catch(() => ({}));
+      if (res.ok && json.success && json.data && json.data.url) return await pickWorkingUrl(json.data.url);
+      lastErr = (json.error && (json.error.message || json.error)) || ('HTTP ' + res.status);
+      if (res.status === 400) break;
+    } catch (e) { lastErr = 'Koneksi bermasalah'; }
+    await new Promise(r => setTimeout(r, 800 * attempt));
+  }
+  throw new Error(String(lastErr));
+}
+function compressImage(file) { return uploadToImgbb(file); }
 
 // ============================================================
 // ===== AUTO BOOST GLOBAL ====================================
@@ -679,7 +1344,6 @@ async function autoBoostAllWorks() {
     const snap = await getDocs(collection(db, 'works'));
     if (snap.empty) return;
     const promises = [];
-    let boostedCount = 0;
     snap.forEach(d => {
       const work = d.data();
       if (isTakedown(work)) return;
@@ -690,7 +1354,6 @@ async function autoBoostAllWorks() {
           updatedAt: serverTimestamp()
         }).catch(() => {})
       );
-      boostedCount++;
     });
     if (promises.length > 0) {
       await Promise.allSettled(promises);
@@ -749,7 +1412,7 @@ window.toggleAutoBoost = async function() {
 };
 
 // ============================================================
-// ===== CUSTOM GENRE (CREATOR BISA KETIK SENDIRI) ============
+// ===== CUSTOM GENRE =========================================
 // ============================================================
 async function loadCustomCategories() {
   try {
@@ -779,9 +1442,8 @@ async function addCustomCategory(name) {
 }
 
 // ============================================================
-// ==================== END AUTO BOOST ========================
+// ===== FOLLOW ===============================================
 // ============================================================
-
 async function toggleFollow(targetUid) {
   if (!currentUser || !userProfile) { showToast('Login dulu untuk follow'); return; }
   if (targetUid === currentUser.uid) { showToast('Tidak bisa follow diri sendiri'); return; }
@@ -838,255 +1500,9 @@ async function boostOwnerFollowers() {
   } catch (e) {}
 }
 
-function getCreatorVerifiedBadge(profile) {
-  if (!profile) return '';
-  const roles = profile.roles || (profile.role ? [profile.role] : ['pembaca']);
-  if (roles.includes('komikus')) return '<span class="verified-badge oranye" title="Komikus Terverifikasi"><i class="fas fa-check"></i></span>';
-  if (roles.includes('penulis')) return '<span class="verified-badge kuning" title="Penulis Terverifikasi"><i class="fas fa-check"></i></span>';
-  return '';
-}
-
-function showToast(msg, dur = 3000) {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.remove('hidden');
-  setTimeout(() => t.classList.add('hidden'), dur);
-}
-window.showToast = showToast;
-window.addEventListener('unhandledrejection', (e) => {
-  const r = e.reason; const msg = (r && (r.message || r.code)) || String(r);
-  console.error('Unhandled:', r);
-});
-window.addEventListener('error', (e) => { if (e && e.message && !/ResizeObserver/.test(e.message)) console.error('Error:', e.message); });
-function getLevelTitle(l) { for (const t of LEVEL_TITLES) if (l >= t.min && l <= t.max) return t.title; return 'Dewa Mitos'; }
-function getClanLevelTitle(l) { for (const t of CLAN_LEVEL_TITLES) if (l >= t.min && l <= t.max) return t.title; return 'Legendaris'; }
-function isGolden(l) { return l > 1000; }
-function sensor(text) { if (!text) return ''; let r = text; KATA_KASAR.forEach(k => r = r.replace(new RegExp(`\\b${k}\\b`,'gi'), m => '*'.repeat(m.length))); return r; }
-function getLevelFromExp(e) { return Math.min(MAX_LEVEL, Math.floor(e/20)+1); }
-function getClanLevelFromExp(e) { return Math.min(MAX_CLAN_LEVEL, Math.floor(e/10)+1); }
-function fmtDate(ts) { if (!ts) return ''; const d = ts.toDate ? ts.toDate() : new Date(ts); return d.toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}); }
-function hasRole(p, r) { if (!p) return false; const roles = p.roles || (p.role ? [p.role] : ['pembaca']); return roles.includes(r); }
-function isCreator(p) { return hasRole(p,'penulis') || hasRole(p,'komikus'); }
-function isAdminUser(p) { return hasRole(p,'admin') || hasRole(p,'owner') || isAdminSession; }
-function isOwnerUser(p) { return hasRole(p,'owner'); }
-function safeId(s) { return String(s).replace(/[^a-zA-Z0-9_-]/g,''); }
-function escHtml(s) { return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-function linkify(text){ return escHtml(text).replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener" class="text-amber-400 underline hover:text-amber-300">$1</a>'); }
-
-const GROUP_LABELS = { komik: 'Chapter', novel: 'Volume' };
-function groupLabel(type) { return GROUP_LABELS[type] || 'Chapter'; }
-function getGroups(work) {
-  const g = Array.isArray(work && work.chapterGroups) ? work.chapterGroups : [];
-  return g.slice().sort((a, b) => (Number(a.number) || 0) - (Number(b.number) || 0));
-}
-function newGroupId() { return 'g' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
-function groupTitleText(g, type) { return `${groupLabel(type)} ${g.number}${g.title ? ': ' + g.title : ''}`; }
-function groupChapters(chapters, work) {
-  const groups = getGroups(work);
-  if (!groups.length) return [{ group: null, loose: false, items: chapters }];
-  const byId = {}; groups.forEach(g => byId[g.id] = []);
-  const loose = [];
-  chapters.forEach(c => { if (c.groupId && byId[c.groupId]) byId[c.groupId].push(c); else loose.push(c); });
-  const out = groups.map(g => ({ group: g, loose: false, items: byId[g.id] }));
-  if (loose.length) out.push({ group: null, loose: true, items: loose });
-  return out;
-}
-function groupSelectHtml(id, groups, selected, type) {
-  return `<select id="${id}" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm">
-    <option value="">— Tanpa ${groupLabel(type)} —</option>
-    ${groups.map(g => `<option value="${g.id}" ${g.id === selected ? 'selected' : ''}>${escHtml(groupTitleText(g, type))}</option>`).join('')}
-  </select>`;
-}
-function parseImgbbUrls(t) { return t.split('\n').map(u => u.trim()).filter(u => u.startsWith('http')); }
-function parseCategories(c) { if (!c) return []; if (Array.isArray(c)) return c; return String(c).split(',').map(x => x.trim()).filter(x => x); }
-function getHash() { return window.location.hash.replace('#','') || 'home'; }
-function formatCount(n) {
-  if (!n || n === 0) return '0';
-  if (n >= 1000000000) return (n/1000000000).toFixed(1) + 'B';
-  if (n >= 1000000) return (n/1000000).toFixed(1) + 'M';
-  if (n >= 1000) return (n/1000).toFixed(1) + 'K';
-  return String(n);
-}
-function escAttr(s) { return String(s || '').replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'&quot;'); }
-function getVerifiedBadge(followers) {
-  if (!followers) followers = 0;
-  if (followers >= VERIFIED_BLUE) return '<span class="verified-badge blue" title="Verified 100K+"><i class="fas fa-check"></i></span>';
-  if (followers >= VERIFIED_GREEN) return '<span class="verified-badge green" title="Verified 1K+"><i class="fas fa-check"></i></span>';
-  return '';
-}
-function isTakedown(work) { return work && work.takedown && work.takedown.active === true; }
-function isNonPublish(work) { return work && work.status === 'nonpublish'; }
-function isUnggulan(work) { return work && work.featured === true; }
-function isKreatorUnggulan(user) { return user && user.featuredCreator === true; }
-
-window.showImgFullscreen = (src, label = '') => {
-  const existing = document.getElementById('imgFsOverlay');
-  if (existing) existing.remove();
-  const overlay = document.createElement('div');
-  overlay.id = 'imgFsOverlay';
-  overlay.className = 'img-fullscreen-overlay';
-  overlay.onclick = (e) => { if (e.target === overlay) overlay.remove(); };
-  overlay.innerHTML = `
-    <button class="img-fullscreen-close" onclick="document.getElementById('imgFsOverlay').remove()"><i class="fas fa-times"></i></button>
-    <img src="${src}" alt="Preview" onclick="event.stopPropagation()">
-    ${label ? `<div class="img-fullscreen-info"><i class="fas fa-image mr-2"></i>${label}</div>` : ''}
-  `;
-  document.body.appendChild(overlay);
-  const escHandler = (e) => {
-    if (e.key === 'Escape') { overlay.remove(); document.removeEventListener('keydown', escHandler); }
-  };
-  document.addEventListener('keydown', escHandler);
-};
-
-const READING_POS_KEY = 'kominovel_reading_pos';
-function saveReadingPos(workId, chapterId, scrollY) {
-  try {
-    const data = JSON.parse(localStorage.getItem(READING_POS_KEY) || '{}');
-    data[workId] = { chapterId, scrollY, ts: Date.now() };
-    const keys = Object.keys(data).sort((a,b) => data[b].ts - data[a].ts);
-    if (keys.length > 50) keys.slice(50).forEach(k => delete data[k]);
-    localStorage.setItem(READING_POS_KEY, JSON.stringify(data));
-  } catch (e) {}
-}
-function getReadingPos(workId) {
-  try {
-    const data = JSON.parse(localStorage.getItem(READING_POS_KEY) || '{}');
-    return data[workId] || null;
-  } catch (e) { return null; }
-}
-window.clearReadingPos = (workId) => {
-  try {
-    const data = JSON.parse(localStorage.getItem(READING_POS_KEY) || '{}');
-    delete data[workId];
-    localStorage.setItem(READING_POS_KEY, JSON.stringify(data));
-  } catch (e) {}
-};
-
-function ibbChain(url) {
-  const m = String(url || '').match(/^https?:\/\/i\.ibb\.co(?:\.com)?\/(.+)$/);
-  if (!m) return null;
-  return ['https://i.ibb.co.com/' + m[1], 'https://i.ibb.co/' + m[1], 'https://wsrv.nl/?url=' + encodeURIComponent('i.ibb.co/' + m[1])];
-}
-function ibbFix(u) { const c = ibbChain(u); return c ? c[0] : u; }
-function testImgLoad(url, ms = 5000) {
-  return new Promise(res => {
-    const i = new Image(); let done = false;
-    const f = ok => { if (!done) { done = true; res(ok); } };
-    i.onload = () => f(true); i.onerror = () => f(false);
-    setTimeout(() => f(false), ms);
-    i.src = url;
-  });
-}
-async function pickWorkingUrl(u) {
-  const chain = ibbChain(u);
-  if (!chain) return u;
-  for (const c of chain) { if (await testImgLoad(c)) return c; }
-  return chain[0];
-}
-document.addEventListener('error', (e) => {
-  const t = e.target;
-  if (!t || t.tagName !== 'IMG') return;
-  const chain = ibbChain(t.src);
-  if (!chain) return;
-  let idx = chain.indexOf(t.src); if (idx < 0) idx = 0;
-  const next = chain[idx + 1];
-  if (next) { e.stopImmediatePropagation(); t.src = next; }
-}, true);
-const IMGBB_KEY = 'ba3afa5b0d8e2ea7a8dc2098ac38aad6';
-const IMGBB_MAX_MB = 32;
-async function uploadToImgbb(file) {
-  if (!file || !file.type || !file.type.startsWith('image/')) throw new Error('Bukan gambar');
-  if (file.size > IMGBB_MAX_MB * 1024 * 1024) throw new Error(`Ukuran file > ${IMGBB_MAX_MB} MB`);
-  let lastErr = 'Upload gagal';
-  for (let attempt = 1; attempt <= 3; attempt++) {
-    try {
-      const fd = new FormData();
-      fd.append('image', file);
-      const res = await fetch('https://api.imgbb.com/1/upload?key=' + IMGBB_KEY, { method: 'POST', body: fd });
-      const json = await res.json().catch(() => ({}));
-      if (res.ok && json.success && json.data && json.data.url) return await pickWorkingUrl(json.data.url);
-      lastErr = (json.error && (json.error.message || json.error)) || ('HTTP ' + res.status);
-      if (res.status === 400) break;
-    } catch (e) { lastErr = 'Koneksi bermasalah'; }
-    await new Promise(r => setTimeout(r, 800 * attempt));
-  }
-  throw new Error(String(lastErr));
-}
-function compressImage(file) { return uploadToImgbb(file); }
-
-function buildUserTags(profile, userId) {
-  if (!profile) return '';
-  const roles = profile.roles || (profile.role ? [profile.role] : ['pembaca']);
-  let html = '';
-  if (roles.includes('owner')) html += '<span class="owner-tag">👑 OWNER</span> ';
-  if (roles.includes('admin')) html += '<span class="admin-tag">ADMIN</span> ';
-  if (roles.includes('penulis')) html += '<span class="penulis-tag">PENULIS</span> ';
-  if (roles.includes('komikus')) html += '<span class="komikus-tag">KOMIKUS</span> ';
-  if (roles.includes('pembaca')) html += '<span class="pembaca-tag">PEMBACA</span> ';
-  if (profile.clanId && clansCache[profile.clanId]) {
-    const clan = clansCache[profile.clanId];
-    const isOwner = clan.leader === userId || clan.leader === profile.uid;
-    const isClanAdmin = (clan.admins || []).includes(userId) || (clan.admins || []).includes(profile.uid);
-    if (isOwner) html += `<span class="clan-owner-tag cursor-pointer" onclick="event.stopPropagation();window.location.hash='clan/${profile.clanId}'">👑 ${clan.name}</span> `;
-    else if (isClanAdmin) html += `<span class="clan-admin-tag cursor-pointer" onclick="event.stopPropagation();window.location.hash='clan/${profile.clanId}'">⚔️ ${clan.name}</span> `;
-    else html += `<span class="clan-tag cursor-pointer" onclick="event.stopPropagation();window.location.hash='clan/${profile.clanId}'">${clan.name}</span> `;
-  }
-  return html;
-}
-
-function statusLabel(isTamat) {
-  return isTamat 
-    ? '<span class="tamat-tag absolute top-2 right-2">TAMAT</span>' 
-    : '<span class="berlanjut-tag absolute top-2 right-2">BERLANJUT</span>';
-}
-
-function workStatusBadge(work) {
-  if (isTakedown(work)) return '<span class="takedown-tag absolute top-2 left-2">TAKEDOWN</span>';
-  if (isNonPublish(work)) return '<span class="nonpublish-tag absolute top-2 left-2">NONPUBLISH</span>';
-  if (isUnggulan(work)) return '<span class="unggulan-tag absolute top-2 left-2">⭐ UNGGULAN</span>';
-  return '';
-}
-
-document.getElementById('footerYear').textContent = new Date().getFullYear();
-
-function buildSocialLinks(profile) {
-  if (!profile) return '';
-  const sosmed = profile.sosmed || {};
-  const links = [
-    { key: 'saweria', icon: 'fa-coffee', label: 'Saweria', color: 'bg-orange-500 text-white' },
-    { key: 'trakteer', icon: 'fa-mug-hot', label: 'Trakteer', color: 'bg-red-500 text-white' },
-    { key: 'facebook', icon: 'fa-facebook', label: 'Facebook', color: 'bg-blue-600 text-white' },
-    { key: 'tiktok', icon: 'fa-tiktok', label: 'TikTok', color: 'bg-black text-white border border-slate-600' },
-    { key: 'instagram', icon: 'fa-instagram', label: 'Instagram', color: 'bg-gradient-to-br from-pink-500 via-red-500 to-yellow-500 text-white' },
-    { key: 'threads', icon: 'fa-at', label: 'Threads', color: 'bg-black text-white border border-slate-600' },
-    { key: 'twitter', icon: 'fa-twitter', label: 'Twitter', color: 'bg-sky-500 text-white' },
-    { key: 'youtube', icon: 'fa-youtube', label: 'YouTube', color: 'bg-red-600 text-white' },
-    { key: 'website', icon: 'fa-globe', label: 'Website', color: 'bg-slate-600 text-white' }
-  ];
-  let html = '';
-  links.forEach(l => {
-    const url = sosmed[l.key];
-    if (url) html += `<a href="${url}" target="_blank" rel="noopener" class="social-link ${l.color}" onclick="event.stopPropagation()"><i class="fab ${l.icon}"></i> ${l.label}</a>`;
-  });
-  return html;
-}
-
-function showNotifBar(text, color = 'green') {
-  const existing = document.getElementById('notifBar');
-  if (existing) existing.remove();
-  const bar = document.createElement('div');
-  bar.id = 'notifBar';
-  bar.className = `fixed top-4 left-1/2 -translate-x-1/2 z-[200] px-6 py-3 rounded-full shadow-2xl text-sm font-bold flex items-center gap-2 ${
-    color === 'green' ? 'bg-green-600 text-white' : color === 'blue' ? 'bg-blue-600 text-white' : 'bg-amber-500 text-black'
-  }`;
-  bar.style.animation = 'notifSlideDown 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)';
-  bar.innerHTML = `<i class="fas fa-bell"></i> ${text}`;
-  document.body.appendChild(bar);
-  setTimeout(() => {
-    bar.style.animation = 'notifSlideUp 0.3s ease-in forwards';
-    setTimeout(() => bar.remove(), 300);
-  }, 3000);
-}
-
+// ============================================================
+// ===== BIRTHDAY =============================================
+// ============================================================
 async function checkBirthdays() {
   try {
     const today = new Date();
@@ -1133,7 +1549,9 @@ async function checkBirthdays() {
   } catch (e) {}
 }
 
-// NAV_MAP yang sudah diupdate - "baru" (Proses Pengerjaan) DIHAPUS dari hamburger menu
+// ============================================================
+// ===== NAVIGASI MOBILE ======================================
+// ============================================================
 const NAV_MAP = [
   { id:'kategori', icon:'fa-tags', label:'Kategori' },
   { id:'panduan', icon:'fa-book', label:'Panduan', color:'text-amber-300' },
@@ -1169,7 +1587,6 @@ function closeMobileNav() { document.getElementById('mobileNavOverlay').classLis
 document.getElementById('mobileMenuBtn')?.addEventListener('click', openMobileNav);
 document.getElementById('closeMobileNav').onclick = closeMobileNav;
 document.getElementById('mobileNavOverlay').onclick = closeMobileNav;
-
 window.openMobileNav = openMobileNav;
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMobileNav(); });
 window.closeMobileNav = closeMobileNav;
@@ -1180,6 +1597,9 @@ document.getElementById('bottomMenuBtn')?.addEventListener('click', (e) => {
   openMobileNav();
 });
 
+// ============================================================
+// ===== FULLSCREEN READER ====================================
+// ============================================================
 window.toggleFullscreenReader = () => {
   isFullscreenReader = !isFullscreenReader;
   const rc = document.getElementById('readerContent');
@@ -1205,6 +1625,9 @@ window.toggleFullscreenReader = () => {
   }
 };
 
+// ============================================================
+// ===== GROUP MANAGER ========================================
+// ============================================================
 window.openGroupManager = async (wid, type, onDone) => {
   const gl = groupLabel(type);
   const wRef = doc(db, 'works', wid);
@@ -1281,7 +1704,7 @@ window.openGroupManager = async (wid, type, onDone) => {
 };
 
 // ============================================================
-// === CATEGORY CHIPS FIELD — DENGAN CUSTOM GENRE =============
+// ===== CATEGORY CHIPS FIELD =================================
 // ============================================================
 function categoryChipsField(containerId, selected = []) {
   const sel = parseCategories(selected);
@@ -1390,7 +1813,334 @@ function getSelectedCats(containerId) {
 }
 
 // ============================================================
-// === EDIT KARYA (CREATOR BISA EDIT SAMPUL/TEASER/DESKRIPSI/GENRE) ===
+// ===== COVER FIELD / MULTI IMAGE FIELD ======================
+// ============================================================
+function coverField(id) {
+  return `<div class="bg-slate-900/50 border border-amber-500/30 rounded-xl p-3 mt-2">
+    <label class="text-xs font-semibold text-amber-400 block mb-2">Sampul / Cover <span class="text-red-400">*</span></label>
+    <div class="flex flex-wrap gap-2 mb-2">
+      <label class="cursor-pointer bg-amber-500 text-black px-3 py-2 rounded-lg text-xs font-bold hover:scale-105 transition">
+        <i class="fas fa-upload mr-1"></i>Upload dari Perangkat
+        <input type="file" id="${id}-file" accept="image/*" class="hidden">
+      </label>
+      <a href="https://imgbb.com" target="_blank" class="bg-slate-700 text-slate-300 px-3 py-2 rounded-lg text-xs font-bold hover:bg-slate-600 transition"><i class="fas fa-external-link-alt mr-1"></i>ImgBB</a>
+    </div>
+    <input type="text" id="${id}-url" placeholder="Atau paste URL ImgBB" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm">
+    <div id="${id}-preview" class="mt-2"></div>
+  </div>`;
+}
+
+function attachCoverHandler(id) {
+  const fileInput = document.getElementById(`${id}-file`);
+  const urlInput = document.getElementById(`${id}-url`);
+  const preview = document.getElementById(`${id}-preview`);
+  window[`_${id}_cover`] = null;
+  if (fileInput) {
+    fileInput.onchange = async (e) => {
+      const f = e.target.files[0];
+      if (!f) return;
+      preview.innerHTML = '<span class="text-xs text-amber-400">Mengupload ke ImgBB...</span>';
+      try {
+        const dataUrl = await compressImage(f);
+        window[`_${id}_cover`] = dataUrl;
+        preview.innerHTML = `
+          <div class="img-preview-wrap">
+            <img src="${dataUrl}" class="img-preview" style="width:96px;height:128px" onclick="event.stopPropagation();window.showImgFullscreen('${dataUrl}','Sampul / Cover')">
+            <span class="zoom-badge" onclick="event.stopPropagation();window.showImgFullscreen('${dataUrl}','Sampul / Cover')"><i class="fas fa-expand"></i></span>
+          </div>
+          <p class="text-xs text-green-400 mt-1">✅ Terupload ke ImgBB • Klik untuk fullscreen</p>
+        `;
+      } catch (err) { preview.innerHTML = `<span class="text-xs text-red-400">Gagal: ${err.message}</span>`; }
+    };
+  }
+  urlInput.oninput = () => {
+    if (urlInput.value.trim()) {
+      const url = urlInput.value.trim();
+      const safeUrl = escAttr(url);
+      window[`_${id}_cover`] = url;
+      preview.innerHTML = `
+        <div class="img-preview-wrap">
+          <img src="${url}" class="img-preview" style="width:96px;height:128px" onerror="this.src='https://placehold.co/96x128/1a1a2e/64748b?text=Err'" onclick="event.stopPropagation();window.showImgFullscreen('${safeUrl}','Sampul / Cover')">
+          <span class="zoom-badge" onclick="event.stopPropagation();window.showImgFullscreen('${safeUrl}','Sampul / Cover')"><i class="fas fa-expand"></i></span>
+        </div>
+      `;
+    }
+  };
+}
+function getCoverValue(id) { return window[`_${id}_cover`] || document.getElementById(`${id}-url`)?.value.trim() || ''; }
+
+function multiImageField(containerId) {
+  return `<div class="bg-slate-900/50 border border-amber-500/30 rounded-xl p-3 mt-2">
+    <label class="text-xs font-semibold text-amber-400 block mb-2">Gambar (tanpa batas jumlah, urutan = pilihan)</label>
+    <div class="flex flex-wrap gap-2 mb-2">
+      <label class="cursor-pointer bg-amber-500 text-black px-3 py-2 rounded-lg text-xs font-bold hover:scale-105 transition">
+        <i class="fas fa-upload mr-1"></i>Pilih Foto (bisa banyak)
+        <input type="file" id="${containerId}-file" accept="image/*" multiple class="hidden">
+      </label>
+      <a href="https://imgbb.com" target="_blank" class="bg-slate-700 text-slate-300 px-3 py-2 rounded-lg text-xs font-bold hover:bg-slate-600 transition"><i class="fas fa-external-link-alt mr-1"></i>ImgBB</a>
+    </div>
+    <textarea id="${containerId}-urls" rows="2" placeholder="Atau paste URL gambar, 1 per baris" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs font-mono"></textarea>
+    <div id="${containerId}-preview" class="mt-2"></div>
+    <div id="${containerId}-progress" class="upload-progress hidden"></div>
+  </div>`;
+}
+
+function attachMultiImageHandlers(containerId) {
+  const fileInput = document.getElementById(`${containerId}-file`);
+  const preview = document.getElementById(`${containerId}-preview`);
+  const progress = document.getElementById(`${containerId}-progress`);
+  if (!fileInput) return;
+  window[`_${containerId}_files`] = window[`_${containerId}_files`] || [];
+  window[`_${containerId}_dragSrc`] = null;
+  if (!window[`_${containerId}_mode`]) window[`_${containerId}_mode`] = dragMode;
+
+  fileInput.onchange = async (e) => {
+    const files = Array.from(e.target.files);
+    if (files.length === 0) return;
+    progress.classList.remove('hidden');
+    progress.innerHTML = `Mengupload ${files.length} foto ke ImgBB...<br>`;
+    const newFiles = [];
+    for (let i = 0; i < files.length; i++) {
+      const f = files[i];
+      progress.innerHTML += `[${i+1}/${files.length}] ${f.name}...<br>`;
+      try {
+        const dataUrl = await uploadToImgbb(f);
+        newFiles.push({ name: f.name, dataUrl, preview: URL.createObjectURL(f) });
+        progress.innerHTML += `&nbsp;&nbsp;✅ ${(f.size/1024).toFixed(0)} KB terupload<br>`;
+      } catch (err) {
+        progress.innerHTML += `&nbsp;&nbsp;❌ ${err.message}<br>`;
+      }
+    }
+    window[`_${containerId}_files`] = [...(window[`_${containerId}_files`] || []), ...newFiles];
+    progress.innerHTML += `<br>Total: ${window[`_${containerId}_files`].length} foto`;
+    fileInput.value = '';
+    renderPreview();
+  };
+
+  function renderPreview() {
+    const files = window[`_${containerId}_files`] || [];
+    const urlText = document.getElementById(`${containerId}-urls`)?.value || '';
+    const urls = parseImgbbUrls(urlText);
+    const total = files.length + urls.length;
+    const mode = window[`_${containerId}_mode`] || 'drag';
+    preview.innerHTML = '';
+    if (total === 0) return;
+    const modeBar = document.createElement('div');
+    modeBar.className = 'img-preview-mode-bar';
+    modeBar.innerHTML = `
+      <span class="mode-label"><i class="fas fa-layer-group"></i>Total: ${total} foto</span>
+      <div class="mode-btns">
+        <button class="mode-btn ${mode === 'drag' ? 'active' : 'inactive'}" data-mode="drag"><i class="fas fa-hand-rock"></i> 🖐️ Mode Drag</button>
+        <button class="mode-btn ${mode === 'fullscreen' ? 'active' : 'inactive'}" data-mode="fullscreen"><i class="fas fa-expand"></i> 🔍 Mode Fullscreen</button>
+      </div>
+    `;
+    preview.appendChild(modeBar);
+    modeBar.querySelectorAll('.mode-btn').forEach(btn => {
+      btn.onclick = (e) => {
+        e.stopPropagation();
+        const newMode = btn.dataset.mode;
+        window[`_${containerId}_mode`] = newMode;
+        dragMode = newMode;
+        showToast(newMode === 'drag' ? '🖐️ Mode Drag aktif' : '🔍 Mode Fullscreen aktif');
+        renderPreview();
+      };
+    });
+    const hint = document.createElement('div');
+    hint.className = 'w-full text-[11px] mb-2 ' + (mode === 'drag' ? 'text-amber-400' : 'text-blue-400');
+    hint.innerHTML = mode === 'drag' 
+      ? '<i class="fas fa-hand-rock mr-1"></i> <b>Mode Drag:</b> Geser gambar untuk ubah urutan.'
+      : '<i class="fas fa-expand mr-1"></i> <b>Mode Fullscreen:</b> Klik gambar untuk perbesar.';
+    preview.appendChild(hint);
+    function setupDragEvents(wrap, type, index) {
+      wrap.dataset.dragType = type;
+      wrap.dataset.dragIndex = index;
+      wrap.dataset.dragCid = containerId;
+      if (mode === 'drag') {
+        wrap.draggable = true;
+        wrap.classList.add('draggable-ready');
+        wrap.addEventListener('dragstart', (e) => {
+          e.dataTransfer.effectAllowed = 'move';
+          try { e.dataTransfer.setData('text/plain', JSON.stringify({ cid: containerId, type, idx: index })); } catch (err) {}
+          window[`_${containerId}_dragSrc`] = { type, idx: index };
+          wrap.classList.add('dragging');
+          setTimeout(() => { wrap.style.opacity = '0.4'; }, 0);
+        });
+        wrap.addEventListener('dragend', () => {
+          wrap.classList.remove('dragging');
+          wrap.style.opacity = '';
+          window[`_${containerId}_dragSrc`] = null;
+          preview.querySelectorAll('.img-preview-wrap').forEach(w => { w.style.borderColor = ''; w.style.transform = ''; });
+        });
+        wrap.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          e.dataTransfer.dropEffect = 'move';
+          if (window[`_${containerId}_dragSrc`]) { wrap.style.borderColor = '#fbbf24'; wrap.style.transform = 'scale(1.1)'; }
+        });
+        wrap.addEventListener('dragleave', () => { wrap.style.borderColor = ''; wrap.style.transform = ''; });
+        wrap.addEventListener('drop', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          wrap.style.borderColor = '';
+          wrap.style.transform = '';
+          let data = window[`_${containerId}_dragSrc`];
+          if (!data) return;
+          reorderImages(containerId, data.type, data.idx, type, index);
+        });
+      } else {
+        wrap.draggable = false;
+      }
+    }
+    files.forEach((f, i) => {
+      const wrap = document.createElement('div');
+      wrap.className = 'img-preview-wrap' + (mode === 'drag' ? ' no-fullscreen' : '');
+      wrap.innerHTML = `
+        <img src="${f.preview || f.dataUrl}" class="img-preview" draggable="false" ${mode === 'fullscreen' ? `onclick="event.stopPropagation();window.showImgFullscreen('${f.dataUrl}','Gambar #${i+1} dari ${total}')"` : ''}>
+        <span class="order-num">#${i+1}</span>
+        ${mode === 'fullscreen' ? `<span class="zoom-badge" onclick="event.stopPropagation();window.showImgFullscreen('${f.dataUrl}','Gambar #${i+1} dari ${total}')"><i class="fas fa-expand"></i></span>` : ''}
+        <span class="remove-btn" onclick="event.stopPropagation();removeImg('${containerId}',${i})">×</span>
+        ${mode === 'drag' ? `<span class="drag-handle" title="Tahan & geser"><i class="fas fa-arrows-alt"></i></span>` : ''}
+      `;
+      setupDragEvents(wrap, 'file', i);
+      preview.appendChild(wrap);
+    });
+    urls.forEach((url, i) => {
+      const wrap = document.createElement('div');
+      wrap.className = 'img-preview-wrap' + (mode === 'drag' ? ' no-fullscreen' : '');
+      const safeUrl = escAttr(url);
+      wrap.innerHTML = `
+        <img src="${url}" class="img-preview" draggable="false" onerror="this.src='https://placehold.co/80x80/1a1a2e/64748b?text=Err'" ${mode === 'fullscreen' ? `onclick="event.stopPropagation();window.showImgFullscreen('${safeUrl}','Gambar #${files.length + i + 1} dari ${total}')"` : ''}>
+        <span class="order-num">#${files.length + i + 1}</span>
+        ${mode === 'fullscreen' ? `<span class="zoom-badge" onclick="event.stopPropagation();window.showImgFullscreen('${safeUrl}','Gambar #${files.length + i + 1} dari ${total}')"><i class="fas fa-expand"></i></span>` : ''}
+        <span class="remove-btn" onclick="event.stopPropagation();removeUrl('${containerId}',${i})">×</span>
+        ${mode === 'drag' ? `<span class="drag-handle" title="Tahan & geser"><i class="fas fa-arrows-alt"></i></span>` : ''}
+      `;
+      setupDragEvents(wrap, 'url', i);
+      preview.appendChild(wrap);
+    });
+  }
+  const urlTextarea = document.getElementById(`${containerId}-urls`);
+  if (urlTextarea) urlTextarea.oninput = renderPreview;
+  window[`_${containerId}_render`] = renderPreview;
+  renderPreview();
+}
+
+function attachExistingImagesHandler(cid, images) {
+  const preview = document.getElementById(`editExistingPreview-${cid}`);
+  const countEl = document.getElementById(`editExistingCount-${cid}`);
+  if (!preview) return;
+  if (!window[`_existing_${cid}_images`]) window[`_existing_${cid}_images`] = [...images];
+  if (!window[`_existing_${cid}_mode`]) window[`_existing_${cid}_mode`] = dragMode;
+  window[`_existing_${cid}_dragSrc`] = null;
+  function render() {
+    const imgs = window[`_existing_${cid}_images`] || [];
+    const mode = window[`_existing_${cid}_mode`] || 'drag';
+    const total = imgs.length;
+    preview.innerHTML = '';
+    if (countEl) countEl.textContent = total;
+    if (total === 0) { preview.innerHTML = '<p class="text-xs text-slate-500 italic mt-2">Tidak ada gambar.</p>'; return; }
+    const modeBar = document.createElement('div');
+    modeBar.className = 'img-preview-mode-bar';
+    modeBar.innerHTML = `
+      <span class="mode-label"><i class="fas fa-layer-group"></i>Total: ${total} gambar</span>
+      <div class="mode-btns">
+        <button class="mode-btn ${mode === 'drag' ? 'active' : 'inactive'}" data-mode="drag"><i class="fas fa-hand-rock"></i> 🖐️ Mode Drag</button>
+        <button class="mode-btn ${mode === 'fullscreen' ? 'active' : 'inactive'}" data-mode="fullscreen"><i class="fas fa-expand"></i> 🔍 Mode Fullscreen</button>
+      </div>
+    `;
+    preview.appendChild(modeBar);
+    modeBar.querySelectorAll('.mode-btn').forEach(btn => {
+      btn.onclick = (e) => { e.stopPropagation(); window[`_existing_${cid}_mode`] = btn.dataset.mode; dragMode = btn.dataset.mode; render(); };
+    });
+    const grid = document.createElement('div');
+    grid.className = 'flex flex-wrap gap-2 max-h-60 overflow-y-auto scrollbar-thin bg-slate-900/50 border border-slate-700 rounded-lg p-2';
+    preview.appendChild(grid);
+    function setupDrag(wrap, index) {
+      if (mode === 'drag') {
+        wrap.draggable = true;
+        wrap.addEventListener('dragstart', () => {
+          window[`_existing_${cid}_dragSrc`] = index;
+          wrap.classList.add('dragging');
+          setTimeout(() => { wrap.style.opacity = '0.4'; }, 0);
+        });
+        wrap.addEventListener('dragend', () => {
+          wrap.classList.remove('dragging');
+          wrap.style.opacity = '';
+          window[`_existing_${cid}_dragSrc`] = null;
+        });
+        wrap.addEventListener('dragover', (e) => { e.preventDefault(); wrap.style.borderColor = '#fbbf24'; });
+        wrap.addEventListener('dragleave', () => { wrap.style.borderColor = ''; });
+        wrap.addEventListener('drop', (e) => {
+          e.preventDefault();
+          wrap.style.borderColor = '';
+          const fromIdx = window[`_existing_${cid}_dragSrc`];
+          if (fromIdx === null || fromIdx === undefined || fromIdx === index) return;
+          const imgs = [...(window[`_existing_${cid}_images`] || [])];
+          const item = imgs.splice(fromIdx, 1)[0];
+          imgs.splice(index, 0, item);
+          window[`_existing_${cid}_images`] = imgs;
+          render();
+        });
+      }
+    }
+    imgs.forEach((img, i) => {
+      const wrap = document.createElement('div');
+      wrap.className = 'img-preview-wrap' + (mode === 'drag' ? ' no-fullscreen' : '');
+      wrap.innerHTML = `
+        <img src="${img}" class="img-preview" draggable="false" onerror="this.src='https://placehold.co/80x80/1a1a2e/64748b?text=Err'" ${mode === 'fullscreen' ? `onclick="window.showImgFullscreen('${escAttr(img)}','Gambar #${i+1}')"` : ''}>
+        <span class="order-num">#${i+1}</span>
+        <span class="remove-btn" onclick="event.stopPropagation();window.removeExistingImage('${cid}',${i})">×</span>
+      `;
+      setupDrag(wrap, i);
+      grid.appendChild(wrap);
+    });
+  }
+  render();
+}
+
+window.removeExistingImage = (cid, index) => {
+  if (!confirm('Hapus gambar ini?')) return;
+  const imgs = window[`_existing_${cid}_images`] || [];
+  imgs.splice(index, 1);
+  window[`_existing_${cid}_images`] = imgs;
+  attachExistingImagesHandler(cid, imgs);
+};
+
+function reorderImages(containerId, fromType, fromIdx, toType, toIdx) {
+  if (fromType === toType && fromIdx === toIdx) return;
+  const files = [...(window[`_${containerId}_files`] || [])];
+  const urlTextarea = document.getElementById(`${containerId}-urls`);
+  const urls = [...parseImgbbUrls(urlTextarea.value)];
+  let item;
+  if (fromType === 'file') item = files.splice(fromIdx, 1)[0];
+  else item = urls.splice(fromIdx, 1)[0];
+  if (toType === 'file') {
+    if (fromType === 'url') files.splice(toIdx, 0, { name: 'url-item', dataUrl: item });
+    else files.splice(toIdx, 0, item);
+  } else {
+    if (fromType === 'file') urls.splice(toIdx, 0, item.dataUrl || item);
+    else urls.splice(toIdx, 0, item);
+  }
+  window[`_${containerId}_files`] = files;
+  urlTextarea.value = urls.join('\n');
+  window[`_${containerId}_render`]?.();
+  showToast('✅ Urutan diubah!');
+}
+
+window.removeImg = (cid, idx) => { const files = window[`_${cid}_files`] || []; files.splice(idx, 1); window[`_${cid}_files`] = files; window[`_${cid}_render`]?.(); };
+window.removeUrl = (cid, idx) => { const ta = document.getElementById(`${cid}-urls`); const urls = parseImgbbUrls(ta.value); urls.splice(idx, 1); ta.value = urls.join('\n'); window[`_${cid}_render`]?.(); };
+
+function getMultiImages(containerId) {
+  const files = window[`_${containerId}_files`] || [];
+  const urlText = document.getElementById(`${containerId}-urls`)?.value || '';
+  const urls = parseImgbbUrls(urlText);
+  const result = [];
+  files.forEach(f => result.push(f.dataUrl));
+  urls.forEach(u => result.push(u));
+  return result;
+}
+
+// ============================================================
+// ===== EDIT KARYA MODAL =====================================
 // ============================================================
 window.openEditWorkModal = async (wid) => {
   const snap = await getDoc(doc(db, 'works', wid));
@@ -1554,7 +2304,7 @@ window.openEditWorkModal = async (wid) => {
 };
 
 // ============================================================
-// === REVIEW KARYA MODE READER ===============================
+// ===== REVIEW KARYA MODE READER =============================
 // ============================================================
 window.openReviewWorkModal = async (wid) => {
   const snap = await getDoc(doc(db, 'works', wid));
@@ -1607,7 +2357,6 @@ function renderReviewReaderModal() {
     </div>
 
     <div class="p-4 overflow-y-auto" style="max-height:calc(95vh - 70px)">
-      <!-- Info Karya -->
       <div class="review-card mb-4">
         <div class="flex items-start gap-3">
           <div class="w-16 h-22 bg-slate-800 rounded-lg overflow-hidden flex-shrink-0">
@@ -1628,7 +2377,6 @@ function renderReviewReaderModal() {
         </div>
       </div>
 
-      <!-- Pilih Chapter/Eps -->
       <div class="mb-4">
         <label class="block text-xs font-bold text-amber-400 mb-2"><i class="fas fa-list mr-1"></i>Pilih ${label} untuk di-review:</label>
         <select id="reviewChapterSelect" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm">
@@ -1637,7 +2385,6 @@ function renderReviewReaderModal() {
       </div>
 
       ${!isKomik ? `
-        <!-- Mode Novel: tampilkan textarea -->
         <div class="mb-4">
           <label class="block text-sm font-semibold mb-1">Judul ${label}</label>
           <input id="reviewEditTitle" type="text" value="${escHtml(currentCh?.title || '')}" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm mb-3">
@@ -1645,13 +2392,11 @@ function renderReviewReaderModal() {
           <textarea id="reviewEditContent" rows="12" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm">${escHtml(currentCh?.content || '')}</textarea>
         </div>
       ` : `
-        <!-- Mode Komik: reader layout -->
         <div id="reviewModeNotice" class="review-panel-locked-notice mb-3">
           <i class="fas fa-hand-pointer mr-1"></i> Pilih mode dulu di panel kanan: <b>🖐️ Mode Drag</b> atau <b>🔍 Mode Fullscreen</b>
         </div>
 
         <div class="review-reader-layout">
-          <!-- KIRI: READER PREVIEW -->
           <div class="review-reader-main" id="reviewReaderMain">
             ${currentImgs.length === 0 
               ? `<div class="review-empty-hint"><i class="fas fa-images"></i><p class="text-sm">Belum ada gambar untuk ${label} ini.</p></div>`
@@ -1664,18 +2409,15 @@ function renderReviewReaderModal() {
             }
           </div>
 
-          <!-- KANAN: PANEL KONTROL (desktop) -->
           <div class="review-reader-panel hidden lg:block" id="reviewReaderPanel">
             ${renderReviewPanelContent()}
           </div>
         </div>
 
-        <!-- TOMBOL MOBILE: buka panel -->
         <button class="review-mobile-panel-btn" id="reviewMobilePanelBtn" title="Buka Panel Kontrol">
           <i class="fas fa-sliders-h"></i>
         </button>
 
-        <!-- PANEL MOBILE (drawer) -->
         <div class="review-mobile-panel-overlay" id="reviewMobilePanelOverlay"></div>
         <div class="review-mobile-panel" id="reviewMobilePanel">
           <div class="flex justify-between items-center mb-3">
@@ -1686,7 +2428,6 @@ function renderReviewReaderModal() {
         </div>
       `}
 
-      <!-- Tombol Aksi -->
       <div class="flex flex-col gap-2 mt-4">
         ${isNonPublish(w) ? `
           <button id="reviewPublishBtn" class="w-full bg-green-600 text-white font-bold py-3 rounded-full hover:scale-105 transition btn-glow">
@@ -1835,7 +2576,6 @@ function renderReviewPanelContent() {
     <div class="${modeClass}" style="padding:0;background:transparent;border:none;box-shadow:none">
       <h3 class="font-bold text-sm text-amber-400 mb-3"><i class="fas fa-sliders-h mr-1"></i>Panel Kontrol Gambar</h3>
       
-      <!-- Mode Selector -->
       <div class="review-mode-selector">
         <button class="review-mode-btn ${mode === 'drag' ? 'active-drag' : ''}" data-mode="drag">
           <i class="fas fa-hand-rock"></i>
@@ -1996,9 +2736,8 @@ function closeReviewModal() {
 }
 
 // ============================================================
-// ==================== END REVIEW KARYA ======================
+// ===== LOAD CLANS CACHE =====================================
 // ============================================================
-
 async function loadClansCache() {
   try {
     const snap = await getDocs(collection(db, 'clans'));
@@ -2007,6 +2746,9 @@ async function loadClansCache() {
   } catch (e) {}
 }
 
+// ============================================================
+// ===== AUTH =================================================
+// ============================================================
 async function initAuth() {
   onAuthStateChanged(auth, async (user) => {
     if (user) {
@@ -2049,6 +2791,7 @@ async function initAuth() {
       }
       await loadClansCache();
       await loadCustomCategories();
+      await loadAllUsersCache();
       document.getElementById('navAuthMobile').innerHTML = `<i class="fas fa-sign-out-alt"></i>`;
       renderPage();
       setTimeout(() => initNotifListener(), 2000);
@@ -2058,8 +2801,10 @@ async function initAuth() {
       ownerFollowerInterval = setInterval(() => boostOwnerFollowers(), FOLLOWER_INTERVAL);
     } else {
       currentUser = null; userProfile = null;
+      if (usersCacheUnsub) { try { usersCacheUnsub(); } catch(e){} usersCacheUnsub = null; }
       await loadClansCache();
       await loadCustomCategories();
+      await loadAllUsersCache();
       document.getElementById('navAuthMobile').innerHTML = `<i class="fas fa-sign-in-alt"></i>`;
       renderPage();
     }
@@ -2088,6 +2833,7 @@ async function logout() {
   notifPrivateUnsubs = [];
   notifPrivateInit = false;
   notifInitialized = false;
+  if (usersCacheUnsub) { try { usersCacheUnsub(); } catch(e){} usersCacheUnsub = null; }
   if (ownerFollowerInterval) clearInterval(ownerFollowerInterval);
   if (birthdayCheckInterval) clearInterval(birthdayCheckInterval);
   if (mgUnsubRoom) { try { mgUnsubRoom(); } catch(e){} mgUnsubRoom = null; }
@@ -2204,8 +2950,15 @@ function initPrivateNotifListener() {
   notifPrivateUnsubs.push(unsub);
 }
 
+// ============================================================
+// ===== RENDER PAGE (ROUTER) =================================
+// ============================================================
 async function renderPage() {
   if (currentResumeBanner) { try { currentResumeBanner.remove(); } catch(e){} currentResumeBanner = null; }
+  if (Object.keys(usersCache).length === 0) {
+    await loadAllUsersCache();
+    await new Promise(r => setTimeout(r, 200));
+  }
   if (isFullscreenReader) {
     isFullscreenReader = false; document.body.style.overflow = '';
     const cb = document.getElementById('fullscreenClose');
@@ -2229,6 +2982,32 @@ async function renderPage() {
   await loadClansCache();
   const hash = getHash();
   const main = document.getElementById('mainContent');
+
+  // === CEK MAINTENANCE MODE ===
+  if (isMaintenanceBlocked()) {
+    document.querySelectorAll('.maintenance-overlay').forEach(el => el.remove());
+    renderMaintenanceScreen(main);
+    // Sembunyikan bottom nav saat maintenance
+    const bn = document.getElementById('bottomNav');
+    if (bn) bn.style.display = 'none';
+    document.body.style.paddingBottom = '0';
+    return;
+  } else {
+    // Tampilkan kembali bottom nav
+    const bn = document.getElementById('bottomNav');
+    if (bn) bn.style.display = '';
+    document.body.style.paddingBottom = '';
+    document.querySelectorAll('.maintenance-overlay').forEach(el => el.remove());
+    // Tampilkan banner kecil jika di halaman berita saat maintenance
+    if (webMaintenance && hash.split('/')[0] === 'berita') {
+      renderMaintenanceBanner();
+    } else {
+      const mb = document.getElementById('maintenanceBannerTop');
+      if (mb) mb.remove();
+      document.body.style.paddingTop = '';
+    }
+  }
+
   updateActiveNav();
   main.classList.remove('page-anim');
   void main.offsetWidth;
@@ -2409,14 +3188,13 @@ async function renderPanduan(container) {
 
   const defaultPanduan = `
     <h3><i class="fas fa-code-branch"></i> 0. Versi Website</h3>
-    <p>KomiNovel saat ini versi <b>v1.6</b>. Update terbaru:</p>
+    <p>KomiNovel saat ini versi <b>v1.7</b>. Update terbaru:</p>
     <ul>
-      <li>🛠️ <b>Perbaikan Layout Navbar</b> — Navbar bawah sekarang rapi di semua perangkat (HP, tablet, desktop) dengan grid 7 kolom</li>
-      <li>✅ <b>Review Karya Mode Reader</b> — Preview gambar ala reader, panel kontrol terpisah untuk drag & fullscreen</li>
+      <li>🚨 <b>FITUR OFF KAN WEB</b> — Admin/Owner bisa mematikan website sementara dengan alasan kustom. Saat off, semua halaman terkunci (maintenance screen), TAPI halaman Berita tetap bisa diakses. Admin tetap bisa masuk untuk kontrol.</li>
+      <li>🛠️ <b>Perbaikan Layout Navbar</b> — Navbar bawah rapi di semua perangkat</li>
+      <li>✅ <b>Review Karya Mode Reader</b> — Preview gambar ala reader</li>
       <li>✅ <b>Edit Karya</b> — Creator bisa edit sampul, teaser, deskripsi, genre, judul, status</li>
       <li>✅ <b>Genre Custom</b> — Creator bisa ketik genre sendiri</li>
-      <li>✅ <b>Menu Hamburger Baru</b> — Chat & Clan dipindah ke bottom nav, menu Panduan ditambahkan</li>
-      <li>✅ <b>Proses Pengerjaan di Beranda</b> — Karya nonpublish kini tampil di beranda</li>
     </ul>
 
     <h3><i class="fas fa-sign-in-alt"></i> 1. Cara Masuk / Login</h3>
@@ -2451,7 +3229,7 @@ async function renderPanduan(container) {
     <p>Karya yang baru saja dipublish oleh kreator.</p>
 
     <h3><i class="fas fa-newspaper"></i> 6. Berita</h3>
-    <p>Informasi terbaru dari Admin.</p>
+    <p>Informasi terbaru dari Admin. <b>Saat website dimatikan (maintenance), halaman Berita tetap bisa diakses!</b></p>
 
     <h3><i class="fas fa-tags"></i> 7. Kategori</h3>
     <p>Filter karya berdasarkan genre.</p>
@@ -2570,7 +3348,26 @@ async function renderPanduan(container) {
       <li>Bisa dimatikan kapan saja</li>
     </ul>
 
-    <h3><i class="fas fa-crown"></i> 22. Admin Panel</h3>
+    <h3><i class="fas fa-power-off"></i> 22. FITUR OFF KAN WEB (BARU!)</h3>
+    <p>Fitur khusus <b>Admin/Owner</b> untuk mematikan website sementara (maintenance mode).</p>
+    <p><b>Cara pakai:</b></p>
+    <ul>
+      <li>Buka <b>Admin Panel → Setting → Matikan Website</b></li>
+      <li>Isi <b>alasan</b> maintenance (wajib)</li>
+      <li>Isi <b>estimasi selesai</b> (opsional)</li>
+      <li>Klik <b>Matikan Website</b></li>
+    </ul>
+    <p><b>Yang terjadi:</b></p>
+    <ul>
+      <li>Semua pengunjung melihat halaman <b>"WEBSITE SEDANG DIMATIKAN"</b> dengan alasan yang kamu isi</li>
+      <li>Fitur baca komik/novel, chat, clan, minigame, dll DINONAKTIFKAN</li>
+      <li><b>Halaman Berita TETAP BISA diakses</b> (dengan banner kecil di atas)</li>
+      <li>Admin/Owner tetap bisa akses penuh</li>
+      <li>Kamu bisa <b>nyalakan kembali</b> kapan saja dari panel Admin</li>
+    </ul>
+    <div class="tip">💡 Fitur ini berguna saat website sedang ada perbaikan server, update fitur besar, atau masalah teknis lainnya.</div>
+
+    <h3><i class="fas fa-crown"></i> 23. Admin Panel</h3>
     <p>Khusus untuk Admin & Owner:</p>
     <ul>
       <li><b>User</b> — Kelola role, ban/unban, jadikan kreator unggulan</li>
@@ -2579,7 +3376,7 @@ async function renderPanduan(container) {
       <li><b>Kritik</b> — Lihat kritik & saran dari user</li>
       <li><b>Ultah</b> — Setting text auto ultah & lihat riwayat</li>
       <li><b>Boost</b> — Toggle auto boost global</li>
-      <li><b>Setting</b> — Nomor WA admin & info versi</li>
+      <li><b>Setting</b> — Nomor WA admin, OFF KAN WEB, info versi</li>
     </ul>
 
     <h3><i class="fas fa-question-circle"></i> Butuh Bantuan?</h3>
@@ -2638,7 +3435,7 @@ async function renderPanduan(container) {
 }
 
 // ============================================================
-// ==== RENDER HOME — LAYOUT: TERPOPULER + BARU UPLOAD + PROSES PENGERJAAN ====
+// ===== HOME =================================================
 // ============================================================
 async function renderHome(container) {
   container.innerHTML = `
@@ -2657,7 +3454,6 @@ async function renderHome(container) {
       </div>
     </div>
 
-    <!-- BAGIAN TERPOPULER -->
     <section class="slide-section mb-8" id="sectionPopuler">
       <div class="slide-header">
         <h2 class="text-amber-400"><i class="fas fa-fire mr-1"></i>Terpopuler</h2>
@@ -2669,7 +3465,6 @@ async function renderHome(container) {
       <div class="slide-track" id="populerTrack"></div>
     </section>
 
-    <!-- BAGIAN BARU UPLOAD -->
     <section class="slide-section mb-8" id="sectionBaru">
       <div class="slide-header">
         <h2 class="text-green-400"><i class="fas fa-upload mr-1"></i>Baru Upload</h2>
@@ -2681,7 +3476,6 @@ async function renderHome(container) {
       <div class="slide-track" id="baruTrack"></div>
     </section>
 
-    <!-- BAGIAN PROSES PENGERJAAN (NONPUBLISH) -->
     <section class="slide-section mb-8" id="sectionProses">
       <div class="slide-header">
         <h2 class="text-blue-400"><i class="fas fa-clock mr-1"></i>Proses Pengerjaan</h2>
@@ -2947,9 +3741,24 @@ window.toggleWorkLike = async (workId) => {
   } catch (e) { showToast('Gagal: ' + e.message); }
 };
 
+// ============================================================
+// ===== BERITA ===============================================
+// ============================================================
 async function renderBerita(container) {
   const canManage = isAdminUser(userProfile);
+  // Banner maintenance di atas berita
+  const maintNotice = webMaintenance ? `
+    <div class="bg-red-950/40 border-2 border-red-600 rounded-2xl p-4 mb-4 card-anim">
+      <div class="flex items-center gap-3">
+        <i class="fas fa-tools text-red-400 text-2xl"></i>
+        <div class="flex-1">
+          <p class="text-sm font-bold text-red-300">⚠️ Website sedang dalam maintenance</p>
+          <p class="text-xs text-red-200 mt-1">${escHtml(maintenanceData.reason || 'Sedang perbaikan')}</p>
+        </div>
+      </div>
+    </div>` : '';
   container.innerHTML = `
+    ${maintNotice}
     <div class="flex justify-between items-center mb-4 flex-wrap gap-2">
       <div>
         <h2 class="text-2xl font-bold"><i class="fas fa-newspaper text-amber-400 mr-2"></i>Berita</h2>
@@ -3079,6 +3888,9 @@ async function openBeritaModal(id, container) {
   };
 }
 
+// ============================================================
+// ===== BOOKMARK =============================================
+// ============================================================
 async function renderBookmarkPage(container) {
   if (!currentUser || !userProfile) {
     container.innerHTML = `<div class="card-bg rounded-2xl p-8 text-center card-anim"><p class="mb-4">Login untuk lihat bookmark.</p></div>`;
@@ -3101,6 +3913,9 @@ async function renderBookmarkPage(container) {
   renderWorkList(list, works, new Set(), true);
 }
 
+// ============================================================
+// ===== FOLLOWERS PAGE =======================================
+// ============================================================
 async function renderFollowersPage(container, uid, mode) {
   const snap = await getDoc(doc(db, 'users', uid));
   if (!snap.exists()) { container.innerHTML = '<p class="text-red-400">User tidak ditemukan</p>'; return; }
@@ -3128,7 +3943,7 @@ async function renderFollowersPage(container, uid, mode) {
       <div class="flex-1 min-w-0">
         <div class="flex items-center gap-1 flex-wrap">
           <p class="font-bold text-sm truncate">${m.username || 'User'}${v}</p>
-          ${buildUserTags(m, m.id)}
+          ${getRoleTagsForUid(m.id, m)}
         </div>
         <p class="text-xs text-slate-400">Lv.${m.level || 1} • ${formatCount(m.followerCount || 0)} followers</p>
       </div>
@@ -3137,6 +3952,9 @@ async function renderFollowersPage(container, uid, mode) {
   }).join('');
 }
 
+// ============================================================
+// ===== TOP FOLLOWERS ========================================
+// ============================================================
 async function renderTopFollowers(container) {
   container.innerHTML = `
     <h2 class="text-2xl font-bold mb-4"><i class="fas fa-crown text-amber-400 mr-2 badge-float"></i>Top Followers</h2>
@@ -3198,7 +4016,7 @@ async function renderTopFollowers(container) {
         <div class="flex-1 min-w-0">
           <div class="flex items-center gap-1 flex-wrap">
             <h3 class="font-bold truncate">${u.username || 'User'}${v}</h3>
-            ${isO ? '<span class="owner-tag">OWNER</span>' : isA ? '<span class="admin-tag">ADMIN</span>' : ''}
+            ${getRoleTagsForUid(u.id, u)}
             ${unggulan}
           </div>
           <p class="text-xs text-slate-400">Lv.${u.level || 1} • ${getLevelTitle(u.level || 1)}</p>
@@ -3213,6 +4031,9 @@ async function renderTopFollowers(container) {
   load();
 }
 
+// ============================================================
+// ===== PROFIL PUBLIK ========================================
+// ============================================================
 async function renderPublicProfile(container, uid) {
   const snap = await getDoc(doc(db, 'users', uid));
   if (!snap.exists()) { container.innerHTML = '<p class="text-red-400">User tidak ditemukan</p>'; return; }
@@ -3289,6 +4110,9 @@ async function renderPublicProfile(container, uid) {
   if (document.getElementById('btnDM')) { document.getElementById('btnDM').onclick = () => { window.location.hash = 'privatechat/' + uid; }; }
 }
 
+// ============================================================
+// ===== PRIVATE CHAT (DM) ====================================
+// ============================================================
 async function renderPrivateChat(container, otherUid) {
   if (!currentUser) { container.innerHTML = '<p class="text-red-400">Login dulu</p>'; return; }
   const otherSnap = await getDoc(doc(db, 'users', otherUid));
@@ -3303,7 +4127,7 @@ async function renderPrivateChat(container, otherUid) {
       <div class="flex-1">
         <div class="flex items-center gap-2 flex-wrap">
           <h3 class="font-bold">${other.username}${getVerifiedBadge(other.followerCount || 0)}${getCreatorVerifiedBadge(other)}</h3>
-          ${buildUserTags(other, otherUid)}
+          ${getRoleTagsForUid(otherUid, other)}
         </div>
         <p class="text-xs text-slate-400">Lv.${other.level || 1} • ${getLevelTitle(other.level || 1)}</p>
       </div>
@@ -3328,7 +4152,7 @@ async function renderPrivateChat(container, otherUid) {
       const own = m.userId === currentUser.uid;
       const isLast = idx === arr.length - 1;
       const anim = isLast && isNew ? (own ? 'chat-msg-new-own' : 'chat-msg-new') : '';
-      const userObj = usersCache[m.userId] || { username: m.username, photoURL: m.photoURL, level: m.userLevel };
+      const userObj = usersCache[m.userId] || (m.userId === currentUser?.uid ? userProfile : { username: m.username, photoURL: m.photoURL, level: m.userLevel });
       const un = userObj.username || m.username || 'User';
       const pu = userObj.photoURL || m.photoURL || '';
       const ul = userObj.level || m.userLevel || 1;
@@ -3338,7 +4162,7 @@ async function renderPrivateChat(container, otherUid) {
         <div class="max-w-[70%] ${isImg ? 'chat-img-msg' : (own ? 'bg-amber-500/20' : 'bg-slate-800')} rounded-2xl px-3 py-2">
           ${!isImg ? `<div class="flex items-center gap-1 flex-wrap text-xs mb-1">
             <span class="${isGolden(ul) ? 'gold-glow font-bold' : 'text-slate-300 font-semibold'}">${un}</span>
-            ${buildUserTags(userObj, m.userId)}
+            ${getRoleTagsForUid(m.userId, userObj)}
             <span class="text-slate-500">Lv.${ul}</span>
           </div>` : ''}
           ${m.image ? `<img src="${m.image}" class="chat-img" onclick="window.showImgFullscreen('${escAttr(m.image)}','Gambar dari ${escAttr(un)}')">` : ''}
@@ -3386,6 +4210,9 @@ window.cancelChatImg = (type) => {
   if (el) el.innerHTML = '';
 };
 
+// ============================================================
+// ===== TEMAN ================================================
+// ============================================================
 async function renderTeman(c) {
   if (!currentUser) {
     c.innerHTML = `<div class="card-bg rounded-2xl p-8 text-center card-anim"><p class="mb-4">Login dulu untuk akses fitur teman.</p><button onclick="document.getElementById('navAuthMobile').click()" class="bg-amber-500 text-black px-6 py-2 rounded-full font-bold btn-glow">Masuk</button></div>`;
@@ -3437,6 +4264,9 @@ async function renderTeman(c) {
   };
 }
 
+// ============================================================
+// ===== CLAN =================================================
+// ============================================================
 async function renderClan(c) {
   if (!currentUser) { c.innerHTML = `<div class="card-bg rounded-2xl p-8 text-center card-anim"><p>Login untuk akses clan.</p></div>`; return; }
   const clanSnap = userProfile.clanId ? await getDoc(doc(db, 'clans', userProfile.clanId)) : null;
@@ -3492,6 +4322,9 @@ async function renderClan(c) {
   }
 }
 
+// ============================================================
+// ===== CLAN DETAIL (CHAT + MEMBER) ==========================
+// ============================================================
 async function renderClanDetail(container, clanId) {
   const snap = await getDoc(doc(db, 'clans', clanId));
   if (!snap.exists()) { container.innerHTML = '<p class="text-red-400">Clan tidak ditemukan</p>'; return; }
@@ -3571,13 +4404,7 @@ async function renderClanDetail(container, clanId) {
             const canKickThis = canKick && !mOwner && !isMe;
             const canPromoteThis = canManageAdmin && !mOwner && !isMe;
             const canDemoteThis = canManageAdmin && mAdmin && !mOwner;
-            const userRoles = m.roles || [m.role || 'pembaca'];
-            let tagHtml = '';
-            if (userRoles.includes('owner')) tagHtml += '<span class="owner-tag text-xs">OWNER</span> ';
-            if (userRoles.includes('admin')) tagHtml += '<span class="admin-tag text-xs">ADMIN</span> ';
-            if (userRoles.includes('penulis')) tagHtml += '<span class="penulis-tag text-xs">PENULIS</span> ';
-            if (userRoles.includes('komikus')) tagHtml += '<span class="komikus-tag text-xs">KOMIKUS</span> ';
-            if (userRoles.includes('pembaca')) tagHtml += '<span class="pembaca-tag text-xs">PEMBACA</span> ';
+            const tagHtml = getRoleTagsForUid(m.id, m);
             return `
               <div class="bg-slate-800/50 rounded-xl p-3">
                 <div class="flex items-center gap-2 flex-wrap">
@@ -3662,7 +4489,7 @@ async function renderClanDetail(container, clanId) {
     const lastMsg = arr[arr.length - 1];
     const isNew = lastId && lastMsg.id !== lastId;
     msgsDiv.innerHTML = arr.map((msg, idx) => {
-      const u = usersCache[msg.userId] || {};
+      const u = usersCache[msg.userId] || (msg.userId === currentUser?.uid ? userProfile : {}) || {};
       const un = u.username || msg.username || 'Anonim';
       const pu = u.photoURL || msg.photoURL || '';
       const ul = u.level || 1;
@@ -3673,8 +4500,6 @@ async function renderClanDetail(container, clanId) {
       const isO = roles.includes('owner'), isA = roles.includes('admin'), isP = roles.includes('penulis'), isK = roles.includes('komikus'), isPc = roles.includes('pembaca');
       const isG = ul > 1000;
       const clanU = u.clanId ? clansCache[u.clanId] : null;
-      const isClanOwner = clanU && clanU.leader === u.uid;
-      const isClanAdminMsg = clanU && (clanU.admins || []).includes(u.uid);
       let bc = 'pembaca-chat-border';
       if (isO) bc = 'owner-chat-border';
       else if (isA) bc = 'admin-chat-border';
@@ -3685,17 +4510,7 @@ async function renderClanDetail(container, clanId) {
       if (isOwn) bc += ' bg-amber-500/20';
       if (isImgOnly) bc = 'chat-img-msg';
       const anim = isNewMsg ? (isOwn ? 'chat-msg-new-own' : 'chat-msg-new') : '';
-      let tagsHtml = '';
-      if (isO) tagsHtml += '<span class="owner-tag">👑 OWNER</span> ';
-      if (isA) tagsHtml += '<span class="admin-tag">ADMIN</span> ';
-      if (isP) tagsHtml += '<span class="penulis-tag">PENULIS</span> ';
-      if (isK) tagsHtml += '<span class="komikus-tag">KOMIKUS</span> ';
-      if (isPc) tagsHtml += '<span class="pembaca-tag">PEMBACA</span> ';
-      if (clanU) {
-        if (isClanOwner) tagsHtml += `<span class="clan-owner-tag cursor-pointer" onclick="window.location.hash='clan/${clanU.id}'">👑 ${clanU.name}</span> `;
-        else if (isClanAdminMsg) tagsHtml += `<span class="clan-admin-tag cursor-pointer" onclick="window.location.hash='clan/${clanU.id}'">⚔️ ${clanU.name}</span> `;
-        else tagsHtml += `<span class="clan-tag cursor-pointer" onclick="window.location.hash='clan/${clanU.id}'">${clanU.name}</span> `;
-      }
+      const tagsHtml = getRoleTagsForUid(msg.userId, u);
       let replyPreview = '';
       if (msg.replyTo && msg.replyToText) {
         replyPreview = `<div class="reply-preview"><i class="fas fa-reply text-amber-400 mr-1"></i><b class="text-amber-400">${msg.replyToName || 'Anonim'}:</b> ${sensor(msg.replyToText).slice(0, 80)}</div>`;
@@ -3792,7 +4607,6 @@ window.rejectClanJoin = async (clanId, userId) => {
   showToast('Request ditolak');
   renderPage();
 };
-
 window.promoteToAdmin = async (clanId, userId) => {
   const snap = await getDoc(doc(db, 'clans', clanId));
   if (!snap.exists()) return;
@@ -3876,6 +4690,9 @@ window.delClanMsg = async (msgId) => {
   await deleteDoc(ref); showToast('Dihapus');
 };
 
+// ============================================================
+// ===== TAKEDOWN / NONPUBLISH BANNER =========================
+// ============================================================
 function takedownBanner(work) {
   return `
     <div class="fixed inset-0 z-[150] flex items-center justify-center p-4" style="background:rgba(0,0,0,.92);backdrop-filter:blur(6px)">
@@ -3923,6 +4740,9 @@ function nonpublishBanner(work) {
     </div>`;
 }
 
+// ============================================================
+// ===== READER ===============================================
+// ============================================================
 async function renderReader(container, novelId, chapterId = null) {
   if (!novelId) { container.innerHTML = '<p>Karya tidak ditemukan</p>'; return; }
   const workSnap = await getDoc(doc(db, 'works', novelId));
@@ -4170,16 +4990,26 @@ async function renderReader(container, novelId, chapterId = null) {
           return `<div class="rating-display user-rating" title="${un} kasih ${r.rating} bintang">
             <img src="${uPhoto || 'https://ui-avatars.com/api/?name='+encodeURIComponent(un)}" class="w-4 h-4 rounded-full">
             <span class="text-xs text-slate-300">${un}${vB}</span>
+            ${getRoleTagsForUid(r.userId, u)}
             <span class="text-amber-400 font-bold">${r.rating}★</span>
           </div>`;
         }).join('')}
       </div>`;
   });
 
-  onSnapshot(query(commentsRef, orderBy('createdAt', 'desc')), (snap) => {
+  onSnapshot(query(commentsRef, orderBy('createdAt', 'desc')), async (snap) => {
     const div = document.getElementById('commentsList');
     if (!div) return;
     const arr = []; snap.forEach(d => arr.push({ id: d.id, ...d.data() }));
+    const uniqueUids = [...new Set(arr.map(c => c.userId))];
+    await Promise.all(uniqueUids.map(async uid => {
+      if (!usersCache[uid]) {
+        try {
+          const uSnap = await getDoc(doc(db, 'users', uid));
+          if (uSnap.exists()) usersCache[uid] = { id: uid, ...uSnap.data() };
+        } catch (e) {}
+      }
+    }));
     const parents = arr.filter(c => !c.parentId);
     const replies = arr.filter(c => c.parentId);
     if (parents.length === 0) { div.innerHTML = '<p class="text-slate-500 text-sm">Belum ada komentar.</p>'; return; }
@@ -4197,7 +5027,7 @@ async function renderReader(container, novelId, chapterId = null) {
               <span class="${isGolden(c.userLevel) ? 'gold-glow font-bold' : 'text-slate-300 font-semibold'} cursor-pointer" onclick="window.location.hash='user/${c.userId}'">${c.username || 'Anonim'}${vB}</span>
               ${isGolden(c.userLevel) ? '<i class="fas fa-crown text-amber-400 text-xs"></i>' : ''}
               <span class="text-slate-500">Lv.${c.userLevel || 1}</span>
-              ${buildUserTags(u, c.userId)}
+              ${getRoleTagsForUid(c.userId, u)}
               <span class="text-slate-500">• ${fmtDate(c.createdAt)}</span>
               ${c.edited ? '<span class="text-slate-500 text-xs italic">(diedit)</span>' : ''}
             </div>
@@ -4215,7 +5045,7 @@ async function renderReader(container, novelId, chapterId = null) {
               return `<div class="reply-indent">
                 <div class="flex items-start gap-2">
                   <img src="${r.photoURL || 'https://ui-avatars.com/api/?name='+encodeURIComponent(r.username||'U')}" class="w-6 h-6 rounded-full">
-                  <div><span class="${isGolden(r.userLevel) ? 'gold-glow font-bold' : 'text-slate-300'} text-xs">${r.username}${rvB}</span> ${buildUserTags(ru, r.userId)}<p class="text-xs">${sensor(r.text || '')}</p></div>
+                  <div><span class="${isGolden(r.userLevel) ? 'gold-glow font-bold' : 'text-slate-300'} text-xs">${r.username}${rvB}</span> ${getRoleTagsForUid(r.userId, ru)}<p class="text-xs">${sensor(r.text || '')}</p></div>
                 </div>
               </div>`;
             }).join('')}</div>` : ''}
@@ -4319,6 +5149,7 @@ window.deleteChapterFromReader = async (wid,cid,num) => {
     showToast('Dihapus'); window.location.hash = 'reader/' + wid;
   } catch (e) { showToast('Gagal: ' + e.message); }
 };
+
 window.acceptFriend = async (uid) => {
   await updateDoc(doc(db,'users',currentUser.uid), { friends: [...(userProfile.friends || []), uid], friendRequests: (userProfile.friendRequests || []).filter(x => x !== uid) });
   const otherSnap = await getDoc(doc(db, 'users', uid));
@@ -4340,6 +5171,9 @@ window.sendFriendRequest = async (uid) => {
   showToast('Request terkirim'); renderPage();
 };
 
+// ============================================================
+// ===== KATEGORI =============================================
+// ============================================================
 async function renderKategori(container) {
   const allCats = [...new Set([...ALL_CATEGORIES, ...customCategories.map(c => c.name)])];
   container.innerHTML = `
@@ -4367,6 +5201,9 @@ async function renderKategori(container) {
   loadKL();
 }
 
+// ============================================================
+// ===== LEADERBOARD ==========================================
+// ============================================================
 async function renderLeaderboard(container) {
   container.innerHTML = `
     <h2 class="text-2xl font-bold mb-4"><i class="fas fa-trophy text-amber-400 mr-2 badge-float"></i>Leaderboard</h2>
@@ -4399,6 +5236,9 @@ async function renderLeaderboard(container) {
     </div>`).join('');
 }
 
+// ============================================================
+// ===== CHAT PUBLIK ==========================================
+// ============================================================
 async function renderChat(container) {
   container.innerHTML = `
     <h2 class="text-2xl font-bold mb-4"><i class="fas fa-comments text-amber-400 mr-2"></i>Chat Publik</h2>
@@ -4422,7 +5262,7 @@ async function renderChat(container) {
     renderMsgs();
   });
   chatUsersUnsub = onSnapshot(collection(db,'users'), snap => {
-    usersCache = {}; snap.forEach(d => usersCache[d.id] = { id: d.id, ...d.data() });
+    snap.forEach(d => usersCache[d.id] = { id: d.id, ...d.data() });
     renderMsgs();
   });
   onSnapshot(collection(db,'clans'), snap => {
@@ -4434,19 +5274,17 @@ async function renderChat(container) {
     const lastMsg = rawMessages[rawMessages.length - 1];
     const isNew = lastId && lastMsg.id !== lastId;
     messagesDiv.innerHTML = rawMessages.map((msg, idx) => {
-      const u = usersCache[msg.userId] || {};
+      const u = usersCache[msg.userId] || (msg.userId === currentUser?.uid ? userProfile : {}) || {};
       const un = u.username || msg.username || 'Anonim';
       const pu = u.photoURL || msg.photoURL || '';
       const ul = u.level || 1;
       const roles = u.roles || (u.role ? [u.role] : ['pembaca']);
-      const isO = roles.includes('owner'), isA = roles.includes('admin'), isP = roles.includes('penulis'), isK = roles.includes('komikus'), isPc = roles.includes('pembaca');
+      const isO = roles.includes('owner'), isA = roles.includes('admin'), isP = roles.includes('penulis'), isK = roles.includes('komikus');
       const isG = ul > 1000;
       const vB = getVerifiedBadge(u.followerCount || 0) + getCreatorVerifiedBadge(u);
       const own = msg.userId === currentUser?.uid;
       const clanId = u.clanId;
       const clan = clanId ? clansCache[clanId] : null;
-      const isClanOwner = clan && clan.leader === u.uid;
-      const isClanAdminMsg = clan && (clan.admins || []).includes(u.uid);
       let bc = 'pembaca-chat-border';
       if (isO) bc = 'owner-chat-border';
       else if (isA) bc = 'admin-chat-border';
@@ -4458,17 +5296,7 @@ async function renderChat(container) {
       if (isImgOnly) bc = 'chat-img-msg';
       const isLast = idx === rawMessages.length - 1;
       const anim = isLast && isNew ? (own ? 'chat-msg-new-own' : 'chat-msg-new') : '';
-      let tagsHtml = '';
-      if (isO) tagsHtml += '<span class="owner-tag">👑 OWNER</span> ';
-      if (isA) tagsHtml += '<span class="admin-tag">ADMIN</span> ';
-      if (isP) tagsHtml += '<span class="penulis-tag">PENULIS</span> ';
-      if (isK) tagsHtml += '<span class="komikus-tag">KOMIKUS</span> ';
-      if (isPc) tagsHtml += '<span class="pembaca-tag">PEMBACA</span> ';
-      if (clan) {
-        if (isClanOwner) tagsHtml += `<span class="clan-owner-tag cursor-pointer" onclick="event.stopPropagation();window.location.hash='clan/${clan.id}'">👑 ${clan.name}</span> `;
-        else if (isClanAdminMsg) tagsHtml += `<span class="clan-admin-tag cursor-pointer" onclick="event.stopPropagation();window.location.hash='clan/${clan.id}'">⚔️ ${clan.name}</span> `;
-        else tagsHtml += `<span class="clan-tag cursor-pointer" onclick="event.stopPropagation();window.location.hash='clan/${clan.id}'">${clan.name}</span> `;
-      }
+      const tagsHtml = getRoleTagsForUid(msg.userId, u);
       let replyPreview = '';
       if (msg.replyTo && msg.replyToText) {
         replyPreview = `<div class="reply-preview"><i class="fas fa-reply text-amber-400 mr-1"></i><b class="text-amber-400">${msg.replyToName || 'Anonim'}:</b> ${sensor(msg.replyToText).slice(0, 80)}</div>`;
@@ -4575,6 +5403,9 @@ window.delPubMsg = async (id) => {
   await deleteDoc(r); showToast('Dihapus');
 };
 
+// ============================================================
+// ===== KRITIK & SARAN =======================================
+// ============================================================
 async function renderKritikSaran(container) {
   container.innerHTML = `
     <div class="card-bg rounded-2xl p-6 md:p-8 max-w-2xl mx-auto card-anim">
@@ -4610,6 +5441,9 @@ async function renderKritikSaran(container) {
   };
 }
 
+// ============================================================
+// ===== PROFIL USER (SENDIRI) ================================
+// ============================================================
 async function renderProfil(container) {
   if (!currentUser || !userProfile) {
     container.innerHTML = `<div class="card-bg rounded-2xl p-8 text-center max-w-md mx-auto card-anim">
@@ -4744,7 +5578,7 @@ async function renderProfil(container) {
 }
 
 // ============================================================
-// ==== CREATOR DASHBOARD — DENGAN EDIT & REVIEW KARYA ========
+// ===== CREATOR DASHBOARD ====================================
 // ============================================================
 async function renderCreatorDashboard(container) {
   container.innerHTML = `
@@ -5007,12 +5841,13 @@ async function renderCreatorDashboard(container) {
 }
 
 // ============================================================
-// ================ ADMIN PANEL ===============================
+// ===== ADMIN PANEL ==========================================
 // ============================================================
 async function renderAdminPanel(container) {
   container.innerHTML = `<div class="flex justify-between items-center mb-4 flex-wrap gap-2">
     <div class="flex items-center gap-2">
       <h2 class="text-xl md:text-2xl font-bold"><i class="fas fa-crown text-amber-400 mr-2"></i>Admin</h2>
+      ${webMaintenance ? '<span class="bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full animate-pulse"><i class="fas fa-tools mr-1"></i>WEBSITE OFFLINE</span>' : ''}
     </div>
     <button id="adminLogoutBtn" class="bg-red-900/50 text-red-300 font-bold py-2 px-4 rounded-full text-xs hover:bg-red-800 transition">Logout</button>
   </div>
@@ -5320,24 +6155,59 @@ async function renderAdminPanel(container) {
   }
 
   async function loadSet() {
-    aC.innerHTML = `<div class="card-bg rounded-2xl p-6 max-w-lg mx-auto card-anim">
-      <h3 class="font-bold mb-4">Setting</h3>
-      <div class="bg-blue-900/20 border border-blue-600/40 rounded-xl p-4 mb-4">
-        <div class="flex items-center gap-2 mb-2">
-          <span class="version-badge"><i class="fas fa-code-branch"></i>v${APP_VERSION}</span>
+    const isOn = webMaintenance;
+    aC.innerHTML = `<div class="max-w-2xl mx-auto card-anim">
+
+      <!-- ===== OFF KAN WEB SECTION ===== -->
+      <div class="card-bg rounded-2xl p-6 mb-4 ${isOn ? 'tamat-border' : 'berlanjut-border'}">
+        <div class="flex items-center gap-4 mb-4">
+          <i class="${isOn ? 'fas fa-power-off text-red-400' : 'fas fa-globe text-green-400'} text-4xl"></i>
+          <div>
+            <h3 class="font-black text-lg">Off Kan Web (Maintenance Mode)</h3>
+            <p class="${isOn ? 'font-black text-red-400 text-lg' : 'font-black text-green-400 text-lg'}">${isOn ? '🚫 WEBSITE OFFLINE' : '✅ WEBSITE ONLINE'}</p>
+          </div>
         </div>
-        <p class="text-xs text-slate-400 mb-2">Catatan update:</p>
-        <ul class="text-xs text-slate-300 space-y-1">
-          ${APP_VERSION_NOTES.map(n => `<li>• ${n}</li>`).join('')}
-        </ul>
+        <div class="bg-slate-900/60 rounded-xl p-4 text-sm space-y-2 mb-4">
+          <p class="text-slate-300"><i class="fas fa-info-circle text-amber-400 mr-2"></i>Fitur ini <b>mematikan sementara seluruh website</b>. Semua pengunjung akan melihat halaman maintenance dengan alasan yang kamu tulis.</p>
+          <p class="text-xs text-slate-400">✅ Halaman <b>Berita tetap bisa diakses</b> (dengan banner kecil di atas)</p>
+          <p class="text-xs text-slate-400">✅ Admin/Owner tetap bisa akses penuh</p>
+          <p class="text-xs text-slate-400">✅ Bisa dinyalakan kembali kapan saja</p>
+        </div>
+        ${isOn ? `
+        <div class="bg-red-950/40 border border-red-800 rounded-xl p-3 mb-3 text-left">
+          <p class="text-xs text-red-400 font-bold mb-1"><i class="fas fa-exclamation-circle mr-1"></i>ALASAN SAAT INI:</p>
+          <p class="text-sm text-red-200 whitespace-pre-wrap">${escHtml(maintenanceData.reason || '-')}</p>
+          ${maintenanceData.endTime ? `<p class="text-xs text-red-300 mt-2"><b>Estimasi selesai:</b> ${escHtml(maintenanceData.endTime)}</p>` : ''}
+          ${maintenanceData.by ? `<p class="text-xs text-red-300 mt-1"><b>Dimatikan oleh:</b> ${escHtml(maintenanceData.by)}</p>` : ''}
+        </div>` : ''}
+        <button id="toggleMaintenanceBtn" class="w-full ${isOn ? 'bg-green-600' : 'bg-red-600'} text-white font-bold py-3 rounded-full hover:scale-105 transition btn-glow">
+          ${isOn ? '<i class="fas fa-power-off mr-2"></i>NYALAKAN WEBSITE KEMBALI' : '<i class="fas fa-power-off mr-2"></i>MATIKAN WEBSITE'}
+        </button>
       </div>
-      <label class="block text-sm font-semibold mb-1">Nomor WA Admin</label>
-      <input id="adminWANumber" type="text" value="${localStorage.getItem('adminWA') || WA_NUMBER}" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm">
-      <button id="saveSettings" class="mt-4 w-full bg-amber-500 text-black font-bold py-2 rounded-full hover:scale-105 transition">Simpan</button>
+
+      <!-- ===== VERSION INFO ===== -->
+      <div class="card-bg rounded-2xl p-6 max-w-lg mx-auto card-anim">
+        <h3 class="font-bold mb-4">Info & Setting</h3>
+        <div class="bg-blue-900/20 border border-blue-600/40 rounded-xl p-4 mb-4">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="version-badge"><i class="fas fa-code-branch"></i>v${APP_VERSION}</span>
+          </div>
+          <p class="text-xs text-slate-400 mb-2">Catatan update:</p>
+          <ul class="text-xs text-slate-300 space-y-1">
+            ${APP_VERSION_NOTES.map(n => `<li>• ${n}</li>`).join('')}
+          </ul>
+        </div>
+        <label class="block text-sm font-semibold mb-1">Nomor WA Admin</label>
+        <input id="adminWANumber" type="text" value="${localStorage.getItem('adminWA') || WA_NUMBER}" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm">
+        <button id="saveSettings" class="mt-4 w-full bg-amber-500 text-black font-bold py-2 rounded-full hover:scale-105 transition">Simpan</button>
+      </div>
     </div>`;
     document.getElementById('saveSettings').onclick = () => {
       localStorage.setItem('adminWA', document.getElementById('adminWANumber').value.trim());
       showToast('Disimpan');
+    };
+    document.getElementById('toggleMaintenanceBtn').onclick = () => {
+      window.toggleMaintenance(!isOn);
     };
   }
   document.getElementById('adminTabUsers').onclick = loadUsers;
@@ -5351,7 +6221,7 @@ async function renderAdminPanel(container) {
 }
 
 // ============================================================
-// ================ MINIGAME: GAMBAR & TEBAK =================
+// ===== MINIGAME =============================================
 // ============================================================
 async function renderMinigame(container) {
   if (!currentUser || !userProfile) {
@@ -5424,7 +6294,7 @@ async function renderMinigame(container) {
       <div id="mgJoinSection" class="hidden card-bg rounded-2xl p-6 card-anim">
         <h3 class="font-bold text-lg mb-4 text-green-400"><i class="fas fa-sign-in-alt mr-2"></i>Gabung Room</h3>
         <label class="block text-sm font-semibold mb-2">Masukkan Kode Room:</label>
-        <input id="mgJoinCode" type="text" maxlength="6" placeholder="Contoh: AB12CD" class="mg-join-input w-full bg-slate-800 border-2 border-slate-700 rounded-xl px-4 py-4 mb-4 focus:border-green-500 transition uppercase" oninput="this.value=this.value.toUpperCase()">
+        <input id="mgJoinCode" type="text" maxlength="6" placeholder="Contoh: AB12CD" class="w-full bg-slate-800 border-2 border-slate-700 rounded-xl px-4 py-4 mb-4 focus:border-green-500 transition uppercase" oninput="this.value=this.value.toUpperCase()">
         <button id="mgJoinBtn" class="w-full bg-green-600 text-white font-bold py-3 rounded-full hover:scale-105 transition btn-glow">Gabung Room</button>
       </div>
 
@@ -5558,7 +6428,7 @@ function renderMgWaiting(room) {
 
         <div class="bg-slate-900/60 rounded-2xl p-6 text-center mb-6 border-2 border-purple-500/30">
           <p class="text-xs text-slate-400 mb-2">Bagikan kode ini ke temanmu:</p>
-          <div class="mg-room-code">${room.code}</div>
+          <div class="text-4xl font-black text-purple-400 tracking-widest font-mono mb-2">${room.code}</div>
           <button onclick="navigator.clipboard.writeText('${room.code}');showToast('Kode disalin!')" class="mt-3 bg-purple-500 text-white text-xs font-bold px-4 py-2 rounded-full hover:scale-105 transition"><i class="fas fa-copy mr-1"></i>Salin Kode</button>
         </div>
 
@@ -5569,16 +6439,16 @@ function renderMgWaiting(room) {
             const pPhoto = room.playerPhotos?.[pid] || '';
             const isMe = pid === currentUser.uid;
             const isRHost = pid === room.hostId;
-            return `<div class="mg-player-chip ${isMe ? 'active' : ''} ${isRHost ? 'owner-chip' : ''} justify-center py-3">
+            return `<div class="flex items-center gap-2 bg-slate-800/60 border border-slate-700 rounded-xl px-3 py-3 ${isMe ? 'border-amber-500' : ''} ${isRHost ? 'border-yellow-500' : ''} justify-center">
               <img src="${pPhoto || 'https://ui-avatars.com/api/?name='+encodeURIComponent(pName)}" class="w-8 h-8 rounded-full border border-slate-600">
-              <span class="truncate max-w-[80px]">${pName}${isRHost ? ' 👑' : ''}</span>
+              <span class="truncate max-w-[80px] text-xs">${pName}${isRHost ? ' 👑' : ''}</span>
               ${isMe ? '<span class="text-[10px] text-amber-400">(Kamu)</span>' : ''}
             </div>`;
           }).join('')}
           ${Array.from({ length: maxP - players.length }).map(() => `
-            <div class="mg-player-chip justify-center py-3 opacity-40 border-dashed">
+            <div class="flex items-center gap-2 bg-slate-800/30 border border-slate-700 border-dashed rounded-xl px-3 py-3 justify-center opacity-40">
               <i class="fas fa-user text-slate-600"></i>
-              <span class="text-slate-500">Menunggu...</span>
+              <span class="text-slate-500 text-xs">Menunggu...</span>
             </div>
           `).join('')}
         </div>
@@ -5589,7 +6459,7 @@ function renderMgWaiting(room) {
           </button>
         ` : `
           <div class="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 text-center">
-            <i class="fas fa-hourglass-half text-amber-400 text-2xl mb-2 mg-waiting-pulse"></i>
+            <i class="fas fa-hourglass-half text-amber-400 text-2xl mb-2"></i>
             <p class="text-sm text-amber-200">Menunggu host memulai permainan...</p>
           </div>
         `}
@@ -5655,34 +6525,34 @@ function renderMgPlaying(room) {
             </div>
             <div class="flex items-center gap-2">
               <span class="text-xs text-slate-400">Penggambar:</span>
-              <span class="mg-player-chip drawer text-xs"><i class="fas fa-paint-brush"></i> ${room.drawerName}</span>
+              <span class="bg-slate-800 border border-slate-700 rounded-full px-2 py-1 text-xs"><i class="fas fa-paint-brush text-green-400"></i> ${room.drawerName}</span>
             </div>
-            <div id="mgTimerDisplay" class="mg-timer ${isWarning ? 'warning' : ''}">${mins}:${String(secs).padStart(2,'0')}</div>
+            <div id="mgTimerDisplay" class="font-mono font-black text-lg ${isWarning ? 'text-red-400 animate-pulse' : 'text-amber-400'}">${mins}:${String(secs).padStart(2,'0')}</div>
           </div>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
           <div class="lg:col-span-2">
-            <div class="mg-canvas-wrap mb-3">
-              <canvas id="mgCanvas" class="mg-canvas" width="800" height="600"></canvas>
+            <div class="bg-white rounded-xl overflow-hidden mb-3 border-4 border-slate-700">
+              <canvas id="mgCanvas" width="800" height="600" style="width:100%;display:block;touch-action:none;cursor:crosshair"></canvas>
             </div>
             ${isDrawer ? `
             <div class="card-bg rounded-2xl p-3 mb-3">
               <div class="flex flex-wrap items-center gap-2 mb-2">
                 <span class="text-xs font-bold text-amber-400 mr-1">Alat:</span>
-                <button class="mg-tool-btn active" data-tool="brush" title="Kuas"><i class="fas fa-paint-brush"></i></button>
-                <button class="mg-tool-btn" data-tool="eraser" title="Penghapus"><i class="fas fa-eraser"></i></button>
-                <button class="mg-tool-btn" data-tool="line" title="Garis"><i class="fas fa-slash"></i></button>
-                <button class="mg-tool-btn" data-tool="rect" title="Kotak"><i class="fas fa-square"></i></button>
-                <button class="mg-tool-btn" data-tool="circle" title="Lingkaran"><i class="fas fa-circle"></i></button>
-                <button class="mg-tool-btn" data-tool="fill" title="Isi Warna"><i class="fas fa-fill-drip"></i></button>
+                <button class="mg-tool-btn active bg-amber-500 text-black w-8 h-8 rounded-full font-bold" data-tool="brush" title="Kuas"><i class="fas fa-paint-brush text-xs"></i></button>
+                <button class="mg-tool-btn bg-slate-700 text-slate-300 w-8 h-8 rounded-full" data-tool="eraser" title="Penghapus"><i class="fas fa-eraser text-xs"></i></button>
+                <button class="mg-tool-btn bg-slate-700 text-slate-300 w-8 h-8 rounded-full" data-tool="line" title="Garis"><i class="fas fa-minus text-xs"></i></button>
+                <button class="mg-tool-btn bg-slate-700 text-slate-300 w-8 h-8 rounded-full" data-tool="rect" title="Kotak"><i class="fas fa-square text-xs"></i></button>
+                <button class="mg-tool-btn bg-slate-700 text-slate-300 w-8 h-8 rounded-full" data-tool="circle" title="Lingkaran"><i class="fas fa-circle text-xs"></i></button>
+                <button class="mg-tool-btn bg-slate-700 text-slate-300 w-8 h-8 rounded-full" data-tool="fill" title="Isi Warna"><i class="fas fa-fill-drip text-xs"></i></button>
                 <span class="text-xs font-bold text-amber-400 ml-2 mr-1">Warna:</span>
                 <div id="mgColors" class="flex gap-1 flex-wrap"></div>
                 <span class="text-xs font-bold text-amber-400 ml-2 mr-1">Ukuran:</span>
                 <input type="range" id="mgBrushSize" min="1" max="30" value="4" class="w-20 accent-amber-500">
                 <span id="mgBrushSizeLabel" class="text-xs text-slate-400">4px</span>
-                <button id="mgUndoBtn" class="mg-tool-btn ml-auto" title="Undo"><i class="fas fa-undo"></i></button>
-                <button id="mgClearBtn" class="mg-tool-btn" title="Hapus semua"><i class="fas fa-trash"></i></button>
+                <button id="mgUndoBtn" class="bg-slate-700 text-slate-300 w-8 h-8 rounded-full ml-auto" title="Undo"><i class="fas fa-undo text-xs"></i></button>
+                <button id="mgClearBtn" class="bg-red-700 text-white w-8 h-8 rounded-full" title="Hapus semua"><i class="fas fa-trash text-xs"></i></button>
               </div>
               <p class="text-xs text-slate-500"><i class="fas fa-info-circle mr-1"></i>Gambar bebas apa saja! Lawanmu akan menebak. Beri respon "Benar", "Kurang tepat", atau "Salah".</p>
             </div>` : ''}
@@ -5697,7 +6567,7 @@ function renderMgPlaying(room) {
                   const pPhoto = room.playerPhotos?.[pid] || '';
                   const sc = scores[pid] || 0;
                   const isDrawerP = pid === room.drawerId;
-                  return `<div class="mg-player-chip ${isDrawerP ? 'drawer' : (pid === currentUser.uid ? 'active' : '')} w-full justify-between">
+                  return `<div class="flex items-center gap-2 ${isDrawerP ? 'bg-green-900/30 border-green-600/40' : (pid === currentUser.uid ? 'bg-amber-900/30 border-amber-600/40' : 'bg-slate-800/60 border-slate-700')} border rounded-xl px-2 py-1.5 justify-between">
                     <div class="flex items-center gap-2 min-w-0">
                       <img src="${pPhoto || 'https://ui-avatars.com/api/?name='+encodeURIComponent(pName)}" class="w-6 h-6 rounded-full">
                       <span class="truncate text-xs">${pName}${pid === currentUser.uid ? ' (Kamu)' : ''}</span>
@@ -5713,7 +6583,7 @@ function renderMgPlaying(room) {
 
             <div class="card-bg rounded-2xl p-4">
               <h3 class="font-bold text-sm text-amber-400 mb-2"><i class="fas fa-comments mr-1"></i>Log Tebakan</h3>
-              <div id="mgGuessLog" class="mg-guess-log"></div>
+              <div id="mgGuessLog" class="bg-slate-900/60 rounded-lg p-2 font-mono text-xs max-h-40 overflow-y-auto"></div>
             </div>
 
             ${!isDrawer ? `
@@ -5731,7 +6601,7 @@ function renderMgPlaying(room) {
               <p class="text-xs text-slate-400 mb-2">Jawaban: <b class="text-green-400">${room.word}</b></p>
               <div class="grid grid-cols-3 gap-2">
                 <button onclick="window.mgDrawerRespond('${room.id}','benar')" class="bg-green-600 text-white py-2 rounded-lg text-xs font-bold hover:scale-105 transition ${room.roundStatus !== 'drawing' ? 'opacity-50' : ''}" ${room.roundStatus !== 'drawing' ? 'disabled' : ''}>✅ Benar</button>
-                <button onclick="window.mgDrawerRespond('${room.id}','kurang')" class="bg-amber-600 text-white py-2 rounded-lg text-xs font-bold hover:scale-105 transition ${room.roundStatus !== 'drawing' ? 'opacity-50' : ''}" ${room.roundStatus !== 'drawing' ? 'disabled' : ''}>🟡 Kurang Tepat</button>
+                <button onclick="window.mgDrawerRespond('${room.id}','kurang')" class="bg-amber-600 text-white py-2 rounded-lg text-xs font-bold hover:scale-105 transition ${room.roundStatus !== 'drawing' ? 'opacity-50' : ''}" ${room.roundStatus !== 'drawing' ? 'disabled' : ''}>🟡 Kurang</button>
                 <button onclick="window.mgDrawerRespond('${room.id}','salah')" class="bg-red-600 text-white py-2 rounded-lg text-xs font-bold hover:scale-105 transition ${room.roundStatus !== 'drawing' ? 'opacity-50' : ''}" ${room.roundStatus !== 'drawing' ? 'disabled' : ''}>❌ Salah</button>
               </div>
             </div>
@@ -5755,7 +6625,7 @@ function renderMgPlaying(room) {
         const pPhoto = room.playerPhotos?.[pid] || '';
         const sc = scores[pid] || 0;
         const isDrawerP = pid === room.drawerId;
-        return `<div class="mg-player-chip ${isDrawerP ? 'drawer' : (pid === currentUser.uid ? 'active' : '')} w-full justify-between">
+        return `<div class="flex items-center gap-2 ${isDrawerP ? 'bg-green-900/30 border-green-600/40' : (pid === currentUser.uid ? 'bg-amber-900/30 border-amber-600/40' : 'bg-slate-800/60 border-slate-700')} border rounded-xl px-2 py-1.5 justify-between">
           <div class="flex items-center gap-2 min-w-0">
             <img src="${pPhoto || 'https://ui-avatars.com/api/?name='+encodeURIComponent(pName)}" class="w-6 h-6 rounded-full">
             <span class="truncate text-xs">${pName}${pid === currentUser.uid ? ' (Kamu)' : ''}</span>
@@ -5789,7 +6659,8 @@ function updateMgTimer(room) {
   const mins = Math.floor(timeLeft / 60);
   const secs = timeLeft % 60;
   timerEl.textContent = `${mins}:${String(secs).padStart(2,'0')}`;
-  timerEl.classList.toggle('warning', timeLeft <= 120);
+  timerEl.classList.toggle('text-red-400', timeLeft <= 120);
+  timerEl.classList.toggle('text-amber-400', timeLeft > 120);
   if (timeLeft <= 0) {
     if (mgTimerInterval) { clearInterval(mgTimerInterval); mgTimerInterval = null; }
     if (room.status === 'playing') window.mgTimeUp(room.id);
@@ -5802,12 +6673,13 @@ function renderMgGuessLog(room) {
   const log = room.guessLog || [];
   logEl.innerHTML = log.slice(-30).map(l => {
     const time = new Date(l.at || Date.now()).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-    let cls = 'info';
-    if (l.type === 'correct') cls = 'correct';
-    else if (l.type === 'wrong') cls = 'wrong';
-    else if (l.type === 'close') cls = 'close';
-    else if (l.type === 'system') cls = 'system';
-    return `<div class="${cls} mb-1">[${time}] ${l.text}</div>`;
+    let cls = 'text-slate-400';
+    if (l.type === 'correct') cls = 'text-green-400 font-bold';
+    else if (l.type === 'wrong') cls = 'text-red-400';
+    else if (l.type === 'close') cls = 'text-amber-400';
+    else if (l.type === 'system') cls = 'text-purple-400 italic';
+    const tagHtml = l.uid ? getRoleTagsForUid(l.uid) : '';
+    return `<div class="${cls} mb-1">[${time}] ${l.text} ${tagHtml}</div>`;
   }).join('');
   logEl.scrollTop = logEl.scrollHeight;
 }
@@ -5837,20 +6709,21 @@ function initMgCanvas(room, isDrawer) {
   const colors = ['#000000','#ffffff','#ef4444','#f97316','#fbbf24','#10b981','#3b82f6','#8b5cf6','#ec4899','#78716c','#0ea5e9','#84cc16'];
   const colorsDiv = document.getElementById('mgColors');
   if (colorsDiv) {
-    colorsDiv.innerHTML = colors.map(c => `<div class="mg-color-swatch ${c === '#000000' ? 'active' : ''}" style="background:${c}" data-color="${c}"></div>`).join('');
-    colorsDiv.querySelectorAll('.mg-color-swatch').forEach(sw => {
+    colorsDiv.innerHTML = colors.map(c => `<div class="w-6 h-6 rounded-full border-2 ${c === '#000000' ? 'border-amber-400' : 'border-slate-600'} cursor-pointer hover:scale-110 transition" style="background:${c}" data-color="${c}"></div>`).join('');
+    colorsDiv.querySelectorAll('[data-color]').forEach(sw => {
       sw.onclick = () => {
         mgBrushColor = sw.dataset.color;
-        colorsDiv.querySelectorAll('.mg-color-swatch').forEach(s => s.classList.remove('active'));
-        sw.classList.add('active');
+        colorsDiv.querySelectorAll('[data-color]').forEach(s => s.classList.remove('border-amber-400'));
+        sw.classList.add('border-amber-400');
       };
     });
   }
   document.querySelectorAll('.mg-tool-btn[data-tool]').forEach(btn => {
     btn.onclick = () => {
       mgTool = btn.dataset.tool;
-      document.querySelectorAll('.mg-tool-btn[data-tool]').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
+      document.querySelectorAll('.mg-tool-btn[data-tool]').forEach(b => { b.classList.remove('active','bg-amber-500','text-black'); b.classList.add('bg-slate-700','text-slate-300'); });
+      btn.classList.add('active','bg-amber-500','text-black');
+      btn.classList.remove('bg-slate-700','text-slate-300');
     };
   });
   const sizeInput = document.getElementById('mgBrushSize');
@@ -5876,7 +6749,6 @@ function initMgCanvas(room, isDrawer) {
       const pos = getPos(e);
       floodFill(pos.x, pos.y, mgBrushColor);
       pushHistory();
-      mgLastDrawTime = Date.now();
       syncCanvas(room.id);
       return;
     }
@@ -5941,7 +6813,6 @@ function initMgCanvas(room, isDrawer) {
     if (!mgDrawing) return;
     mgDrawing = false;
     pushHistory();
-    mgLastDrawTime = Date.now();
     syncCanvas(room.id);
   };
   canvas.addEventListener('mousedown', startDraw);
@@ -6056,7 +6927,7 @@ window.mgSubmitGuess = async () => {
     if (room.roundStatus !== 'drawing') { showToast('Ronde sudah selesai'); mgGuessSubmitting = false; return; }
     const log = room.guessLog || [];
     const isCorrect = guess === room.word.toLowerCase();
-    log.push({ type: isCorrect ? 'correct' : 'wrong', text: `${isCorrect ? '✅' : '❌'} ${userProfile.username}: "${guess}"`, at: Date.now() });
+    log.push({ type: isCorrect ? 'correct' : 'wrong', text: `${isCorrect ? '✅' : '❌'} ${userProfile.username}: "${guess}"`, uid: currentUser.uid, at: Date.now() });
     const updates = { guessLog: log, updatedAt: serverTimestamp() };
     if (isCorrect) {
       updates.roundStatus = 'correct';
@@ -6106,7 +6977,7 @@ function renderMgFinished(room) {
         <div class="text-5xl mb-3">${isCorrect ? '🎉' : '⏰'}</div>
         <h2 class="text-2xl font-black ${isCorrect ? 'text-green-400' : 'text-red-400'}">${isCorrect ? 'BENAR!' : 'WAKTU HABIS!'}</h2>
         <p class="text-slate-400 mt-2">Jawaban yang benar adalah:</p>
-        <div class="mg-answer-reveal mt-3">${room.word}</div>
+        <div class="text-3xl font-black text-amber-400 tracking-wider mt-3">${room.word}</div>
       </div>
       <div class="card-bg rounded-2xl p-6 mb-4">
         <h3 class="font-bold text-lg mb-4 text-amber-400 text-center"><i class="fas fa-trophy mr-2"></i>Papan Skor</h3>
@@ -6133,14 +7004,15 @@ function renderMgFinished(room) {
       </div>
       <div class="card-bg rounded-2xl p-6 mb-4">
         <h3 class="font-bold text-sm text-amber-400 mb-3"><i class="fas fa-history mr-1"></i>Riwayat Tebakan</h3>
-        <div class="mg-guess-log max-h-40">
+        <div class="bg-slate-900/60 rounded-lg p-2 font-mono text-xs max-h-40 overflow-y-auto">
           ${(room.guessLog || []).slice(-20).map(l => {
-            let cls = 'info';
-            if (l.type === 'correct') cls = 'correct';
-            else if (l.type === 'wrong') cls = 'wrong';
-            else if (l.type === 'close') cls = 'close';
-            else if (l.type === 'system') cls = 'system';
-            return `<div class="${cls} mb-1">${l.text}</div>`;
+            let cls = 'text-slate-400';
+            if (l.type === 'correct') cls = 'text-green-400 font-bold';
+            else if (l.type === 'wrong') cls = 'text-red-400';
+            else if (l.type === 'close') cls = 'text-amber-400';
+            else if (l.type === 'system') cls = 'text-purple-400 italic';
+            const tagHtml = l.uid ? getRoleTagsForUid(l.uid) : '';
+            return `<div class="${cls} mb-1">${l.text} ${tagHtml}</div>`;
           }).join('')}
         </div>
       </div>
@@ -6216,9 +7088,8 @@ window.mgPlayAgain = async (roomId) => {
 };
 
 // ============================================================
-// ===================== END MINIGAME =========================
+// ===== UPLOAD GUIDE =========================================
 // ============================================================
-
 function showUploadGuide() {
   const modal = document.getElementById('modalContainer');
   const content = document.getElementById('modalContent');
@@ -6245,330 +7116,9 @@ function showUploadGuide() {
   document.getElementById('closeGuide2').onclick = close;
 }
 
-function multiImageField(containerId) {
-  return `<div class="bg-slate-900/50 border border-amber-500/30 rounded-xl p-3 mt-2">
-    <label class="text-xs font-semibold text-amber-400 block mb-2">Gambar (tanpa batas jumlah, urutan = pilihan)</label>
-    <div class="flex flex-wrap gap-2 mb-2">
-      <label class="cursor-pointer bg-amber-500 text-black px-3 py-2 rounded-lg text-xs font-bold hover:scale-105 transition">
-        <i class="fas fa-upload mr-1"></i>Pilih Foto (bisa banyak)
-        <input type="file" id="${containerId}-file" accept="image/*" multiple class="hidden">
-      </label>
-      <a href="https://imgbb.com" target="_blank" class="bg-slate-700 text-slate-300 px-3 py-2 rounded-lg text-xs font-bold hover:bg-slate-600 transition"><i class="fas fa-external-link-alt mr-1"></i>ImgBB</a>
-    </div>
-    <textarea id="${containerId}-urls" rows="2" placeholder="Atau paste URL gambar, 1 per baris" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs font-mono"></textarea>
-    <div id="${containerId}-preview" class="mt-2"></div>
-    <div id="${containerId}-progress" class="upload-progress hidden"></div>
-  </div>`;
-}
-
-function attachMultiImageHandlers(containerId) {
-  const fileInput = document.getElementById(`${containerId}-file`);
-  const preview = document.getElementById(`${containerId}-preview`);
-  const progress = document.getElementById(`${containerId}-progress`);
-  if (!fileInput) return;
-  window[`_${containerId}_files`] = window[`_${containerId}_files`] || [];
-  window[`_${containerId}_dragSrc`] = null;
-  if (!window[`_${containerId}_mode`]) window[`_${containerId}_mode`] = dragMode;
-
-  fileInput.onchange = async (e) => {
-    const files = Array.from(e.target.files);
-    if (files.length === 0) return;
-    progress.classList.remove('hidden');
-    progress.innerHTML = `Mengupload ${files.length} foto ke ImgBB...<br>`;
-    const newFiles = [];
-    for (let i = 0; i < files.length; i++) {
-      const f = files[i];
-      progress.innerHTML += `[${i+1}/${files.length}] ${f.name}...<br>`;
-      try {
-        const dataUrl = await uploadToImgbb(f);
-        newFiles.push({ name: f.name, dataUrl, preview: URL.createObjectURL(f) });
-        progress.innerHTML += `&nbsp;&nbsp;✅ ${(f.size/1024).toFixed(0)} KB terupload<br>`;
-      } catch (err) {
-        progress.innerHTML += `&nbsp;&nbsp;❌ ${err.message}<br>`;
-      }
-    }
-    window[`_${containerId}_files`] = [...(window[`_${containerId}_files`] || []), ...newFiles];
-    progress.innerHTML += `<br>Total: ${window[`_${containerId}_files`].length} foto`;
-    fileInput.value = '';
-    renderPreview();
-  };
-
-  function renderPreview() {
-    const files = window[`_${containerId}_files`] || [];
-    const urlText = document.getElementById(`${containerId}-urls`)?.value || '';
-    const urls = parseImgbbUrls(urlText);
-    const total = files.length + urls.length;
-    const mode = window[`_${containerId}_mode`] || 'drag';
-    preview.innerHTML = '';
-    if (total === 0) return;
-    const modeBar = document.createElement('div');
-    modeBar.className = 'img-preview-mode-bar';
-    modeBar.innerHTML = `
-      <span class="mode-label"><i class="fas fa-layer-group"></i>Total: ${total} foto</span>
-      <div class="mode-btns">
-        <button class="mode-btn ${mode === 'drag' ? 'active' : 'inactive'}" data-mode="drag"><i class="fas fa-hand-rock"></i> 🖐️ Mode Drag</button>
-        <button class="mode-btn ${mode === 'fullscreen' ? 'active' : 'inactive'}" data-mode="fullscreen"><i class="fas fa-expand"></i> 🔍 Mode Fullscreen</button>
-      </div>
-    `;
-    preview.appendChild(modeBar);
-    modeBar.querySelectorAll('.mode-btn').forEach(btn => {
-      btn.onclick = (e) => {
-        e.stopPropagation();
-        const newMode = btn.dataset.mode;
-        window[`_${containerId}_mode`] = newMode;
-        dragMode = newMode;
-        showToast(newMode === 'drag' ? '🖐️ Mode Drag aktif' : '🔍 Mode Fullscreen aktif');
-        renderPreview();
-      };
-    });
-    const hint = document.createElement('div');
-    hint.className = 'w-full text-[11px] mb-2 ' + (mode === 'drag' ? 'text-amber-400' : 'text-blue-400');
-    hint.innerHTML = mode === 'drag' 
-      ? '<i class="fas fa-hand-rock mr-1"></i> <b>Mode Drag:</b> Geser gambar untuk ubah urutan.'
-      : '<i class="fas fa-expand mr-1"></i> <b>Mode Fullscreen:</b> Klik gambar untuk perbesar.';
-    preview.appendChild(hint);
-    function setupDragEvents(wrap, type, index) {
-      wrap.dataset.dragType = type;
-      wrap.dataset.dragIndex = index;
-      wrap.dataset.dragCid = containerId;
-      if (mode === 'drag') {
-        wrap.draggable = true;
-        wrap.classList.add('draggable-ready');
-        wrap.addEventListener('dragstart', (e) => {
-          e.dataTransfer.effectAllowed = 'move';
-          try { e.dataTransfer.setData('text/plain', JSON.stringify({ cid: containerId, type, idx: index })); } catch (err) {}
-          window[`_${containerId}_dragSrc`] = { type, idx: index };
-          wrap.classList.add('dragging');
-          setTimeout(() => { wrap.style.opacity = '0.4'; }, 0);
-        });
-        wrap.addEventListener('dragend', () => {
-          wrap.classList.remove('dragging');
-          wrap.style.opacity = '';
-          window[`_${containerId}_dragSrc`] = null;
-          preview.querySelectorAll('.img-preview-wrap').forEach(w => { w.style.borderColor = ''; w.style.transform = ''; });
-        });
-        wrap.addEventListener('dragover', (e) => {
-          e.preventDefault();
-          e.dataTransfer.dropEffect = 'move';
-          if (window[`_${containerId}_dragSrc`]) { wrap.style.borderColor = '#fbbf24'; wrap.style.transform = 'scale(1.1)'; }
-        });
-        wrap.addEventListener('dragleave', () => { wrap.style.borderColor = ''; wrap.style.transform = ''; });
-        wrap.addEventListener('drop', (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          wrap.style.borderColor = '';
-          wrap.style.transform = '';
-          let data = window[`_${containerId}_dragSrc`];
-          if (!data) return;
-          reorderImages(containerId, data.type, data.idx, type, index);
-        });
-      } else {
-        wrap.draggable = false;
-      }
-    }
-    files.forEach((f, i) => {
-      const wrap = document.createElement('div');
-      wrap.className = 'img-preview-wrap' + (mode === 'drag' ? ' no-fullscreen' : '');
-      wrap.innerHTML = `
-        <img src="${f.preview || f.dataUrl}" class="img-preview" draggable="false" ${mode === 'fullscreen' ? `onclick="event.stopPropagation();window.showImgFullscreen('${f.dataUrl}','Gambar #${i+1} dari ${total}')"` : ''}>
-        <span class="order-num">#${i+1}</span>
-        ${mode === 'fullscreen' ? `<span class="zoom-badge" onclick="event.stopPropagation();window.showImgFullscreen('${f.dataUrl}','Gambar #${i+1} dari ${total}')"><i class="fas fa-expand"></i></span>` : ''}
-        <span class="remove-btn" onclick="event.stopPropagation();removeImg('${containerId}',${i})">×</span>
-        ${mode === 'drag' ? `<span class="drag-handle" title="Tahan & geser"><i class="fas fa-arrows-alt"></i></span>` : ''}
-      `;
-      setupDragEvents(wrap, 'file', i);
-      preview.appendChild(wrap);
-    });
-    urls.forEach((url, i) => {
-      const wrap = document.createElement('div');
-      wrap.className = 'img-preview-wrap' + (mode === 'drag' ? ' no-fullscreen' : '');
-      const safeUrl = escAttr(url);
-      wrap.innerHTML = `
-        <img src="${url}" class="img-preview" draggable="false" onerror="this.src='https://placehold.co/80x80/1a1a2e/64748b?text=Err'" ${mode === 'fullscreen' ? `onclick="event.stopPropagation();window.showImgFullscreen('${safeUrl}','Gambar #${files.length + i + 1} dari ${total}')"` : ''}>
-        <span class="order-num">#${files.length + i + 1}</span>
-        ${mode === 'fullscreen' ? `<span class="zoom-badge" onclick="event.stopPropagation();window.showImgFullscreen('${safeUrl}','Gambar #${files.length + i + 1} dari ${total}')"><i class="fas fa-expand"></i></span>` : ''}
-        <span class="remove-btn" onclick="event.stopPropagation();removeUrl('${containerId}',${i})">×</span>
-        ${mode === 'drag' ? `<span class="drag-handle" title="Tahan & geser"><i class="fas fa-arrows-alt"></i></span>` : ''}
-      `;
-      setupDragEvents(wrap, 'url', i);
-      preview.appendChild(wrap);
-    });
-  }
-  const urlTextarea = document.getElementById(`${containerId}-urls`);
-  if (urlTextarea) urlTextarea.oninput = renderPreview;
-  window[`_${containerId}_render`] = renderPreview;
-  renderPreview();
-}
-
-function attachExistingImagesHandler(cid, images) {
-  const preview = document.getElementById(`editExistingPreview-${cid}`);
-  const countEl = document.getElementById(`editExistingCount-${cid}`);
-  if (!preview) return;
-  if (!window[`_existing_${cid}_images`]) window[`_existing_${cid}_images`] = [...images];
-  if (!window[`_existing_${cid}_mode`]) window[`_existing_${cid}_mode`] = dragMode;
-  window[`_existing_${cid}_dragSrc`] = null;
-  function render() {
-    const imgs = window[`_existing_${cid}_images`] || [];
-    const mode = window[`_existing_${cid}_mode`] || 'drag';
-    const total = imgs.length;
-    preview.innerHTML = '';
-    if (countEl) countEl.textContent = total;
-    if (total === 0) { preview.innerHTML = '<p class="text-xs text-slate-500 italic mt-2">Tidak ada gambar.</p>'; return; }
-    const modeBar = document.createElement('div');
-    modeBar.className = 'img-preview-mode-bar';
-    modeBar.innerHTML = `
-      <span class="mode-label"><i class="fas fa-layer-group"></i>Total: ${total} gambar</span>
-      <div class="mode-btns">
-        <button class="mode-btn ${mode === 'drag' ? 'active' : 'inactive'}" data-mode="drag"><i class="fas fa-hand-rock"></i> 🖐️ Mode Drag</button>
-        <button class="mode-btn ${mode === 'fullscreen' ? 'active' : 'inactive'}" data-mode="fullscreen"><i class="fas fa-expand"></i> 🔍 Mode Fullscreen</button>
-      </div>
-    `;
-    preview.appendChild(modeBar);
-    modeBar.querySelectorAll('.mode-btn').forEach(btn => {
-      btn.onclick = (e) => { e.stopPropagation(); window[`_existing_${cid}_mode`] = btn.dataset.mode; dragMode = btn.dataset.mode; render(); };
-    });
-    const grid = document.createElement('div');
-    grid.className = 'flex flex-wrap gap-2 max-h-60 overflow-y-auto scrollbar-thin bg-slate-900/50 border border-slate-700 rounded-lg p-2';
-    preview.appendChild(grid);
-    function setupDrag(wrap, index) {
-      if (mode === 'drag') {
-        wrap.draggable = true;
-        wrap.addEventListener('dragstart', () => {
-          window[`_existing_${cid}_dragSrc`] = index;
-          wrap.classList.add('dragging');
-          setTimeout(() => { wrap.style.opacity = '0.4'; }, 0);
-        });
-        wrap.addEventListener('dragend', () => {
-          wrap.classList.remove('dragging');
-          wrap.style.opacity = '';
-          window[`_existing_${cid}_dragSrc`] = null;
-        });
-        wrap.addEventListener('dragover', (e) => { e.preventDefault(); wrap.style.borderColor = '#fbbf24'; });
-        wrap.addEventListener('dragleave', () => { wrap.style.borderColor = ''; });
-        wrap.addEventListener('drop', (e) => {
-          e.preventDefault();
-          wrap.style.borderColor = '';
-          const fromIdx = window[`_existing_${cid}_dragSrc`];
-          if (fromIdx === null || fromIdx === undefined || fromIdx === index) return;
-          const imgs = [...(window[`_existing_${cid}_images`] || [])];
-          const item = imgs.splice(fromIdx, 1)[0];
-          imgs.splice(index, 0, item);
-          window[`_existing_${cid}_images`] = imgs;
-          render();
-        });
-      }
-    }
-    imgs.forEach((img, i) => {
-      const wrap = document.createElement('div');
-      wrap.className = 'img-preview-wrap' + (mode === 'drag' ? ' no-fullscreen' : '');
-      wrap.innerHTML = `
-        <img src="${img}" class="img-preview" draggable="false" onerror="this.src='https://placehold.co/80x80/1a1a2e/64748b?text=Err'" ${mode === 'fullscreen' ? `onclick="window.showImgFullscreen('${escAttr(img)}','Gambar #${i+1}')"` : ''}>
-        <span class="order-num">#${i+1}</span>
-        <span class="remove-btn" onclick="event.stopPropagation();window.removeExistingImage('${cid}',${i})">×</span>
-      `;
-      setupDrag(wrap, i);
-      grid.appendChild(wrap);
-    });
-  }
-  render();
-}
-
-window.removeExistingImage = (cid, index) => {
-  if (!confirm('Hapus gambar ini?')) return;
-  const imgs = window[`_existing_${cid}_images`] || [];
-  imgs.splice(index, 1);
-  window[`_existing_${cid}_images`] = imgs;
-  attachExistingImagesHandler(cid, imgs);
-};
-
-function reorderImages(containerId, fromType, fromIdx, toType, toIdx) {
-  if (fromType === toType && fromIdx === toIdx) return;
-  const files = [...(window[`_${containerId}_files`] || [])];
-  const urlTextarea = document.getElementById(`${containerId}-urls`);
-  const urls = [...parseImgbbUrls(urlTextarea.value)];
-  let item;
-  if (fromType === 'file') item = files.splice(fromIdx, 1)[0];
-  else item = urls.splice(fromIdx, 1)[0];
-  if (toType === 'file') {
-    if (fromType === 'url') files.splice(toIdx, 0, { name: 'url-item', dataUrl: item });
-    else files.splice(toIdx, 0, item);
-  } else {
-    if (fromType === 'file') urls.splice(toIdx, 0, item.dataUrl || item);
-    else urls.splice(toIdx, 0, item);
-  }
-  window[`_${containerId}_files`] = files;
-  urlTextarea.value = urls.join('\n');
-  window[`_${containerId}_render`]?.();
-  showToast('✅ Urutan diubah!');
-}
-
-window.removeImg = (cid, idx) => { const files = window[`_${cid}_files`] || []; files.splice(idx, 1); window[`_${cid}_files`] = files; window[`_${cid}_render`]?.(); };
-window.removeUrl = (cid, idx) => { const ta = document.getElementById(`${cid}-urls`); const urls = parseImgbbUrls(ta.value); urls.splice(idx, 1); ta.value = urls.join('\n'); window[`_${cid}_render`]?.(); };
-
-function getMultiImages(containerId) {
-  const files = window[`_${containerId}_files`] || [];
-  const urlText = document.getElementById(`${containerId}-urls`)?.value || '';
-  const urls = parseImgbbUrls(urlText);
-  const result = [];
-  files.forEach(f => result.push(f.dataUrl));
-  urls.forEach(u => result.push(u));
-  return result;
-}
-
-function coverField(id) {
-  return `<div class="bg-slate-900/50 border border-amber-500/30 rounded-xl p-3 mt-2">
-    <label class="text-xs font-semibold text-amber-400 block mb-2">Sampul / Cover <span class="text-red-400">*</span></label>
-    <div class="flex flex-wrap gap-2 mb-2">
-      <label class="cursor-pointer bg-amber-500 text-black px-3 py-2 rounded-lg text-xs font-bold hover:scale-105 transition">
-        <i class="fas fa-upload mr-1"></i>Upload dari Perangkat
-        <input type="file" id="${id}-file" accept="image/*" class="hidden">
-      </label>
-      <a href="https://imgbb.com" target="_blank" class="bg-slate-700 text-slate-300 px-3 py-2 rounded-lg text-xs font-bold hover:bg-slate-600 transition"><i class="fas fa-external-link-alt mr-1"></i>ImgBB</a>
-    </div>
-    <input type="text" id="${id}-url" placeholder="Atau paste URL ImgBB" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm">
-    <div id="${id}-preview" class="mt-2"></div>
-  </div>`;
-}
-
-function attachCoverHandler(id) {
-  const fileInput = document.getElementById(`${id}-file`);
-  const urlInput = document.getElementById(`${id}-url`);
-  const preview = document.getElementById(`${id}-preview`);
-  window[`_${id}_cover`] = null;
-  if (fileInput) {
-    fileInput.onchange = async (e) => {
-      const f = e.target.files[0];
-      if (!f) return;
-      preview.innerHTML = '<span class="text-xs text-amber-400">Mengupload ke ImgBB...</span>';
-      try {
-        const dataUrl = await compressImage(f);
-        window[`_${id}_cover`] = dataUrl;
-        preview.innerHTML = `
-          <div class="img-preview-wrap">
-            <img src="${dataUrl}" class="img-preview" style="width:96px;height:128px" onclick="event.stopPropagation();window.showImgFullscreen('${dataUrl}','Sampul / Cover')">
-            <span class="zoom-badge" onclick="event.stopPropagation();window.showImgFullscreen('${dataUrl}','Sampul / Cover')"><i class="fas fa-expand"></i></span>
-          </div>
-          <p class="text-xs text-green-400 mt-1">✅ Terupload ke ImgBB • Klik untuk fullscreen</p>
-        `;
-      } catch (err) { preview.innerHTML = `<span class="text-xs text-red-400">Gagal: ${err.message}</span>`; }
-    };
-  }
-  urlInput.oninput = () => {
-    if (urlInput.value.trim()) {
-      const url = urlInput.value.trim();
-      const safeUrl = escAttr(url);
-      window[`_${id}_cover`] = url;
-      preview.innerHTML = `
-        <div class="img-preview-wrap">
-          <img src="${url}" class="img-preview" style="width:96px;height:128px" onerror="this.src='https://placehold.co/96x128/1a1a2e/64748b?text=Err'" onclick="event.stopPropagation();window.showImgFullscreen('${safeUrl}','Sampul / Cover')">
-          <span class="zoom-badge" onclick="event.stopPropagation();window.showImgFullscreen('${safeUrl}','Sampul / Cover')"><i class="fas fa-expand"></i></span>
-        </div>
-      `;
-    }
-  };
-}
-function getCoverValue(id) { return window[`_${id}_cover`] || document.getElementById(`${id}-url`)?.value.trim() || ''; }
-
+// ============================================================
+// ===== AUTH MODAL (button header) ===========================
+// ============================================================
 function handleAuthClick() {
   if (currentUser) logout();
   else {
@@ -6588,7 +7138,12 @@ document.getElementById('navAuthMobile').onclick = handleAuthClick;
 document.getElementById('modalContainer').onclick = e => { if (e.target.id === 'modalContainer') e.target.classList.add('hidden'); };
 window.addEventListener('hashchange', renderPage);
 
+// ============================================================
+// ===== INIT =================================================
+// ============================================================
 (async function init() {
+  await loadMaintenanceState();
+  listenMaintenanceState();
   await initAuth();
   await loadAutoBoostStateFromDB();
   listenAutoBoostState();
@@ -6596,7 +7151,7 @@ window.addEventListener('hashchange', renderPage);
   renderPage();
   startAutoBoost();
   console.log(`%c🚀 KomiNovel v${APP_VERSION} loaded`, 'background:linear-gradient(135deg,#fbbf24,#d97706);color:#0f0f1a;font-weight:900;padding:4px 12px;border-radius:8px;');
-  console.log('%c✨ Update v1.6:', 'color:#fbbf24;font-weight:bold;');
+  console.log('%c✨ Update v1.7:', 'color:#fbbf24;font-weight:bold;');
   APP_VERSION_NOTES.forEach(n => console.log('  •', n));
 })();
 </script>
