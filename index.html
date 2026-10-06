@@ -14,7 +14,7 @@
 }
 </script>
 <meta name="google-site-verification" content="GvyTGbIx3Zov0CXr0f1voJ2LJnac-ppCl62NStzdY3E">
-<meta name="description" content="KomiNovel - Platform baca & tulis Novel dan Komik online gratis. Versi 1.7">
+<meta name="description" content="KomiNovel - Platform baca & tulis Novel dan Komik online gratis. Versi 1.8">
 <link rel="icon" href="https://i.ibb.co.com/SDTthJ7m/Gemini-Generated-Image-fhupt4fhupt4fhup.jpg">
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -452,6 +452,70 @@ body{font-family:'Inter',sans-serif;background:#0f0f1a;color:#e2e8f0;overflow-x:
   width:22px;height:22px;border-radius:50%;cursor:pointer;font-weight:900;
   display:flex;align-items:center;justify-content:center;
 }
+
+/* ============================================================
+   === THEME SWITCHER + LIGHT THEME v1.8 ======================
+   ============================================================ */
+.theme-toggle-btn{
+  display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:9999px;
+  border:1px solid #3b3b5c;background:#12121f;color:#fbbf24;font-size:11px;font-weight:900;
+  cursor:pointer;transition:.2s ease;
+}
+.theme-toggle-btn:hover{transform:translateY(-1px);border-color:#fbbf24}
+.theme-toggle-btn i{font-size:13px}
+[data-theme="light"] body{background:#f4f6fb;color:#172033}
+[data-theme="light"] .card-bg{background:#fff;border-color:#d8deea;color:#172033}
+[data-theme="light"] .comment-card,[data-theme="light"] .review-card,[data-theme="light"] .guide-step,
+[data-theme="light"] .history-item,[data-theme="light"] .news-card{background:#fff;border-color:#d8deea}
+[data-theme="light"] .theme-toggle-btn{background:#fff;border-color:#cbd5e1;color:#d97706}
+[data-theme="light"] .nav-bottom{background:#fff;border-color:#d8deea}
+[data-theme="light"] .mobile-nav-drawer{background:#fff;border-color:#d8deea;color:#172033}
+[data-theme="light"] .mobile-nav-item{color:#475569}
+[data-theme="light"] .mobile-nav-item:hover{background:#f1f5f9}
+[data-theme="light"] .modal-overlay{background:rgba(15,23,42,.45)}
+[data-theme="light"] input,[data-theme="light"] textarea,[data-theme="light"] select{
+  background:#fff!important;color:#172033!important;border-color:#cbd5e1!important;
+}
+[data-theme="light"] input::placeholder,[data-theme="light"] textarea::placeholder{color:#94a3b8}
+[data-theme="light"] .text-slate-200{color:#334155!important}
+[data-theme="light"] .text-slate-300{color:#475569!important}
+[data-theme="light"] .text-slate-400{color:#64748b!important}
+[data-theme="light"] .text-slate-500{color:#64748b!important}
+[data-theme="light"] .text-slate-600{color:#94a3b8!important}
+[data-theme="light"] .bg-slate-700{background:#e2e8f0!important;color:#334155!important}
+[data-theme="light"] .bg-slate-800{background:#f1f5f9!important;color:#334155!important}
+[data-theme="light"] .bg-slate-900{background:#e2e8f0!important;color:#334155!important}
+[data-theme="light"] .bg-slate-900\/40{background:rgba(226,232,240,.55)!important}
+[data-theme="light"] .border-slate-700,[data-theme="light"] .border-slate-800{border-color:#d8deea!important}
+[data-theme="light"] .scrollbar-thin::-webkit-scrollbar-thumb{background:#cbd5e1}
+[data-theme="light"] .reader-content .whitespace-pre-wrap{color:#334155!important}
+[data-theme="light"] .user-bio{color:#475569;background:#f8fafc}
+[data-theme="light"] .img-preview-mode-bar{background:#f8fafc;border-color:#d8deea}
+[data-theme="light"] .upload-progress{background:#f8fafc;border-color:#fbbf24;color:#b45309}
+[data-theme="light"] .review-reader-main{background:#f8fafc;border-color:#d8deea}
+[data-theme="light"] .review-reader-panel{background:#fff;border-color:#d8deea}
+[data-theme="light"] .review-mode-btn{background:#f8fafc;color:#475569;border-color:#d8deea}
+[data-theme="light"] .maintenance-overlay{background:linear-gradient(135deg,#f8fafc 0%,#fff1f2 50%,#f8fafc 100%)}
+[data-theme="light"] .maintenance-box{background:#fff}
+.chapter-nav-wrap{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:22px 0}
+.chapter-nav-btn{
+  min-height:82px;border:2px solid #3b3b5c;border-radius:18px;background:#12121f;color:#e2e8f0;
+  padding:14px 18px;display:flex;align-items:center;justify-content:center;gap:12px;
+  font-weight:900;cursor:pointer;transition:.2s ease;text-align:left;
+}
+.chapter-nav-btn:hover:not(:disabled){transform:translateY(-2px);border-color:#fbbf24;background:#1a1a2e}
+.chapter-nav-btn:disabled{opacity:.35;cursor:not-allowed;filter:grayscale(.3)}
+.chapter-nav-btn .chapter-nav-icon{font-size:22px;color:#fbbf24;flex-shrink:0}
+.chapter-nav-btn .chapter-nav-small{display:block;font-size:10px;color:#94a3b8;font-weight:700;margin-bottom:3px;text-transform:uppercase;letter-spacing:.4px}
+.chapter-nav-btn .chapter-nav-title{display:block;font-size:14px;line-height:1.3}
+[data-theme="light"] .chapter-nav-btn{background:#fff;border-color:#d8deea;color:#172033}
+[data-theme="light"] .chapter-nav-btn:hover:not(:disabled){background:#fffbeb;border-color:#fbbf24}
+@media(max-width:520px){
+  .theme-toggle-btn span{display:none}
+  .chapter-nav-wrap{grid-template-columns:1fr;gap:10px}
+  .chapter-nav-btn{min-height:70px}
+}
+
 </style>
 </head><body class="min-h-screen">
 
@@ -464,6 +528,9 @@ body{font-family:'Inter',sans-serif;background:#0f0f1a;color:#e2e8f0;overflow-x:
 </div>
 </div>
 <div class="flex items-center gap-2">
+<button id="themeToggle" type="button" class="theme-toggle-btn" title="Ganti tema" aria-label="Ganti tema">
+<i id="themeToggleIcon" class="fas fa-sun"></i><span id="themeToggleText">Terang</span>
+</button>
 <button id="navAuthMobile" class="bg-amber-500 text-black font-bold py-2 px-3 rounded-full text-xs"><i class="fas fa-sign-in-alt"></i></button>
 </div>
 </header>
@@ -472,7 +539,7 @@ body{font-family:'Inter',sans-serif;background:#0f0f1a;color:#e2e8f0;overflow-x:
 <div class="flex items-center justify-center gap-2 flex-wrap">
 <span>&copy; <span id="footerYear">2026</span> KomiNovel</span>
 </div>
-<p class="text-[10px] text-slate-600">v1.7</p>
+<p class="text-[10px] text-slate-600">v1.8</p>
 </footer>
 </div>
 
@@ -533,8 +600,9 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const googleProvider = new GoogleAuthProvider();
 
-const APP_VERSION = '1.7';
+const APP_VERSION = '1.8';
 const APP_VERSION_NOTES = [
+  'v1.8 — Tema Gelap/Terang, foto profil bisa diganti langsung di KomiNovel tanpa mengubah foto akun Google, dan tombol navigasi Chapter/Eps Sebelumnya/Selanjutnya dibuat besar.',
   'v1.7 — FITUR OFF KAN WEB: Admin/Owner bisa mematikan website sementara dengan alasan kustom. Saat off, semua halaman terkunci (maintenance screen), TAPI halaman Berita tetap bisa diakses. Admin tetap bisa masuk untuk kontrol. Auto Boost hanya boost karya publish.',
   'v1.6 — Perbaikan layout navbar bawah: grid 7 kolom rapi, tombol Home di tengah, safe-area support iPhone notch',
   'v1.5 — Fitur Review Karya dengan Mode Reader: preview gambar ala reader, panel kontrol drag & fullscreen terpisah',
@@ -647,6 +715,29 @@ const MG_WORD_LIST = [
 // ============================================================
 // ===== HELPER UMUM ==========================================
 // ============================================================
+
+const THEME_KEY = 'kominovel_theme';
+function applyTheme(theme, save = true) {
+  const next = theme === 'light' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  if (save) localStorage.setItem(THEME_KEY, next);
+  const icon = document.getElementById('themeToggleIcon');
+  const text = document.getElementById('themeToggleText');
+  const btn = document.getElementById('themeToggle');
+  if (icon) icon.className = next === 'light' ? 'fas fa-moon' : 'fas fa-sun';
+  if (text) text.textContent = next === 'light' ? 'Gelap' : 'Terang';
+  if (btn) btn.title = next === 'light' ? 'Beralih ke tema gelap' : 'Beralih ke tema terang';
+}
+function initTheme() {
+  const saved = localStorage.getItem(THEME_KEY);
+  const preferred = saved || (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+  applyTheme(preferred, false);
+  const btn = document.getElementById('themeToggle');
+  if (btn) btn.onclick = () => {
+    const current = document.documentElement.getAttribute('data-theme') || 'dark';
+    applyTheme(current === 'light' ? 'dark' : 'light', true);
+  };
+}
 function showToast(msg, dur = 3000) {
   const t = document.getElementById('toast');
   t.textContent = msg; t.classList.remove('hidden');
@@ -2730,7 +2821,7 @@ async function signInWithGoogle() {
       const snap = await getDoc(userRef);
       if (snap.exists()) {
         userProfile = snap.data();
-        await updateDoc(userRef, { email: currentUser.email, username: currentUser.displayName || userProfile.username, photoURL: currentUser.photoURL || userProfile.photoURL });
+        await updateDoc(userRef, { email: currentUser.email, username: currentUser.displayName || userProfile.username, photoURL: userProfile.photoURL || currentUser.photoURL || '' });
       }
     } else { await signInWithPopup(auth, googleProvider); showToast('Masuk Google!'); }
   } catch (e) { showToast('Gagal: ' + e.message); }
@@ -4769,6 +4860,17 @@ async function renderReader(container, novelId, chapterId = null) {
               ${work.type === 'novel' ? `<div class="whitespace-pre-wrap text-slate-200" style="line-height:1.9;font-size:15px;">${currentChapter.content || ''}</div>` : `<div class="reader-images grid grid-cols-1 gap-4">${(currentChapter.images || []).map(img => `<img src="${img}" class="w-full rounded-lg hover:shadow-2xl transition cover-clickable" onclick="window.showImgFullscreen('${escAttr(img)}','${escAttr(currentChapter.title || chapterLabel + ' ' + currentChapter.number)}')">`).join('')}</div>`}
             ` : '<p class="text-slate-400">Pilih chapter.</p>'}
           </div>
+          ${currentChapter ? (() => {
+            const currentIndex = chapters.findIndex(c => c.id === currentChapter.id);
+            const prevChapter = currentIndex > 0 ? chapters[currentIndex - 1] : null;
+            const nextChapter = currentIndex >= 0 && currentIndex < chapters.length - 1 ? chapters[currentIndex + 1] : null;
+            const navBtn = (ch, direction, icon) => {
+              if (!ch) return `<button class="chapter-nav-btn" disabled><span class="chapter-nav-icon"><i class="fas fa-${icon}"></i></span><span><small class="chapter-nav-small">${direction}</small><span class="chapter-nav-title">Tidak ada ${chapterLabel.toLowerCase()} lagi</span></span></button>`;
+              return `<button class="chapter-nav-btn" onclick="window.location.hash='reader/${novelId}/${ch.id}'"><span class="chapter-nav-icon"><i class="fas fa-${icon}"></i></span><span><small class="chapter-nav-small">${direction}</small><span class="chapter-nav-title">${chapterLabel} ${ch.number || chapters.indexOf(ch)+1}${ch.title ? ': ' + escHtml(ch.title) : ''}</span></span></button>`;
+            };
+            return `<div class="chapter-nav-wrap">${navBtn(prevChapter,'Sebelumnya','arrow-left')}${navBtn(nextChapter,'Selanjutnya','arrow-right')}</div>`;
+          })() : ''}
+
           ${currentChapter ? `
           <div class="reader-comments card-bg rounded-2xl p-4 md:p-6">
             <h3 class="font-bold mb-4 text-amber-400"><i class="fas fa-star mr-2"></i>Rating & Komentar</h3>
@@ -5408,6 +5510,17 @@ async function renderProfil(container) {
         </div>
       </div>
       <div class="mt-6 space-y-4">
+        <div class="rounded-2xl border border-slate-700 bg-slate-900/40 p-4">
+          <label class="block text-sm font-bold mb-2"><i class="fas fa-camera text-amber-400 mr-2"></i>Foto Profil</label>
+          <div class="flex items-center gap-4">
+            <img id="profilePhotoPreview" src="${userProfile.photoURL || 'https://ui-avatars.com/api/?name='+encodeURIComponent(userProfile.username||'U')}" class="w-16 h-16 rounded-full object-cover border-2 border-amber-500">
+            <div class="flex-1">
+              <input id="profilePhotoInput" type="file" accept="image/*" class="w-full text-xs text-slate-400">
+              <p class="text-[11px] text-slate-500 mt-1">Foto ini hanya mengubah foto profil KomiNovel. Foto akun Google tetap tidak berubah.</p>
+              <div id="profilePhotoProgress" class="text-[11px] text-amber-400 mt-1"></div>
+            </div>
+          </div>
+        </div>
         <div><label class="block text-sm font-semibold mb-1">Username</label><input id="profileUsername" type="text" value="${userProfile.username || ''}" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm"></div>
         <div><label class="block text-sm font-semibold mb-1">Bio <span class="text-xs text-slate-500">(maks 150)</span></label><textarea id="profileBio" rows="2" maxlength="150" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm">${bio}</textarea></div>
         <div>
@@ -5438,6 +5551,17 @@ async function renderProfil(container) {
         </div>
       </div>` : ''}
     </div>`;
+  const profilePhotoInput = document.getElementById('profilePhotoInput');
+  const profilePhotoPreview = document.getElementById('profilePhotoPreview');
+  if (profilePhotoInput && profilePhotoPreview) {
+    profilePhotoInput.onchange = () => {
+      const file = profilePhotoInput.files?.[0];
+      if (!file) return;
+      if (!file.type.startsWith('image/')) { showToast('Pilih file gambar.'); profilePhotoInput.value = ''; return; }
+      profilePhotoPreview.src = URL.createObjectURL(file);
+    };
+  }
+
   document.getElementById('saveProfile').onclick = async () => {
     const nu = document.getElementById('profileUsername').value.trim();
     const nb = document.getElementById('profileBio').value.trim();
@@ -5453,11 +5577,34 @@ async function renderProfil(container) {
         } else { showToast('Format tanggal lahir tidak valid (DD-MM)'); return; }
       } else { showToast('Format: DD-MM (contoh: 17-08)'); return; }
     }
-    await updateDoc(doc(db,'users',currentUser.uid), { username: nu || userProfile.username, bio: nb, birthday: bdayMMDD, updatedAt: serverTimestamp() });
+    let newPhotoURL = userProfile.photoURL || '';
+    const photoFile = document.getElementById('profilePhotoInput')?.files?.[0];
+    if (photoFile) {
+      const progress = document.getElementById('profilePhotoProgress');
+      if (progress) progress.textContent = 'Mengupload foto...';
+      try {
+        newPhotoURL = await uploadToImgbb(photoFile);
+      } catch (e) {
+        if (progress) progress.textContent = '';
+        showToast('Gagal upload foto: ' + e.message);
+        return;
+      }
+      if (progress) progress.textContent = 'Foto siap disimpan ✓';
+    }
+
+    await updateDoc(doc(db,'users',currentUser.uid), {
+      username: nu || userProfile.username,
+      bio: nb,
+      birthday: bdayMMDD,
+      photoURL: newPhotoURL,
+      updatedAt: serverTimestamp()
+    });
     userProfile.username = nu || userProfile.username;
     userProfile.bio = nb;
     userProfile.birthday = bdayMMDD;
-    showToast('Profil disimpan!'); renderPage();
+    userProfile.photoURL = newPhotoURL;
+    showToast('Profil disimpan! Foto profil KomiNovel berhasil diperbarui.');
+    renderPage();
   };
   if (document.getElementById('saveSosmedBtn')) {
     document.getElementById('saveSosmedBtn').onclick = async () => {
@@ -7047,6 +7194,7 @@ window.addEventListener('hashchange', renderPage);
 // ===== INIT =================================================
 // ============================================================
 (async function init() {
+  initTheme();
   await loadMaintenanceState();
   listenMaintenanceState();
   await initAuth();
