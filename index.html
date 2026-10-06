@@ -610,7 +610,7 @@ const googleProvider = new GoogleAuthProvider();
 
 const APP_VERSION = '1.7';
 const APP_VERSION_NOTES = [
-  'v1.7 — FITUR OFF KAN WEB: Admin/Owner bisa mematikan website sementara dengan alasan kustom. Saat off, semua halaman terkunci (maintenance screen), TAPI halaman Berita tetap bisa diakses. Admin tetap bisa masuk untuk kontrol.',
+  'v1.7 — FITUR OFF KAN WEB: Admin/Owner bisa mematikan website sementara dengan alasan kustom. Saat off, semua halaman terkunci (maintenance screen), TAPI halaman Berita tetap bisa diakses. Admin tetap bisa masuk untuk kontrol. Auto Boost hanya boost karya publish.',
   'v1.6 — Perbaikan layout navbar bawah: grid 7 kolom rapi, tombol Home di tengah, safe-area support iPhone notch',
   'v1.5 — Fitur Review Karya dengan Mode Reader: preview gambar ala reader, panel kontrol drag & fullscreen terpisah',
   'v1.4 — Edit Karya (sampul, teaser, deskripsi, genre, judul, status), Genre Custom, Badge versi',
@@ -1346,7 +1346,8 @@ async function autoBoostAllWorks() {
     const promises = [];
     snap.forEach(d => {
       const work = d.data();
-      if (isTakedown(work)) return;
+      // HANYA boost karya yang sudah dipublish dan tidak takedown
+      if (isNonPublish(work) || isTakedown(work)) return;
       promises.push(
         updateDoc(doc(db, 'works', d.id), {
           views: increment(AUTO_VIEW_AMOUNT),
@@ -3340,11 +3341,12 @@ async function renderPanduan(container) {
     </ul>
 
     <h3><i class="fas fa-rocket"></i> 21. Auto Boost Global</h3>
-    <p>Fitur Admin/Owner untuk menambah views & likes otomatis ke semua karya.</p>
+    <p>Fitur Admin/Owner untuk menambah views & likes otomatis ke semua karya <b>yang sudah dipublish</b>.</p>
     <ul>
       <li>+20 views per 5 menit</li>
       <li>+20 likes per 5 menit</li>
       <li>Berlaku GLOBAL untuk semua device</li>
+      <li>Hanya karya publish (nonpublish tidak dapat boost)</li>
       <li>Bisa dimatikan kapan saja</li>
     </ul>
 
@@ -3375,7 +3377,7 @@ async function renderPanduan(container) {
       <li><b>Upload</b> — Upload karya langsung sebagai admin</li>
       <li><b>Kritik</b> — Lihat kritik & saran dari user</li>
       <li><b>Ultah</b> — Setting text auto ultah & lihat riwayat</li>
-      <li><b>Boost</b> — Toggle auto boost global</li>
+      <li><b>Boost</b> — Toggle auto boost global (hanya karya publish)</li>
       <li><b>Setting</b> — Nomor WA admin, OFF KAN WEB, info versi</li>
     </ul>
 
@@ -6138,7 +6140,7 @@ async function renderAdminPanel(container) {
             </div>
           </div>
           <div class="bg-slate-900/60 rounded-xl p-4 text-sm space-y-2">
-            <p class="text-slate-300"><i class="fas fa-info-circle text-amber-400 mr-2"></i>Fitur ini otomatis menambah <b class="text-amber-400">+${AUTO_VIEW_AMOUNT} views</b> dan <b class="text-amber-400">+${AUTO_LIKE_AMOUNT} likes</b> ke setiap karya (kecuali yang di-takedown) setiap <b>${AUTO_BOOST_INTERVAL / 60000} menit</b>.</p>
+            <p class="text-slate-300"><i class="fas fa-info-circle text-amber-400 mr-2"></i>Fitur ini otomatis menambah <b class="text-amber-400">+${AUTO_VIEW_AMOUNT} views</b> dan <b class="text-amber-400">+${AUTO_LIKE_AMOUNT} likes</b> ke setiap karya <b>yang sudah dipublish</b> (nonpublish & takedown tidak dapat boost) setiap <b>${AUTO_BOOST_INTERVAL / 60000} menit</b>.</p>
             <p class="text-xs text-slate-400">💡 Tombol ini <b>GLOBAL</b> — begitu kamu matikan, <b>SEMUA device di dunia</b> yang buka website ini akan berhenti nambah views & likes.</p>
           </div>
         </div>
@@ -6149,6 +6151,7 @@ async function renderAdminPanel(container) {
           <p>Status tersimpan di <b>Firestore</b>: <code class="bg-slate-800 px-2 py-0.5 rounded">settings/autoBoost</code></p>
           <p class="mt-1">Interval: ${AUTO_BOOST_INTERVAL / 60000} menit • +${AUTO_VIEW_AMOUNT} views • +${AUTO_LIKE_AMOUNT} likes</p>
           <p class="mt-1 text-green-400">🌍 Berlaku GLOBAL untuk semua device</p>
+          <p class="mt-1 text-amber-400">📖 Hanya karya publish yang dapat boost</p>
         </div>
       </div>`;
     document.getElementById('boostToggleBtn').onclick = () => window.toggleAutoBoost();
