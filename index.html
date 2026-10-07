@@ -14,7 +14,7 @@
 }
 </script>
 <meta name="google-site-verification" content="GvyTGbIx3Zov0CXr0f1voJ2LJnac-ppCl62NStzdY3E">
-<meta name="description" content="KomiNovel - Platform baca & tulis Novel dan Komik online gratis. Versi 1.8">
+<meta name="description" content="KomiNovel - Platform baca & tulis Novel dan Komik online gratis. Versi 1.9">
 <link rel="icon" href="https://i.ibb.co.com/SDTthJ7m/Gemini-Generated-Image-fhupt4fhupt4fhup.jpg">
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -29,7 +29,6 @@ body{font-family:'Inter',sans-serif;background:#0f0f1a;color:#e2e8f0;overflow-x:
 .scrollbar-thin::-webkit-scrollbar{width:6px;height:6px}
 .scrollbar-thin::-webkit-scrollbar-thumb{background:#3b3b5c;border-radius:8px}
 .modal-overlay{background:rgba(0,0,0,.8)}
-.empty-animation{}
 .line-clamp-2{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .admin-chat-border{border:2px solid #fbbf24;background:linear-gradient(135deg,#2a1f0a,#1a1a2e)!important}
 .owner-chat-border{border:2px solid #ef4444;background:linear-gradient(135deg,#2a0a0a,#1a1a2e)!important}
@@ -97,20 +96,8 @@ body{font-family:'Inter',sans-serif;background:#0f0f1a;color:#e2e8f0;overflow-x:
 .reader-fullscreen .reader-images{gap:0!important}
 .fullscreen-btn{position:fixed;bottom:100px;right:16px;z-index:101;background:#fbbf24;color:#0f0f1a;width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;border:none}
 .fullscreen-close{position:fixed;top:16px;right:16px;z-index:102;background:rgba(0,0,0,.7);color:white;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;border:1px solid rgba(255,255,255,.3)}
-.chat-msg-new{}
-.chat-msg-new-own{}
-.card-anim{}
-.page-anim{}
-.btn-glow{}
-.badge-float{}
-.shimmer{}
 .card-bg.hover-lift{transition:none}
 .card-bg.hover-lift:hover{border-color:rgba(251,191,36,.5)}
-.content-fade{}
-#toast:not(.hidden){}
-.logo-glow{}
-.star-pop{}
-.new-work{}
 .reply-preview{background:rgba(251,191,36,.1);border-left:2px solid #fbbf24;padding:4px 8px;border-radius:4px;font-size:11px;margin-bottom:4px}
 .img-preview{width:80px;height:80px;object-fit:cover;border-radius:8px;border:2px solid #3b3b5c;user-select:none;-webkit-user-drag:none;pointer-events:auto}
 .img-preview-wrap{position:relative;display:inline-block;border:2px solid transparent;border-radius:10px;padding:2px;user-select:none}
@@ -192,10 +179,6 @@ body{font-family:'Inter',sans-serif;background:#0f0f1a;color:#e2e8f0;overflow-x:
 .rating-display{display:inline-flex;align-items:center;gap:2px;font-size:12px;color:#fbbf24}
 .rating-display .user-rating{display:inline-flex;align-items:center;gap:4px;background:rgba(251,191,36,.1);padding:2px 8px;border-radius:9999px;margin:2px}
 .history-item{background:#12121f;border-left:3px solid #a855f7;padding:10px 14px;border-radius:8px;margin-bottom:8px;font-size:13px}
-.owner-shine{}
-.owner-shine-card{}
-
-/* === REVIEW STYLES === */
 .review-card{background:#12121f;border:1px solid #2d2d44;border-radius:12px;padding:12px;margin-bottom:8px}
 .review-img-item{position:relative;display:inline-block;margin:4px}
 .review-img-item img{width:64px;height:64px;object-fit:cover;border-radius:8px;border:2px solid #3b3b5c}
@@ -204,8 +187,6 @@ body{font-family:'Inter',sans-serif;background:#0f0f1a;color:#e2e8f0;overflow-x:
 .review-move-btn:hover{background:#2563eb}
 .review-move-left{top:50%;left:-8px;transform:translateY(-50%)}
 .review-move-right{top:50%;right:-8px;transform:translateY(-50%)}
-
-/* === REVIEW READER MODE === */
 .review-reader-layout{display:grid;grid-template-columns:1fr;gap:16px}
 @media(min-width:1024px){
   .review-reader-layout{grid-template-columns:1fr 380px}
@@ -243,9 +224,7 @@ body{font-family:'Inter',sans-serif;background:#0f0f1a;color:#e2e8f0;overflow-x:
 .review-empty-hint{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;min-height:300px;color:#64748b;text-align:center;padding:20px}
 .review-empty-hint i{font-size:48px;margin-bottom:16px;color:#334155}
 
-/* ============================================================
-   === BOTTOM NAVIGATION ===
-   ============================================================ */
+/* === BOTTOM NAVIGATION === */
 :root{
   --nav-height:64px;
   --nav-safe-bottom:env(safe-area-inset-bottom,0px);
@@ -371,9 +350,7 @@ body{font-family:'Inter',sans-serif;background:#0f0f1a;color:#e2e8f0;overflow-x:
 .slide-nav-btn:hover{background:#fbbf24;color:#0f0f1a}
 .slide-nav-btn:disabled{opacity:.3;pointer-events:none}
 
-/* ============================================================
-   === MAINTENANCE MODE STYLES v1.7 ===
-   ============================================================ */
+/* === MAINTENANCE MODE === */
 .maintenance-overlay{
   position:fixed;inset:0;z-index:500;
   background:linear-gradient(135deg,#0f0f1a 0%,#1a0a0a 50%,#0f0f1a 100%);
@@ -453,9 +430,7 @@ body{font-family:'Inter',sans-serif;background:#0f0f1a;color:#e2e8f0;overflow-x:
   display:flex;align-items:center;justify-content:center;
 }
 
-/* ============================================================
-   === THEME SWITCHER + LIGHT THEME v1.8 ======================
-   ============================================================ */
+/* === THEME === */
 .theme-toggle-btn{
   display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:9999px;
   border:1px solid #3b3b5c;background:#12121f;color:#fbbf24;font-size:11px;font-weight:900;
@@ -516,6 +491,176 @@ body{font-family:'Inter',sans-serif;background:#0f0f1a;color:#e2e8f0;overflow-x:
   .chapter-nav-btn{min-height:70px}
 }
 
+/* === BADGE NOTIFIKASI MERAH === */
+.notif-badge{
+  position:absolute;
+  top:2px;
+  right:4px;
+  min-width:18px;
+  height:18px;
+  background:#ef4444;
+  color:white;
+  border-radius:9px;
+  font-size:10px;
+  font-weight:900;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:0 5px;
+  border:2px solid #1a1a2e;
+  z-index:10;
+}
+[data-theme="light"] .notif-badge{border-color:#fff}
+.nav-bottom-item.has-notif,.nav-bottom-center.has-notif{color:#fbbf24}
+
+/* === STICKER STYLES === */
+.sticker-panel{
+  position:fixed;
+  bottom:90px;
+  left:50%;
+  transform:translateX(-50%);
+  width:min(360px,92vw);
+  max-height:60vh;
+  background:#1a1a2e;
+  border:2px solid #fbbf24;
+  border-radius:16px;
+  z-index:110;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+}
+.sticker-panel-header{
+  padding:10px 14px;
+  background:linear-gradient(135deg,#2a1f0a,#1a1a2e);
+  border-bottom:1px solid #fbbf24;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.sticker-panel-tabs{
+  display:flex;
+  gap:4px;
+  padding:8px;
+  border-bottom:1px solid #2d2d44;
+  overflow-x:auto;
+}
+.sticker-tab{
+  padding:6px 12px;
+  border-radius:9999px;
+  font-size:11px;
+  font-weight:900;
+  border:none;
+  cursor:pointer;
+  white-space:nowrap;
+  background:#2d2d44;
+  color:#cbd5e1;
+}
+.sticker-tab.active{background:#fbbf24;color:#0f0f1a}
+.sticker-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:8px;
+  padding:12px;
+  overflow-y:auto;
+  max-height:44vh;
+}
+.sticker-item{
+  position:relative;
+  aspect-ratio:1;
+  background:#12121f;
+  border:1px solid #2d2d44;
+  border-radius:10px;
+  overflow:hidden;
+  cursor:pointer;
+  padding:4px;
+}
+.sticker-item:hover{border-color:#fbbf24}
+.sticker-item img{width:100%;height:100%;object-fit:contain;pointer-events:none}
+.sticker-item .del-sticker{
+  position:absolute;
+  top:2px;
+  right:2px;
+  background:#ef4444;
+  color:white;
+  width:18px;
+  height:18px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:10px;
+  cursor:pointer;
+  font-weight:900;
+  z-index:5;
+  opacity:0;
+}
+.sticker-item:hover .del-sticker{opacity:1}
+.sticker-item .save-sticker{
+  position:absolute;
+  top:2px;
+  right:2px;
+  background:#3b82f6;
+  color:white;
+  width:18px;
+  height:18px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:9px;
+  cursor:pointer;
+  z-index:5;
+}
+.sticker-item .save-sticker:hover{background:#2563eb}
+.chat-sticker{width:120px;height:120px;object-fit:contain}
+.sticker-send-btn{position:relative;cursor:pointer;background:#334155;color:#cbd5e1;width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sticker-send-btn:hover{background:#475569;color:#fbbf24}
+.sticker-send-btn input{display:none}
+
+/* === REPORT STYLES === */
+.report-btn{
+  background:#991b1b;
+  color:white;
+  font-size:11px;
+  font-weight:900;
+  padding:6px 12px;
+  border-radius:9999px;
+  border:none;
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+}
+.report-btn:hover{background:#b91c1c}
+.report-reason-chip{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:8px 14px;
+  border:2px solid #475569;
+  border-radius:12px;
+  cursor:pointer;
+  font-size:12px;
+  font-weight:700;
+  background:#1a1a2e;
+  color:#cbd5e1;
+  user-select:none;
+  margin:4px 2px;
+}
+.report-reason-chip:hover{border-color:#ef4444}
+.report-reason-chip input{display:none}
+.report-reason-chip:has(input:checked){background:#7f1d1d;color:#fecaca;border-color:#ef4444}
+.report-reason-chip input:checked + span::after{content:' ✓';font-weight:900}
+.report-warning{
+  background:linear-gradient(135deg,rgba(127,29,29,.4),rgba(239,68,68,.15));
+  border:2px solid #ef4444;
+  border-radius:12px;
+  padding:12px;
+  font-size:12px;
+  color:#fecaca;
+  margin-bottom:12px;
+}
+.report-warning b{color:#fbbf24}
 </style>
 </head><body class="min-h-screen">
 
@@ -539,19 +684,22 @@ body{font-family:'Inter',sans-serif;background:#0f0f1a;color:#e2e8f0;overflow-x:
 <div class="flex items-center justify-center gap-2 flex-wrap">
 <span>&copy; <span id="footerYear">2026</span> KomiNovel</span>
 </div>
-<p class="text-[10px] text-slate-600">v1.8</p>
+<p class="text-[10px] text-slate-600">v1.9</p>
 </footer>
 </div>
 
 <nav id="bottomNav" class="nav-bottom">
   <button class="nav-bottom-item" data-nav="clan" onclick="window.location.hash='clan'">
     <i class="fas fa-users"></i><span>Clan</span>
+    <span class="notif-badge hidden" id="notifClanBadge">0</span>
   </button>
   <button class="nav-bottom-item" data-nav="chat" onclick="window.location.hash='chat'">
     <i class="fas fa-comments"></i><span>Chat</span>
+    <span class="notif-badge hidden" id="notifChatBadge">0</span>
   </button>
   <button class="nav-bottom-item" data-nav="berita" onclick="window.location.hash='berita'">
     <i class="fas fa-newspaper"></i><span>Berita</span>
+    <span class="notif-badge hidden" id="notifBeritaBadge">0</span>
   </button>
   <button class="nav-bottom-center" data-nav="home" onclick="window.location.hash='home'" title="Beranda">
     <i class="fas fa-home"></i><span>Home</span>
@@ -582,6 +730,7 @@ body{font-family:'Inter',sans-serif;background:#0f0f1a;color:#e2e8f0;overflow-x:
 <div id="modalContent" class="card-bg rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-6 shadow-2xl scrollbar-thin"></div>
 </div>
 <div id="toast" class="fixed bottom-24 right-6 z-50 hidden bg-slate-800 border border-amber-500 rounded-xl px-5 py-3 shadow-2xl text-sm"></div>
+<div id="stickerPanelContainer"></div>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 import { getAuth, signInAnonymously, GoogleAuthProvider, signInWithPopup, linkWithPopup, onAuthStateChanged, signOut, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
@@ -600,14 +749,26 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const googleProvider = new GoogleAuthProvider();
 
-const APP_VERSION = '1.8';
+const APP_VERSION = '1.9';
 const APP_VERSION_NOTES = [
+  'v1.9 — FITUR REPORT karya (auto-takedown jika 10 report), STIKER di semua chat (admin & user bisa tambah, user bisa save stiker orang), BADGE NOTIFIKASI MERAH di chat/berita yang hilang setelah dilihat.',
   'v1.8 — Tema Gelap/Terang, foto profil bisa diganti langsung di KomiNovel tanpa mengubah foto akun Google, dan tombol navigasi Chapter/Eps Sebelumnya/Selanjutnya dibuat besar.',
-  'v1.7 — FITUR OFF KAN WEB: Admin/Owner bisa mematikan website sementara dengan alasan kustom. Saat off, semua halaman terkunci (maintenance screen), TAPI halaman Berita tetap bisa diakses. Admin tetap bisa masuk untuk kontrol. Auto Boost hanya boost karya publish.',
+  'v1.7 — FITUR OFF KAN WEB: Admin/Owner bisa mematikan website sementara dengan alasan kustom. Saat off, semua halaman terkunci (maintenance screen), TAPI halaman Berita tetap bisa diakses.',
   'v1.6 — Perbaikan layout navbar bawah: grid 7 kolom rapi, tombol Home di tengah, safe-area support iPhone notch',
-  'v1.5 — Fitur Review Karya dengan Mode Reader: preview gambar ala reader, panel kontrol drag & fullscreen terpisah',
-  'v1.4 — Edit Karya (sampul, teaser, deskripsi, genre, judul, status), Genre Custom, Badge versi',
-  'v1.3 — Minigame Gambar & Tebak (2/5 pemain), Auto Boost Global, Perbaikan bug'
+  'v1.5 — Fitur Review Karya dengan Mode Reader: preview gambar ala reader, panel kontrol drag & fullscreen terpisah'
+];
+
+// KONSTANTA REPORT
+const REPORT_AUTO_TAKEDOWN_THRESHOLD = 10;
+const REPORT_REASONS = [
+  { id: 'dewasa', label: '🔞 Konten 18+ / Dewasa', desc: 'Pornografi, adegan seksual, atau konten tidak senonoh' },
+  { id: 'kekerasan', label: '💀 Kekerasan Berlebihan / Gore', desc: 'Adengan sadis, mutilasi, atau kekerasan ekstrem' },
+  { id: 'plagiat', label: '📋 Plagiarisme', desc: 'Menjiplak atau menyalin karya orang lain tanpa izin' },
+  { id: 'sara', label: '🚫 SARA / Ujaran Kebencian', desc: 'Menghina agama, suku, ras, atau golongan tertentu' },
+  { id: 'bullying', label: '😡 Bullying / Pelecehan', desc: 'Menghina, merendahkan, atau melecehkan orang lain' },
+  { id: 'spam', label: '📢 Spam / Promosi', desc: 'Spam link, iklan tidak relevan, atau promosi berlebihan' },
+  { id: 'penipuan', label: '💰 Penipuan / Scam', desc: 'Menipu pembaca, meminta uang, atau scam' },
+  { id: 'lainnya', label: '❓ Lainnya', desc: 'Alasan lain yang tidak termasuk kategori di atas' }
 ];
 
 let currentUser = null, userProfile = null;
@@ -620,6 +781,7 @@ let replyingToPublic = null, replyingToClan = null;
 let notifInitialized = false;
 let currentResumeBanner = null;
 let pendingChatImg = { public: null, clan: null, private: null };
+let pendingChatSticker = { public: null, clan: null, private: null };
 let notifPrivateInit = false;
 let notifPrivateUnsubs = [];
 let dragMode = 'drag';
@@ -662,6 +824,21 @@ let webMaintenance = false;
 let maintenanceData = { enabled: false, reason: '', endTime: '', by: '', at: null };
 let maintenanceUnsub = null;
 let maintenanceBannerDismissed = false;
+
+// STICKER STATE
+let stickersCache = { global: [], mine: [] };
+let stickersUnsub = null;
+let stickerPanelTarget = null;
+let stickerPanelOpen = false;
+
+// NOTIFIKASI STATE
+let notifState = {
+  chat: { lastSeen: 0, count: 0 },
+  clan: { lastSeen: 0, count: 0 },
+  berita: { lastSeen: 0, count: 0 },
+  private: {}
+};
+let notifListeners = [];
 
 const VERIFIED_GREEN = 1000;
 const VERIFIED_BLUE = 100000;
@@ -793,7 +970,523 @@ function isUnggulan(work) { return work && work.featured === true; }
 function isKreatorUnggulan(user) { return user && user.featuredCreator === true; }
 
 // ============================================================
-// ===== MAINTENANCE MODE (v1.7) ==============================
+// ===== BADGE NOTIFIKASI MERAH ===============================
+// ============================================================
+const NOTIF_STORAGE_KEY = 'kominovel_notif';
+function loadNotifState() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(NOTIF_STORAGE_KEY) || '{}');
+    notifState = { ...notifState, ...saved, private: saved.private || {} };
+    if (!notifState.chat) notifState.chat = { lastSeen: 0, count: 0 };
+    if (!notifState.clan) notifState.clan = { lastSeen: 0, count: 0 };
+    if (!notifState.berita) notifState.berita = { lastSeen: 0, count: 0 };
+  } catch (e) {}
+}
+function saveNotifState() {
+  try { localStorage.setItem(NOTIF_STORAGE_KEY, JSON.stringify(notifState)); } catch (e) {}
+}
+function setBadge(elId, count) {
+  const el = document.getElementById(elId);
+  if (!el) return;
+  if (count > 0) {
+    el.textContent = count > 99 ? '99+' : String(count);
+    el.classList.remove('hidden');
+  } else {
+    el.classList.add('hidden');
+  }
+}
+function updateBadges() {
+  setBadge('notifChatBadge', notifState.chat?.count || 0);
+  setBadge('notifClanBadge', notifState.clan?.count || 0);
+  setBadge('notifBeritaBadge', notifState.berita?.count || 0);
+  // Toggle class has-notif
+  const chatBtn = document.querySelector('[data-nav="chat"]');
+  const clanBtn = document.querySelector('[data-nav="clan"]');
+  const beritaBtn = document.querySelector('[data-nav="berita"]');
+  if (chatBtn) chatBtn.classList.toggle('has-notif', (notifState.chat?.count || 0) > 0);
+  if (clanBtn) clanBtn.classList.toggle('has-notif', (notifState.clan?.count || 0) > 0);
+  if (beritaBtn) beritaBtn.classList.toggle('has-notif', (notifState.berita?.count || 0) > 0);
+}
+function markNotifSeen(type, ts) {
+  if (!notifState[type]) notifState[type] = { lastSeen: 0, count: 0 };
+  notifState[type].lastSeen = ts || Date.now();
+  notifState[type].count = 0;
+  saveNotifState();
+  updateBadges();
+}
+window.markNotifSeen = markNotifSeen;
+
+function startNotifListeners() {
+  // Bersihkan listener lama
+  notifListeners.forEach(u => { try { u(); } catch(e){} });
+  notifListeners = [];
+
+  // Chat publik
+  try {
+    const chatQ = query(collection(db, 'chats'), orderBy('createdAt', 'desc'), limit(1));
+    const u1 = onSnapshot(chatQ, snap => {
+      snap.forEach(d => {
+        const msg = d.data();
+        const ts = msg.createdAt?.toDate?.()?.getTime() || Date.now();
+        if (msg.userId === currentUser?.uid) return;
+        if (ts > (notifState.chat?.lastSeen || 0)) {
+          notifState.chat.count = (notifState.chat.count || 0) + 1;
+          saveNotifState();
+          updateBadges();
+        }
+      });
+    });
+    notifListeners.push(u1);
+  } catch (e) { console.warn('notif chat err', e); }
+
+  // Berita
+  try {
+    const beritaQ = query(collection(db, 'berita'), orderBy('createdAt', 'desc'), limit(5));
+    const u2 = onSnapshot(beritaQ, snap => {
+      snap.docChanges().forEach(ch => {
+        if (ch.type === 'added') {
+          const b = ch.doc.data();
+          const ts = b.createdAt?.toDate?.()?.getTime() || Date.now();
+          if (ts > (notifState.berita?.lastSeen || 0)) {
+            notifState.berita.count = (notifState.berita.count || 0) + 1;
+            saveNotifState();
+            updateBadges();
+          }
+        }
+      });
+    });
+    notifListeners.push(u2);
+  } catch (e) { console.warn('notif berita err', e); }
+}
+
+function startClanNotifListener() {
+  if (!userProfile?.clanId) return;
+  try {
+    const cq = query(collection(db, 'clans', userProfile.clanId, 'messages'), orderBy('createdAt', 'desc'), limit(1));
+    const u = onSnapshot(cq, snap => {
+      snap.forEach(d => {
+        const msg = d.data();
+        if (msg.userId === currentUser?.uid) return;
+        const ts = msg.createdAt?.toDate?.()?.getTime() || Date.now();
+        if (ts > (notifState.clan?.lastSeen || 0)) {
+          notifState.clan.count = (notifState.clan.count || 0) + 1;
+          saveNotifState();
+          updateBadges();
+        }
+      });
+    });
+    notifListeners.push(u);
+  } catch (e) { console.warn('notif clan err', e); }
+}
+
+// ============================================================
+// ===== STICKER SYSTEM =======================================
+// ============================================================
+async function loadGlobalStickers() {
+  try {
+    const snap = await getDocs(query(collection(db, 'stickers'), orderBy('createdAt', 'desc')));
+    stickersCache.global = [];
+    snap.forEach(d => stickersCache.global.push({ id: d.id, ...d.data() }));
+  } catch (e) { stickersCache.global = []; }
+}
+
+async function loadMyStickers() {
+  if (!currentUser) { stickersCache.mine = []; return; }
+  try {
+    const snap = await getDocs(query(collection(db, 'user_stickers'), where('userId', '==', currentUser.uid)));
+    stickersCache.mine = [];
+    snap.forEach(d => stickersCache.mine.push({ id: d.id, ...d.data() }));
+  } catch (e) { stickersCache.mine = []; }
+}
+
+function listenStickers() {
+  if (stickersUnsub) { try { stickersUnsub(); } catch(e){} stickersUnsub = null; }
+  stickersUnsub = onSnapshot(collection(db, 'stickers'), snap => {
+    stickersCache.global = [];
+    snap.forEach(d => stickersCache.global.push({ id: d.id, ...d.data() }));
+    if (stickerPanelOpen) renderStickerPanelContent();
+  });
+}
+
+async function addGlobalSticker(url, name) {
+  if (!isAdminUser(userProfile)) { showToast('Hanya Admin/Owner!'); return; }
+  try {
+    await addDoc(collection(db, 'stickers'), {
+      url, name: name || 'Sticker',
+      addedBy: currentUser?.uid || 'admin',
+      addedByName: userProfile?.username || 'Admin',
+      createdAt: serverTimestamp()
+    });
+    showToast('✅ Stiker global ditambahkan!');
+  } catch (e) { showToast('Gagal: ' + e.message); }
+}
+
+async function addMySticker(url, name) {
+  if (!currentUser) { showToast('Login dulu!'); return; }
+  try {
+    await addDoc(collection(db, 'user_stickers'), {
+      url, name: name || 'Sticker Saya',
+      userId: currentUser.uid,
+      userName: userProfile?.username || 'User',
+      createdAt: serverTimestamp()
+    });
+    await loadMyStickers();
+    showToast('✅ Stiker pribadi ditambahkan!');
+  } catch (e) { showToast('Gagal: ' + e.message); }
+}
+
+async function deleteGlobalSticker(id) {
+  if (!isAdminUser(userProfile)) { showToast('Hanya Admin/Owner!'); return; }
+  if (!confirm('Hapus stiker global ini?')) return;
+  try { await deleteDoc(doc(db, 'stickers', id)); showToast('Dihapus'); }
+  catch (e) { showToast('Gagal: ' + e.message); }
+}
+
+async function deleteMySticker(id) {
+  if (!confirm('Hapus stiker ini?')) return;
+  try { await deleteDoc(doc(db, 'user_stickers', id)); await loadMyStickers(); showToast('Dihapus'); }
+  catch (e) { showToast('Gagal: ' + e.message); }
+}
+
+async function saveGlobalStickerToMine(stickerUrl, stickerName) {
+  if (!currentUser) { showToast('Login dulu!'); return; }
+  const exists = stickersCache.mine.find(s => s.url === stickerUrl);
+  if (exists) { showToast('Stiker sudah ada di koleksimu'); return; }
+  try {
+    await addDoc(collection(db, 'user_stickers'), {
+      url: stickerUrl,
+      name: stickerName || 'Sticker',
+      userId: currentUser.uid,
+      userName: userProfile?.username || 'User',
+      createdAt: serverTimestamp()
+    });
+    await loadMyStickers();
+    showToast('⭐ Stiker disimpan ke koleksimu!');
+  } catch (e) { showToast('Gagal: ' + e.message); }
+}
+
+window.deleteGlobalSticker = deleteGlobalSticker;
+window.deleteMySticker = deleteMySticker;
+window.saveGlobalStickerToMine = saveGlobalStickerToMine;
+
+function openStickerPanel(target) {
+  // target: 'public' | 'clan' | 'private'
+  stickerPanelTarget = target;
+  stickerPanelOpen = true;
+  renderStickerPanel();
+}
+
+window.openStickerPanel = openStickerPanel;
+
+function closeStickerPanel() {
+  stickerPanelOpen = false;
+  stickerPanelTarget = null;
+  const el = document.getElementById('stickerPanelContainer');
+  if (el) el.innerHTML = '';
+}
+
+window.closeStickerPanel = closeStickerPanel;
+
+function renderStickerPanel() {
+  const el = document.getElementById('stickerPanelContainer');
+  if (!el) return;
+  const canManage = isAdminUser(userProfile);
+  el.innerHTML = `
+    <div class="sticker-panel">
+      <div class="sticker-panel-header">
+        <h3 class="font-black text-amber-400 text-sm"><i class="fas fa-sticky-note mr-2"></i>Stiker</h3>
+        <button onclick="window.closeStickerPanel()" class="text-slate-400 text-2xl leading-none hover:text-amber-400 w-8 h-8 flex items-center justify-center">&times;</button>
+      </div>
+      <div class="sticker-panel-tabs">
+        <button class="sticker-tab active" data-tab="global">🌍 Global</button>
+        <button class="sticker-tab" data-tab="mine">⭐ Milik Saya</button>
+        ${canManage ? '<button class="sticker-tab" data-tab="add">➕ Tambah</button>' : ''}
+      </div>
+      <div class="sticker-grid" id="stickerGridContent"></div>
+    </div>
+  `;
+  const tabs = el.querySelectorAll('.sticker-tab');
+  tabs.forEach(t => {
+    t.onclick = () => {
+      tabs.forEach(x => x.classList.remove('active'));
+      t.classList.add('active');
+      renderStickerTab(t.dataset.tab);
+    };
+  });
+  renderStickerTab('global');
+}
+
+function renderStickerTab(tab) {
+  const grid = document.getElementById('stickerGridContent');
+  if (!grid) return;
+  const canManage = isAdminUser(userProfile);
+  if (tab === 'add' && canManage) {
+    grid.innerHTML = `
+      <div class="col-span-4 p-3">
+        <p class="text-xs text-amber-400 font-bold mb-2">➕ Tambah Stiker Global (Khusus Admin/Owner)</p>
+        <label class="cursor-pointer bg-amber-500 text-black px-3 py-2 rounded-lg text-xs font-bold hover:scale-105 transition inline-block mb-2">
+          <i class="fas fa-upload mr-1"></i>Pilih Gambar
+          <input type="file" id="globalStickerFile" accept="image/*" class="hidden">
+        </label>
+        <input id="globalStickerName" type="text" placeholder="Nama stiker (opsional)" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs mb-2">
+        <input id="globalStickerUrl" type="text" placeholder="Atau paste URL gambar" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs mb-2">
+        <div id="globalStickerPreview" class="mb-2"></div>
+        <button id="saveGlobalStickerBtn" class="w-full bg-green-600 text-white font-bold py-2 rounded-lg text-xs hover:scale-105 transition">Simpan Stiker Global</button>
+      </div>
+    `;
+    const fileInp = document.getElementById('globalStickerFile');
+    const urlInp = document.getElementById('globalStickerUrl');
+    const preview = document.getElementById('globalStickerPreview');
+    let pendingUrl = '';
+    fileInp.onchange = async (e) => {
+      const f = e.target.files[0];
+      if (!f) return;
+      preview.innerHTML = '<p class="text-xs text-amber-400">Mengupload...</p>';
+      try {
+        const dataUrl = await uploadToImgbb(f);
+        pendingUrl = dataUrl;
+        preview.innerHTML = `<img src="${dataUrl}" class="w-20 h-20 object-contain bg-slate-800 rounded-lg p-1">`;
+      } catch (err) { preview.innerHTML = `<p class="text-xs text-red-400">${err.message}</p>`; }
+      fileInp.value = '';
+    };
+    urlInp.oninput = () => {
+      const url = urlInp.value.trim();
+      if (url) {
+        pendingUrl = url;
+        preview.innerHTML = `<img src="${url}" class="w-20 h-20 object-contain bg-slate-800 rounded-lg p-1" onerror="this.style.opacity='0.3'">`;
+      }
+    };
+    document.getElementById('saveGlobalStickerBtn').onclick = async () => {
+      const name = document.getElementById('globalStickerName').value.trim();
+      if (!pendingUrl) { showToast('Pilih gambar atau paste URL dulu'); return; }
+      await addGlobalSticker(pendingUrl, name);
+      renderStickerTab('global');
+    };
+    return;
+  }
+  if (tab === 'mine') {
+    if (!currentUser) {
+      grid.innerHTML = '<p class="col-span-4 text-xs text-slate-400 text-center py-6">Login dulu untuk lihat stiker sendiri.</p>';
+      return;
+    }
+    const canUse = true;
+    grid.innerHTML = `
+      <div class="col-span-4 p-3 border-b border-slate-700">
+        <p class="text-xs text-amber-400 font-bold mb-2">➕ Buat Stiker Sendiri</p>
+        <label class="cursor-pointer bg-amber-500 text-black px-3 py-2 rounded-lg text-xs font-bold hover:scale-105 transition inline-block mb-2">
+          <i class="fas fa-upload mr-1"></i>Pilih Gambar
+          <input type="file" id="myStickerFile" accept="image/*" class="hidden">
+        </label>
+        <input id="myStickerName" type="text" placeholder="Nama stiker (opsional)" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs mb-2">
+        <div id="myStickerPreview" class="mb-2"></div>
+        <button id="saveMyStickerBtn" class="w-full bg-green-600 text-white font-bold py-2 rounded-lg text-xs hover:scale-105 transition">Simpan Stiker Saya</button>
+      </div>
+      ${stickersCache.mine.length === 0 ? '<p class="col-span-4 text-xs text-slate-400 text-center py-4">Belum ada stiker. Buat di atas!</p>' : ''}
+      ${stickersCache.mine.map(s => `
+        <div class="sticker-item" data-sticker-url="${escAttr(s.url)}" data-sticker-name="${escAttr(s.name || '')}">
+          <img src="${s.url}" onerror="this.style.opacity='0.3'">
+          <span class="del-sticker" onclick="event.stopPropagation();window.deleteMySticker('${s.id}')" title="Hapus">×</span>
+        </div>
+      `).join('')}
+    `;
+    const fileInp = document.getElementById('myStickerFile');
+    const preview = document.getElementById('myStickerPreview');
+    let pendingUrl = '';
+    fileInp.onchange = async (e) => {
+      const f = e.target.files[0];
+      if (!f) return;
+      preview.innerHTML = '<p class="text-xs text-amber-400">Mengupload...</p>';
+      try {
+        const dataUrl = await uploadToImgbb(f);
+        pendingUrl = dataUrl;
+        preview.innerHTML = `<img src="${dataUrl}" class="w-20 h-20 object-contain bg-slate-800 rounded-lg p-1">`;
+      } catch (err) { preview.innerHTML = `<p class="text-xs text-red-400">${err.message}</p>`; }
+      fileInp.value = '';
+    };
+    document.getElementById('saveMyStickerBtn').onclick = async () => {
+      const name = document.getElementById('myStickerName').value.trim();
+      if (!pendingUrl) { showToast('Pilih gambar dulu'); return; }
+      await addMySticker(pendingUrl, name);
+      renderStickerTab('mine');
+    };
+    grid.querySelectorAll('.sticker-item[data-sticker-url]').forEach(item => {
+      item.onclick = () => {
+        selectSticker(item.dataset.stickerUrl, item.dataset.stickerName);
+      };
+    });
+    return;
+  }
+  // Global
+  const allGlobal = stickersCache.global || [];
+  if (allGlobal.length === 0) {
+    grid.innerHTML = '<p class="col-span-4 text-xs text-slate-400 text-center py-6">Belum ada stiker global.</p>';
+    return;
+  }
+  grid.innerHTML = allGlobal.map(s => {
+    const isMine = currentUser && stickersCache.mine.find(m => m.url === s.url);
+    return `
+      <div class="sticker-item" data-sticker-url="${escAttr(s.url)}" data-sticker-name="${escAttr(s.name || '')}">
+        <img src="${s.url}" onerror="this.style.opacity='0.3'">
+        ${isAdminUser(userProfile) ? `<span class="del-sticker" onclick="event.stopPropagation();window.deleteGlobalSticker('${s.id}')" title="Hapus">×</span>` : ''}
+        ${!isMine && currentUser ? `<span class="save-sticker" onclick="event.stopPropagation();window.saveGlobalStickerToMine('${escAttr(s.url)}','${escAttr(s.name || '')}')" title="Simpan ke koleksiku"><i class="fas fa-bookmark"></i></span>` : ''}
+        ${isMine ? '<span class="save-sticker" style="background:#10b981" title="Sudah disimpan"><i class="fas fa-check"></i></span>' : ''}
+      </div>
+    `;
+  }).join('');
+  grid.querySelectorAll('.sticker-item[data-sticker-url]').forEach(item => {
+    item.onclick = () => {
+      selectSticker(item.dataset.stickerUrl, item.dataset.stickerName);
+    };
+  });
+}
+
+function selectSticker(url, name) {
+  if (!stickerPanelTarget) return;
+  const target = stickerPanelTarget;
+  // Tampilkan preview di chat box
+  const previewMap = {
+    public: 'publicStickerPreview',
+    clan: 'clanStickerPreview',
+    private: 'pmStickerPreview'
+  };
+  const pv = document.getElementById(previewMap[target]);
+  if (pv) {
+    pendingChatSticker[target] = url;
+    pv.innerHTML = `
+      <div class="chat-img-preview">
+        <img src="${url}" class="chat-sticker">
+        <span class="remove-btn" onclick="event.stopPropagation();window.cancelChatSticker('${target}')">×</span>
+      </div>
+      <p class="text-xs text-green-400 mt-1">✅ Stiker siap dikirim</p>
+    `;
+  }
+  closeStickerPanel();
+}
+window.selectSticker = selectSticker;
+
+window.cancelChatSticker = (type) => {
+  pendingChatSticker[type] = null;
+  const map = { public: 'publicStickerPreview', clan: 'clanStickerPreview', private: 'pmStickerPreview' };
+  const el = document.getElementById(map[type]);
+  if (el) el.innerHTML = '';
+};
+
+window.renderStickerPanelContent = () => {
+  if (stickerPanelOpen) {
+    const activeTab = document.querySelector('.sticker-tab.active');
+    renderStickerTab(activeTab?.dataset.tab || 'global');
+  }
+};
+
+// ============================================================
+// ===== REPORT SYSTEM ========================================
+// ============================================================
+window.openReportModal = async (workId) => {
+  if (!currentUser) { showToast('Login dulu untuk report!'); return; }
+  const workSnap = await getDoc(doc(db, 'works', workId));
+  if (!workSnap.exists()) { showToast('Karya tidak ditemukan'); return; }
+  const work = { id: workSnap.id, ...workSnap.data() };
+  const reports = work.reports || [];
+  const myReport = reports.find(r => r.userId === currentUser.uid);
+
+  const modal = document.getElementById('modalContainer');
+  const content = document.getElementById('modalContent');
+
+  if (myReport) {
+    content.innerHTML = `
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-2xl font-black text-red-400"><i class="fas fa-flag mr-2"></i>Sudah Report</h2>
+        <button id="closeReport" class="text-slate-400 text-2xl hover:rotate-90 transition-transform">&times;</button>
+      </div>
+      <div class="report-warning">
+        Kamu sudah pernah melaporkan karya ini pada ${fmtDate(myReport.at)}.<br>
+        <b>Alasan:</b> ${escHtml(myReport.reasonLabel || myReport.reason || '-')}
+      </div>
+      <p class="text-xs text-slate-400">Total report karya ini: <b class="text-red-400">${reports.length}/${REPORT_AUTO_TAKEDOWN_THRESHOLD}</b></p>
+    `;
+  } else {
+    content.innerHTML = `
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-2xl font-black text-red-400"><i class="fas fa-flag mr-2"></i>Report Karya</h2>
+        <button id="closeReport" class="text-slate-400 text-2xl hover:rotate-90 transition-transform">&times;</button>
+      </div>
+      <div class="report-warning">
+        <i class="fas fa-exclamation-triangle mr-1"></i>
+        Report palsu dapat menyebabkan akun kamu diblokir. Laporkan hanya jika karya benar-benar melanggar aturan.
+      </div>
+      <div class="bg-slate-900/50 border border-slate-700 rounded-xl p-3 mb-4">
+        <p class="text-xs text-slate-400">Karya yang dilaporkan:</p>
+        <p class="font-bold text-sm">${escHtml(work.title)}</p>
+        <p class="text-xs text-slate-500">oleh ${escHtml(work.authorName || 'Anonim')} • Total report saat ini: <b class="text-red-400">${reports.length}/${REPORT_AUTO_TAKEDOWN_THRESHOLD}</b></p>
+      </div>
+      <label class="block text-sm font-bold text-red-400 mb-2">Pilih Alasan Report <span class="text-red-500">*</span></label>
+      <div class="flex flex-wrap gap-1 mb-4" id="reportReasonsBox">
+        ${REPORT_REASONS.map(r => `
+          <label class="report-reason-chip" title="${escAttr(r.desc)}">
+            <input type="radio" name="reportReason" value="${r.id}" data-label="${escAttr(r.label)}">
+            <span>${escAttr(r.label)}</span>
+          </label>
+        `).join('')}
+      </div>
+      <label class="block text-sm font-bold text-red-400 mb-1">Detail Tambahan <span class="text-xs text-slate-500">(opsional)</span></label>
+      <textarea id="reportDetail" rows="3" maxlength="300" placeholder="Jelaskan lebih detail (contoh: ada adegan di chapter 3)..." class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm mb-4"></textarea>
+      <div class="flex gap-2">
+        <button id="confirmReportBtn" class="flex-1 bg-red-600 text-white font-bold py-3 rounded-full hover:scale-105 transition"><i class="fas fa-flag mr-1"></i>Kirim Report</button>
+        <button id="cancelReportBtn" class="bg-slate-700 text-slate-300 px-6 py-3 rounded-full font-bold">Batal</button>
+      </div>
+    `;
+  }
+
+  modal.classList.remove('hidden');
+  document.getElementById('closeReport').onclick = () => modal.classList.add('hidden');
+  if (document.getElementById('cancelReportBtn')) {
+    document.getElementById('cancelReportBtn').onclick = () => modal.classList.add('hidden');
+  }
+  if (document.getElementById('confirmReportBtn')) {
+    document.getElementById('confirmReportBtn').onclick = async () => {
+      const sel = document.querySelector('input[name="reportReason"]:checked');
+      if (!sel) { showToast('Pilih alasan report dulu!'); return; }
+      const detail = document.getElementById('reportDetail').value.trim();
+      const reasonId = sel.value;
+      const reasonLabel = REPORT_REASONS.find(r => r.id === reasonId)?.label || reasonId;
+      const btn = document.getElementById('confirmReportBtn');
+      btn.disabled = true; btn.innerHTML = '<span class="uploading-spinner"></span>Mengirim...';
+      try {
+        const newReport = {
+          userId: currentUser.uid,
+          userName: userProfile?.username || 'User',
+          reason: reasonId,
+          reasonLabel: reasonLabel,
+          detail: sensor(detail),
+          at: new Date().toISOString()
+        };
+        const newReports = [...reports, newReport];
+        const updates = { reports: newReports };
+        // Cek apakah mencapai threshold auto takedown
+        if (newReports.length >= REPORT_AUTO_TAKEDOWN_THRESHOLD && !isTakedown(work)) {
+          updates.takedown = {
+            active: true,
+            reason: `AUTO-TAKEDOWN: Mencapai ${REPORT_AUTO_TAKEDOWN_THRESHOLD} report dari pengguna. Report terakhir: ${reasonLabel}`,
+            by: 'SYSTEM (Auto)',
+            at: serverTimestamp()
+          };
+          showToast(`⛔ Karya otomatis di-takedown karena mencapai ${REPORT_AUTO_TAKEDOWN_THRESHOLD} report!`, 5000);
+        } else {
+          showToast(`✅ Report terkirim (${newReports.length}/${REPORT_AUTO_TAKEDOWN_THRESHOLD})`, 4000);
+        }
+        await updateDoc(doc(db, 'works', workId), { ...updates, updatedAt: serverTimestamp() });
+        modal.classList.add('hidden');
+        renderPage();
+      } catch (e) {
+        showToast('Gagal: ' + e.message);
+        btn.disabled = false; btn.innerHTML = '<i class="fas fa-flag mr-1"></i>Kirim Report';
+      }
+    };
+  }
+};
+
+// ============================================================
+// ===== MAINTENANCE MODE =====================================
 // ============================================================
 async function loadMaintenanceState() {
   try {
@@ -1563,6 +2256,7 @@ const NAV_MAP = [
   { id:'leaderboard', icon:'fa-trophy', label:'Leaderboard' },
   { id:'teman', icon:'fa-user-friends', label:'Teman & DM' },
   { id:'kritik', icon:'fa-envelope', label:'Kritik & Saran' },
+  { id:'stikerku', icon:'fa-sticky-note', label:'Stiker Saya', color:'text-pink-400' },
   { id:'profil', icon:'fa-user-circle', label:'Profil' },
   { id:'admin', icon:'fa-crown', label:'Admin Panel', color:'text-amber-400', roleCheck:() => isAdminUser(userProfile) }
 ];
@@ -2794,6 +3488,13 @@ async function initAuth() {
       await loadClansCache();
       await loadCustomCategories();
       await loadAllUsersCache();
+      await loadMyStickers();
+      await loadGlobalStickers();
+      listenStickers();
+      loadNotifState();
+      updateBadges();
+      startNotifListeners();
+      startClanNotifListener();
       document.getElementById('navAuthMobile').innerHTML = `<i class="fas fa-sign-out-alt"></i>`;
       renderPage();
       setTimeout(() => initNotifListener(), 2000);
@@ -2807,6 +3508,11 @@ async function initAuth() {
       await loadClansCache();
       await loadCustomCategories();
       await loadAllUsersCache();
+      await loadGlobalStickers();
+      listenStickers();
+      loadNotifState();
+      updateBadges();
+      startNotifListeners();
       document.getElementById('navAuthMobile').innerHTML = `<i class="fas fa-sign-in-alt"></i>`;
       renderPage();
     }
@@ -2833,9 +3539,12 @@ async function logout() {
   localStorage.removeItem('adminSession'); localStorage.removeItem('adminEmail'); localStorage.removeItem('ownerSession');
   notifPrivateUnsubs.forEach(u => { try { u(); } catch(e){} });
   notifPrivateUnsubs = [];
+  notifListeners.forEach(u => { try { u(); } catch(e){} });
+  notifListeners = [];
   notifPrivateInit = false;
   notifInitialized = false;
   if (usersCacheUnsub) { try { usersCacheUnsub(); } catch(e){} usersCacheUnsub = null; }
+  if (stickersUnsub) { try { stickersUnsub(); } catch(e){} stickersUnsub = null; }
   if (ownerFollowerInterval) clearInterval(ownerFollowerInterval);
   if (birthdayCheckInterval) clearInterval(birthdayCheckInterval);
   if (mgUnsubRoom) { try { mgUnsubRoom(); } catch(e){} mgUnsubRoom = null; }
@@ -2905,20 +3614,6 @@ async function addClanExp(clanId, amount) {
 function initNotifListener() {
   if (notifInitialized) return;
   notifInitialized = true;
-  if (userProfile?.clanId) {
-    const clanQ = query(collection(db, 'clans', userProfile.clanId, 'messages'), orderBy('createdAt', 'desc'), limit(1));
-    onSnapshot(clanQ, snap => {
-      snap.forEach(d => {
-        const msg = d.data();
-        if (msg.userId === currentUser?.uid) return;
-        const ts = msg.createdAt?.toDate?.();
-        if (ts && Date.now() - ts.getTime() > 30000) return;
-        const un = usersCache[msg.userId]?.username || msg.username || 'Seseorang';
-        const preview = msg.image ? '🖼️ Gambar' : (msg.text || '').slice(0, 40);
-        showNotifBar(`🛡️ Clan - ${un}: ${preview}`, 'blue');
-      });
-    });
-  }
   initPrivateNotifListener();
 }
 
@@ -2941,7 +3636,7 @@ function initPrivateNotifListener() {
             const ts = m.createdAt?.toDate?.();
             if (ts && Date.now() - ts.getTime() > 30000) return;
             const un = usersCache[m.userId]?.username || m.username || 'Seseorang';
-            const preview = m.image ? '🖼️ Gambar' : (m.text || '').slice(0, 40);
+            const preview = m.sticker ? '🎨 Stiker' : (m.image ? '🖼️ Gambar' : (m.text || '').slice(0, 40));
             showNotifBar(`💬 ${un}: ${preview}`, 'green');
           });
         });
@@ -2973,6 +3668,8 @@ async function renderPage() {
   if (worksUnsub) { try { worksUnsub(); } catch(e){} worksUnsub = null; }
   replyingToPublic = null; replyingToClan = null;
   pendingChatImg = { public: null, clan: null, private: null };
+  pendingChatSticker = { public: null, clan: null, private: null };
+  closeStickerPanel();
   if (mgUnsubRoom) { try { mgUnsubRoom(); } catch(e){} mgUnsubRoom = null; }
   if (mgUnsubPlayers) { try { mgUnsubPlayers(); } catch(e){} mgUnsubPlayers = null; }
   if (mgUnsubGuesses) { try { mgUnsubGuesses(); } catch(e){} mgUnsubGuesses = null; }
@@ -3005,6 +3702,12 @@ async function renderPage() {
       document.body.style.paddingTop = '';
     }
   }
+
+  // Mark notif seen berdasarkan halaman
+  const base = hash.split('/')[0];
+  if (base === 'chat') markNotifSeen('chat', Date.now());
+  if (base === 'clan') markNotifSeen('clan', Date.now());
+  if (base === 'berita') markNotifSeen('berita', Date.now());
 
   updateActiveNav();
   if (hash.startsWith('admin')) {
@@ -3042,6 +3745,7 @@ async function renderPage() {
   else if (hash === 'jadi-kreator') await renderJadiKreator(main);
   else if (hash === 'panduan') await renderPanduan(main);
   else if (hash === 'kritik') await renderKritikSaran(main);
+  else if (hash === 'stikerku') await renderStikerKu(main);
   else if (hash === 'profil') await renderProfil(main);
   else await renderHome(main);
 }
@@ -3108,6 +3812,62 @@ async function renderBaruUpload(container) {
   renderWorkList(list, works, new Set(), true);
 }
 
+async function renderStikerKu(container) {
+  if (!currentUser) {
+    container.innerHTML = `<div class="card-bg rounded-2xl p-8 text-center card-anim max-w-md mx-auto">
+      <i class="fas fa-sticky-note text-5xl text-pink-400 mb-4"></i>
+      <h2 class="text-xl font-bold mb-2">Stiker Saya</h2>
+      <p class="text-slate-400 mb-4">Login dulu untuk buat & simpan stiker sendiri.</p>
+    </div>`;
+    return;
+  }
+  await loadMyStickers();
+  container.innerHTML = `
+    <h2 class="text-2xl font-bold mb-4"><i class="fas fa-sticky-note text-pink-400 mr-2"></i>Stiker Saya</h2>
+    <p class="text-sm text-slate-400 mb-4">Stiker yang kamu buat/simpan. Bisa dipakai di semua chat!</p>
+    <div class="card-bg rounded-2xl p-6 mb-4">
+      <h3 class="font-bold text-amber-400 mb-3"><i class="fas fa-plus-circle mr-1"></i>Buat Stiker Baru</h3>
+      <label class="cursor-pointer bg-amber-500 text-black px-4 py-2 rounded-lg text-sm font-bold hover:scale-105 transition inline-block mb-3">
+        <i class="fas fa-upload mr-1"></i>Pilih Gambar
+        <input type="file" id="myStickerFilePage" accept="image/*" class="hidden">
+      </label>
+      <input id="myStickerNamePage" type="text" placeholder="Nama stiker (opsional)" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm mb-3">
+      <div id="myStickerPreviewPage" class="mb-3"></div>
+      <button id="saveMyStickerPageBtn" class="w-full bg-green-600 text-white font-bold py-3 rounded-full hover:scale-105 transition">Simpan Stiker</button>
+    </div>
+    <h3 class="font-bold text-amber-400 mb-3">Koleksi Stiker (${stickersCache.mine.length})</h3>
+    <div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3" id="myStickerGrid">
+      ${stickersCache.mine.length === 0 ? '<p class="col-span-full text-slate-400 text-sm text-center py-6">Belum ada stiker. Buat di atas!</p>' : ''}
+      ${stickersCache.mine.map(s => `
+        <div class="sticker-item">
+          <img src="${s.url}" onerror="this.style.opacity='0.3'">
+          <span class="del-sticker" style="opacity:1" onclick="window.deleteMySticker('${s.id}').then(()=>renderPage())" title="Hapus">×</span>
+        </div>
+      `).join('')}
+    </div>
+  `;
+  const fileInp = document.getElementById('myStickerFilePage');
+  const preview = document.getElementById('myStickerPreviewPage');
+  let pendingUrl = '';
+  fileInp.onchange = async (e) => {
+    const f = e.target.files[0];
+    if (!f) return;
+    preview.innerHTML = '<p class="text-xs text-amber-400">Mengupload...</p>';
+    try {
+      const dataUrl = await uploadToImgbb(f);
+      pendingUrl = dataUrl;
+      preview.innerHTML = `<img src="${dataUrl}" class="w-24 h-24 object-contain bg-slate-800 rounded-lg p-2">`;
+    } catch (err) { preview.innerHTML = `<p class="text-xs text-red-400">${err.message}</p>`; }
+    fileInp.value = '';
+  };
+  document.getElementById('saveMyStickerPageBtn').onclick = async () => {
+    const name = document.getElementById('myStickerNamePage').value.trim();
+    if (!pendingUrl) { showToast('Pilih gambar dulu'); return; }
+    await addMySticker(pendingUrl, name);
+    renderPage();
+  };
+}
+
 async function renderJadiKreator(container) {
   const isLoggedIn = !!currentUser;
   const hasPenulis = hasRole(userProfile, 'penulis');
@@ -3131,7 +3891,7 @@ async function renderJadiKreator(container) {
           <li>DILARANG plagiarisme / menjiplak karya orang lain</li>
           <li>DILARANG konten SARA, ujaran kebencian, atau bullying</li>
         </ul>
-        <p class="text-red-300 text-xs mt-3 font-bold">🚨 Karya yang melanggar akan DI-TAKEDOWN (tidak bisa dibuka) oleh Admin/Owner dengan alasan tertulis!</p>
+        <p class="text-red-300 text-xs mt-3 font-bold">🚨 Karya yang melanggar akan DI-TAKEDOWN. Jika mencapai 10 report dari pengguna, karya OTOMATIS ter-takedown oleh sistem!</p>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
         <div class="card-bg rounded-2xl p-5 ${hasPenulis ? 'berlanjut-border' : ''}">
@@ -3183,196 +3943,62 @@ async function renderPanduan(container) {
 
   const defaultPanduan = `
     <h3><i class="fas fa-code-branch"></i> 0. Versi Website</h3>
-    <p>KomiNovel saat ini versi <b>v1.7</b>. Update terbaru:</p>
+    <p>KomiNovel saat ini versi <b>v1.9</b>. Update terbaru:</p>
     <ul>
-      <li>🚨 <b>FITUR OFF KAN WEB</b> — Admin/Owner bisa mematikan website sementara dengan alasan kustom. Saat off, semua halaman terkunci (maintenance screen), TAPI halaman Berita tetap bisa diakses. Admin tetap bisa masuk untuk kontrol.</li>
+      <li>🚨 <b>REPORT KARYA</b> — Laporkan karya yang melanggar! Jika report mencapai 10, karya otomatis di-takedown oleh sistem.</li>
+      <li>🎨 <b>STIKER DI SEMUA CHAT</b> — Admin bisa tambah stiker global, user bisa buat & simpan stiker sendiri, dan bisa ambil stiker orang lain.</li>
+      <li>🔴 <b>BADGE NOTIFIKASI MERAH</b> — Chat/berita baru muncul badge merah. Hilang setelah dilihat.</li>
+      <li>🚨 <b>FITUR OFF KAN WEB</b> — Admin/Owner bisa mematikan website sementara dengan alasan kustom.</li>
       <li>🛠️ <b>Perbaikan Layout Navbar</b> — Navbar bawah rapi di semua perangkat</li>
-      <li>✅ <b>Review Karya Mode Reader</b> — Preview gambar ala reader</li>
-      <li>✅ <b>Edit Karya</b> — Creator bisa edit sampul, teaser, deskripsi, genre, judul, status</li>
-      <li>✅ <b>Genre Custom</b> — Creator bisa ketik genre sendiri</li>
     </ul>
 
     <h3><i class="fas fa-sign-in-alt"></i> 1. Cara Masuk / Login</h3>
     <p>Klik tombol <b>Masuk</b>, pilih <b>Google</b> (disarankan) atau <b>Guest</b>.</p>
     <div class="tip">💡 Login Google supaya data tersimpan permanen.</div>
 
-    <h3><i class="fas fa-home"></i> 2. Beranda</h3>
-    <p>Lihat daftar <b>Komik</b> (default) & <b>Novel</b>. Karya yang sudah dipublish saja yang tampil di beranda.</p>
-    <p>Ada 3 bagian utama:</p>
+    <h3><i class="fas fa-flag"></i> 2. Report Karya (BARU!)</h3>
+    <p>Jika menemukan karya yang melanggar aturan, klik tombol <b>🚨 Report</b> di halaman baca.</p>
+    <ul>
+      <li>Pilih alasan (18+, plagiarisme, SARA, dll)</li>
+      <li>Bisa tambah detail opsional</li>
+      <li>1 user hanya bisa report 1x per karya</li>
+      <li><b>Jika report mencapai 10, karya OTOMATIS di-takedown oleh sistem!</b></li>
+    </ul>
+    <div class="warning">⚠️ Report palsu bisa membuat akunmu diblokir!</div>
+
+    <h3><i class="fas fa-sticky-note"></i> 3. Stiker di Chat (BARU!)</h3>
+    <p>Semua chat (publik, clan, DM) sekarang punya tombol <b>🎨 Stiker</b>.</p>
+    <ul>
+      <li><b>Admin/Owner</b> bisa tambah stiker global (dipakai semua orang)</li>
+      <li><b>User</b> bisa buat stiker sendiri dari gambar</li>
+      <li><b>User</b> bisa save stiker orang lain ke koleksinya (klik ikon bookmark)</li>
+      <li>Akses stiker di menu <b>Stiker Saya</b></li>
+    </ul>
+
+    <h3><i class="fas fa-bell"></i> 4. Badge Notifikasi Merah (BARU!)</h3>
+    <p>Chat baru, pesan clan baru, dan berita baru akan muncul <b>badge merah</b> dengan angka di navbar bawah.</p>
+    <ul>
+      <li>Badge otomatis hilang setelah kamu buka halamannya</li>
+      <li>Berlaku untuk: Chat publik, Chat clan, Berita</li>
+    </ul>
+
+    <h3><i class="fas fa-home"></i> 5. Beranda</h3>
+    <p>Lihat daftar <b>Komik</b> (default) & <b>Novel</b>. Karya yang sudah dipublish saja yang tampil.</p>
     <ul>
       <li><b>Terpopuler</b> — Karya dengan views, likes, & rating tertinggi</li>
       <li><b>Baru Upload</b> — Karya yang baru saja dipublish</li>
       <li><b>Proses Pengerjaan</b> — Karya yang sedang dibuat (belum dipublish)</li>
     </ul>
 
-    <h3><i class="fas fa-clipboard-check"></i> 3. Review & Publish Karya — PENTING!</h3>
-    <p>Semua karya baru otomatis berstatus <b>NONPUBLISH</b>. Creator <b>wajib review & publish manual</b> lewat tombol <b>Review & Publish</b> di Creator → Kelola.</p>
-    <p>Di dalam <b>Review Karya Mode Reader</b>:</p>
-    <ul>
-      <li><b>Desktop/Laptop</b>: Gambar preview besar di kiri, panel kontrol di kanan</li>
-      <li><b>HP</b>: Gambar full width, ada tombol ⚙️ untuk buka panel kontrol</li>
-      <li>Pilih <b>Mode Drag</b> (🖐️) dulu untuk mengubah urutan gambar</li>
-      <li>Pilih <b>Mode Fullscreen</b> (🔍) dulu untuk memperbesar gambar</li>
-      <li>Klik <b>Publish Sekarang</b> jika semua sudah benar</li>
-    </ul>
-    <div class="warning">⚠️ Jangan publish sebelum yakin. Cek urutan gambar komik karena pembaca akan melihat sesuai urutan yang kamu atur.</div>
+    <h3><i class="fas fa-clipboard-check"></i> 6. Review & Publish Karya</h3>
+    <p>Semua karya baru otomatis berstatus <b>NONPUBLISH</b>. Creator wajib review & publish manual lewat tombol <b>Review & Publish</b> di Creator → Kelola.</p>
 
-    <h3><i class="fas fa-clock"></i> 4. Proses Pengerjaan</h3>
-    <p>Karya yang sedang dalam proses pembuatan (belum dipublish). Kini tampil di <b>beranda</b> setelah section Baru Upload.</p>
-
-    <h3><i class="fas fa-upload"></i> 5. Baru Upload</h3>
-    <p>Karya yang baru saja dipublish oleh kreator.</p>
-
-    <h3><i class="fas fa-newspaper"></i> 6. Berita</h3>
-    <p>Informasi terbaru dari Admin. <b>Saat website dimatikan (maintenance), halaman Berita tetap bisa diakses!</b></p>
-
-    <h3><i class="fas fa-tags"></i> 7. Kategori</h3>
-    <p>Filter karya berdasarkan genre.</p>
-
-    <h3><i class="fas fa-edit"></i> 8. Edit Karya</h3>
-    <p>Di halaman <b>Creator</b> → <b>Kelola</b>, setiap karya ada tombol <b>Edit Karya</b>.</p>
-    <p>Kamu bisa mengubah:</p>
-    <ul>
-      <li>Judul</li>
-      <li>Teaser (maks 150 karakter)</li>
-      <li>Tipe (Novel/Komik)</li>
-      <li>Status (Publish/Nonpublish)</li>
-      <li>Status Tamat (Berlanjut/Tamat)</li>
-      <li>Genre (bisa pilih banyak atau tambah sendiri)</li>
-      <li>Deskripsi</li>
-      <li>Sampul/Cover</li>
-    </ul>
-
-    <h3><i class="fas fa-pen-fancy"></i> 9. Genre Custom</h3>
-    <p>Saat upload atau edit karya, klik tombol <b>+ Tambah Genre Sendiri</b> (hijau).</p>
-    <ul>
-      <li>Ketik nama genre baru</li>
-      <li>Klik tombol centang</li>
-      <li>Genre otomatis ditambahkan & langsung terpilih</li>
-      <li>Genre juga tersimpan untuk digunakan kreator lain</li>
-    </ul>
-
-    <h3><i class="fas fa-crown"></i> 10. Kreator Unggulan</h3>
-    <p>Admin/Owner bisa menandai kreator sebagai <b>Unggulan</b> (⭐).</p>
-    <p>Kreator unggulan akan:</p>
-    <ul>
-      <li>Mendapat border emas di profil & karya</li>
-      <li>Tampil di filter "⭐ Unggulan" di Top Followers</li>
-      <li>Lebih menonjol di daftar karya</li>
-    </ul>
-
-    <h3><i class="fas fa-check-circle"></i> 11. Centang Verified</h3>
-    <ul>
-      <li><b>🟡 Centang Kuning</b> — Penulis Novel terverifikasi</li>
-      <li><b>🟠 Centang Oranye</b> — Pembuat Komik terverifikasi</li>
-      <li><b>🟢 Centang Hijau</b> — 1.000+ followers</li>
-      <li><b>🔵 Centang Biru</b> — 100.000+ followers</li>
-    </ul>
-
-    <h3><i class="fas fa-comments"></i> 12. Komentar & Rating</h3>
-    <p>Di halaman baca komik/novel, kamu bisa komentar, rating bintang 1-5.</p>
-    <ul>
-      <li>Komentar bisa dibalas (nested reply)</li>
-      <li>Komentar bisa di-edit & dihapus oleh pemilik</li>
-      <li>Admin bisa hapus komentar apapun</li>
-      <li>Like komentar orang lain</li>
-    </ul>
-
-    <h3><i class="fas fa-users"></i> 13. Clan</h3>
-    <p>Buat atau join clan. Fitur clan:</p>
-    <ul>
-      <li>Buat clan (3-20 karakter)</li>
-      <li>Join request (harus disetujui Admin/Owner clan)</li>
-      <li>Chat clan dengan gambar</li>
-      <li>Max 2 Admin per clan</li>
-      <li>Level clan naik dari aktivitas chat</li>
-    </ul>
-
-    <h3><i class="fas fa-birthday-cake"></i> 14. Auto Ultah</h3>
-    <p>Penulis & Komikus yang isi tanggal lahir akan dapat banner ucapan otomatis.</p>
-    <p>Format tanggal lahir: <b>DD-MM</b> (contoh: 17-08)</p>
-
-    <h3><i class="fas fa-gamepad"></i> 15. Minigame Gambar & Tebak</h3>
-    <p>Main game gambar bareng! 1 orang jadi penggambar, yang lain nebak.</p>
-    <ul>
-      <li>Mode Main Berdua (2 pemain)</li>
-      <li>Mode Main Berlima (5 pemain)</li>
-      <li>Penggambar punya waktu 20 menit</li>
-      <li>Poin untuk jawaban benar & penggambar</li>
-      <li>Tools: brush, eraser, line, rect, circle, fill</li>
-      <li>Warna lengkap & undo/redo</li>
-    </ul>
-
-    <h3><i class="fas fa-bookmark"></i> 16. Bookmark</h3>
-    <p>Simpan karya favoritmu dengan klik tombol <b>Bookmark</b> di halaman baca.</p>
-    <p>Akses bookmark di menu <b>Bookmark</b>.</p>
-
-    <h3><i class="fas fa-bookmark"></i> 17. Lanjut Baca</h3>
-    <p>KomiNovel otomatis menyimpan posisi bacaan terakhir. Saat kembali ke karya yang sama, akan muncul banner <b>"Lanjut baca dari posisi terakhir?"</b>.</p>
-
-    <h3><i class="fas fa-user-friends"></i> 18. Teman & DM</h3>
-    <p>Cari teman, kirim request, dan chat pribadi (DM).</p>
-    <ul>
-      <li>Cari user berdasarkan username</li>
-      <li>Kirim request pertemanan</li>
-      <li>Chat pribadi dengan gambar</li>
-    </ul>
-
-    <h3><i class="fas fa-trophy"></i> 19. Leaderboard</h3>
-    <p>Peringkat karya berdasarkan rating tertinggi.</p>
-    <ul>
-      <li>Filter Komik/Novel</li>
-      <li>Top 20 karya</li>
-      <li>Sort by avg rating & rating count</li>
-    </ul>
-
-    <h3><i class="fas fa-users"></i> 20. Top Followers</h3>
-    <p>Peringkat user berdasarkan followers.</p>
-    <ul>
-      <li>Filter: Semua, Kreator, ⭐ Unggulan, Staff</li>
-      <li>Top 30 user</li>
-      <li>Bisa klik untuk lihat profil</li>
-    </ul>
-
-    <h3><i class="fas fa-rocket"></i> 21. Auto Boost Global</h3>
-    <p>Fitur Admin/Owner untuk menambah views & likes otomatis ke semua karya <b>yang sudah dipublish</b>.</p>
-    <ul>
-      <li>+20 views per 5 menit</li>
-      <li>+20 likes per 5 menit</li>
-      <li>Berlaku GLOBAL untuk semua device</li>
-      <li>Hanya karya publish (nonpublish tidak dapat boost)</li>
-      <li>Bisa dimatikan kapan saja</li>
-    </ul>
-
-    <h3><i class="fas fa-power-off"></i> 22. FITUR OFF KAN WEB (BARU!)</h3>
+    <h3><i class="fas fa-power-off"></i> 7. FITUR OFF KAN WEB</h3>
     <p>Fitur khusus <b>Admin/Owner</b> untuk mematikan website sementara (maintenance mode).</p>
-    <p><b>Cara pakai:</b></p>
     <ul>
-      <li>Buka <b>Admin Panel → Setting → Matikan Website</b></li>
-      <li>Isi <b>alasan</b> maintenance (wajib)</li>
-      <li>Isi <b>estimasi selesai</b> (opsional)</li>
-      <li>Klik <b>Matikan Website</b></li>
-    </ul>
-    <p><b>Yang terjadi:</b></p>
-    <ul>
-      <li>Semua pengunjung melihat halaman <b>"WEBSITE SEDANG DIMATIKAN"</b> dengan alasan yang kamu isi</li>
-      <li>Fitur baca komik/novel, chat, clan, minigame, dll DINONAKTIFKAN</li>
-      <li><b>Halaman Berita TETAP BISA diakses</b> (dengan banner kecil di atas)</li>
+      <li>Semua pengunjung melihat halaman maintenance</li>
+      <li>Halaman Berita tetap bisa diakses</li>
       <li>Admin/Owner tetap bisa akses penuh</li>
-      <li>Kamu bisa <b>nyalakan kembali</b> kapan saja dari panel Admin</li>
-    </ul>
-    <div class="tip">💡 Fitur ini berguna saat website sedang ada perbaikan server, update fitur besar, atau masalah teknis lainnya.</div>
-
-    <h3><i class="fas fa-crown"></i> 23. Admin Panel</h3>
-    <p>Khusus untuk Admin & Owner:</p>
-    <ul>
-      <li><b>User</b> — Kelola role, ban/unban, jadikan kreator unggulan</li>
-      <li><b>Karya</b> — Takedown/restore, jadikan unggulan, lihat</li>
-      <li><b>Upload</b> — Upload karya langsung sebagai admin</li>
-      <li><b>Kritik</b> — Lihat kritik & saran dari user</li>
-      <li><b>Ultah</b> — Setting text auto ultah & lihat riwayat</li>
-      <li><b>Boost</b> — Toggle auto boost global (hanya karya publish)</li>
-      <li><b>Setting</b> — Nomor WA admin, OFF KAN WEB, info versi</li>
     </ul>
 
     <h3><i class="fas fa-question-circle"></i> Butuh Bantuan?</h3>
@@ -3397,6 +4023,7 @@ async function renderPanduan(container) {
           <li><b>DILARANG</b> plagiarisme / menjiplak karya orang lain</li>
           <li><b>DILARANG</b> konten SARA, ujaran kebencian, atau bullying</li>
         </ul>
+        <p class="text-red-300 text-xs mt-3 font-bold">🚨 Karya yang melanggar akan DI-TAKEDOWN. Jika report mencapai 10, OTOMATIS tertakedown!</p>
       </div>
       <div id="panduanContent" class="card-bg rounded-2xl p-6 md:p-8 guide-content">${panduanText || defaultPanduan}</div>
     </div>`;
@@ -3588,6 +4215,8 @@ function renderSlideCard(work, idx, newIds = new Set()) {
   const resumeBadge = (resume && !isTD && !isNP) ? `<div class="absolute top-2 right-2 bg-blue-600/90 backdrop-blur text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full"><i class="fas fa-bookmark"></i></div>` : '';
   const newClass = (isNew && !isTD) ? 'new-work' : '';
   const delayStyle = `animation-delay:${Math.min(idx*0.03, 0.5)}s`;
+  const reportsCount = (work.reports || []).length;
+  const reportBadge = (!isTD && reportsCount > 0) ? `<div class="absolute bottom-8 right-1 bg-red-600/90 backdrop-blur text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full" title="${reportsCount} report"><i class="fas fa-flag"></i> ${reportsCount}/10</div>` : '';
   return `
     <div class="slide-card card-anim ${newClass}" style="${delayStyle}">
       <div class="card-bg hover-lift rounded-2xl overflow-hidden shadow-lg cursor-pointer ${borderClass} h-full" onclick="${isTD ? `showToast('⛔ Karya ini di-takedown')` : isNP ? `showToast('🔒 Karya belum dipublish')` : `window.location.hash='reader/${work.id}'`}">
@@ -3596,6 +4225,7 @@ function renderSlideCard(work, idx, newIds = new Set()) {
           ${workStatusBadge(work)}
           ${statusLabel(work.isTamat)}
           ${resumeBadge}
+          ${reportBadge}
           <div class="absolute bottom-1 left-1 right-1 flex justify-between items-center pointer-events-none">
             <span class="view-badge bg-black/70 backdrop-blur px-1.5 py-0.5 rounded-full text-[9px]"><i class="fas fa-eye"></i> <span data-view-id="${work.id}" data-val="${work.views || 0}">${formatCount(work.views || 0)}</span></span>
             <span class="view-badge bg-black/70 backdrop-blur px-1.5 py-0.5 rounded-full text-[9px]"><i class="fas fa-heart" style="color:#ef4444"></i> <span data-like-id="${work.id}" data-val="${work.likes || 0}">${formatCount(work.likes || 0)}</span></span>
@@ -3661,6 +4291,8 @@ function renderWorkList(container, works, newIds = new Set(), skipAnim = false) 
     const animClass = skipAnim ? '' : 'card-anim';
     const newClass = (isNew && !isTD && !skipAnim) ? 'new-work' : '';
     const delayStyle = skipAnim ? '' : `animation-delay:${Math.min(idx*0.03, 0.5)}s`;
+    const reportsCount = (work.reports || []).length;
+    const reportBadge = (!isTD && reportsCount > 0) ? `<div class="absolute bottom-10 right-2 bg-red-600/90 backdrop-blur text-white text-[10px] font-bold px-2 py-1 rounded-full" title="${reportsCount} report"><i class="fas fa-flag"></i> ${reportsCount}/10</div>` : '';
     return `
     <div class="card-bg hover-lift rounded-2xl overflow-hidden shadow-lg cursor-pointer ${animClass} ${borderClass} ${newClass}" style="${delayStyle}" onclick="${isTD ? `showToast('⛔ Karya ini di-takedown')` : isNP ? `showToast('🔒 Karya belum dipublish')` : `window.location.hash='reader/${work.id}'`}">
       <div class="h-40 md:h-48 bg-slate-800 flex items-center justify-center overflow-hidden relative">
@@ -3668,6 +4300,7 @@ function renderWorkList(container, works, newIds = new Set(), skipAnim = false) 
         ${workStatusBadge(work)}
         ${statusLabel(work.isTamat)}
         ${resumeBadge}
+        ${reportBadge}
         <div class="absolute bottom-2 left-2 right-2 flex justify-between items-center pointer-events-none">
           <span class="view-badge bg-black/70 backdrop-blur px-2 py-1 rounded-full"><i class="fas fa-eye"></i> <span data-view-id="${work.id}" data-val="${work.views || 0}">${formatCount(work.views || 0)}</span></span>
           <span class="view-badge bg-black/70 backdrop-blur px-2 py-1 rounded-full"><i class="fas fa-heart" style="color:#ef4444"></i> <span data-like-id="${work.id}" data-val="${work.likes || 0}">${formatCount(work.likes || 0)}</span></span>
@@ -3741,6 +4374,8 @@ window.toggleWorkLike = async (workId) => {
 // ===== BERITA ===============================================
 // ============================================================
 async function renderBerita(container) {
+  // Mark seen
+  markNotifSeen('berita', Date.now());
   const canManage = isAdminUser(userProfile);
   const maintNotice = webMaintenance ? `
     <div class="bg-red-950/40 border-2 border-red-600 rounded-2xl p-4 mb-4 card-anim">
@@ -4129,8 +4764,10 @@ async function renderPrivateChat(container, otherUid) {
     </div>
     <div class="card-bg rounded-2xl p-4 h-[60vh] flex flex-col card-anim">
       <div id="pmMsgs" class="flex-1 overflow-y-auto scrollbar-thin space-y-3 mb-3 p-2"></div>
+      <div id="pmStickerPreview"></div>
       <div id="pmImgPreview"></div>
       <div class="flex gap-2 items-center mt-2">
+        <button class="sticker-send-btn" title="Stiker" onclick="window.openStickerPanel('private')"><i class="fas fa-sticky-note text-lg"></i></button>
         <label class="chat-img-send-btn" title="Kirim gambar"><i class="fas fa-image text-lg"></i><input type="file" id="pmImgInput" accept="image/*"></label>
         <input id="pmInput" type="text" placeholder="Tulis pesan..." class="flex-1 bg-slate-800 border border-slate-700 rounded-full px-4 py-2 text-sm focus:border-amber-500 transition">
         <button id="pmSend" class="bg-amber-500 text-black px-5 py-2 rounded-full font-bold text-sm hover:scale-105 transition"><i class="fas fa-paper-plane"></i></button>
@@ -4151,16 +4788,19 @@ async function renderPrivateChat(container, otherUid) {
       const un = userObj.username || m.username || 'User';
       const pu = userObj.photoURL || m.photoURL || '';
       const ul = userObj.level || m.userLevel || 1;
-      const isImg = m.image && !m.text;
+      const isImg = m.image && !m.text && !m.sticker;
+      const isSticker = m.sticker;
+      const isMediaOnly = (m.image || m.sticker) && !m.text;
       return `<div class="flex ${own ? 'justify-end' : ''} gap-2 ${anim}">
         ${!own ? `<img src="${pu || 'https://ui-avatars.com/api/?name='+encodeURIComponent(un)}" class="w-8 h-8 rounded-full">` : ''}
-        <div class="max-w-[70%] ${isImg ? 'chat-img-msg' : (own ? 'bg-amber-500/20' : 'bg-slate-800')} rounded-2xl px-3 py-2">
-          ${!isImg ? `<div class="flex items-center gap-1 flex-wrap text-xs mb-1">
+        <div class="max-w-[70%] ${isMediaOnly ? 'chat-img-msg' : (own ? 'bg-amber-500/20' : 'bg-slate-800')} rounded-2xl px-3 py-2">
+          ${!isMediaOnly ? `<div class="flex items-center gap-1 flex-wrap text-xs mb-1">
             <span class="${isGolden(ul) ? 'gold-glow font-bold' : 'text-slate-300 font-semibold'}">${un}</span>
             ${getRoleTagsForUid(m.userId, userObj)}
             <span class="text-slate-500">Lv.${ul}</span>
           </div>` : ''}
-          ${m.image ? `<img src="${m.image}" class="chat-img" onclick="window.showImgFullscreen('${escAttr(m.image)}','Gambar dari ${escAttr(un)}')">` : ''}
+          ${m.sticker ? `<img src="${m.sticker}" class="chat-sticker" onclick="window.showImgFullscreen('${escAttr(m.sticker)}','Stiker dari ${escAttr(un)}')">` : ''}
+          ${m.image && !m.sticker ? `<img src="${m.image}" class="chat-img" onclick="window.showImgFullscreen('${escAttr(m.image)}','Gambar dari ${escAttr(un)}')">` : ''}
           ${m.text ? `<p class="text-sm mt-1">${sensor(m.text || '')}</p>` : ''}
           <p class="text-xs text-slate-500 mt-1">${fmtDate(m.createdAt)}</p>
         </div>
@@ -4186,13 +4826,17 @@ async function renderPrivateChat(container, otherUid) {
   document.getElementById('pmSend').onclick = async () => {
     const text = document.getElementById('pmInput').value.trim();
     const img = pendingChatImg.private;
-    if (!text && !img) return;
+    const sticker = pendingChatSticker.private;
+    if (!text && !img && !sticker) return;
     const msgData = { userId: currentUser.uid, username: userProfile.username || 'User', photoURL: userProfile.photoURL || '', text: text ? sensor(text) : '', createdAt: serverTimestamp() };
     if (img) msgData.image = img;
+    if (sticker) msgData.sticker = sticker;
     await addDoc(collection(db, 'privateChats', chatId, 'messages'), msgData);
     document.getElementById('pmInput').value = '';
     pendingChatImg.private = null;
+    pendingChatSticker.private = null;
     document.getElementById('pmImgPreview').innerHTML = '';
+    document.getElementById('pmStickerPreview').innerHTML = '';
     await addExp(EXP_PER_CHAT);
   };
   document.getElementById('pmInput').addEventListener('keypress', e => { if (e.key === 'Enter') document.getElementById('pmSend').click(); });
@@ -4264,6 +4908,7 @@ async function renderTeman(c) {
 // ============================================================
 async function renderClan(c) {
   if (!currentUser) { c.innerHTML = `<div class="card-bg rounded-2xl p-8 text-center card-anim"><p>Login untuk akses clan.</p></div>`; return; }
+  markNotifSeen('clan', Date.now());
   const clanSnap = userProfile.clanId ? await getDoc(doc(db, 'clans', userProfile.clanId)) : null;
   const myClan = clanSnap && clanSnap.exists() ? { id: clanSnap.id, ...clanSnap.data() } : null;
   const allClansSnap = await getDocs(query(collection(db, 'clans'), orderBy('exp', 'desc'), limit(50)));
@@ -4324,6 +4969,7 @@ async function renderClanDetail(container, clanId) {
   const snap = await getDoc(doc(db, 'clans', clanId));
   if (!snap.exists()) { container.innerHTML = '<p class="text-red-400">Clan tidak ditemukan</p>'; return; }
   const clan = { id: snap.id, ...snap.data() };
+  markNotifSeen('clan', Date.now());
   const admins = clan.admins || [];
   const joinReqs = clan.joinRequests || [];
   const isMember = currentUser && clan.members?.includes(currentUser.uid);
@@ -4431,8 +5077,10 @@ async function renderClanDetail(container, clanId) {
         <h3 class="font-bold mb-3 text-amber-400">Chat Clan</h3>
         <div id="clanMsgs" class="flex-1 overflow-y-auto scrollbar-thin space-y-3 mb-2 p-2"></div>
         <div id="clanReplyPreview"></div>
+        <div id="clanStickerPreview"></div>
         <div id="clanImgPreview"></div>
         ${isMember ? `<div class="flex gap-2 items-center mt-2">
+          <button class="sticker-send-btn" title="Stiker" onclick="window.openStickerPanel('clan')"><i class="fas fa-sticky-note text-lg"></i></button>
           <label class="chat-img-send-btn" title="Kirim gambar"><i class="fas fa-image text-lg"></i><input type="file" id="clanImgInput" accept="image/*"></label>
           <input id="clanInput" type="text" placeholder="Pesan..." class="flex-1 bg-slate-800 border border-slate-700 rounded-full px-4 py-2 text-sm focus:border-amber-500 transition">
           <button id="clanSend" class="bg-amber-500 text-black px-4 py-2 rounded-full font-bold text-sm hover:scale-105 transition"><i class="fas fa-paper-plane"></i></button>
@@ -4501,7 +5149,7 @@ async function renderClanDetail(container, clanId) {
       else if (clanU) bc = 'clan-chat-border';
       else if (isP) bc = 'penulis-chat-border';
       else if (isK) bc = 'komikus-chat-border';
-      const isImgOnly = msg.image && !msg.text;
+      const isImgOnly = (msg.image || msg.sticker) && !msg.text;
       if (isOwn) bc += ' bg-amber-500/20';
       if (isImgOnly) bc = 'chat-img-msg';
       const anim = isNewMsg ? (isOwn ? 'chat-msg-new-own' : 'chat-msg-new') : '';
@@ -4521,12 +5169,13 @@ async function renderClanDetail(container, clanId) {
             ${msg.edited ? '<span class="text-slate-500 text-xs italic">(diedit)</span>' : ''}
           </div>` : ''}
           ${replyPreview}
-          ${msg.image ? `<img src="${msg.image}" class="chat-img" onclick="window.showImgFullscreen('${escAttr(msg.image)}','Gambar dari ${escAttr(un)}')">` : ''}
-          ${msg.text ? `<div id="clanmt-${msg.id}" class="text-sm ${msg.image ? 'mt-1' : ''}">${sensor(msg.text || '')}</div>` : `<div id="clanmt-${msg.id}" class="hidden"></div>`}
+          ${msg.sticker ? `<img src="${msg.sticker}" class="chat-sticker" onclick="window.showImgFullscreen('${escAttr(msg.sticker)}','Stiker dari ${escAttr(un)}')">` : ''}
+          ${msg.image && !msg.sticker ? `<img src="${msg.image}" class="chat-img" onclick="window.showImgFullscreen('${escAttr(msg.image)}','Gambar dari ${escAttr(un)}')">` : ''}
+          ${msg.text ? `<div id="clanmt-${msg.id}" class="text-sm ${msg.image || msg.sticker ? 'mt-1' : ''}">${sensor(msg.text || '')}</div>` : `<div id="clanmt-${msg.id}" class="hidden"></div>`}
           <div class="flex gap-2 mt-1 text-xs">
             <button onclick="replyClanMsg('${msg.id}')" class="text-slate-400 hover:text-green-400 transition opacity-0 group-hover:opacity-100"><i class="fas fa-reply"></i> Balas</button>
             ${isOwn ? `
-              ${!msg.image ? `<button onclick="editClanMsg('${msg.id}')" class="text-blue-400 hover:text-blue-300 transition opacity-0 group-hover:opacity-100"><i class="fas fa-edit"></i> Edit</button>` : ''}
+              ${!msg.image && !msg.sticker ? `<button onclick="editClanMsg('${msg.id}')" class="text-blue-400 hover:text-blue-300 transition opacity-0 group-hover:opacity-100"><i class="fas fa-edit"></i> Edit</button>` : ''}
               <button onclick="delClanMsg('${msg.id}')" class="text-red-400 hover:text-red-300 transition opacity-0 group-hover:opacity-100"><i class="fas fa-trash"></i> Hapus</button>
             ` : ''}
           </div>
@@ -4558,16 +5207,20 @@ async function renderClanDetail(container, clanId) {
     document.getElementById('clanSend').onclick = async () => {
       const text = document.getElementById('clanInput').value.trim();
       const img = pendingChatImg.clan;
-      if (!text && !img) return;
+      const sticker = pendingChatSticker.clan;
+      if (!text && !img && !sticker) return;
       const msgData = { userId: currentUser.uid, username: userProfile.username, photoURL: userProfile.photoURL || '', text: text ? sensor(text) : '', createdAt: serverTimestamp(), edited: false };
       if (img) msgData.image = img;
-      if (replyingToClan) { msgData.replyTo = replyingToClan.id; msgData.replyToText = replyingToClan.text || (replyingToClan.image ? '🖼️ Gambar' : ''); msgData.replyToName = replyingToClan.username; }
+      if (sticker) msgData.sticker = sticker;
+      if (replyingToClan) { msgData.replyTo = replyingToClan.id; msgData.replyToText = replyingToClan.text || (replyingToClan.image ? '🖼️ Gambar' : (replyingToClan.sticker ? '🎨 Stiker' : '')); msgData.replyToName = replyingToClan.username; }
       await addDoc(collection(db, 'clans', clanId, 'messages'), msgData);
       document.getElementById('clanInput').value = '';
       replyingToClan = null;
       pendingChatImg.clan = null;
+      pendingChatSticker.clan = null;
       document.getElementById('clanReplyPreview').innerHTML = '';
       document.getElementById('clanImgPreview').innerHTML = '';
+      document.getElementById('clanStickerPreview').innerHTML = '';
       await addExp(EXP_PER_CHAT);
       await addClanExp(clanId, 2);
     };
@@ -4648,8 +5301,9 @@ window.replyClanMsg = (msgId) => {
   const text = el.querySelector(`#clanmt-${msgId}`)?.textContent || '';
   const username = el.querySelector('span.font-semibold, span.gold-glow')?.textContent || 'Anonim';
   const img = el.querySelector('.chat-img')?.src || '';
-  replyingToClan = { id: msgId, text, username, image: img };
-  const preview = img ? '🖼️ Gambar' : `${text.slice(0, 60)}${text.length > 60 ? '...' : ''}`;
+  const sticker = el.querySelector('.chat-sticker')?.src || '';
+  replyingToClan = { id: msgId, text, username, image: img, sticker };
+  const preview = sticker ? '🎨 Stiker' : (img ? '🖼️ Gambar' : `${text.slice(0, 60)}${text.length > 60 ? '...' : ''}`);
   document.getElementById('clanReplyPreview').innerHTML = `
     <div class="flex items-center justify-between bg-amber-500/10 border-l-2 border-amber-500 rounded px-3 py-2 mb-2">
       <div class="text-xs"><i class="fas fa-reply text-amber-400 mr-2"></i><b class="text-amber-400">${username}:</b> <span class="text-slate-300">${preview}</span></div>
@@ -4689,11 +5343,14 @@ window.delClanMsg = async (msgId) => {
 // ===== TAKEDOWN / NONPUBLISH BANNER =========================
 // ============================================================
 function takedownBanner(work) {
+  const reports = (work.reports || []).length;
+  const isAuto = work.takedown && work.takedown.by === 'SYSTEM (Auto)';
   return `
     <div class="fixed inset-0 z-[150] flex items-center justify-center p-4" style="background:rgba(0,0,0,.92)">
       <div class="max-w-lg w-full card-bg rounded-2xl p-8 text-center border-2 border-red-600">
         <div class="w-20 h-20 mx-auto rounded-full bg-red-600/20 flex items-center justify-center mb-4"><i class="fas fa-ban text-red-500 text-4xl"></i></div>
         <h2 class="text-2xl font-black text-red-500 mb-2">KARYA DI-TAKEDOWN</h2>
+        ${isAuto ? '<p class="text-xs bg-red-600 text-white font-black rounded-full px-3 py-1 inline-block mb-2">🤖 AUTO-TAKEDOWN SYSTEM</p>' : ''}
         <p class="text-slate-400 text-sm mb-4">Karya ini tidak dapat dibuka karena melanggar ketentuan KomiNovel.</p>
         <div class="bg-red-950/40 border border-red-800 rounded-xl p-4 text-left mb-4">
           <p class="text-xs text-red-400 font-bold mb-1"><i class="fas fa-info-circle mr-1"></i>ALASAN:</p>
@@ -4702,6 +5359,7 @@ function takedownBanner(work) {
         <div class="text-xs text-slate-500 mb-4">
           <p>Di-takedown oleh: <b class="text-amber-400">${work.takedown.by || 'Admin'}</b></p>
           <p>Tanggal: ${fmtDate(work.takedown.at)}</p>
+          ${reports > 0 ? `<p class="mt-1">Total report: <b class="text-red-400">${reports}</b></p>` : ''}
         </div>
         <button onclick="window.location.hash='home'" class="bg-amber-500 text-black font-bold py-2 px-6 rounded-full hover:scale-105 transition"><i class="fas fa-home mr-1"></i>Kembali ke Beranda</button>
       </div>
@@ -4781,6 +5439,8 @@ async function renderReader(container, novelId, chapterId = null) {
   const socialHtml = buildSocialLinks({ sosmed: work.authorSosmed || {} });
   const vBadge = getVerifiedBadge(work.authorFollowerCount || 0) + getCreatorVerifiedBadge({ roles: work.authorRoles || [work.authorRole || 'pembaca'] });
   const isUnggulanAuthor = work.featuredCreator === true;
+  const reportsCount = (work.reports || []).length;
+  const hasReported = currentUser && (work.reports || []).some(r => r.userId === currentUser.uid);
 
   const chItemHtml = (ch) => {
     const idx = chapters.indexOf(ch);
@@ -4814,6 +5474,9 @@ async function renderReader(container, novelId, chapterId = null) {
         <button onclick="window.location.hash='home'" class="text-amber-400 hover:text-amber-300 transition"><i class="fas fa-arrow-left mr-2"></i>Kembali</button>
         <div class="flex gap-2 flex-wrap">
           ${isNonPublish(work) && canManage ? `<span class="bg-slate-700 text-slate-300 text-xs font-bold px-3 py-2 rounded-full"><i class="fas fa-eye-slash mr-1"></i>NONPUBLISH</span>` : ''}
+          <button id="reportWorkBtn" class="report-btn" ${hasReported ? 'disabled style="opacity:.6"' : ''}>
+            <i class="fas fa-flag"></i> ${hasReported ? `Report (${reportsCount}/10)` : 'Report'}
+          </button>
           <button id="bookmarkToggle" class="text-sm font-bold px-4 py-2 rounded-full transition ${isBookmarked ? 'bg-green-600 text-white' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'}"><i class="fas fa-bookmark mr-1"></i>${isBookmarked ? 'Tersimpan' : 'Bookmark'}</button>
           <button id="readerLikeBtn" class="text-sm font-bold px-4 py-2 rounded-full transition ${isLiked ? 'bg-red-600 text-white' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'}"><i class="fas fa-heart mr-1"></i><span id="readerLikeCount" data-val="${work.likes || 0}">${formatCount(work.likes || 0)}</span></button>
         </div>
@@ -4838,6 +5501,7 @@ async function renderReader(container, novelId, chapterId = null) {
               <span class="view-badge"><i class="fas fa-eye"></i> ${formatCount(work.views || 0)} kali dilihat</span>
               <span class="view-badge"><i class="fas fa-heart" style="color:#ef4444"></i> ${formatCount(work.likes || 0)} suka</span>
               <span class="view-badge"><i class="fas fa-star"></i> ${formatCount(work.ratingCount || 0)} rating</span>
+              ${reportsCount > 0 ? `<span class="view-badge"><i class="fas fa-flag" style="color:#ef4444"></i> ${reportsCount}/10 report</span>` : ''}
             </div>
             ${socialHtml ? `<div class="flex flex-wrap gap-1 mt-3">${socialHtml}</div>` : ''}
           </div>
@@ -4886,6 +5550,11 @@ async function renderReader(container, novelId, chapterId = null) {
       </div>
       ${isKomik && currentChapter && currentChapter.images && currentChapter.images.length > 0 ? `<button id="fullscreenBtn" class="fullscreen-btn" onclick="toggleFullscreenReader()"><i class="fas fa-expand"></i></button>` : ''}
     </div>`;
+
+  document.getElementById('reportWorkBtn')?.addEventListener('click', () => {
+    if (hasReported) { showToast('Kamu sudah report karya ini'); return; }
+    window.openReportModal(novelId);
+  });
 
   const bmBtn = document.getElementById('bookmarkToggle');
   if (bmBtn) {
@@ -5246,13 +5915,16 @@ async function renderLeaderboard(container) {
 // ===== CHAT PUBLIK ==========================================
 // ============================================================
 async function renderChat(container) {
+  markNotifSeen('chat', Date.now());
   container.innerHTML = `
     <h2 class="text-2xl font-bold mb-4"><i class="fas fa-comments text-amber-400 mr-2"></i>Chat Publik</h2>
     <div class="card-bg rounded-2xl p-4 h-[65vh] flex flex-col card-anim">
       <div id="chatMessages" class="flex-1 overflow-y-auto scrollbar-thin space-y-3 mb-3 p-2"></div>
       <div id="publicReplyPreview"></div>
+      <div id="publicStickerPreview"></div>
       <div id="publicImgPreview"></div>
       <div class="flex gap-2 items-center mt-2">
+        <button class="sticker-send-btn" title="Stiker" onclick="window.openStickerPanel('public')"><i class="fas fa-sticky-note text-lg"></i></button>
         <label class="chat-img-send-btn" title="Kirim gambar"><i class="fas fa-image text-lg"></i><input type="file" id="publicImgInput" accept="image/*"></label>
         <input id="chatInput" type="text" placeholder="Tulis pesan..." class="flex-1 bg-slate-800 border border-slate-700 rounded-full px-4 py-2 text-sm focus:border-amber-500 transition">
         <button id="sendChat" class="bg-amber-500 text-black px-5 py-2 rounded-full font-bold text-sm hover:scale-105 transition"><i class="fas fa-paper-plane"></i></button>
@@ -5297,7 +5969,7 @@ async function renderChat(container) {
       else if (clan) bc = 'clan-chat-border';
       else if (isP) bc = 'penulis-chat-border';
       else if (isK) bc = 'komikus-chat-border';
-      const isImgOnly = msg.image && !msg.text;
+      const isImgOnly = (msg.image || msg.sticker) && !msg.text;
       if (own) bc += ' bg-amber-500/20';
       if (isImgOnly) bc = 'chat-img-msg';
       const isLast = idx === rawMessages.length - 1;
@@ -5318,12 +5990,13 @@ async function renderChat(container) {
             ${msg.edited ? '<span class="text-slate-500 text-xs italic">(diedit)</span>' : ''}
           </div>` : ''}
           ${replyPreview}
-          ${msg.image ? `<img src="${msg.image}" class="chat-img" onclick="window.showImgFullscreen('${escAttr(msg.image)}','Gambar dari ${escAttr(un)}')">` : ''}
-          ${msg.text ? `<div id="pubmt-${msg.id}" class="text-sm ${msg.image ? 'mt-1' : ''}">${sensor(msg.text || '')}</div>` : `<div id="pubmt-${msg.id}" class="hidden"></div>`}
+          ${msg.sticker ? `<img src="${msg.sticker}" class="chat-sticker" onclick="window.showImgFullscreen('${escAttr(msg.sticker)}','Stiker dari ${escAttr(un)}')">` : ''}
+          ${msg.image && !msg.sticker ? `<img src="${msg.image}" class="chat-img" onclick="window.showImgFullscreen('${escAttr(msg.image)}','Gambar dari ${escAttr(un)}')">` : ''}
+          ${msg.text ? `<div id="pubmt-${msg.id}" class="text-sm ${msg.image || msg.sticker ? 'mt-1' : ''}">${sensor(msg.text || '')}</div>` : `<div id="pubmt-${msg.id}" class="hidden"></div>`}
           <div class="flex gap-2 mt-1 text-xs">
             <button onclick="replyPubMsg('${msg.id}')" class="text-slate-400 hover:text-green-400 transition opacity-0 group-hover:opacity-100"><i class="fas fa-reply"></i> Balas</button>
             ${own ? `
-              ${!msg.image ? `<button onclick="editPubMsg('${msg.id}')" class="text-blue-400 hover:text-blue-300 transition opacity-0 group-hover:opacity-100"><i class="fas fa-edit"></i> Edit</button>` : ''}
+              ${!msg.image && !msg.sticker ? `<button onclick="editPubMsg('${msg.id}')" class="text-blue-400 hover:text-blue-300 transition opacity-0 group-hover:opacity-100"><i class="fas fa-edit"></i> Edit</button>` : ''}
               <button onclick="delPubMsg('${msg.id}')" class="text-red-400 hover:text-red-300 transition opacity-0 group-hover:opacity-100"><i class="fas fa-trash"></i> Hapus</button>
             ` : ''}
           </div>
@@ -5352,7 +6025,8 @@ async function renderChat(container) {
   sendBtn.onclick = async () => {
     const text = input.value.trim();
     const img = pendingChatImg.public;
-    if ((!text && !img) || !currentUser) { showToast('Login dulu'); return; }
+    const sticker = pendingChatSticker.public;
+    if ((!text && !img && !sticker) || !currentUser) { showToast('Login dulu'); return; }
     const msgData = {
       userId: currentUser.uid, username: userProfile.username || 'Guest',
       photoURL: userProfile.photoURL || '', userLevel: userProfile.level || 1,
@@ -5360,13 +6034,16 @@ async function renderChat(container) {
       text: text ? sensor(text) : '', edited: false, createdAt: serverTimestamp()
     };
     if (img) msgData.image = img;
-    if (replyingToPublic) { msgData.replyTo = replyingToPublic.id; msgData.replyToText = replyingToPublic.text || (replyingToPublic.image ? '🖼️ Gambar' : ''); msgData.replyToName = replyingToPublic.username; }
+    if (sticker) msgData.sticker = sticker;
+    if (replyingToPublic) { msgData.replyTo = replyingToPublic.id; msgData.replyToText = replyingToPublic.text || (replyingToPublic.image ? '🖼️ Gambar' : (replyingToPublic.sticker ? '🎨 Stiker' : '')); msgData.replyToName = replyingToPublic.username; }
     await addDoc(collection(db,'chats'), msgData);
     input.value = '';
     replyingToPublic = null;
     pendingChatImg.public = null;
+    pendingChatSticker.public = null;
     document.getElementById('publicReplyPreview').innerHTML = '';
     document.getElementById('publicImgPreview').innerHTML = '';
+    document.getElementById('publicStickerPreview').innerHTML = '';
     await addExp(EXP_PER_CHAT);
   };
   input.addEventListener('keypress', e => { if (e.key === 'Enter') sendBtn.click(); });
@@ -5377,8 +6054,9 @@ window.replyPubMsg = (msgId) => {
   const text = el.querySelector(`#pubmt-${msgId}`)?.textContent || '';
   const username = el.querySelector('span.font-semibold, span.gold-glow')?.textContent || 'Anonim';
   const img = el.querySelector('.chat-img')?.src || '';
-  replyingToPublic = { id: msgId, text, username, image: img };
-  const preview = img ? '🖼️ Gambar' : `${text.slice(0, 60)}${text.length > 60 ? '...' : ''}`;
+  const sticker = el.querySelector('.chat-sticker')?.src || '';
+  replyingToPublic = { id: msgId, text, username, image: img, sticker };
+  const preview = sticker ? '🎨 Stiker' : (img ? '🖼️ Gambar' : `${text.slice(0, 60)}${text.length > 60 ? '...' : ''}`);
   document.getElementById('publicReplyPreview').innerHTML = `
     <div class="flex items-center justify-between bg-amber-500/10 border-l-2 border-amber-500 rounded px-3 py-2 mb-2">
       <div class="text-xs"><i class="fas fa-reply text-amber-400 mr-2"></i><b class="text-amber-400">${username}:</b> <span class="text-slate-300">${preview}</span></div>
@@ -5692,7 +6370,7 @@ async function renderCreatorDashboard(container) {
           authorRoles: userProfile.roles || ['pembaca'],
           featuredCreator: userProfile.featuredCreator || false,
           avgRating: 0, ratingCount: 0, isTamat: false, featured: false,
-          views: 0, likes: 0, likedBy: [],
+          views: 0, likes: 0, likedBy: [], reports: [],
           takedown: { active: false, reason: '', by: '', at: null },
           createdAt: serverTimestamp(), updatedAt: serverTimestamp()
         });
@@ -5723,6 +6401,7 @@ async function renderCreatorDashboard(container) {
       const gl = groupLabel(w.type);
       const wGroups = getGroups(w);
       const secs = groupChapters(w.chapters, w);
+      const reportCount = (w.reports || []).length;
       const epRow = (ch) => `
         <div class="flex items-center justify-between bg-slate-800/50 rounded px-2 py-1.5 text-xs gap-2">
           <span class="truncate flex-1"><span class="text-amber-400 font-bold">${lbl} ${ch.number}</span>${ch.title ? ': ' + escHtml(ch.title) : ''}</span>
@@ -5749,6 +6428,7 @@ async function renderCreatorDashboard(container) {
               <span><i class="fas fa-eye text-amber-400"></i> ${formatCount(w.views || 0)}</span>
               <span><i class="fas fa-heart" style="color:#ef4444"></i> ${formatCount(w.likes || 0)}</span>
               <span><i class="fas fa-star text-amber-400"></i> ${formatCount(w.ratingCount || 0)}</span>
+              ${reportCount > 0 ? `<span class="text-red-400"><i class="fas fa-flag"></i> ${reportCount}/10 report</span>` : ''}
             </div>
           </div>
         </div>
@@ -5758,6 +6438,9 @@ async function renderCreatorDashboard(container) {
         ${isTD ? `<div class="bg-red-950/40 border border-red-800 rounded-lg p-3 mb-3">
           <p class="text-xs text-red-400 font-bold mb-1"><i class="fas fa-ban mr-1"></i>KARYA DI-TAKEDOWN</p>
           <p class="text-xs text-red-300 mb-1"><b>Alasan:</b> ${sensor(w.takedown.reason || '-')}</p>
+        </div>` : ''}
+        ${reportCount >= 5 && !isTD ? `<div class="bg-yellow-900/30 border border-yellow-600/50 rounded-lg p-3 mb-3">
+          <p class="text-xs text-yellow-200"><i class="fas fa-exclamation-triangle mr-1"></i><b>PERINGATAN:</b> Karya ini sudah dilaporkan <b>${reportCount}/10</b> kali. Jika mencapai 10, akan otomatis di-takedown sistem!</p>
         </div>` : ''}
         <div class="flex flex-wrap gap-2 mb-3">
           ${!isTD ? `<button class="reviewWorkBtn ${isNP ? 'bg-green-600' : 'bg-amber-600'} text-white px-4 py-2 rounded-lg text-xs font-bold hover:scale-105 transition" data-wid="${w.id}" title="Review & Publish"><i class="fas fa-clipboard-check mr-1"></i>${isNP ? 'Review & Publish' : 'Review Karya'}</button>` : ''}
@@ -5905,6 +6588,8 @@ async function renderAdminPanel(container) {
   <div class="flex flex-wrap gap-2 mb-6">
     <button id="adminTabUsers" class="px-4 py-2 rounded-full bg-amber-500 text-black font-bold text-sm hover:scale-105 transition">User</button>
     <button id="adminTabWorks" class="px-4 py-2 rounded-full bg-slate-800 text-slate-300 text-sm hover:bg-slate-700 transition">Karya</button>
+    <button id="adminTabReport" class="px-4 py-2 rounded-full bg-slate-800 text-slate-300 text-sm hover:bg-slate-700 transition"><i class="fas fa-flag mr-1"></i>Report</button>
+    <button id="adminTabSticker" class="px-4 py-2 rounded-full bg-slate-800 text-slate-300 text-sm hover:bg-slate-700 transition"><i class="fas fa-sticky-note mr-1"></i>Stiker</button>
     <button id="adminTabUpload" class="px-4 py-2 rounded-full bg-slate-800 text-slate-300 text-sm hover:bg-slate-700 transition">Upload</button>
     <button id="adminTabKritik" class="px-4 py-2 rounded-full bg-slate-800 text-slate-300 text-sm hover:bg-slate-700 transition">Kritik</button>
     <button id="adminTabBirthday" class="px-4 py-2 rounded-full bg-slate-800 text-slate-300 text-sm hover:bg-slate-700 transition">Ultah</button>
@@ -6006,6 +6691,7 @@ async function renderAdminPanel(container) {
         const isTD = isTakedown(w);
         const isNP = isNonPublish(w);
         const isUN = isUnggulan(w);
+        const reports = (w.reports || []).length;
         return `<div class="card-bg rounded-xl p-3 card-anim ${isTD ? 'takedown-border' : isNP ? 'nonpublish-border' : isUN ? 'unggulan-border' : ''}">
           <div class="flex items-center gap-3">
             <div class="w-12 h-16 bg-slate-800 rounded overflow-hidden flex-shrink-0">${w.coverURL ? `<img src="${w.coverURL}" class="w-full h-full object-cover ${isTD || isNP ? 'grayscale' : ''}">` : ''}</div>
@@ -6015,6 +6701,7 @@ async function renderAdminPanel(container) {
                 <span class="text-[10px] px-2 py-0.5 rounded-full ${w.type === 'novel' ? 'bg-yellow-900/60 text-yellow-300' : 'bg-orange-900/60 text-orange-300'}">${(w.type || 'novel').toUpperCase()}</span>
                 ${isTD ? '<span class="text-[10px] bg-red-900/60 text-red-300 px-2 py-0.5 rounded-full font-bold">TAKEDOWN</span>' : isNP ? '<span class="text-[10px] bg-slate-700 text-slate-300 px-2 py-0.5 rounded-full font-bold">NONPUBLISH</span>' : '<span class="text-[10px] bg-green-900/60 text-green-300 px-2 py-0.5 rounded-full">AKTIF</span>'}
                 ${isUN ? '<span class="unggulan-tag text-[10px]">⭐</span>' : ''}
+                ${reports > 0 ? `<span class="text-[10px] bg-red-900/60 text-red-300 px-2 py-0.5 rounded-full font-bold"><i class="fas fa-flag"></i> ${reports}/10</span>` : ''}
               </div>
               <p class="text-xs text-slate-400 truncate">oleh ${w.authorName || 'Anonim'}</p>
               <p class="text-[10px] text-slate-500">${formatCount(w.views || 0)} views • ${formatCount(w.likes || 0)} likes</p>
@@ -6024,6 +6711,7 @@ async function renderAdminPanel(container) {
             ${isTD ? `<button class="restoreBtn bg-green-600 text-white px-4 py-1.5 rounded-lg text-xs font-bold hover:scale-105 transition" data-wid="${w.id}"><i class="fas fa-undo mr-1"></i>Restore</button>` : `<button class="takedownBtn bg-red-600 text-white px-4 py-1.5 rounded-lg text-xs font-bold hover:scale-105 transition" data-wid="${w.id}" data-title="${escAttr(w.title)}"><i class="fas fa-ban mr-1"></i>Takedown</button>`}
             <button class="featureWorkBtn ${isUN ? 'bg-yellow-600' : 'bg-slate-700'} text-white px-4 py-1.5 rounded-lg text-xs font-bold hover:scale-105 transition" data-wid="${w.id}" data-featured="${isUN}"><i class="fas fa-star mr-1"></i>${isUN ? 'Hapus Unggulan' : 'Unggulan'}</button>
             <button class="adminViewBtn bg-slate-700 text-slate-300 px-4 py-1.5 rounded-lg text-xs font-bold hover:scale-105 transition" data-wid="${w.id}"><i class="fas fa-eye mr-1"></i>Lihat</button>
+            ${reports > 0 ? `<button class="viewReportsBtn bg-red-800 text-white px-4 py-1.5 rounded-lg text-xs font-bold hover:scale-105 transition" data-wid="${w.id}" data-title="${escAttr(w.title)}"><i class="fas fa-flag mr-1"></i>Lihat Report (${reports})</button>` : ''}
           </div>
         </div>`;
       }).join('');
@@ -6040,10 +6728,91 @@ async function renderAdminPanel(container) {
         loadAdminWorks();
       });
       list.querySelectorAll('.adminViewBtn').forEach(b => b.onclick = () => { window.location.hash = 'reader/' + b.dataset.wid; });
+      list.querySelectorAll('.viewReportsBtn').forEach(b => b.onclick = () => window.openReportsDetailModal(b.dataset.wid, b.dataset.title));
     }
     document.getElementById('adminWorkSearch').oninput = renderList;
     document.getElementById('adminWorkFilter').onchange = renderList;
     renderList();
+  }
+
+  window.openReportsDetailModal = async (wid, title) => {
+    const snap = await getDoc(doc(db, 'works', wid));
+    if (!snap.exists()) { showToast('Karya tidak ditemukan'); return; }
+    const work = snap.data();
+    const reports = work.reports || [];
+    const modal = document.getElementById('modalContainer');
+    const content = document.getElementById('modalContent');
+    content.innerHTML = `
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-black text-red-400"><i class="fas fa-flag mr-2"></i>Detail Report</h2>
+        <button id="closeReportsDetail" class="text-slate-400 text-2xl hover:rotate-90 transition-transform">&times;</button>
+      </div>
+      <div class="bg-red-950/30 border border-red-800 rounded-xl p-3 mb-4">
+        <p class="text-xs text-red-300"><b>Karya:</b> ${escHtml(title)}</p>
+        <p class="text-xs text-red-300 mt-1"><b>Total Report:</b> ${reports.length}/${REPORT_AUTO_TAKEDOWN_THRESHOLD}</p>
+      </div>
+      <div class="space-y-2 max-h-[50vh] overflow-y-auto scrollbar-thin">
+        ${reports.length === 0 ? '<p class="text-slate-400 text-sm">Belum ada report.</p>' : reports.map((r, i) => `
+          <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-3">
+            <div class="flex items-center gap-2 mb-1 flex-wrap">
+              <span class="text-xs font-black text-amber-400">#${i+1}</span>
+              <span class="text-xs text-slate-300">${escHtml(r.userName || 'Anonim')}</span>
+              <span class="text-xs text-slate-500 ml-auto">${r.at ? new Date(r.at).toLocaleString('id-ID') : '-'}</span>
+            </div>
+            <p class="text-sm text-red-300 font-bold">${escHtml(r.reasonLabel || r.reason || '-')}</p>
+            ${r.detail ? `<p class="text-xs text-slate-400 mt-1">${escHtml(r.detail)}</p>` : ''}
+          </div>
+        `).join('')}
+      </div>
+      <button id="closeReportsDetailBtn" class="w-full mt-4 bg-slate-700 text-white font-bold py-2 rounded-full">Tutup</button>
+    `;
+    modal.classList.remove('hidden');
+    document.getElementById('closeReportsDetail').onclick = () => modal.classList.add('hidden');
+    document.getElementById('closeReportsDetailBtn').onclick = () => modal.classList.add('hidden');
+  };
+
+  async function loadReportTab() {
+    aC.innerHTML = `
+      <h3 class="font-bold text-lg mb-4 text-red-400"><i class="fas fa-flag mr-2"></i>Karya dengan Report</h3>
+      <p class="text-xs text-slate-400 mb-4">Daftar karya yang dilaporkan pengguna. Karya dengan 10 report otomatis tertakedown oleh sistem.</p>
+      <div id="reportList" class="space-y-3">Memuat...</div>`;
+    const snap = await getDocs(collection(db, 'works'));
+    let works = []; snap.forEach(d => works.push({ id: d.id, ...d.data() }));
+    works = works.filter(w => (w.reports || []).length > 0);
+    works.sort((a, b) => (b.reports || []).length - (a.reports || []).length);
+    const list = document.getElementById('reportList');
+    if (works.length === 0) { list.innerHTML = '<div class="card-bg rounded-2xl p-8 text-center text-slate-400"><i class="fas fa-check-circle text-4xl text-green-400/50 mb-3"></i><p>Tidak ada karya yang dilaporkan. 🎉</p></div>'; return; }
+    list.innerHTML = works.map(w => {
+      const reports = (w.reports || []).length;
+      const isTD = isTakedown(w);
+      return `<div class="card-bg rounded-xl p-3 card-anim ${isTD ? 'takedown-border' : reports >= 7 ? 'tamat-border' : reports >= 4 ? 'unggulan-border' : ''}">
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-16 bg-slate-800 rounded overflow-hidden flex-shrink-0">${w.coverURL ? `<img src="${w.coverURL}" class="w-full h-full object-cover">` : ''}</div>
+          <div class="flex-1 min-w-0">
+            <h4 class="font-bold text-sm truncate">${w.title}</h4>
+            <p class="text-xs text-slate-400">oleh ${w.authorName || 'Anonim'}</p>
+            <div class="flex items-center gap-2 mt-1 flex-wrap">
+              <span class="text-xs font-black ${reports >= 10 ? 'text-red-400' : reports >= 7 ? 'text-orange-400' : reports >= 4 ? 'text-yellow-400' : 'text-slate-400'}">
+                <i class="fas fa-flag"></i> ${reports}/${REPORT_AUTO_TAKEDOWN_THRESHOLD}
+              </span>
+              ${isTD ? '<span class="text-[10px] bg-red-900/60 text-red-300 px-2 py-0.5 rounded-full font-bold">TAKEDOWN</span>' : reports >= 7 ? '<span class="text-[10px] bg-orange-900/60 text-orange-300 px-2 py-0.5 rounded-full">⚠️ HAMPIR LIMIT</span>' : ''}
+            </div>
+          </div>
+        </div>
+        <div class="flex gap-2 mt-2 flex-wrap">
+          <button class="viewReportsDetail bg-red-800 text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:scale-105 transition" data-wid="${w.id}" data-title="${escAttr(w.title)}"><i class="fas fa-list mr-1"></i>Lihat Detail</button>
+          ${!isTD ? `<button class="forceTakedown bg-red-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:scale-105 transition" data-wid="${w.id}" data-title="${escAttr(w.title)}"><i class="fas fa-ban mr-1"></i>Takedown</button>` : '<span class="text-[10px] text-slate-500 italic">Sudah takedown</span>'}
+          ${isTD ? `<button class="restoreFromReport bg-green-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:scale-105 transition" data-wid="${w.id}"><i class="fas fa-undo mr-1"></i>Restore</button>` : ''}
+        </div>
+      </div>`;
+    }).join('');
+    list.querySelectorAll('.viewReportsDetail').forEach(b => b.onclick = () => window.openReportsDetailModal(b.dataset.wid, b.dataset.title));
+    list.querySelectorAll('.forceTakedown').forEach(b => b.onclick = () => openTakedownModal(b.dataset.wid, b.dataset.title));
+    list.querySelectorAll('.restoreFromReport').forEach(b => b.onclick = async () => {
+      if (!confirm('Restore karya ini? Report akan tetap disimpan.')) return;
+      await updateDoc(doc(db, 'works', b.dataset.wid), { takedown: { active: false, reason: '', by: '', at: null }, updatedAt: serverTimestamp() });
+      showToast('✅ Karya di-restore!'); loadReportTab();
+    });
   }
 
   function openTakedownModal(wid, title) {
@@ -6072,6 +6841,63 @@ async function renderAdminPanel(container) {
       showToast('⛔ Karya di-takedown');
       modal.classList.add('hidden'); loadAdminWorks();
     };
+  }
+
+  async function loadStickerTab() {
+    await loadGlobalStickers();
+    aC.innerHTML = `
+      <div class="card-bg rounded-2xl p-6 mb-4">
+        <h3 class="font-bold text-lg mb-3 text-amber-400"><i class="fas fa-sticky-note mr-2"></i>Kelola Stiker Global</h3>
+        <p class="text-xs text-slate-400 mb-4">Stiker global bisa dipakai oleh SEMUA user di semua chat. User juga bisa menyimpannya ke koleksi pribadi mereka.</p>
+        <div class="bg-slate-900/50 border border-amber-500/30 rounded-xl p-4 mb-4">
+          <h4 class="font-bold text-sm mb-3 text-green-400"><i class="fas fa-plus-circle mr-1"></i>Tambah Stiker Baru</h4>
+          <label class="cursor-pointer bg-amber-500 text-black px-3 py-2 rounded-lg text-xs font-bold hover:scale-105 transition inline-block mb-2">
+            <i class="fas fa-upload mr-1"></i>Upload dari Perangkat
+            <input type="file" id="adminGlobalStickerFile" accept="image/*" class="hidden">
+          </label>
+          <input id="adminGlobalStickerName" type="text" placeholder="Nama stiker (opsional)" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm mb-2">
+          <input id="adminGlobalStickerUrl" type="text" placeholder="Atau paste URL gambar" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm mb-2">
+          <div id="adminGlobalStickerPreview" class="mb-2"></div>
+          <button id="adminSaveGlobalSticker" class="w-full bg-green-600 text-white font-bold py-2 rounded-full text-sm hover:scale-105 transition">Simpan Stiker Global</button>
+        </div>
+        <h4 class="font-bold text-sm mb-3 text-amber-400">Daftar Stiker Global (${stickersCache.global.length})</h4>
+        <div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+          ${stickersCache.global.length === 0 ? '<p class="col-span-full text-slate-400 text-sm text-center py-4">Belum ada stiker global.</p>' : ''}
+          ${stickersCache.global.map(s => `
+            <div class="sticker-item">
+              <img src="${s.url}" onerror="this.style.opacity='0.3'">
+              <span class="del-sticker" style="opacity:1" onclick="window.deleteGlobalSticker('${s.id}').then(()=>loadStickerTabAdmin())" title="Hapus">×</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+    const fileInp = document.getElementById('adminGlobalStickerFile');
+    const urlInp = document.getElementById('adminGlobalStickerUrl');
+    const preview = document.getElementById('adminGlobalStickerPreview');
+    let pendingUrl = '';
+    fileInp.onchange = async (e) => {
+      const f = e.target.files[0];
+      if (!f) return;
+      preview.innerHTML = '<p class="text-xs text-amber-400">Mengupload...</p>';
+      try {
+        const dataUrl = await uploadToImgbb(f);
+        pendingUrl = dataUrl;
+        preview.innerHTML = `<img src="${dataUrl}" class="w-24 h-24 object-contain bg-slate-800 rounded-lg p-1">`;
+      } catch (err) { preview.innerHTML = `<p class="text-xs text-red-400">${err.message}</p>`; }
+      fileInp.value = '';
+    };
+    urlInp.oninput = () => {
+      const url = urlInp.value.trim();
+      if (url) { pendingUrl = url; preview.innerHTML = `<img src="${url}" class="w-24 h-24 object-contain bg-slate-800 rounded-lg p-1" onerror="this.style.opacity='0.3'">`; }
+    };
+    document.getElementById('adminSaveGlobalSticker').onclick = async () => {
+      const name = document.getElementById('adminGlobalStickerName').value.trim();
+      if (!pendingUrl) { showToast('Pilih gambar atau paste URL dulu'); return; }
+      await addGlobalSticker(pendingUrl, name);
+      loadStickerTab();
+    };
+    window.loadStickerTabAdmin = loadStickerTab;
   }
 
   async function loadUploadForm() {
@@ -6103,7 +6929,7 @@ async function renderAdminPanel(container) {
         authorLevel: MAX_LEVEL, authorFollowerCount: userProfile?.followerCount || 0,
         authorRoles: userProfile?.roles || ['admin'],
         avgRating: 0, ratingCount: 0, isTamat: false, featured: false,
-        views: 0, likes: 0, likedBy: [],
+        views: 0, likes: 0, likedBy: [], reports: [],
         takedown: { active: false, reason: '', by: '', at: null },
         createdAt: serverTimestamp(), updatedAt: serverTimestamp()
       });
@@ -6264,6 +7090,8 @@ async function renderAdminPanel(container) {
   }
   document.getElementById('adminTabUsers').onclick = loadUsers;
   document.getElementById('adminTabWorks').onclick = loadAdminWorks;
+  document.getElementById('adminTabReport').onclick = loadReportTab;
+  document.getElementById('adminTabSticker').onclick = loadStickerTab;
   document.getElementById('adminTabUpload').onclick = loadUploadForm;
   document.getElementById('adminTabKritik').onclick = loadKritik;
   document.getElementById('adminTabBirthday').onclick = loadBirthday;
@@ -7157,6 +7985,7 @@ function showUploadGuide() {
       <div class="guide-step"><p class="font-bold text-amber-400 mb-1"><span class="guide-step-num">4</span>Review & Publish Mode Reader — PENTING!</p><p class="text-sm text-slate-300">Di <b>Creator → Kelola</b>, klik tombol <b>Review & Publish</b>. Preview gambar ala reader di kiri. Panel kontrol di kanan (desktop) atau tombol ⚙️ (HP). <b>Pilih mode dulu</b>: 🖐️ Drag atau 🔍 Fullscreen.</p></div>
       <div class="guide-step"><p class="font-bold text-amber-400 mb-1"><span class="guide-step-num">5</span>Urutan Gambar Komik</p><p class="text-sm text-slate-300">Pilih <b>Mode Drag</b>, geser gambar untuk ubah urutan. Klik <b>Simpan Urutan</b>. Gambar #1 jadi sampul Eps.</p></div>
       <div class="guide-step"><p class="font-bold text-amber-400 mb-1"><span class="guide-step-num">6</span>Edit Karya</p><p class="text-sm text-slate-300">Tombol <b>Edit Karya</b> (ungu) untuk ubah sampul, teaser, deskripsi, genre, judul, status, dan status tamat.</p></div>
+      <div class="guide-step"><p class="font-bold text-amber-400 mb-1"><span class="guide-step-num">7</span>Report & Auto-Takedown</p><p class="text-sm text-slate-300">Pembaca bisa <b>Report</b> karya yang melanggar. Jika report mencapai <b>10</b>, karya OTOMATIS di-takedown oleh sistem!</p></div>
     </div>
     <div class="flex gap-2 mt-6">
       <a href="https://imgbb.com" target="_blank" class="flex-1 bg-amber-500 text-black font-bold py-3 rounded-full text-center"><i class="fas fa-external-link-alt mr-2"></i>Buka ImgBB</a>
@@ -7197,6 +8026,8 @@ window.addEventListener('hashchange', renderPage);
   initTheme();
   await loadMaintenanceState();
   listenMaintenanceState();
+  loadNotifState();
+  updateBadges();
   await initAuth();
   await loadAutoBoostStateFromDB();
   listenAutoBoostState();
@@ -7204,7 +8035,7 @@ window.addEventListener('hashchange', renderPage);
   renderPage();
   startAutoBoost();
   console.log(`%c🚀 KomiNovel v${APP_VERSION} loaded`, 'background:linear-gradient(135deg,#fbbf24,#d97706);color:#0f0f1a;font-weight:900;padding:4px 12px;border-radius:8px;');
-  console.log('%c✨ Update v1.7:', 'color:#fbbf24;font-weight:bold;');
+  console.log('%c✨ Update v1.9:', 'color:#fbbf24;font-weight:bold;');
   APP_VERSION_NOTES.forEach(n => console.log('  •', n));
 })();
 </script>
