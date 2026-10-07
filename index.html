@@ -14,7 +14,7 @@
 }
 </script>
 <meta name="google-site-verification" content="GvyTGbIx3Zov0CXr0f1voJ2LJnac-ppCl62NStzdY3E">
-<meta name="description" content="KomiNovel - Platform baca & tulis Novel dan Komik online gratis. Versi 1.9">
+<meta name="description" content="KomiNovel - Platform baca & tulis Novel dan Komik online gratis. Versi 1.10">
 <link rel="icon" href="https://i.ibb.co.com/SDTthJ7m/Gemini-Generated-Image-fhupt4fhupt4fhup.jpg">
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -146,10 +146,10 @@ body{font-family:'Inter',sans-serif;background:#0f0f1a;color:#e2e8f0;overflow-x:
 .follower-stat{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:#94a3b8;cursor:pointer;padding:6px 12px;border-radius:9999px;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.2)}
 .follower-stat:hover{background:rgba(251,191,36,.15);color:#fbbf24}
 .follower-stat b{color:#fbbf24;font-weight:900}
-.verified-badge{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;font-size:10px;color:white;margin-left:4px;vertical-align:middle}
+.verified-badge{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;min-width:16px;min-height:16px;flex-shrink:0;border-radius:50%;font-size:10px;color:white;margin-left:4px;vertical-align:middle}
 .verified-badge.green{background:linear-gradient(135deg,#10b981,#047857)}
 .verified-badge.blue{background:linear-gradient(135deg,#3b82f6,#1d4ed8)}
-.verified-badge.kuning{background:linear-gradient(135deg,#fbbf24,#d97706)}
+.verified-badge.kuning{background:linear-gradient(135deg,#f59e0b,#b45309)}
 .verified-badge.oranye{background:linear-gradient(135deg,#f97316,#ea580c)}
 .verified-badge i{font-size:8px}
 .user-bio{font-size:13px;color:#cbd5e1;line-height:1.5;padding:10px 12px;background:rgba(15,15,26,.5);border-radius:10px;border-left:3px solid #fbbf24;margin:8px 0}
@@ -661,6 +661,213 @@ body{font-family:'Inter',sans-serif;background:#0f0f1a;color:#e2e8f0;overflow-x:
   margin-bottom:12px;
 }
 .report-warning b{color:#fbbf24}
+
+/* === HOME ANALYTICS / HERO === */
+.home-hero{
+  position:relative;overflow:hidden;border-radius:24px;border:1px solid rgba(251,191,36,.25);
+  min-height:230px;background:#17172a;contain:layout paint;
+}
+.home-hero-slide{display:none;min-height:230px;position:relative;cursor:pointer}
+.home-hero-slide.active{display:flex}
+.home-hero-slide::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(15,15,26,.92) 0%,rgba(15,15,26,.72) 42%,rgba(15,15,26,.15) 100%);pointer-events:none}
+.home-hero-cover{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.65}
+.home-hero-content{position:relative;z-index:2;padding:24px;max-width:620px;display:flex;flex-direction:column;justify-content:center}
+.home-hero-dots{position:absolute;z-index:4;bottom:14px;right:18px;display:flex;gap:6px}
+.home-hero-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.35);border:none;padding:0;cursor:pointer}
+.home-hero-dot.active{width:22px;border-radius:99px;background:#fbbf24}
+.home-hero-author{display:inline-flex;align-items:center;gap:8px;margin-top:12px;color:#e2e8f0;font-size:12px}
+.home-hero-author img{width:30px;height:30px;border-radius:50%;object-fit:cover;border:2px solid #fbbf24}
+.home-hero-type{display:inline-flex;width:max-content;padding:4px 9px;border-radius:999px;background:rgba(251,191,36,.16);color:#fbbf24;font-size:10px;font-weight:900;text-transform:uppercase}
+.home-hero-title{font-size:24px;font-weight:900;margin-top:8px;line-height:1.15}
+.home-hero-teaser{font-size:12px;color:#cbd5e1;line-height:1.5;margin-top:7px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.home-hero-arrow{position:absolute;z-index:5;top:50%;transform:translateY(-50%);width:38px;height:38px;border:1px solid rgba(255,255,255,.18);background:rgba(15,15,26,.55);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.home-hero-arrow:hover{background:#fbbf24;color:#0f0f1a}
+.home-hero-arrow.left{left:12px}.home-hero-arrow.right{right:12px}
+.trending-search-wrap{display:flex;gap:8px;flex-wrap:wrap}
+.trending-search-chip{display:inline-flex;align-items:center;gap:6px;border:1px solid #3b3b5c;background:#1a1a2e;color:#cbd5e1;border-radius:999px;padding:7px 11px;font-size:11px;font-weight:800;cursor:pointer}
+.trending-search-chip:hover{border-color:#fbbf24;color:#fbbf24;transform:translateY(-1px)}
+.popular-cache-note{font-size:10px;color:#64748b;margin-top:-3px;margin-bottom:8px}
+
+/* === LIGHT THEME HARDENING === */
+[data-theme="light"] body{background:#f4f6fb;color:#172033}
+[data-theme="light"] .slide-nav-btn{background:#e9edf5;color:#475569;border-color:#d8deea}
+[data-theme="light"] .slide-nav-btn:hover{background:#fbbf24;color:#172033}
+[data-theme="light"] .slide-track::-webkit-scrollbar-thumb{background:#cbd5e1}
+[data-theme="light"] .cat-chip{background:#fff;color:#475569;border-color:#cbd5e1}
+[data-theme="light"] .cat-chip:hover{border-color:#f59e0b}
+[data-theme="light"] .comment-card,[data-theme="light"] .history-item,[data-theme="light"] .review-card,
+[data-theme="light"] .guide-step,[data-theme="light"] .sticker-panel,[data-theme="light"] .sticker-item,
+[data-theme="light"] .mobile-nav-drawer{background:#fff;color:#172033}
+[data-theme="light"] .sticker-panel-header{background:#fffbeb;border-color:#fbbf24}
+[data-theme="light"] .sticker-tabs,[data-theme="light"] .sticker-panel-tabs{border-color:#d8deea}
+[data-theme="light"] .sticker-tab{background:#e2e8f0;color:#475569}
+[data-theme="light"] .sticker-item{border-color:#d8deea}
+[data-theme="light"] .home-hero{background:#fff;border-color:#e2c45a;box-shadow:0 18px 40px rgba(15,23,42,.08)}
+[data-theme="light"] .home-hero-slide::after{background:linear-gradient(90deg,rgba(15,23,42,.86),rgba(15,23,42,.58) 48%,rgba(15,23,42,.12))}
+[data-theme="light"] .home-hero-teaser{color:#e2e8f0}
+[data-theme="light"] .trending-search-chip{background:#fff;border-color:#d8deea;color:#475569}
+[data-theme="light"] .popular-cache-note{color:#64748b}
+[data-theme="light"] .bg-slate-800{background:#f1f5f9!important;color:#334155!important}
+[data-theme="light"] .bg-slate-700{background:#e2e8f0!important;color:#334155!important}
+[data-theme="light"] .bg-slate-600{background:#cbd5e1!important;color:#334155!important}
+[data-theme="light"] .border-slate-700,[data-theme="light"] .border-slate-800{border-color:#d8deea!important}
+[data-theme="light"] .text-slate-300{color:#475569!important}
+[data-theme="light"] .text-slate-400{color:#64748b!important}
+[data-theme="light"] .text-slate-500{color:#64748b!important}
+[data-theme="light"] .text-slate-600{color:#94a3b8!important}
+[data-theme="light"] .text-slate-700{color:#475569!important}
+[data-theme="light"] .reader-fullscreen{background:#000!important}
+@media(max-width:640px){
+  .home-hero,.home-hero-slide{min-height:210px}
+  .home-hero-content{padding:20px 18px 28px 18px}
+  .home-hero-title{font-size:20px}
+  .home-hero-arrow{width:32px;height:32px}
+}
+
+
+/* ===================================================================
+   v1.10 — LIGHT THEME REBUILD (bubble chat, panel, teks, tombol)
+   =================================================================== */
+[data-theme="light"] body{background:#f4f6fb;color:#172033}
+
+/* --- Bubble chat: tidak lagi gelap/transparan --- */
+[data-theme="light"] .pembaca-chat-border{background:#fff;border:1px solid #cbd5e1;color:#172033}
+[data-theme="light"] .admin-chat-border{background:linear-gradient(135deg,#fff4d1,#ffffff)!important;border-color:#f59e0b;color:#172033}
+[data-theme="light"] .owner-chat-border{background:linear-gradient(135deg,#ffe1e1,#ffffff)!important;border-color:#ef4444;color:#172033}
+[data-theme="light"] .penulis-chat-border{background:linear-gradient(135deg,#dbeafe,#ffffff)!important;border-color:#3b82f6;color:#172033}
+[data-theme="light"] .komikus-chat-border{background:linear-gradient(135deg,#f1e2ff,#ffffff)!important;border-color:#a855f7;color:#172033}
+[data-theme="light"] .clan-chat-border{background:linear-gradient(135deg,#d3f6e7,#ffffff)!important;border-color:#10b981;color:#172033}
+[data-theme="light"] .pembaca-chat-border.bg-amber-500\/20{background:#fef3c7}
+[data-theme="light"] .bg-amber-500\/20{background:#fef3c7}
+[data-theme="light"] .chat-img-msg{background:transparent!important;border:none!important}
+[data-theme="light"] .chat-img{border-color:#cbd5e1}
+[data-theme="light"] .reply-preview{background:#fef3c7;border-left-color:#d97706;color:#475569}
+[data-theme="light"] .chat-edit-input{background:#fff!important;color:#172033!important;border-color:#d97706!important}
+[data-theme="light"] .pembaca-tag{background:#64748b;color:#fff}
+
+/* --- Border khusus karya --- */
+[data-theme="light"] .takedown-border{background:linear-gradient(135deg,#fee2e2,#fff);border-color:#dc2626}
+[data-theme="light"] .nonpublish-border{background:linear-gradient(135deg,#f1f5f9,#fff);border-color:#94a3b8}
+[data-theme="light"] .unggulan-border,[data-theme="light"] .review-border,[data-theme="light"] .news-card.pinned{background:linear-gradient(135deg,#fff4d1,#fff);border-color:#f59e0b}
+[data-theme="light"] .baru-border{background:linear-gradient(135deg,#dbeafe,#fff);border-color:#3b82f6}
+[data-theme="light"] .card-bg.hover-lift:hover{border-color:#f59e0b}
+
+/* --- Permukaan gelap transparan (slate) --- */
+[data-theme="light"] .bg-slate-800\/30,[data-theme="light"] .bg-slate-800\/50,[data-theme="light"] .bg-slate-800\/60{background:#f1f5f9!important;color:#334155}
+[data-theme="light"] .bg-slate-900\/50,[data-theme="light"] .bg-slate-900\/60{background:#e9eef6!important;color:#334155}
+[data-theme="light"] .bg-slate-600\/20{background:#e2e8f0!important}
+[data-theme="light"] .hover\:bg-slate-800:hover{background:#e2e8f0!important}
+[data-theme="light"] .hover\:bg-slate-700:hover{background:#cbd5e1!important;color:#172033!important}
+[data-theme="light"] .hover\:bg-slate-600:hover{background:#cbd5e1!important}
+[data-theme="light"] .border-slate-600{border-color:#cbd5e1!important}
+[data-theme="light"] .border-slate-700\/60{border-color:#d8deea!important}
+
+/* --- Panel berwarna transparan --- */
+[data-theme="light"] .bg-red-950\/30,[data-theme="light"] .bg-red-950\/40{background:#fef2f2!important}
+[data-theme="light"] .bg-red-900\/50,[data-theme="light"] .bg-red-900\/60{background:#fee2e2!important}
+[data-theme="light"] .hover\:bg-red-800:hover{background:#fecaca!important}
+[data-theme="light"] .border-red-800{border-color:#fca5a5!important}
+[data-theme="light"] .bg-green-900\/20,[data-theme="light"] .bg-green-900\/30{background:#ecfdf5!important}
+[data-theme="light"] .bg-green-900\/60{background:#d1fae5!important}
+[data-theme="light"] .bg-amber-900\/20,[data-theme="light"] .bg-amber-900\/30{background:#fffbeb!important}
+[data-theme="light"] .bg-yellow-900\/30{background:#fefce8!important}
+[data-theme="light"] .bg-yellow-900\/60{background:#fef3c7!important}
+[data-theme="light"] .bg-orange-900\/60{background:#ffedd5!important}
+[data-theme="light"] .bg-indigo-900\/60{background:#e0e7ff!important;color:#3730a3}
+[data-theme="light"] .bg-purple-900\/60{background:#f3e8ff!important;color:#6b21a8}
+[data-theme="light"] .bg-blue-900\/20{background:#eff6ff!important}
+
+/* --- Warna teks terang -> versi gelap agar terbaca di latar putih --- */
+[data-theme="light"] .text-red-200,[data-theme="light"] .text-red-300,[data-theme="light"] .hover\:text-red-300:hover{color:#b91c1c}
+[data-theme="light"] .text-red-400,[data-theme="light"] .hover\:text-red-400:hover{color:#dc2626}
+[data-theme="light"] .text-green-200,[data-theme="light"] .text-green-300,[data-theme="light"] .hover\:text-green-300:hover{color:#047857}
+[data-theme="light"] .text-green-400,[data-theme="light"] .hover\:text-green-400:hover{color:#059669}
+[data-theme="light"] .text-yellow-200,[data-theme="light"] .text-yellow-300{color:#a16207}
+[data-theme="light"] .text-yellow-400{color:#b45309}
+[data-theme="light"] .text-orange-300{color:#c2410c}
+[data-theme="light"] .text-orange-400{color:#ea580c}
+[data-theme="light"] .text-amber-200,[data-theme="light"] .text-amber-300,[data-theme="light"] .text-amber-400,
+[data-theme="light"] .hover\:text-amber-300:hover,[data-theme="light"] .hover\:text-amber-400:hover{color:#b45309}
+[data-theme="light"] .text-blue-300,[data-theme="light"] .hover\:text-blue-300:hover{color:#1d4ed8}
+[data-theme="light"] .text-blue-400{color:#2563eb}
+[data-theme="light"] .text-purple-400{color:#9333ea}
+[data-theme="light"] .text-pink-400{color:#db2777}
+[data-theme="light"] .text-sky-400{color:#0284c7}
+[data-theme="light"] .gold-glow{color:#b45309}
+[data-theme="light"] .bg-clip-text.from-amber-300{--tw-gradient-from:#d97706!important}
+
+/* Permukaan yang memang gelap tetap pakai warna terang */
+[data-theme="light"] .home-hero .text-amber-400,[data-theme="light"] .bg-black\/70 .text-amber-400,
+[data-theme="light"] .bg-black\/70.text-amber-400,[data-theme="light"] .reader-fullscreen .text-amber-400{color:#fbbf24}
+[data-theme="light"] .bg-amber-500 .text-amber-400,[data-theme="light"] .bg-amber-500.text-amber-400{color:#0f0f1a}
+
+/* --- Navigasi --- */
+[data-theme="light"] .nav-bottom-item{color:#64748b}
+[data-theme="light"] .nav-bottom-item:hover{color:#b45309;background:rgba(245,158,11,.1)}
+[data-theme="light"] .nav-bottom-item.active,[data-theme="light"] .nav-bottom-item.has-notif{color:#b45309;background:rgba(245,158,11,.14)}
+[data-theme="light"] .nav-bottom-item.active::after{background:#d97706}
+[data-theme="light"] .nav-bottom-center::before{border-color:#fff}
+[data-theme="light"] .nav-btn.nav-active,[data-theme="light"] .mobile-nav-item.active,[data-theme="light"] .mobile-nav-item:hover{color:#b45309}
+[data-theme="light"] .mobile-nav-item.active{background:rgba(245,158,11,.14)}
+[data-theme="light"] .mobile-nav-item.active::before{background:#d97706}
+[data-theme="light"] .mobile-nav-overlay,[data-theme="light"] .review-mobile-panel-overlay{background:rgba(15,23,42,.45)}
+
+/* --- Banner beranda (selalu gelap: teks putih) --- */
+[data-theme="light"] .home-hero{background:#1e293b;border-color:#e2c45a;box-shadow:none}
+[data-theme="light"] .home-hero-slide::after{background:linear-gradient(90deg,rgba(15,23,42,.9),rgba(15,23,42,.6) 48%,rgba(15,23,42,.15))}
+.home-hero-title{color:#fff}
+[data-theme="light"] .home-hero-title{color:#fff}
+[data-theme="light"] .home-hero-teaser,[data-theme="light"] .home-hero-author{color:#e2e8f0}
+[data-theme="light"] .home-hero-type{background:rgba(251,191,36,.2);color:#fbbf24}
+
+/* --- Panduan / peringatan --- */
+[data-theme="light"] .guide-content h3{color:#b45309}
+[data-theme="light"] .guide-content h3 i{background:rgba(245,158,11,.18)}
+[data-theme="light"] .guide-content p,[data-theme="light"] .guide-content ul li{color:#475569}
+[data-theme="light"] .guide-content ul li::before{color:#d97706}
+[data-theme="light"] .guide-content .tip{background:#ecfdf5;color:#047857}
+[data-theme="light"] .guide-content .warning{background:#fef2f2;color:#b91c1c}
+[data-theme="light"] .warning-hard{background:#fef2f2;border-color:#ef4444}
+[data-theme="light"] .warning-hard li{color:#b91c1c}
+[data-theme="light"] .report-warning{background:#fef2f2;color:#b91c1c}
+[data-theme="light"] .report-warning b{color:#b45309}
+[data-theme="light"] .report-panel-locked-notice,[data-theme="light"] .review-panel-locked-notice{background:#fef2f2;color:#b91c1c}
+[data-theme="light"] .report-reason-chip{background:#fff;color:#475569;border-color:#cbd5e1}
+[data-theme="light"] .report-reason-chip:hover{border-color:#ef4444}
+[data-theme="light"] .report-reason-chip:has(input:checked){background:#fee2e2;color:#b91c1c;border-color:#ef4444}
+[data-theme="light"] .maintenance-reason-box{background:#fef2f2}
+[data-theme="light"] .maintenance-reason-box .reason-text{color:#b91c1c}
+[data-theme="light"] .maintenance-reason-box .label{color:#dc2626}
+[data-theme="light"] .maintenance-subtitle,[data-theme="light"] .maintenance-info-row{color:#64748b}
+
+/* --- Komponen lain --- */
+[data-theme="light"] .user-bio,[data-theme="light"] .user-birthday{color:#475569}
+[data-theme="light"] .user-birthday{background:#f3e8ff}
+[data-theme="light"] .follower-stat{background:#fffbeb;border-color:#fcd34d;color:#64748b}
+[data-theme="light"] .follower-stat b{color:#b45309}
+[data-theme="light"] .follow-btn.following{background:#e2e8f0;color:#475569}
+[data-theme="light"] .chat-img-send-btn,[data-theme="light"] .sticker-send-btn{background:#e2e8f0;color:#475569}
+[data-theme="light"] .chat-img-send-btn:hover,[data-theme="light"] .sticker-send-btn:hover{background:#cbd5e1;color:#b45309}
+[data-theme="light"] .img-preview-mode-bar .mode-label{color:#475569}
+[data-theme="light"] .img-preview-mode-bar .mode-btn.inactive{background:#e2e8f0;color:#475569}
+[data-theme="light"] .img-preview-wrap .remove-btn,[data-theme="light"] .img-preview-wrap .zoom-badge,
+[data-theme="light"] .chat-img-preview .remove-btn,[data-theme="light"] .review-img-thumb .remove-btn{border-color:#fff}
+[data-theme="light"] .review-mobile-panel{background:#fff;border-color:#f59e0b}
+[data-theme="light"] .review-empty-hint{color:#64748b}
+[data-theme="light"] .review-empty-hint i{color:#cbd5e1}
+[data-theme="light"] .chapter-nav-btn .chapter-nav-small{color:#64748b}
+[data-theme="light"] .cat-chip-remove{color:#dc2626}
+[data-theme="light"] .cat-chip:has(input:checked){background:#fbbf24;color:#0f0f1a}
+[data-theme="light"] .sticker-panel{border-color:#f59e0b;box-shadow:0 10px 30px rgba(15,23,42,.18)}
+[data-theme="light"] .sticker-tab.active{background:#fbbf24;color:#0f0f1a}
+[data-theme="light"] .role-checkbox{border-color:#94a3b8}
+[data-theme="light"] #toast{background:#fff!important;color:#172033!important;box-shadow:0 10px 30px rgba(15,23,42,.2)}
+[data-theme="light"] .rating-display .user-rating{background:#fef3c7}
+[data-theme="light"] .view-badge{color:#64748b}
+[data-theme="light"] .bg-black\/70 .view-badge,[data-theme="light"] .view-badge.bg-black\/70{color:#cbd5e1}
+[data-theme="light"] select option{background:#fff;color:#172033}
+[data-theme="light"] .modal-overlay{backdrop-filter:none}
+[data-theme="light"] .card-bg{box-shadow:0 1px 2px rgba(15,23,42,.04)}
 </style>
 </head><body class="min-h-screen">
 
@@ -684,7 +891,7 @@ body{font-family:'Inter',sans-serif;background:#0f0f1a;color:#e2e8f0;overflow-x:
 <div class="flex items-center justify-center gap-2 flex-wrap">
 <span>&copy; <span id="footerYear">2026</span> KomiNovel</span>
 </div>
-<p class="text-[10px] text-slate-600">v1.9</p>
+<p class="text-[10px] text-slate-600">v1.10</p>
 </footer>
 </div>
 
@@ -749,8 +956,9 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const googleProvider = new GoogleAuthProvider();
 
-const APP_VERSION = '1.9';
+const APP_VERSION = '1.10';
 const APP_VERSION_NOTES = [
+  'v1.10 — Centang verifikasi penulis/komikus (kuning/oranye) kini tampil di semua tempat (kartu karya, chat publik, chat clan, DM, daftar teman, member clan), banner beranda tanpa animasi transisi (tetap ganti otomatis, ringan untuk HP low-end), dan tema terang diperbaiki total (bubble chat, panel, teks, tombol).',
   'v1.9 — FITUR REPORT karya (auto-takedown jika 10 report), STIKER di semua chat (admin & user bisa tambah, user bisa save stiker orang), BADGE NOTIFIKASI MERAH di chat/berita yang hilang setelah dilihat.',
   'v1.8 — Tema Gelap/Terang, foto profil bisa diganti langsung di KomiNovel tanpa mengubah foto akun Google, dan tombol navigasi Chapter/Eps Sebelumnya/Selanjutnya dibuat besar.',
   'v1.7 — FITUR OFF KAN WEB: Admin/Owner bisa mematikan website sementara dengan alasan kustom. Saat off, semua halaman terkunci (maintenance screen), TAPI halaman Berita tetap bisa diakses.',
@@ -777,6 +985,11 @@ let currentContentType = 'komik', currentCategory = 'all', currentSearch = '';
 let chatUnsub = null, chatUsersUnsub = null, clanChatUnsub = null, privateChatUnsub = null, worksUnsub = null;
 let usersCacheUnsub = null;
 let usersCache = {}, clansCache = {}, isFullscreenReader = false;
+let authorProfileCache = {};
+let authorProfileUnsubs = {};
+let homeBannerTimer = null;
+let homeCacheRefreshTimer = null;
+let homeCacheLoaded = { popular: null, search: null };
 let replyingToPublic = null, replyingToClan = null;
 let notifInitialized = false;
 let currentResumeBanner = null;
@@ -957,12 +1170,20 @@ function getVerifiedBadge(followers) {
   if (followers >= VERIFIED_GREEN) return '<span class="verified-badge green" title="Verified 1K+"><i class="fas fa-check"></i></span>';
   return '';
 }
-function getCreatorVerifiedBadge(profile) {
+function getCreatorVerifiedBadge(profile, workType = '') {
   if (!profile) return '';
-  const roles = profile.roles || (profile.role ? [profile.role] : ['pembaca']);
-  if (roles.includes('komikus')) return '<span class="verified-badge oranye" title="Komikus Terverifikasi"><i class="fas fa-check"></i></span>';
-  if (roles.includes('penulis')) return '<span class="verified-badge kuning" title="Penulis Terverifikasi"><i class="fas fa-check"></i></span>';
-  return '';
+  const roles = [];
+  const addRole = (v) => { if (Array.isArray(v)) v.forEach(x => x && roles.push(x)); else if (v) roles.push(v); };
+  addRole(profile.roles); addRole(profile.role); addRole(profile.authorRoles); addRole(profile.authorRole);
+  if (!roles.length) roles.push('pembaca');
+  const isStaff = roles.includes('admin') || roles.includes('owner');
+  const hasPenulis = roles.includes('penulis');
+  const hasKomikus = roles.includes('komikus');
+  const kuning = (t) => '<span class="verified-badge kuning" title="' + t + '"><i class="fas fa-check"></i></span>';
+  const oranye = (t) => '<span class="verified-badge oranye" title="' + t + '"><i class="fas fa-check"></i></span>';
+  if (workType === 'novel') return (hasPenulis || isStaff) ? kuning('Pembuat Novel Terverifikasi') : '';
+  if (workType === 'komik') return (hasKomikus || isStaff) ? oranye('Pembuat Komik Terverifikasi') : '';
+  return (hasPenulis ? kuning('Penulis Terverifikasi') : '') + (hasKomikus ? oranye('Komikus Terverifikasi') : '');
 }
 function isTakedown(work) { return work && work.takedown && work.takedown.active === true; }
 function isNonPublish(work) { return work && work.status === 'nonpublish'; }
@@ -3666,6 +3887,8 @@ async function renderPage() {
   if (clanChatUnsub) { try { clanChatUnsub(); } catch(e){} clanChatUnsub = null; }
   if (privateChatUnsub) { try { privateChatUnsub(); } catch(e){} privateChatUnsub = null; }
   if (worksUnsub) { try { worksUnsub(); } catch(e){} worksUnsub = null; }
+  if (homeBannerTimer) { clearInterval(homeBannerTimer); homeBannerTimer = null; }
+  await cleanupHomeAuthorListeners();
   replyingToPublic = null; replyingToClan = null;
   pendingChatImg = { public: null, clan: null, private: null };
   pendingChatSticker = { public: null, clan: null, private: null };
@@ -3943,8 +4166,11 @@ async function renderPanduan(container) {
 
   const defaultPanduan = `
     <h3><i class="fas fa-code-branch"></i> 0. Versi Website</h3>
-    <p>KomiNovel saat ini versi <b>v1.9</b>. Update terbaru:</p>
+    <p>KomiNovel saat ini versi <b>v1.10</b>. Update terbaru:</p>
     <ul>
+      <li>✅ <b>CENTANG PENULIS/KOMIKUS</b> — Centang kuning (penulis novel) &amp; oranye (komikus) sekarang tampil konsisten di kartu karya, chat, clan, dan daftar teman.</li>
+      <li>⚡ <b>BANNER LEBIH RINGAN</b> — Banner beranda tetap berganti otomatis tapi tanpa animasi, supaya tidak lag di HP low-end.</li>
+      <li>☀️ <b>TEMA TERANG DIPERBAIKI</b> — Bubble chat, panel, dan teks tidak lagi menghitam/transparan.</li>
       <li>🚨 <b>REPORT KARYA</b> — Laporkan karya yang melanggar! Jika report mencapai 10, karya otomatis di-takedown oleh sistem.</li>
       <li>🎨 <b>STIKER DI SEMUA CHAT</b> — Admin bisa tambah stiker global, user bisa buat & simpan stiker sendiri, dan bisa ambil stiker orang lain.</li>
       <li>🔴 <b>BADGE NOTIFIKASI MERAH</b> — Chat/berita baru muncul badge merah. Hilang setelah dilihat.</li>
@@ -4057,18 +4283,254 @@ async function renderPanduan(container) {
   }
 }
 
+
+// ============================================================
+// ===== HOME ANALYTICS / CACHE ================================
+// ============================================================
+function analyticsDayKey(date = new Date()) {
+  const y = date.getFullYear();
+  const m = String(date.getMonth()+1).padStart(2,'0');
+  const d = String(date.getDate()).padStart(2,'0');
+  return `${y}-${m}-${d}`;
+}
+function analyticsDocId(workId, date = new Date()) {
+  return `${analyticsDayKey(date)}_${workId}`;
+}
+function searchNormalize(raw) {
+  let v = String(raw || '').toLowerCase().trim().replace(/\s+/g,' ');
+  v = v.replace(/[^\p{L}\p{N}\s_-]/gu,'');
+  const typoMap = {
+    'komikkomik':'komik','komik komik':'komik','novell':'novel','novelll':'novel',
+    'kominovel':'kominovel','komik online':'komik','novel online':'novel'
+  };
+  return typoMap[v] || v;
+}
+function searchMatchesWork(work, rawKeyword) {
+  const term=searchNormalize(rawKeyword);
+  if (!term) return true;
+  const title=searchNormalize(work.title||'');
+  const teaser=searchNormalize(work.teaser||'');
+  if (title.includes(term) || teaser.includes(term)) return true;
+  const tokens=title.split(/\s+/).filter(Boolean);
+  if (term.length>=4) {
+    const distance=(a,b)=>{
+      if (Math.abs(a.length-b.length)>1) return 99;
+      const prev=Array.from({length:b.length+1},(_,i)=>i);
+      for(let i=1;i<=a.length;i++){
+        const cur=[i];
+        for(let j=1;j<=b.length;j++) cur[j]=Math.min(cur[j-1]+1,prev[j]+1,prev[j-1]+(a[i-1]===b[j-1]?0:1));
+        for(let j=0;j<cur.length;j++) prev[j]=cur[j];
+      }
+      return prev[b.length];
+    };
+    if(tokens.some(t=>distance(term,t)<=1)) return true;
+  }
+  return false;
+}
+async function trackWorkActivity(workId, metric, amount = 1) {
+  if (!workId || !['views','likes','comments','bookmarks'].includes(metric)) return;
+  try {
+    const ref = doc(db, 'homeAnalyticsDaily', analyticsDocId(workId));
+    await setDoc(ref, {
+      workId,
+      [metric]: increment(amount),
+      dateKey: analyticsDayKey(),
+      updatedAt: serverTimestamp()
+    }, { merge:true });
+  } catch (e) {
+    console.warn('Analytics activity gagal:', e.message);
+  }
+}
+async function trackSearchKeyword(rawKeyword) {
+  if (!rawKeyword || !currentUser) return;
+  const keyword = searchNormalize(rawKeyword);
+  if (!keyword || keyword.length < 2) return;
+  try {
+    await addDoc(collection(db, 'homeSearchEvents'), {
+      keyword,
+      rawKeyword: String(rawKeyword).trim(),
+      userId: currentUser.uid,
+      dayKey: analyticsDayKey(),
+      createdAt: serverTimestamp()
+    });
+  } catch (e) {
+    console.warn('Analytics search gagal:', e.message);
+  }
+}
+async function loadHomeCache(kind) {
+  const id = kind === 'popular' ? 'popularWeekly' : 'searchTrending';
+  try {
+    const snap = await getDoc(doc(db, 'homeCaches', id));
+    const data = snap.exists() ? snap.data() : null;
+    homeCacheLoaded[kind] = data;
+    return data;
+  } catch (e) {
+    homeCacheLoaded[kind] = null;
+    return null;
+  }
+}
+function getCacheWorkIds(cache, type) {
+  if (!cache) return [];
+  const list = cache[type] || [];
+  return list.map(x => typeof x === 'string' ? x : x.id).filter(Boolean).slice(0,10);
+}
+async function hydrateCachedWorks(ids) {
+  const arr = [];
+  for (const id of ids) {
+    try {
+      const snap = await getDoc(doc(db,'works',id));
+      if (snap.exists()) arr.push({id:snap.id,...snap.data()});
+    } catch(e) {}
+  }
+  return arr;
+}
+async function buildPopularCacheForAdmin() {
+  if (!isAdminUser(userProfile)) return;
+  const since = new Date(Date.now() - 7*24*60*60*1000);
+  try {
+    const statsSnap = await getDocs(query(collection(db,'homeAnalyticsDaily'),where('dateKey','>=',analyticsDayKey(since))));
+    const stats = {};
+    statsSnap.forEach(d => {
+      const x = d.data();
+      if (!x.dateKey || new Date(x.dateKey+'T00:00:00') < since) return;
+      if (!x.workId) return;
+      if (!stats[x.workId]) stats[x.workId] = {views:0,likes:0,comments:0,bookmarks:0};
+      stats[x.workId].views += Number(x.views||0);
+      stats[x.workId].likes += Number(x.likes||0);
+      stats[x.workId].comments += Number(x.comments||0);
+      stats[x.workId].bookmarks += Number(x.bookmarks||0);
+    });
+    const workSnap = await getDocs(collection(db,'works'));
+    const result = {komik:[],novel:[],updatedAt:serverTimestamp()};
+    const maxByMetric = {views:1,likes:1,comments:1,bookmarks:1};
+    const works = [];
+    workSnap.forEach(d => {
+      const w = d.data();
+      if (isNonPublish(w) || isTakedown(w)) return;
+      const a = stats[d.id] || {views:0,likes:0,comments:0,bookmarks:0};
+      works.push({id:d.id,type:w.type,scoreData:a});
+      maxByMetric.views = Math.max(maxByMetric.views,a.views);
+      maxByMetric.likes = Math.max(maxByMetric.likes,a.likes);
+      maxByMetric.comments = Math.max(maxByMetric.comments,a.comments);
+      maxByMetric.bookmarks = Math.max(maxByMetric.bookmarks,a.bookmarks);
+    });
+    for (const type of ['komik','novel']) {
+      result[type] = works.filter(w=>w.type===type).map(w => {
+        const a=w.scoreData;
+        const score =
+          (a.views/maxByMetric.views)*30 +
+          (a.likes/maxByMetric.likes)*30 +
+          (a.comments/maxByMetric.comments)*20 +
+          (a.bookmarks/maxByMetric.bookmarks)*20;
+        return {id:w.id,score:Number(score.toFixed(4))};
+      }).sort((a,b)=>b.score-a.score).slice(0,10);
+    }
+    await setDoc(doc(db,'homeCaches','popularWeekly'),result,{merge:false});
+    homeCacheLoaded.popular=result;
+  } catch(e) {
+    console.warn('Popular cache gagal:',e.message);
+  }
+}
+async function buildSearchCacheForAdmin() {
+  if (!isAdminUser(userProfile)) return;
+  try {
+    const since = Date.now() - 7*24*60*60*1000;
+    const snap = await getDocs(collection(db,'homeSearchEvents'));
+    const map = {};
+    snap.forEach(d => {
+      const x=d.data();
+      const created=x.createdAt?.toDate?.()?.getTime?.() || 0;
+      if (created && created < since) return;
+      if (!x.keyword || !x.userId) return;
+      if (!map[x.keyword]) map[x.keyword]={count:0,users:new Set()};
+      map[x.keyword].count++;
+      map[x.keyword].users.add(x.userId);
+    });
+    const top=Object.entries(map)
+      .filter(([,x])=>x.users.size>=10)
+      .sort((a,b)=>b[1].count-a[1].count)
+      .slice(0,10)
+      .map(([keyword,x])=>({keyword,count:x.count,uniqueUsers:x.users.size}));
+    await setDoc(doc(db,'homeCaches','searchTrending'),{items:top,updatedAt:serverTimestamp()},{merge:false});
+    homeCacheLoaded.search={items:top};
+  } catch(e) {
+    console.warn('Search cache gagal:',e.message);
+  }
+}
+async function refreshHomeCachesIfNeeded(force=false) {
+  if (!isAdminUser(userProfile)) return;
+  const now=Date.now();
+  const p=homeCacheLoaded.popular;
+  const q=homeCacheLoaded.search;
+  const pTime=p?.updatedAt?.toDate?.()?.getTime?.() || 0;
+  const qTime=q?.updatedAt?.toDate?.()?.getTime?.() || 0;
+  if (force || now-pTime>=60*60*1000) await buildPopularCacheForAdmin();
+  if (force || now-qTime>=6*60*60*1000) await buildSearchCacheForAdmin();
+}
+async function ensureAuthorProfiles(authorIds, onUpdate) {
+  const ids=[...new Set(authorIds.filter(Boolean))];
+  for (const uid of ids) {
+    if (authorProfileUnsubs[uid]) continue;
+    try {
+      authorProfileUnsubs[uid]=onSnapshot(doc(db,'users',uid), snap=>{
+        if (snap.exists()) {
+          authorProfileCache[uid]={id:uid,...snap.data()};
+          if (onUpdate) onUpdate();
+        }
+      },()=>{});
+    } catch(e) {}
+  }
+  Object.keys(authorProfileUnsubs).forEach(uid=>{
+    if (!ids.includes(uid)) {
+      try{authorProfileUnsubs[uid]();}catch(e){}
+      delete authorProfileUnsubs[uid];
+      delete authorProfileCache[uid];
+    }
+  });
+}
+function getLiveWorkAuthor(work) {
+  const u=authorProfileCache[work.authorId];
+  return u ? {
+    name:u.username || 'Anonim',
+    photo:u.photoURL || '',
+    followerCount:u.followerCount || 0,
+    roles:u.roles || (u.role?[u.role]:[]),
+    level:u.level || 1,
+    sosmed:u.sosmed || {},
+    featuredCreator:u.featuredCreator===true
+  } : {
+    name:work.authorName || 'Anonim',
+    photo:work.authorPhotoURL || '',
+    followerCount:work.authorFollowerCount || 0,
+    roles:work.authorRoles || (work.authorRole?[work.authorRole]:[]),
+    level:work.authorLevel || 1,
+    sosmed:work.authorSosmed || {},
+    featuredCreator:work.featuredCreator===true
+  };
+}
+async function cleanupHomeAuthorListeners() {
+  Object.values(authorProfileUnsubs).forEach(fn=>{try{fn();}catch(e){}});
+  authorProfileUnsubs={};
+  authorProfileCache={};
+}
+function startHomeCacheScheduler() {
+  if (homeCacheRefreshTimer) clearInterval(homeCacheRefreshTimer);
+  homeCacheRefreshTimer=setInterval(()=>refreshHomeCachesIfNeeded(false),60*1000);
+}
+
 // ============================================================
 // ===== HOME =================================================
 // ============================================================
 async function renderHome(container) {
   container.innerHTML = `
     <div class="mb-5">
+      <div id="homeHero" class="home-hero mb-5"></div>
       <h1 class="text-2xl md:text-3xl font-black text-center mb-1">
         <span class="bg-gradient-to-r from-amber-300 to-orange-500 bg-clip-text text-transparent">KomiNovel</span>
       </h1>
       <p class="text-center text-xs text-slate-400 mb-4">Baca & Tulis Novel/Komik Online Gratis</p>
       <div class="flex gap-2 max-w-xl mx-auto">
-        <input id="searchInput" type="text" placeholder="Cari judul komik/novel..." value="${currentSearch}" class="flex-1 bg-slate-800 border border-slate-700 rounded-full px-4 py-2.5 text-sm focus:border-amber-500 transition">
+        <input id="searchInput" type="text" placeholder="Cari judul komik/novel..." value="${escAttr(currentSearch)}" class="flex-1 bg-slate-800 border border-slate-700 rounded-full px-4 py-2.5 text-sm focus:border-amber-500 transition">
         <button id="searchBtn" class="bg-amber-500 text-black px-5 py-2.5 rounded-full font-bold text-sm hover:scale-105 transition"><i class="fas fa-search"></i></button>
       </div>
       <div class="flex gap-2 justify-center mt-3">
@@ -4077,15 +4539,28 @@ async function renderHome(container) {
       </div>
     </div>
 
-    <section class="slide-section mb-8" id="sectionPopuler">
+    <section class="slide-section mb-7" id="sectionPopulerMinggu">
       <div class="slide-header">
-        <h2 class="text-amber-400"><i class="fas fa-fire mr-1"></i>Terpopuler</h2>
+        <div>
+          <h2 class="text-amber-400"><i class="fas fa-chart-line mr-1"></i>Populer Minggu Ini</h2>
+          <p class="popular-cache-note">Skor aktivitas 7 hari terakhir • views 30% • likes 30% • komentar 20% • bookmark 20%</p>
+        </div>
         <div class="flex gap-1">
-          <button class="slide-nav-btn" id="popPrev" title="Geser kiri"><i class="fas fa-chevron-left"></i></button>
-          <button class="slide-nav-btn" id="popNext" title="Geser kanan"><i class="fas fa-chevron-right"></i></button>
+          <button class="slide-nav-btn" id="weeklyPrev" title="Geser kiri"><i class="fas fa-chevron-left"></i></button>
+          <button class="slide-nav-btn" id="weeklyNext" title="Geser kanan"><i class="fas fa-chevron-right"></i></button>
         </div>
       </div>
-      <div class="slide-track" id="populerTrack"></div>
+      <div class="slide-track" id="weeklyTrack"></div>
+    </section>
+
+    <section class="card-bg rounded-2xl p-4 mb-7" id="sectionSearchTrending">
+      <div class="flex items-center justify-between gap-3 mb-3">
+        <div>
+          <h2 class="font-black text-amber-400"><i class="fas fa-magnifying-glass mr-1"></i>Paling Banyak Dicari</h2>
+          <p class="text-[10px] text-slate-500 mt-1">Top keyword 7 hari terakhir • minimal 10 user berbeda</p>
+        </div>
+      </div>
+      <div id="trendingSearchList" class="trending-search-wrap"></div>
     </section>
 
     <section class="slide-section mb-8" id="sectionBaru">
@@ -4120,86 +4595,156 @@ async function renderHome(container) {
 
   document.getElementById('tabKomik').onclick = () => { currentContentType = 'komik'; renderPage(); };
   document.getElementById('tabNovel').onclick = () => { currentContentType = 'novel'; renderPage(); };
-  document.getElementById('searchBtn').onclick = () => { currentSearch = document.getElementById('searchInput').value.trim(); renderPage(); };
-  document.getElementById('searchInput').addEventListener('keypress', e => { if (e.key === 'Enter') { currentSearch = e.target.value.trim(); renderPage(); } });
+  const doSearch = async () => {
+    const value=document.getElementById('searchInput').value.trim();
+    if (value) await trackSearchKeyword(value);
+    currentSearch=value;
+    renderPage();
+  };
+  document.getElementById('searchBtn').onclick = doSearch;
+  document.getElementById('searchInput').addEventListener('keypress', e => { if (e.key === 'Enter') doSearch(); });
 
-  const populerTrack = document.getElementById('populerTrack');
-  const baruTrack = document.getElementById('baruTrack');
-  const prosesTrack = document.getElementById('prosesTrack');
-  const homeEmpty = document.getElementById('homeEmpty');
-  const q = query(collection(db, 'works'), where('type', '==', currentContentType));
+  const weeklyTrack=document.getElementById('weeklyTrack');
+  const baruTrack=document.getElementById('baruTrack');
+  const prosesTrack=document.getElementById('prosesTrack');
+  const homeEmpty=document.getElementById('homeEmpty');
 
-  let initialLoad = true;
-  let lastKnownIds = new Set();
+  // Cache ranking hanya membaca 1 dokumen untuk masing-masing fitur.
+  const [popularCache, searchCache]=await Promise.all([loadHomeCache('popular'),loadHomeCache('search')]);
+  if (isAdminUser(userProfile)) refreshHomeCachesIfNeeded(false).catch(()=>{});
 
-  worksUnsub = onSnapshot(q, (snapshot) => {
-    let allWorks = [];
-    snapshot.forEach(d => allWorks.push({ id: d.id, ...d.data() }));
+  const q=query(collection(db,'works'),where('type','==',currentContentType));
+  let initialLoad=true, lastKnownIds=new Set();
 
-    let published = allWorks.filter(w => !isNonPublish(w) && !isTakedown(w));
-    let nonpublished = allWorks.filter(w => isNonPublish(w) && !isTakedown(w));
-
-    if (currentSearch) {
-      published = published.filter(w => w.title.toLowerCase().includes(currentSearch.toLowerCase()));
-      nonpublished = nonpublished.filter(w => w.title.toLowerCase().includes(currentSearch.toLowerCase()));
-    }
-
-    const populer = [...published].sort((a, b) => {
-      const popA = (a.views || 0) + (a.likes || 0) * 2 + (a.avgRating || 0) * 10;
-      const popB = (b.views || 0) + (b.likes || 0) * 2 + (b.avgRating || 0) * 10;
-      return popB - popA;
-    });
-
-    const baru = [...published].sort((a, b) => (b.createdAt?.toDate?.() || 0) - (a.createdAt?.toDate?.() || 0));
-
-    const proses = [...nonpublished].sort((a, b) => {
-      const aTime = a.updatedAt?.toDate?.() || a.createdAt?.toDate?.() || 0;
-      const bTime = b.updatedAt?.toDate?.() || b.createdAt?.toDate?.() || 0;
-      return bTime - aTime;
-    });
-
-    if (allWorks.length === 0) {
-      populerTrack.innerHTML = '';
-      baruTrack.innerHTML = '';
-      prosesTrack.innerHTML = '';
-      homeEmpty.classList.remove('hidden');
-      document.getElementById('sectionPopuler').style.display = 'none';
-      document.getElementById('sectionBaru').style.display = 'none';
-      document.getElementById('sectionProses').style.display = 'none';
+  const renderHero = (allWorks) => {
+    const hero=document.getElementById('homeHero');
+    if (!hero) return;
+    const candidates=allWorks.filter(w=>!isNonPublish(w)&&!isTakedown(w))
+      .sort((a,b)=>(Number(b.featured||0)-Number(a.featured||0)) || ((b.views||0)-(a.views||0)) || ((b.likes||0)-(a.likes||0)))
+      .slice(0,5);
+    if (!candidates.length) {
+      hero.innerHTML=`<div class="home-hero-slide active"><div class="home-hero-content"><span class="home-hero-type">KomiNovel</span><div class="home-hero-title">Baca & Tulis Karya Gratis</div><div class="home-hero-teaser">Temukan komik dan novel dari para kreator KomiNovel.</div></div></div>`;
       return;
     }
+    if (homeBannerTimer) clearInterval(homeBannerTimer);
+    let heroIndex=Math.max(0,Math.min(window.__komiHeroIdx||0,candidates.length-1));
+    hero.innerHTML=candidates.map((w,i)=>{
+      const a=getLiveWorkAuthor(w);
+      const photo=a.photo||`https://ui-avatars.com/api/?name=${encodeURIComponent(a.name)}`;
+      const badge=getVerifiedBadge(a.followerCount)+getCreatorVerifiedBadge(a,w.type);
+      return `<div class="home-hero-slide ${i===heroIndex?'active':''}" data-hero-index="${i}" onclick="window.location.hash='reader/${w.id}'">
+        ${w.coverURL?`<img class="home-hero-cover" decoding="async" src="${escAttr(w.coverURL)}" onerror="this.style.display='none'">`:''}
+        <div class="home-hero-content">
+          <span class="home-hero-type">${w.type==='novel'?'Novel':'Komik'}</span>
+          <div class="home-hero-title">${escHtml(w.title||'Tanpa Judul')}</div>
+          <div class="home-hero-teaser">${escHtml(w.teaser||w.description||'Karya terbaru di KomiNovel')}</div>
+          <div class="home-hero-author" onclick="event.stopPropagation();window.location.hash='user/${w.authorId}'">
+            <img src="${escAttr(photo)}"><span>${escHtml(a.name)}${badge}</span>
+          </div>
+        </div>
+      </div>`;
+    }).join('')+`<button class="home-hero-arrow left" id="heroPrev"><i class="fas fa-chevron-left"></i></button><button class="home-hero-arrow right" id="heroNext"><i class="fas fa-chevron-right"></i></button><div class="home-hero-dots">${candidates.map((_,i)=>`<button class="home-hero-dot ${i===heroIndex?'active':''}" data-hero-dot="${i}"></button>`).join('')}</div>`;
+    const setHero=(n)=>{
+      heroIndex=(n+candidates.length)%candidates.length;
+      window.__komiHeroIdx=heroIndex;
+      hero.querySelectorAll('.home-hero-slide').forEach((el,i)=>el.classList.toggle('active',i===heroIndex));
+      hero.querySelectorAll('.home-hero-dot').forEach((el,i)=>el.classList.toggle('active',i===heroIndex));
+    };
+    document.getElementById('heroPrev').onclick=e=>{e.stopPropagation();setHero(heroIndex-1)};
+    document.getElementById('heroNext').onclick=e=>{e.stopPropagation();setHero(heroIndex+1)};
+    hero.querySelectorAll('.home-hero-dot').forEach(b=>b.onclick=e=>{e.stopPropagation();setHero(Number(b.dataset.heroDot))});
+    homeBannerTimer=setInterval(()=>{ if (!document.hidden) setHero(heroIndex+1); },5000);
+  };
 
+  worksUnsub=onSnapshot(q,(snapshot)=>{
+    let allWorks=[]; snapshot.forEach(d=>allWorks.push({id:d.id,...d.data()}));
+    const liveAuthors=[...new Set(allWorks.map(w=>w.authorId).filter(Boolean))];
+    ensureAuthorProfiles(liveAuthors,()=>{
+      if (!document.getElementById('homeHero')) return;
+      renderHero(allWorks);
+      document.querySelectorAll('.slide-card[data-work-id]').forEach(el=>{
+        const id=el.dataset.workId;
+        const work=currentWorksData[id] || allWorks.find(w=>w.id===id);
+        if (!work) return;
+        const temp=document.createElement('div');
+        temp.innerHTML=renderSlideCard(work,0,new Set());
+        const replacement=temp.firstElementChild;
+        if (replacement) el.replaceWith(replacement);
+      });
+    });
+
+    let published=allWorks.filter(w=>!isNonPublish(w)&&!isTakedown(w));
+    let nonpublished=allWorks.filter(w=>isNonPublish(w)&&!isTakedown(w));
+    if(currentSearch){
+      published=published.filter(w=>searchMatchesWork(w,currentSearch));
+      nonpublished=nonpublished.filter(w=>searchMatchesWork(w,currentSearch));
+    }
+
+    const cachedIds=getCacheWorkIds(popularCache,currentContentType);
+    const cachedMap=new Map(cachedIds.map((id,i)=>[id,i]));
+    let populer=cachedIds.length
+      ? cachedIds.map(id=>published.find(w=>w.id===id)).filter(Boolean)
+      : [...published].sort((a,b)=>((b.views||0)-(a.views||0))+((b.likes||0)-(a.likes||0))*2);
+    if(!cachedIds.length) populer=populer.slice(0,10);
+    const baru=[...published].sort((a,b)=>(b.createdAt?.toDate?.()?.getTime?.()||0)-(a.createdAt?.toDate?.()?.getTime?.()||0)).slice(0,10);
+    const proses=[...nonpublished].sort((a,b)=>{
+      const at=a.updatedAt?.toDate?.()?.getTime?.()||a.createdAt?.toDate?.()?.getTime?.()||0;
+      const bt=b.updatedAt?.toDate?.()?.getTime?.()||b.createdAt?.toDate?.()?.getTime?.()||0;
+      return bt-at;
+    }).slice(0,10);
+
+    const searchList=document.getElementById('trendingSearchList');
+    const items=searchCache?.items||[];
+    if(searchList) searchList.innerHTML=items.length
+      ? items.map((x,i)=>`<button class="trending-search-chip" onclick="window.homeSearchKeyword('${escAttr(x.keyword)}')"><span>#${i+1}</span>${escHtml(x.keyword)}<small class="text-slate-500">${x.uniqueUsers||0} user</small></button>`).join('')
+      : `<span class="text-xs text-slate-500">Belum ada data trending. Cache akan terisi setelah minimal 10 user berbeda mencari keyword.</span>`;
+
+    renderHero(allWorks);
+
+    const newIds=initialLoad?new Set():new Set([...allWorks.map(w=>w.id)].filter(id=>!lastKnownIds.has(id)));
+    const order=allWorks.map(w=>w.id);
+    const structureChanged=initialLoad||order.length!==currentWorksOrder.length||order.some((id,i)=>id!==currentWorksOrder[i]);
+    if(allWorks.length===0){
+      weeklyTrack.innerHTML='';baruTrack.innerHTML='';prosesTrack.innerHTML='';
+      homeEmpty.classList.remove('hidden');
+      document.getElementById('sectionPopulerMinggu').style.display='none';
+      document.getElementById('sectionBaru').style.display='none';
+      document.getElementById('sectionProses').style.display='none';
+      return;
+    }
     homeEmpty.classList.add('hidden');
-    document.getElementById('sectionPopuler').style.display = '';
-    document.getElementById('sectionBaru').style.display = '';
-    document.getElementById('sectionProses').style.display = '';
+    document.getElementById('sectionPopulerMinggu').style.display='';
+    document.getElementById('sectionBaru').style.display='';
+    document.getElementById('sectionProses').style.display='';
 
-    const newIds = allWorks.map(w => w.id);
-    const structureChanged = initialLoad || newIds.length !== currentWorksOrder.length || newIds.some((id, i) => id !== currentWorksOrder[i]);
-
-    if (structureChanged || initialLoad) {
-      const newSet = initialLoad ? new Set() : new Set([...newIds].filter(id => !lastKnownIds.has(id)));
-      populerTrack.innerHTML = populer.map((work, idx) => renderSlideCard(work, idx, newSet)).join('') || '<p class="text-slate-500 text-xs italic px-2">Belum ada karya terpopuler.</p>';
-      baruTrack.innerHTML = baru.map((work, idx) => renderSlideCard(work, idx, newSet)).join('') || '<p class="text-slate-500 text-xs italic px-2">Belum ada karya baru.</p>';
-      prosesTrack.innerHTML = proses.map((work, idx) => renderSlideCard(work, idx, newSet)).join('') || '<p class="text-slate-500 text-xs italic px-2">Belum ada karya dalam proses.</p>';
-      currentWorksOrder = newIds;
-      currentWorksData = {};
-      allWorks.forEach(w => currentWorksData[w.id] = w);
-      lastKnownIds = new Set(newIds);
-      initialLoad = false;
-      attachSlideNav('popPrev', 'popNext', 'populerTrack');
-      attachSlideNav('baruPrev', 'baruNext', 'baruTrack');
-      attachSlideNav('prosesPrev', 'prosesNext', 'prosesTrack');
+    if(structureChanged||initialLoad){
+      weeklyTrack.innerHTML=populer.map((w,i)=>renderSlideCard(w,i,newIds)).join('')||'<p class="text-slate-500 text-xs italic px-2">Belum ada karya populer minggu ini.</p>';
+      baruTrack.innerHTML=baru.map((w,i)=>renderSlideCard(w,i,newIds)).join('')||'<p class="text-slate-500 text-xs italic px-2">Belum ada karya baru.</p>';
+      prosesTrack.innerHTML=proses.map((w,i)=>renderSlideCard(w,i,newIds)).join('')||'<p class="text-slate-500 text-xs italic px-2">Belum ada karya dalam proses.</p>';
+      currentWorksOrder=order;
+      currentWorksData={};allWorks.forEach(w=>currentWorksData[w.id]=w);
+      lastKnownIds=new Set(order);initialLoad=false;
+      attachSlideNav('weeklyPrev','weeklyNext','weeklyTrack');
+      attachSlideNav('baruPrev','baruNext','baruTrack');
+      attachSlideNav('prosesPrev','prosesNext','prosesTrack');
     } else {
-      allWorks.forEach(w => {
-        currentWorksData[w.id] = w;
-        const viewEl = document.querySelector(`[data-view-id="${w.id}"]`);
-        if (viewEl) { viewEl.textContent = formatCount(w.views || 0); viewEl.dataset.val = w.views || 0; }
-        const likeEl = document.querySelector(`[data-like-id="${w.id}"]`);
-        if (likeEl) { likeEl.textContent = formatCount(w.likes || 0); likeEl.dataset.val = w.likes || 0; }
+      allWorks.forEach(w=>currentWorksData[w.id]=w);
+      allWorks.forEach(w=>{
+        const ve=document.querySelector(`[data-view-id="${w.id}"]`);
+        if(ve){ve.textContent=formatCount(w.views||0);ve.dataset.val=w.views||0}
+        const le=document.querySelector(`[data-like-id="${w.id}"]`);
+        if(le){le.textContent=formatCount(w.likes||0);le.dataset.val=w.likes||0}
       });
     }
   });
+
+  window.homeSearchKeyword=async(keyword)=>{
+    const inp=document.getElementById('searchInput');
+    if(inp) inp.value=keyword;
+    await trackSearchKeyword(keyword);
+    currentSearch=keyword;
+    renderPage();
+  };
 }
 
 function renderSlideCard(work, idx, newIds = new Set()) {
@@ -4207,7 +4752,8 @@ function renderSlideCard(work, idx, newIds = new Set()) {
   const isNew = newIds && newIds.has(work.id);
   const liked = currentUser && (work.likedBy || []).includes(currentUser.uid);
   const resume = getReadingPos(work.id);
-  const vBadge = getVerifiedBadge(work.authorFollowerCount || 0) + getCreatorVerifiedBadge({ roles: work.authorRoles || [work.authorRole || 'pembaca'] });
+  const author = getLiveWorkAuthor(work);
+  const vBadge = getVerifiedBadge(author.followerCount) + getCreatorVerifiedBadge(author, work.type);
   const isTD = isTakedown(work);
   const isNP = isNonPublish(work);
   const isUN = isUnggulan(work);
@@ -4218,7 +4764,7 @@ function renderSlideCard(work, idx, newIds = new Set()) {
   const reportsCount = (work.reports || []).length;
   const reportBadge = (!isTD && reportsCount > 0) ? `<div class="absolute bottom-8 right-1 bg-red-600/90 backdrop-blur text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full" title="${reportsCount} report"><i class="fas fa-flag"></i> ${reportsCount}/10</div>` : '';
   return `
-    <div class="slide-card card-anim ${newClass}" style="${delayStyle}">
+    <div class="slide-card card-anim ${newClass}" data-work-id="${work.id}" style="${delayStyle}">
       <div class="card-bg hover-lift rounded-2xl overflow-hidden shadow-lg cursor-pointer ${borderClass} h-full" onclick="${isTD ? `showToast('⛔ Karya ini di-takedown')` : isNP ? `showToast('🔒 Karya belum dipublish')` : `window.location.hash='reader/${work.id}'`}">
         <div class="h-36 md:h-44 bg-slate-800 flex items-center justify-center overflow-hidden relative">
           ${work.coverURL ? `<img src="${work.coverURL}" class="w-full h-full object-cover ${isTD ? 'grayscale opacity-40' : isNP ? 'grayscale opacity-70' : ''}" onerror="this.style.display='none';">` : `<i class="fas fa-image text-4xl text-slate-600"></i>`}
@@ -4239,8 +4785,8 @@ function renderSlideCard(work, idx, newIds = new Set()) {
           </div>
           <div class="mt-1.5 flex items-center gap-1 text-[10px] text-slate-500">
             <div class="flex items-center gap-1 flex-1 min-w-0 cursor-pointer hover:opacity-80" onclick="event.stopPropagation();window.location.hash='user/${work.authorId}'">
-              <img src="${work.authorPhotoURL || 'https://ui-avatars.com/api/?name='+encodeURIComponent(work.authorName||'U')}" class="w-4 h-4 rounded-full border border-slate-700">
-              <span class="truncate max-w-[60px] hover:text-amber-400">${work.authorName || 'Anonim'}${vBadge}</span>
+              <img src="${author.photo || 'https://ui-avatars.com/api/?name='+encodeURIComponent(author.name||'U')}" class="w-4 h-4 rounded-full border border-slate-700">
+              <span class="flex items-center min-w-0 hover:text-amber-400"><span class="truncate">${author.name || 'Anonim'}</span>${vBadge}</span>
             </div>
             <button class="like-btn ${liked ? 'liked' : 'text-slate-400'}" onclick="event.stopPropagation();toggleWorkLike('${work.id}')" ${isTD ? 'disabled' : ''}>
               <i class="fas fa-heart text-xs"></i>
@@ -4282,7 +4828,8 @@ function renderWorkList(container, works, newIds = new Set(), skipAnim = false) 
     const isNew = newIds && newIds.has(work.id);
     const liked = currentUser && (work.likedBy || []).includes(currentUser.uid);
     const resume = getReadingPos(work.id);
-    const vBadge = getVerifiedBadge(work.authorFollowerCount || 0) + getCreatorVerifiedBadge({ roles: work.authorRoles || [work.authorRole || 'pembaca'] });
+    const author = getLiveWorkAuthor(work);
+    const vBadge = getVerifiedBadge(author.followerCount) + getCreatorVerifiedBadge(author, work.type);
     const isTD = isTakedown(work);
     const isNP = isNonPublish(work);
     const isUN = isUnggulan(work);
@@ -4315,9 +4862,9 @@ function renderWorkList(container, works, newIds = new Set(), skipAnim = false) 
         </div>
         <div class="mt-2 flex items-center gap-2 text-xs text-slate-500">
           <div class="flex items-center gap-1 flex-1 min-w-0 cursor-pointer hover:opacity-80" onclick="event.stopPropagation();window.location.hash='user/${work.authorId}'">
-            <img src="${work.authorPhotoURL || 'https://ui-avatars.com/api/?name='+encodeURIComponent(work.authorName||'U')}" class="w-5 h-5 rounded-full border border-slate-700">
-            <span class="truncate max-w-[80px] hover:text-amber-400">${work.authorName || 'Anonim'}${vBadge}</span>
-            ${work.authorLevel > 1000 ? '<i class="fas fa-crown text-amber-400 text-[10px] badge-float"></i>' : ''}
+            <img src="${author.photo || 'https://ui-avatars.com/api/?name='+encodeURIComponent(author.name||'U')}" class="w-5 h-5 rounded-full border border-slate-700">
+            <span class="flex items-center min-w-0 hover:text-amber-400"><span class="truncate">${author.name || 'Anonim'}</span>${vBadge}</span>
+            ${author.level > 1000 ? '<i class="fas fa-crown text-amber-400 text-[10px] badge-float"></i>' : ''}
           </div>
           <button class="like-btn ${liked ? 'liked' : 'text-slate-400'}" onclick="event.stopPropagation();toggleWorkLike('${work.id}')" title="${liked ? 'Unlike' : 'Like'}" ${isTD ? 'disabled' : ''}>
             <i class="fas fa-heart"></i>
@@ -4347,6 +4894,7 @@ window.toggleWorkLike = async (workId) => {
       newLikedBy = [...likedBy, currentUser.uid];
       likeDelta = +1;
       await addExp(EXP_PER_COMMENT);
+      await trackWorkActivity(workId,'likes',1);
     }
     await updateDoc(workRef, {
       likedBy: newLikedBy,
@@ -4572,7 +5120,7 @@ async function renderFollowersPage(container, uid, mode) {
       <img src="${m.photoURL || 'https://ui-avatars.com/api/?name='+encodeURIComponent(m.username||'U')}" class="w-12 h-12 rounded-full border border-slate-700 ${isOwner ? 'owner-shine' : ''}">
       <div class="flex-1 min-w-0">
         <div class="flex items-center gap-1 flex-wrap">
-          <p class="font-bold text-sm truncate">${m.username || 'User'}${v}</p>
+          <p class="font-bold text-sm flex items-center min-w-0"><span class="truncate">${m.username || 'User'}</span>${v}</p>
           ${getRoleTagsForUid(m.id, m)}
         </div>
         <p class="text-xs text-slate-400">Lv.${m.level || 1} • ${formatCount(m.followerCount || 0)} followers</p>
@@ -4645,7 +5193,7 @@ async function renderTopFollowers(container) {
         <img src="${u.photoURL || 'https://ui-avatars.com/api/?name='+encodeURIComponent(u.username||'U')}" class="w-14 h-14 rounded-full border-2 ${u.featuredCreator ? 'border-amber-400' : isO?'border-red-500':isA?'border-amber-500':'border-slate-700'} ${isO ? 'owner-shine' : ''}">
         <div class="flex-1 min-w-0">
           <div class="flex items-center gap-1 flex-wrap">
-            <h3 class="font-bold truncate">${u.username || 'User'}${v}</h3>
+            <h3 class="font-bold flex items-center min-w-0"><span class="truncate">${u.username || 'User'}</span>${v}</h3>
             ${getRoleTagsForUid(u.id, u)}
             ${unggulan}
           </div>
@@ -4795,7 +5343,7 @@ async function renderPrivateChat(container, otherUid) {
         ${!own ? `<img src="${pu || 'https://ui-avatars.com/api/?name='+encodeURIComponent(un)}" class="w-8 h-8 rounded-full">` : ''}
         <div class="max-w-[70%] ${isMediaOnly ? 'chat-img-msg' : (own ? 'bg-amber-500/20' : 'bg-slate-800')} rounded-2xl px-3 py-2">
           ${!isMediaOnly ? `<div class="flex items-center gap-1 flex-wrap text-xs mb-1">
-            <span class="${isGolden(ul) ? 'gold-glow font-bold' : 'text-slate-300 font-semibold'}">${un}</span>
+            <span class="${isGolden(ul) ? 'gold-glow font-bold' : 'text-slate-300 font-semibold'}">${un}${getVerifiedBadge(userObj?.followerCount || 0) + getCreatorVerifiedBadge(userObj)}</span>
             ${getRoleTagsForUid(m.userId, userObj)}
             <span class="text-slate-500">Lv.${ul}</span>
           </div>` : ''}
@@ -4872,7 +5420,7 @@ async function renderTeman(c) {
       <h3 class="font-bold mb-3 text-amber-400">Request Teman (${requests.length})</h3>
       <div class="space-y-2">${requests.map(r => `<div class="flex items-center gap-2 bg-slate-800/50 rounded-xl p-2 hover:bg-slate-800 transition">
         <img src="${r.photoURL || 'https://ui-avatars.com/api/?name='+encodeURIComponent(r.username)}" class="w-10 h-10 rounded-full">
-        <div class="flex-1 cursor-pointer" onclick="window.location.hash='user/${r.id}'"><p class="font-semibold text-sm">${r.username}</p><p class="text-xs text-slate-400">Lv.${r.level || 1}</p></div>
+        <div class="flex-1 cursor-pointer" onclick="window.location.hash='user/${r.id}'"><p class="font-semibold text-sm">${r.username}${getVerifiedBadge(r.followerCount || 0)}${getCreatorVerifiedBadge(r)}</p><p class="text-xs text-slate-400">Lv.${r.level || 1}</p></div>
         <button onclick="acceptFriend('${r.id}')" class="bg-green-600 text-white px-3 py-1 rounded-lg text-xs font-bold hover:scale-105 transition">Terima</button>
         <button onclick="rejectFriend('${r.id}')" class="bg-red-600 text-white px-3 py-1 rounded-lg text-xs font-bold hover:scale-105 transition">Tolak</button>
       </div>`).join('')}</div>
@@ -4881,7 +5429,7 @@ async function renderTeman(c) {
       <h3 class="font-bold mb-3 text-amber-400">Teman Saya (${friends.length})</h3>
       ${friends.length === 0 ? '<p class="text-slate-400 text-sm">Belum ada teman. Cari di atas!</p>' : `<div class="space-y-2">${friends.map(f => `<div class="flex items-center gap-2 bg-slate-800/50 rounded-xl p-2 hover:bg-slate-800 transition">
         <img src="${f.photoURL || 'https://ui-avatars.com/api/?name='+encodeURIComponent(f.username)}" class="w-10 h-10 rounded-full cursor-pointer" onclick="window.location.hash='user/${f.id}'">
-        <div class="flex-1 cursor-pointer" onclick="window.location.hash='user/${f.id}'"><p class="font-semibold text-sm">${f.username}</p><p class="text-xs text-slate-400">Lv.${f.level || 1}</p></div>
+        <div class="flex-1 cursor-pointer" onclick="window.location.hash='user/${f.id}'"><p class="font-semibold text-sm">${f.username}${getVerifiedBadge(f.followerCount || 0)}${getCreatorVerifiedBadge(f)}</p><p class="text-xs text-slate-400">Lv.${f.level || 1}</p></div>
         <button onclick="window.location.hash='privatechat/${f.id}'" class="bg-amber-500 text-black px-3 py-1 rounded-lg text-xs font-bold hover:scale-105 transition"><i class="fas fa-comment"></i> Chat</button>
       </div>`).join('')}</div>`}
     </div>`;
@@ -4895,7 +5443,7 @@ async function renderTeman(c) {
     resDiv.innerHTML = matches.slice(0, 10).map(m => `
       <div class="flex items-center gap-2 bg-slate-800/50 rounded-xl p-2 mt-2 card-anim">
         <img src="${m.photoURL || 'https://ui-avatars.com/api/?name='+encodeURIComponent(m.username)}" class="w-10 h-10 rounded-full cursor-pointer" onclick="window.location.hash='user/${m.id}'">
-        <div class="flex-1 cursor-pointer" onclick="window.location.hash='user/${m.id}'"><p class="font-semibold text-sm">${m.username}${getVerifiedBadge(m.followerCount||0)}</p><p class="text-xs text-slate-400">Lv.${m.level || 1}</p></div>
+        <div class="flex-1 cursor-pointer" onclick="window.location.hash='user/${m.id}'"><p class="font-semibold text-sm">${m.username}${getVerifiedBadge(m.followerCount||0)}${getCreatorVerifiedBadge(m)}</p><p class="text-xs text-slate-400">Lv.${m.level || 1}</p></div>
         ${(userProfile.friends || []).includes(m.id) ? '<span class="text-green-400 text-xs">Teman</span>' :
           (userProfile.friendRequests || []).includes(m.id) ? '<span class="text-slate-400 text-xs">Pending</span>' :
           `<button onclick="sendFriendRequest('${m.id}')" class="bg-green-600 text-white px-3 py-1 rounded-lg text-xs font-bold hover:scale-105 transition">Add</button>`}
@@ -5024,7 +5572,7 @@ async function renderClanDetail(container, clanId) {
         ${reqUsers.map(r => `
           <div class="flex items-center gap-2 bg-slate-800/50 rounded-xl p-2">
             <img src="${r.photoURL || 'https://ui-avatars.com/api/?name='+encodeURIComponent(r.username)}" class="w-10 h-10 rounded-full cursor-pointer" onclick="window.location.hash='user/${r.id}'">
-            <div class="flex-1 cursor-pointer" onclick="window.location.hash='user/${r.id}'"><p class="font-semibold text-sm">${r.username}</p><p class="text-xs text-slate-400">Lv.${r.level || 1}</p></div>
+            <div class="flex-1 cursor-pointer" onclick="window.location.hash='user/${r.id}'"><p class="font-semibold text-sm">${r.username}${getVerifiedBadge(r.followerCount || 0)}${getCreatorVerifiedBadge(r)}</p><p class="text-xs text-slate-400">Lv.${r.level || 1}</p></div>
             <button onclick="approveClanJoin('${clanId}','${r.id}')" class="bg-green-600 text-white px-3 py-1 rounded-lg text-xs font-bold hover:scale-105 transition">Terima</button>
             <button onclick="rejectClanJoin('${clanId}','${r.id}')" class="bg-red-600 text-white px-3 py-1 rounded-lg text-xs font-bold hover:scale-105 transition">Tolak</button>
           </div>
@@ -5052,7 +5600,7 @@ async function renderClanDetail(container, clanId) {
                   <img src="${m.photoURL || 'https://ui-avatars.com/api/?name='+encodeURIComponent(m.username)}" class="w-10 h-10 rounded-full cursor-pointer hover:scale-110 transition ${mOwner ? 'owner-shine' : ''}" onclick="window.location.hash='user/${m.id}'">
                   <div class="flex-1 min-w-0">
                     <div class="flex items-center gap-1 flex-wrap">
-                      <p class="font-semibold text-sm cursor-pointer hover:text-amber-400" onclick="window.location.hash='user/${m.id}'">${m.username}</p>
+                      <p class="font-semibold text-sm cursor-pointer hover:text-amber-400" onclick="window.location.hash='user/${m.id}'">${m.username}${getVerifiedBadge(m.followerCount || 0)}${getCreatorVerifiedBadge(m)}</p>
                       ${mOwner ? '<span class="clan-owner-tag text-xs">👑 OWNER</span>' : mAdmin ? '<span class="clan-admin-tag text-xs">⚔️ ADMIN</span>' : '<span class="clan-tag text-xs">MEMBER</span>'}
                     </div>
                     <div class="flex items-center gap-1 flex-wrap mt-1">
@@ -5162,7 +5710,7 @@ async function renderClanDetail(container, clanId) {
         ${!isOwn ? `<img src="${pu || 'https://ui-avatars.com/api/?name='+encodeURIComponent(un)}" class="w-8 h-8 rounded-full cursor-pointer hover:scale-110 transition" onclick="window.location.hash='user/${msg.userId}'">` : ''}
         <div class="max-w-[75%] rounded-2xl px-3 py-2 ${bc}">
           ${!isImgOnly ? `<div class="flex items-center gap-1 flex-wrap text-xs mb-1">
-            <span class="${isG ? 'gold-glow font-bold' : 'text-slate-300 font-semibold'} cursor-pointer hover:underline" onclick="window.location.hash='user/${msg.userId}'">${un}</span>
+            <span class="${isG ? 'gold-glow font-bold' : 'text-slate-300 font-semibold'} cursor-pointer hover:underline" onclick="window.location.hash='user/${msg.userId}'">${un}${getVerifiedBadge(u.followerCount || 0) + getCreatorVerifiedBadge(u)}</span>
             ${isG ? '<i class="fas fa-crown text-amber-400 text-xs"></i>' : ''}
             ${tagsHtml}
             <span class="text-slate-500">Lv.${ul}</span>
@@ -5401,6 +5949,21 @@ async function renderReader(container, novelId, chapterId = null) {
   const workSnap = await getDoc(doc(db, 'works', novelId));
   if (!workSnap.exists()) { container.innerHTML = '<p class="text-red-400">Karya tidak ditemukan.</p>'; return; }
   const work = { id: workSnap.id, ...workSnap.data() };
+  if (work.authorId) {
+    try {
+      const authorSnap = await getDoc(doc(db,'users',work.authorId));
+      if (authorSnap.exists()) {
+        const author = authorSnap.data();
+        work.authorName = author.username || work.authorName;
+        work.authorPhotoURL = author.photoURL || '';
+        work.authorSosmed = author.sosmed || {};
+        work.authorLevel = author.level || 1;
+        work.authorFollowerCount = author.followerCount || 0;
+        work.authorRoles = author.roles || (author.role ? [author.role] : []);
+        work.featuredCreator = author.featuredCreator === true;
+      }
+    } catch(e) {}
+  }
 
   if (isTakedown(work)) { container.innerHTML = takedownBanner(work); return; }
 
@@ -5426,6 +5989,7 @@ async function renderReader(container, novelId, chapterId = null) {
         updatedAt: serverTimestamp()
       });
       work.views = (work.views || 0) + 1;
+      await trackWorkActivity(novelId,'views',1);
       sessionStorage.setItem(viewKey, '1');
     } catch (e) {}
   }
@@ -5437,7 +6001,7 @@ async function renderReader(container, novelId, chapterId = null) {
   const isBookmarked = currentUser && (userProfile?.bookmarks || []).includes(novelId);
   const isLiked = currentUser && (work.likedBy || []).includes(currentUser.uid);
   const socialHtml = buildSocialLinks({ sosmed: work.authorSosmed || {} });
-  const vBadge = getVerifiedBadge(work.authorFollowerCount || 0) + getCreatorVerifiedBadge({ roles: work.authorRoles || [work.authorRole || 'pembaca'] });
+  const vBadge = getVerifiedBadge(work.authorFollowerCount || 0) + getCreatorVerifiedBadge({ roles: work.authorRoles || [work.authorRole || 'pembaca'] }, work.type);
   const isUnggulanAuthor = work.featuredCreator === true;
   const reportsCount = (work.reports || []).length;
   const hasReported = currentUser && (work.reports || []).some(r => r.userId === currentUser.uid);
@@ -5564,6 +6128,7 @@ async function renderReader(container, novelId, chapterId = null) {
       const isNow = currentBM.includes(novelId);
       let newBM = isNow ? currentBM.filter(id => id !== novelId) : [...currentBM, novelId];
       await updateDoc(doc(db, 'users', currentUser.uid), { bookmarks: newBM });
+      if (!isNow) await trackWorkActivity(novelId,'bookmarks',1);
       userProfile.bookmarks = newBM;
       showToast(isNow ? 'Bookmark dihapus' : 'Ditambahkan ke bookmark');
       renderPage();
@@ -5585,7 +6150,7 @@ async function renderReader(container, novelId, chapterId = null) {
           ? likedBy.filter(id => id !== currentUser.uid)
           : [...likedBy, currentUser.uid];
         let likeDelta = isLikedNow ? -1 : +1;
-        if (!isLikedNow) await addExp(EXP_PER_COMMENT);
+        if (!isLikedNow) { await addExp(EXP_PER_COMMENT); await trackWorkActivity(novelId,'likes',1); }
         await updateDoc(workRef, {
           likedBy: newLikedBy,
           likes: increment(likeDelta),
@@ -5746,6 +6311,7 @@ async function renderReader(container, novelId, chapterId = null) {
     const uphoto = userProfile.photoURL || currentUser.photoURL || '';
     if (text) {
       await addDoc(commentsRef, { userId: currentUser.uid, username: uname, photoURL: uphoto, userLevel: userProfile.level || 1, isAdmin: isAdminUser(userProfile), isPenulis: hasRole(userProfile, 'penulis'), isKomikus: hasRole(userProfile, 'komikus'), text: sensor(text), likes: 0, parentId: null, edited: false, createdAt: serverTimestamp() });
+      await trackWorkActivity(novelId,'comments',1);
       await addExp(EXP_PER_COMMENT);
     }
     if (selRating > 0) {
@@ -8031,11 +8597,12 @@ window.addEventListener('hashchange', renderPage);
   await initAuth();
   await loadAutoBoostStateFromDB();
   listenAutoBoostState();
+  startHomeCacheScheduler();
   if (!window.location.hash) window.location.hash = 'home';
   renderPage();
   startAutoBoost();
   console.log(`%c🚀 KomiNovel v${APP_VERSION} loaded`, 'background:linear-gradient(135deg,#fbbf24,#d97706);color:#0f0f1a;font-weight:900;padding:4px 12px;border-radius:8px;');
-  console.log('%c✨ Update v1.9:', 'color:#fbbf24;font-weight:bold;');
+  console.log('%c✨ Update v1.10:', 'color:#fbbf24;font-weight:bold;');
   APP_VERSION_NOTES.forEach(n => console.log('  •', n));
 })();
 </script>
