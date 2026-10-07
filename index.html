@@ -14,7 +14,7 @@
 }
 </script>
 <meta name="google-site-verification" content="GvyTGbIx3Zov0CXr0f1voJ2LJnac-ppCl62NStzdY3E">
-<meta name="description" content="KomiNovel - Platform baca & tulis Novel dan Komik online gratis. Versi 1.10">
+<meta name="description" content="KomiNovel - Platform baca & tulis Novel dan Komik online gratis. Versi 1.11">
 <link rel="icon" href="https://i.ibb.co.com/SDTthJ7m/Gemini-Generated-Image-fhupt4fhupt4fhup.jpg">
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -868,6 +868,47 @@ body{font-family:'Inter',sans-serif;background:#0f0f1a;color:#e2e8f0;overflow-x:
 [data-theme="light"] select option{background:#fff;color:#172033}
 [data-theme="light"] .modal-overlay{backdrop-filter:none}
 [data-theme="light"] .card-bg{box-shadow:0 1px 2px rgba(15,23,42,.04)}
+
+/* ============================================================
+   v1.11 — REALTIME / NOTIFICATION / MULTI CATEGORY
+   ============================================================ */
+.v111-notif-btn{
+  position:relative;width:40px;height:40px;border-radius:50%;
+  border:1px solid #3b3b5c;background:#12121f;color:#fbbf24;
+  display:inline-flex;align-items:center;justify-content:center;cursor:pointer;
+  transition:.2s ease;
+}
+.v111-notif-btn:hover{transform:translateY(-1px);border-color:#fbbf24;background:#1a1a2e}
+.v111-notif-dot{
+  position:absolute;top:-2px;right:-2px;min-width:18px;height:18px;padding:0 5px;
+  display:flex;align-items:center;justify-content:center;border-radius:999px;
+  background:#ef4444;color:#fff;border:2px solid #1a1a2e;font-size:9px;font-weight:900;
+}
+[data-theme="light"] .v111-notif-btn{background:#fff;border-color:#d8deea;color:#d97706}
+[data-theme="light"] .v111-notif-dot{border-color:#fff}
+.v111-notif-panel{
+  position:fixed;top:72px;right:16px;width:min(390px,calc(100vw - 24px));max-height:70vh;
+  z-index:260;background:#1a1a2e;border:1px solid #3b3b5c;border-radius:18px;
+  box-shadow:0 20px 50px rgba(0,0,0,.45);overflow:hidden;
+}
+.v111-notif-head{padding:14px 16px;border-bottom:1px solid #2d2d44;display:flex;align-items:center;justify-content:space-between}
+.v111-notif-list{max-height:calc(70vh - 58px);overflow:auto}
+.v111-notif-item{display:flex;gap:10px;padding:12px 14px;border-bottom:1px solid #2d2d44;cursor:pointer}
+.v111-notif-item:hover{background:rgba(251,191,36,.08)}
+.v111-notif-item.unread{background:rgba(59,130,246,.08)}
+.v111-notif-item img{width:38px;height:38px;border-radius:50%;object-fit:cover;flex-shrink:0}
+.v111-notif-time{font-size:10px;color:#64748b;margin-top:3px}
+[data-theme="light"] .v111-notif-panel{background:#fff;border-color:#d8deea;box-shadow:0 20px 50px rgba(15,23,42,.18)}
+[data-theme="light"] .v111-notif-head,[data-theme="light"] .v111-notif-item{border-color:#d8deea}
+.v111-cat-selected{
+  background:#fbbf24!important;color:#0f0f1a!important;border-color:#fbbf24!important;
+}
+.v111-cat-selected::after{content:' ✓';font-weight:900}
+.v111-cat-summary{
+  background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.25);
+  color:#fbbf24;border-radius:12px;padding:9px 12px;font-size:12px;font-weight:800;
+}
+
 </style>
 </head><body class="min-h-screen">
 
@@ -883,6 +924,9 @@ body{font-family:'Inter',sans-serif;background:#0f0f1a;color:#e2e8f0;overflow-x:
 <button id="themeToggle" type="button" class="theme-toggle-btn" title="Ganti tema" aria-label="Ganti tema">
 <i id="themeToggleIcon" class="fas fa-sun"></i><span id="themeToggleText">Terang</span>
 </button>
+<button id="v111NotifBtn" class="v111-notif-btn" type="button" title="Notifikasi" aria-label="Notifikasi">
+<i class="fas fa-bell"></i><span id="v111NotifDot" class="v111-notif-dot hidden">0</span>
+</button>
 <button id="navAuthMobile" class="bg-amber-500 text-black font-bold py-2 px-3 rounded-full text-xs"><i class="fas fa-sign-in-alt"></i></button>
 </div>
 </header>
@@ -891,7 +935,7 @@ body{font-family:'Inter',sans-serif;background:#0f0f1a;color:#e2e8f0;overflow-x:
 <div class="flex items-center justify-center gap-2 flex-wrap">
 <span>&copy; <span id="footerYear">2026</span> KomiNovel</span>
 </div>
-<p class="text-[10px] text-slate-600">v1.10</p>
+<p class="text-[10px] text-slate-600">v1.11</p>
 </footer>
 </div>
 
@@ -919,6 +963,7 @@ body{font-family:'Inter',sans-serif;background:#0f0f1a;color:#e2e8f0;overflow-x:
   </button>
   <button type="button" id="bottomMenuBtn" class="nav-bottom-item" title="Menu" aria-label="Buka menu">
     <i class="fas fa-bars"></i><span>Menu</span>
+    <span class="notif-badge hidden" id="notifDMBadge">0</span>
   </button>
 </nav>
 
@@ -956,8 +1001,9 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const googleProvider = new GoogleAuthProvider();
 
-const APP_VERSION = '1.10';
+const APP_VERSION = '1.11';
 const APP_VERSION_NOTES = [
+  'v1.11 — Kategori sekarang bisa memilih lebih dari satu kategori, data foto profil + centang kreator dibuat realtime, notifikasi episode/chapter baru tampil satu per satu dan bisa langsung membuka karya, badge DM menunjukkan pesan yang belum dibaca, dan level user + level clan tidak lagi dibatasi maksimum.',
   'v1.10 — Centang verifikasi penulis/komikus (kuning/oranye) kini tampil di semua tempat (kartu karya, chat publik, chat clan, DM, daftar teman, member clan), banner beranda tanpa animasi transisi (tetap ganti otomatis, ringan untuk HP low-end), dan tema terang diperbaiki total (bubble chat, panel, teks, tombol).',
   'v1.9 — FITUR REPORT karya (auto-takedown jika 10 report), STIKER di semua chat (admin & user bisa tambah, user bisa save stiker orang), BADGE NOTIFIKASI MERAH di chat/berita yang hilang setelah dilihat.',
   'v1.8 — Tema Gelap/Terang, foto profil bisa diganti langsung di KomiNovel tanpa mengubah foto akun Google, dan tombol navigasi Chapter/Eps Sebelumnya/Selanjutnya dibuat besar.',
@@ -982,8 +1028,10 @@ const REPORT_REASONS = [
 let currentUser = null, userProfile = null;
 let isAdminSession = false, adminEmail = null;
 let currentContentType = 'komik', currentCategory = 'all', currentSearch = '';
+let selectedCategories = [];
 let chatUnsub = null, chatUsersUnsub = null, clanChatUnsub = null, privateChatUnsub = null, worksUnsub = null;
 let usersCacheUnsub = null;
+let userProfileUnsub = null;
 let usersCache = {}, clansCache = {}, isFullscreenReader = false;
 let authorProfileCache = {};
 let authorProfileUnsubs = {};
@@ -997,6 +1045,11 @@ let pendingChatImg = { public: null, clan: null, private: null };
 let pendingChatSticker = { public: null, clan: null, private: null };
 let notifPrivateInit = false;
 let notifPrivateUnsubs = [];
+let v111NotifUnsub = null;
+let v111NotifItems = [];
+let v111NotifQueue = [];
+let v111NotifShowing = false;
+let v111NotifInitialized = false;
 let dragMode = 'drag';
 let birthdayCheckInterval = null;
 let ownerFollowerInterval = null;
@@ -1049,7 +1102,8 @@ let notifState = {
   chat: { lastSeen: 0, count: 0 },
   clan: { lastSeen: 0, count: 0 },
   berita: { lastSeen: 0, count: 0 },
-  private: {}
+  private: {},
+  dm: { count: 0 }
 };
 let notifListeners = [];
 
@@ -1076,9 +1130,9 @@ const ALL_CATEGORIES = [
 
 const KATA_KASAR = ['anjing','bangsat','kontol','memek','ngentot','peler','kampang','bajingan','asu','jancok','pepek','titit','bokep','silit','ngewe','colmek','masturbasi'];
 const ROLE_LABELS = { pembaca:'Pembaca', penulis:'Penulis Novel', komikus:'Pembuat Komik', admin:'Admin', owner:'Owner' };
-const LEVEL_TITLES = [{min:1,max:100,title:'Pemula'},{min:101,max:1000,title:'Pendekar'},{min:1001,max:5000,title:'Master'},{min:5001,max:10000,title:'Dewa Mitos'}];
-const CLAN_LEVEL_TITLES = [{min:1,max:100,title:'Pemula'},{min:101,max:1000,title:'Berkembang'},{min:1001,max:10000,title:'Terkenal'},{min:10001,max:50000,title:'Legendaris'}];
-const MAX_LEVEL = 10000, MAX_CLAN_LEVEL = 50000;
+const LEVEL_TITLES = [{min:1,max:100,title:'Pemula'},{min:101,max:1000,title:'Pendekar'},{min:1001,max:5000,title:'Master'},{min:5001,max:Number.MAX_SAFE_INTEGER,title:'Dewa Mitos'}];
+const CLAN_LEVEL_TITLES = [{min:1,max:100,title:'Pemula'},{min:101,max:1000,title:'Berkembang'},{min:1001,max:10000,title:'Terkenal'},{min:10001,max:Number.MAX_SAFE_INTEGER,title:'Legendaris'}];
+const MAX_LEVEL = Number.MAX_SAFE_INTEGER, MAX_CLAN_LEVEL = Number.MAX_SAFE_INTEGER;
 const EXP_PER_READ = 10, EXP_PER_CHAT = 2, EXP_PER_COMMENT = 5;
 const ADMIN_EMAIL = 'admin@kominovel.com', ADMIN_PASSWORD = 'admin123';
 const OWNER_EMAIL = 'owner@kominovel.com', OWNER_PASSWORD = 'owner123';
@@ -1143,8 +1197,8 @@ function getLevelTitle(l) { for (const t of LEVEL_TITLES) if (l >= t.min && l <=
 function getClanLevelTitle(l) { for (const t of CLAN_LEVEL_TITLES) if (l >= t.min && l <= t.max) return t.title; return 'Legendaris'; }
 function isGolden(l) { return l > 1000; }
 function sensor(text) { if (!text) return ''; let r = text; KATA_KASAR.forEach(k => r = r.replace(new RegExp(`\\b${k}\\b`,'gi'), m => '*'.repeat(m.length))); return r; }
-function getLevelFromExp(e) { return Math.min(MAX_LEVEL, Math.floor(e/20)+1); }
-function getClanLevelFromExp(e) { return Math.min(MAX_CLAN_LEVEL, Math.floor(e/10)+1); }
+function getLevelFromExp(e) { return Math.max(1, Math.floor(Number(e || 0)/20)+1); }
+function getClanLevelFromExp(e) { return Math.max(1, Math.floor(Number(e || 0)/10)+1); }
 function fmtDate(ts) { if (!ts) return ''; const d = ts.toDate ? ts.toDate() : new Date(ts); return d.toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}); }
 function hasRole(p, r) { if (!p) return false; const roles = p.roles || (p.role ? [p.role] : ['pembaca']); return roles.includes(r); }
 function isCreator(p) { return hasRole(p,'penulis') || hasRole(p,'komikus'); }
@@ -1201,6 +1255,7 @@ function loadNotifState() {
     if (!notifState.chat) notifState.chat = { lastSeen: 0, count: 0 };
     if (!notifState.clan) notifState.clan = { lastSeen: 0, count: 0 };
     if (!notifState.berita) notifState.berita = { lastSeen: 0, count: 0 };
+    if (!notifState.dm) notifState.dm = { count: 0 };
   } catch (e) {}
 }
 function saveNotifState() {
@@ -1220,13 +1275,18 @@ function updateBadges() {
   setBadge('notifChatBadge', notifState.chat?.count || 0);
   setBadge('notifClanBadge', notifState.clan?.count || 0);
   setBadge('notifBeritaBadge', notifState.berita?.count || 0);
-  // Toggle class has-notif
+  setBadge('notifDMBadge', notifState.dm?.count || 0);
+  const totalDM = Number(notifState.dm?.count || 0);
+  const totalSite = totalDM + Number(notifState.chat?.count || 0) + Number(notifState.clan?.count || 0) + Number(notifState.berita?.count || 0) + v111NotifItems.filter(n => !n.read).length;
+  setBadge('v111NotifDot', totalSite);
   const chatBtn = document.querySelector('[data-nav="chat"]');
   const clanBtn = document.querySelector('[data-nav="clan"]');
   const beritaBtn = document.querySelector('[data-nav="berita"]');
+  const menuBtn = document.getElementById('bottomMenuBtn');
   if (chatBtn) chatBtn.classList.toggle('has-notif', (notifState.chat?.count || 0) > 0);
   if (clanBtn) clanBtn.classList.toggle('has-notif', (notifState.clan?.count || 0) > 0);
   if (beritaBtn) beritaBtn.classList.toggle('has-notif', (notifState.berita?.count || 0) > 0);
+  if (menuBtn) menuBtn.classList.toggle('has-notif', totalDM > 0);
 }
 function markNotifSeen(type, ts) {
   if (!notifState[type]) notifState[type] = { lastSeen: 0, count: 0 };
@@ -2476,6 +2536,7 @@ const NAV_MAP = [
   { id:'followers', icon:'fa-users', label:'Top Followers' },
   { id:'leaderboard', icon:'fa-trophy', label:'Leaderboard' },
   { id:'teman', icon:'fa-user-friends', label:'Teman & DM' },
+  { id:'notifikasi', icon:'fa-bell', label:'Notifikasi' },
   { id:'kritik', icon:'fa-envelope', label:'Kritik & Saran' },
   { id:'stikerku', icon:'fa-sticky-note', label:'Stiker Saya', color:'text-pink-400' },
   { id:'profil', icon:'fa-user-circle', label:'Profil' },
@@ -2508,6 +2569,9 @@ window.openMobileNav = openMobileNav;
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMobileNav(); });
 window.closeMobileNav = closeMobileNav;
 window.renderMobileNav = renderMobileNav;
+document.getElementById('v111NotifBtn')?.addEventListener('click', (e) => {
+  e.preventDefault(); e.stopPropagation(); openV111NotifPanel();
+});
 document.getElementById('bottomMenuBtn')?.addEventListener('click', (e) => {
   e.preventDefault();
   e.stopPropagation();
@@ -3699,13 +3763,21 @@ async function initAuth() {
         if (!userProfile.bio) { userProfile.bio = ''; await updateDoc(userRef, { bio: '' }); }
         if (!userProfile.birthday) { userProfile.birthday = ''; await updateDoc(userRef, { birthday: '' }); }
         if (userProfile.featuredCreator === undefined) { userProfile.featuredCreator = false; }
-        if ((hasRole(userProfile, 'admin') || hasRole(userProfile, 'owner')) && userProfile.level !== MAX_LEVEL) {
-          await updateDoc(userRef, { level: MAX_LEVEL, exp: MAX_LEVEL * 20 });
-          userProfile.level = MAX_LEVEL; userProfile.exp = MAX_LEVEL * 20;
+        if ((hasRole(userProfile, 'admin') || hasRole(userProfile, 'owner')) && !Number.isFinite(userProfile.level)) {
+          await updateDoc(userRef, { level: 1, exp: 0 });
+          userProfile.level = 1; userProfile.exp = 0;
         }
         if (!userProfile.photoURL && user.photoURL) { await updateDoc(userRef, { photoURL: user.photoURL }); userProfile.photoURL = user.photoURL; }
         if (userProfile.banned) { showToast('Akun diblokir!', 5000); await signOut(auth); return; }
       }
+      if (userProfileUnsub) { try { userProfileUnsub(); } catch(e){} }
+      userProfileUnsub = onSnapshot(userRef, snapLive => {
+        if (!snapLive.exists()) return;
+        userProfile = { uid: currentUser.uid, ...snapLive.data() };
+        usersCache[currentUser.uid] = { id: currentUser.uid, ...userProfile };
+        updateBadges();
+        if (typeof renderMobileNav === 'function') renderMobileNav();
+      }, () => {});
       await loadClansCache();
       await loadCustomCategories();
       await loadAllUsersCache();
@@ -3718,13 +3790,15 @@ async function initAuth() {
       startClanNotifListener();
       document.getElementById('navAuthMobile').innerHTML = `<i class="fas fa-sign-out-alt"></i>`;
       renderPage();
-      setTimeout(() => initNotifListener(), 2000);
+      setTimeout(() => { initNotifListener(); initChapterNotificationListener(); }, 1200);
       setTimeout(() => checkBirthdays(), 1500);
       setTimeout(() => boostOwnerFollowers(), 2500);
       if (ownerFollowerInterval) clearInterval(ownerFollowerInterval);
       ownerFollowerInterval = setInterval(() => boostOwnerFollowers(), FOLLOWER_INTERVAL);
     } else {
       currentUser = null; userProfile = null;
+      v111NotifItems = []; v111NotifQueue = []; v111NotifInitialized = false;
+      if (v111NotifUnsub) { try { v111NotifUnsub(); } catch(e){} v111NotifUnsub = null; }
       if (usersCacheUnsub) { try { usersCacheUnsub(); } catch(e){} usersCacheUnsub = null; }
       await loadClansCache();
       await loadCustomCategories();
@@ -3764,6 +3838,8 @@ async function logout() {
   notifListeners = [];
   notifPrivateInit = false;
   notifInitialized = false;
+  if (userProfileUnsub) { try { userProfileUnsub(); } catch(e){} userProfileUnsub = null; }
+  if (v111NotifUnsub) { try { v111NotifUnsub(); } catch(e){} v111NotifUnsub = null; }
   if (usersCacheUnsub) { try { usersCacheUnsub(); } catch(e){} usersCacheUnsub = null; }
   if (stickersUnsub) { try { stickersUnsub(); } catch(e){} stickersUnsub = null; }
   if (ownerFollowerInterval) clearInterval(ownerFollowerInterval);
@@ -3813,11 +3889,13 @@ if (localStorage.getItem('adminSession') === 'true') { isAdminSession = true; ad
 
 async function addExp(amount) {
   if (!currentUser || !userProfile || isAdminUser(userProfile)) return;
+  const safeAmount = Math.max(0, Number(amount || 0));
   const ref = doc(db, 'users', currentUser.uid);
-  const e = (userProfile.exp || 0) + amount;
+  const e = (userProfile.exp || 0) + safeAmount;
   const l = getLevelFromExp(e);
   await updateDoc(ref, { exp: e, level: l, updatedAt: serverTimestamp() });
   userProfile.exp = e; userProfile.level = l;
+  if (userProfile.clanId && safeAmount > 0) await addClanExp(userProfile.clanId, safeAmount);
 }
 async function addClanExp(clanId, amount) {
   if (!clanId) return;
@@ -3838,35 +3916,233 @@ function initNotifListener() {
   initPrivateNotifListener();
 }
 
-function initPrivateNotifListener() {
-  if (notifPrivateInit) return;
-  notifPrivateInit = true;
-  const unsub = onSnapshot(collection(db, 'privateChats'), snap => {
-    snap.docChanges().forEach(change => {
-      if (change.type === 'added') {
-        const chatId = change.doc.id;
-        if (!chatId.includes(currentUser.uid)) return;
-        const otherUid = chatId.split('_').find(u => u !== currentUser.uid);
-        if (!otherUid) return;
-        const msgQ = query(collection(db, 'privateChats', chatId, 'messages'), orderBy('createdAt', 'desc'), limit(1));
-        const unsubMsg = onSnapshot(msgQ, msgSnap => {
-          msgSnap.docChanges().forEach(mc => {
-            if (mc.type !== 'added') return;
-            const m = mc.doc.data();
-            if (m.userId === currentUser.uid) return;
-            const ts = m.createdAt?.toDate?.();
-            if (ts && Date.now() - ts.getTime() > 30000) return;
-            const un = usersCache[m.userId]?.username || m.username || 'Seseorang';
-            const preview = m.sticker ? '🎨 Stiker' : (m.image ? '🖼️ Gambar' : (m.text || '').slice(0, 40));
-            showNotifBar(`💬 ${un}: ${preview}`, 'green');
-          });
-        });
-        notifPrivateUnsubs.push(unsubMsg);
-      }
-    });
-  });
-  notifPrivateUnsubs.push(unsub);
+
+function showV111NotifBar(item) {
+  const existing = document.getElementById('v111LiveToast');
+  if (existing) existing.remove();
+  const bar = document.createElement('button');
+  bar.id = 'v111LiveToast';
+  bar.className = 'fixed top-20 left-1/2 -translate-x-1/2 z-[280] max-w-[calc(100vw-24px)] w-[420px] text-left px-4 py-3 rounded-2xl shadow-2xl border border-blue-400/40 bg-slate-900 text-white flex items-center gap-3';
+  bar.innerHTML = `
+    <span class="w-10 h-10 rounded-full bg-blue-500/20 text-blue-300 flex items-center justify-center flex-shrink-0"><i class="fas fa-bolt"></i></span>
+    <span class="min-w-0 flex-1">
+      <span class="block text-[10px] uppercase tracking-wider text-blue-300 font-black">Notifikasi baru</span>
+      <span class="block text-sm font-bold truncate">${escHtml(item.title || 'Update baru')}</span>
+      <span class="block text-xs text-slate-400 truncate">${escHtml(item.body || '')}</span>
+    </span>
+    <i class="fas fa-chevron-right text-slate-500"></i>`;
+  bar.onclick = async () => {
+    try { if (item.id) await updateDoc(doc(db,'notifications',item.id), { read:true, readAt:serverTimestamp() }); } catch(e){}
+    if (item.workId) window.location.hash = 'reader/' + item.workId;
+    else if (item.chatId) window.location.hash = 'privatechat/' + item.otherUid;
+    bar.remove();
+  };
+  document.body.appendChild(bar);
+  setTimeout(() => { if (bar.isConnected) bar.remove(); }, 4200);
 }
+
+function enqueueV111Notif(item) {
+  if (!item) return;
+  v111NotifQueue.push(item);
+  if (!v111NotifShowing) playNextV111Notif();
+}
+function playNextV111Notif() {
+  if (v111NotifQueue.length === 0) { v111NotifShowing = false; return; }
+  v111NotifShowing = true;
+  const item = v111NotifQueue.shift();
+  showV111NotifBar(item);
+  setTimeout(() => {
+    v111NotifShowing = false;
+    playNextV111Notif();
+  }, 4500);
+}
+
+function initChapterNotificationListener() {
+  if (!currentUser || v111NotifUnsub) return;
+  try {
+    v111NotifUnsub = onSnapshot(
+      query(collection(db,'notifications'), where('recipientId','==',currentUser.uid)),
+      snap => {
+        const incoming = [];
+        snap.forEach(d => incoming.push({ id:d.id, ...d.data() }));
+        incoming.sort((a,b) => {
+          const ta = a.createdAt?.toDate?.()?.getTime?.() || 0;
+          const tb = b.createdAt?.toDate?.()?.getTime?.() || 0;
+          return tb - ta;
+        });
+        const wasInitialized = v111NotifInitialized;
+        const known = new Set(v111NotifItems.map(n => n.id));
+        v111NotifItems = incoming.slice(0, 100);
+        updateBadges();
+        if (wasInitialized) {
+          incoming.filter(n => !known.has(n.id) && !n.read).sort((a,b) => {
+            const ta = a.createdAt?.toDate?.()?.getTime?.() || 0;
+            const tb = b.createdAt?.toDate?.()?.getTime?.() || 0;
+            return ta - tb;
+          }).forEach(enqueueV111Notif);
+        }
+        v111NotifInitialized = true;
+        renderV111NotifPanel();
+      },
+      () => {}
+    );
+  } catch(e) {}
+}
+
+async function createChapterNotifications(workId, chapterData) {
+  try {
+    const wSnap = await getDoc(doc(db,'works',workId));
+    if (!wSnap.exists()) return;
+    const w = wSnap.data();
+    if (w.status !== 'publish') return;
+    const aSnap = await getDoc(doc(db,'users',w.authorId));
+    const author = aSnap.exists() ? aSnap.data() : {};
+    const followers = [...new Set((author.followers || []).filter(Boolean))];
+    const chapterLabel = w.type === 'novel' ? 'chapter' : 'episode';
+    const title = `New ${chapterLabel}: ${w.title}`;
+    const body = `${w.type === 'novel' ? 'Chapter' : 'Episode'} ${chapterData.number}${chapterData.title ? ' • ' + chapterData.title : ''}`;
+    const targets = followers.filter(uid => uid !== w.authorId);
+    for (const uid of targets) {
+      await addDoc(collection(db,'notifications'), {
+        recipientId: uid,
+        type: 'new_chapter',
+        workId,
+        workTitle: w.title || 'Karya',
+        chapterId: chapterData.id || '',
+        chapterNumber: chapterData.number,
+        chapterTitle: chapterData.title || '',
+        authorId: w.authorId,
+        authorName: author.username || w.authorName || 'Kreator',
+        title, body, read:false, createdAt:serverTimestamp()
+      });
+    }
+  } catch(e) { console.warn('chapter notification error', e); }
+}
+
+async function markAllV111NotificationsRead() {
+  if (!currentUser) return;
+  const unread = v111NotifItems.filter(n => !n.read).slice(0, 100);
+  for (const n of unread) {
+    try { await updateDoc(doc(db,'notifications',n.id), { read:true, readAt:serverTimestamp() }); } catch(e){}
+  }
+}
+
+function renderV111NotifPanel() {
+  const panel = document.getElementById('v111NotifPanel');
+  if (!panel) return;
+  const list = panel.querySelector('#v111NotifList');
+  if (!list) return;
+  if (!currentUser) {
+    list.innerHTML = `<div class="p-6 text-center text-sm text-slate-400">Masuk untuk melihat notifikasi.</div>`;
+    return;
+  }
+  if (v111NotifItems.length === 0) {
+    list.innerHTML = `<div class="p-6 text-center text-sm text-slate-400"><i class="fas fa-bell-slash text-2xl mb-2"></i><p>Belum ada notifikasi.</p></div>`;
+    return;
+  }
+  list.innerHTML = v111NotifItems.slice(0,50).map(n => `
+    <button class="v111-notif-item w-full text-left ${n.read ? '' : 'unread'}" data-notif-id="${escAttr(n.id)}">
+      <span class="w-10 h-10 rounded-full bg-blue-500/15 text-blue-300 flex items-center justify-center flex-shrink-0"><i class="fas fa-book-open"></i></span>
+      <span class="min-w-0 flex-1">
+        <span class="block text-sm font-bold">${escHtml(n.title || 'Notifikasi')}</span>
+        <span class="block text-xs text-slate-400">${escHtml(n.body || '')}</span>
+        <span class="block v111-notif-time">${fmtDate(n.createdAt)}</span>
+      </span>
+      ${n.read ? '' : '<span class="w-2 h-2 rounded-full bg-red-500 flex-shrink-0 mt-2"></span>'}
+    </button>`).join('');
+  list.querySelectorAll('[data-notif-id]').forEach(btn => {
+    btn.onclick = async () => {
+      const n = v111NotifItems.find(x => x.id === btn.dataset.notifId);
+      if (!n) return;
+      try { await updateDoc(doc(db,'notifications',n.id), { read:true, readAt:serverTimestamp() }); } catch(e){}
+      if (n.workId) window.location.hash = 'reader/' + n.workId;
+      renderV111NotifPanel();
+    };
+  });
+}
+
+function openV111NotifPanel() {
+  let panel = document.getElementById('v111NotifPanel');
+  if (!panel) {
+    panel = document.createElement('div');
+    panel.id = 'v111NotifPanel';
+    panel.className = 'v111-notif-panel';
+    panel.innerHTML = `
+      <div class="v111-notif-head">
+        <div><b class="text-sm">Notifikasi</b><p class="text-[10px] text-slate-500">Episode/chapter baru & aktivitas akun</p></div>
+        <button id="v111NotifReadAll" class="text-xs text-amber-400 font-bold">Tandai semua dibaca</button>
+      </div>
+      <div id="v111NotifList" class="v111-notif-list"></div>`;
+    document.body.appendChild(panel);
+    panel.querySelector('#v111NotifReadAll').onclick = async () => {
+      await markAllV111NotificationsRead();
+      renderV111NotifPanel();
+    };
+    renderV111NotifPanel();
+  } else {
+    panel.remove();
+  }
+}
+window.openV111NotifPanel = openV111NotifPanel;
+
+async function initPrivateNotifListener() {
+  if (!currentUser || notifPrivateInit) return;
+  notifPrivateInit = true;
+  try {
+    const unsub = onSnapshot(collection(db,'privateChats'), snap => {
+      let total = 0;
+      snap.forEach(d => {
+        const data = d.data() || {};
+        if (!(data.participants || []).includes(currentUser.uid)) return;
+        const c = Number(data['unreadCount_' + currentUser.uid] || 0);
+        total += Math.max(0,c);
+      });
+      notifState.dm.count = total;
+      saveNotifState();
+      updateBadges();
+    });
+    notifPrivateUnsubs.push(unsub);
+  } catch(e) {}
+}
+
+
+async function renderV111NotificationsPage(container) {
+  if (!currentUser) {
+    container.innerHTML = `<div class="card-bg rounded-2xl p-8 text-center"><p>Masuk dulu untuk melihat notifikasi.</p></div>`;
+    return;
+  }
+  await markAllV111NotificationsRead();
+  container.innerHTML = `
+    <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+      <div><h2 class="text-2xl font-black"><i class="fas fa-bell text-amber-400 mr-2"></i>Notifikasi</h2>
+      <p class="text-xs text-slate-400 mt-1">Update episode/chapter dari kreator yang kamu ikuti.</p></div>
+      <button id="v111ReadAllPage" class="text-xs bg-slate-800 px-3 py-2 rounded-full font-bold">Tandai semua dibaca</button>
+    </div>
+    <div id="v111PageList" class="space-y-2"></div>`;
+  const list = document.getElementById('v111PageList');
+  const render = () => {
+    const arr = v111NotifItems.slice().sort((a,b)=>(b.createdAt?.toDate?.()?.getTime?.()||0)-(a.createdAt?.toDate?.()?.getTime?.()||0));
+    if (!arr.length) {
+      list.innerHTML = `<div class="card-bg rounded-2xl p-10 text-center text-slate-400"><i class="fas fa-bell-slash text-4xl mb-3"></i><p>Belum ada notifikasi.</p></div>`;
+      return;
+    }
+    list.innerHTML = arr.map(n => `
+      <button class="card-bg w-full text-left rounded-2xl p-4 flex gap-3 hover:border-amber-400 transition ${n.read ? '' : 'border-blue-500'}" data-page-notif="${escAttr(n.id)}">
+        <span class="w-10 h-10 rounded-full bg-blue-500/15 text-blue-300 flex items-center justify-center flex-shrink-0"><i class="fas fa-book-open"></i></span>
+        <span class="flex-1 min-w-0"><b class="block">${escHtml(n.title || 'Notifikasi baru')}</b><span class="text-xs text-slate-400">${escHtml(n.body || '')}</span><span class="block text-[10px] text-slate-500 mt-1">${fmtDate(n.createdAt)}</span></span>
+        ${n.read ? '' : '<span class="w-2 h-2 rounded-full bg-red-500 mt-2 flex-shrink-0"></span>'}
+      </button>`).join('');
+    list.querySelectorAll('[data-page-notif]').forEach(btn => btn.onclick = async () => {
+      const n = v111NotifItems.find(x => x.id === btn.dataset.pageNotif);
+      if (!n) return;
+      try { await updateDoc(doc(db,'notifications',n.id), { read:true, readAt:serverTimestamp() }); } catch(e){}
+      if (n.workId) window.location.hash = 'reader/' + n.workId;
+    });
+  };
+  render();
+  document.getElementById('v111ReadAllPage').onclick = async () => { await markAllV111NotificationsRead(); render(); };
+}
+
 
 // ============================================================
 // ===== RENDER PAGE (ROUTER) =================================
@@ -3969,6 +4245,7 @@ async function renderPage() {
   else if (hash === 'panduan') await renderPanduan(main);
   else if (hash === 'kritik') await renderKritikSaran(main);
   else if (hash === 'stikerku') await renderStikerKu(main);
+  else if (hash === 'notifikasi') await renderV111NotificationsPage(main);
   else if (hash === 'profil') await renderProfil(main);
   else await renderHome(main);
 }
@@ -4166,7 +4443,7 @@ async function renderPanduan(container) {
 
   const defaultPanduan = `
     <h3><i class="fas fa-code-branch"></i> 0. Versi Website</h3>
-    <p>KomiNovel saat ini versi <b>v1.10</b>. Update terbaru:</p>
+    <p>KomiNovel saat ini versi <b>v1.11</b>. Update terbaru:</p>
     <ul>
       <li>✅ <b>CENTANG PENULIS/KOMIKUS</b> — Centang kuning (penulis novel) &amp; oranye (komikus) sekarang tampil konsisten di kartu karya, chat, clan, dan daftar teman.</li>
       <li>⚡ <b>BANNER LEBIH RINGAN</b> — Banner beranda tetap berganti otomatis tapi tanpa animasi, supaya tidak lag di HP low-end.</li>
@@ -5095,7 +5372,8 @@ async function renderBookmarkPage(container) {
 // ===== FOLLOWERS PAGE =======================================
 // ============================================================
 async function renderFollowersPage(container, uid, mode) {
-  const snap = await getDoc(doc(db, 'users', uid));
+  const liveCached = usersCache[uid];
+  const snap = liveCached ? { exists: () => true, data: () => liveCached } : await getDoc(doc(db, 'users', uid));
   if (!snap.exists()) { container.innerHTML = '<p class="text-red-400">User tidak ditemukan</p>'; return; }
   const u = snap.data();
   const ids = mode === 'followers' ? (u.followers || []) : (u.following || []);
@@ -5297,6 +5575,15 @@ async function renderPrivateChat(container, otherUid) {
   if (!otherSnap.exists()) { container.innerHTML = '<p class="text-red-400">User tidak ditemukan</p>'; return; }
   const other = otherSnap.data();
   const chatId = [currentUser.uid, otherUid].sort().join('_');
+  try {
+    await setDoc(doc(db,'privateChats',chatId), {
+      participants: [currentUser.uid, otherUid],
+      ['unreadCount_' + currentUser.uid]: 0,
+      lastOpenedBy: currentUser.uid,
+      lastOpenedAt: serverTimestamp()
+    }, { merge:true });
+  } catch(e) {}
+  if (notifState.dm) { notifState.dm.count = Math.max(0, Number(notifState.dm.count || 0)); saveNotifState(); updateBadges(); }
   const isOwner = hasRole(other, 'owner');
   container.innerHTML = `
     <button onclick="window.location.hash='teman'" class="text-amber-400 mb-4 hover:text-amber-300 transition"><i class="fas fa-arrow-left mr-2"></i>Kembali</button>
@@ -5379,7 +5666,14 @@ async function renderPrivateChat(container, otherUid) {
     const msgData = { userId: currentUser.uid, username: userProfile.username || 'User', photoURL: userProfile.photoURL || '', text: text ? sensor(text) : '', createdAt: serverTimestamp() };
     if (img) msgData.image = img;
     if (sticker) msgData.sticker = sticker;
-    await addDoc(collection(db, 'privateChats', chatId, 'messages'), msgData);
+    const msgRef = await addDoc(collection(db, 'privateChats', chatId, 'messages'), msgData);
+    await setDoc(doc(db,'privateChats',chatId), {
+      participants: [currentUser.uid, otherUid],
+      lastMessageAt: serverTimestamp(),
+      lastMessageId: msgRef.id,
+      lastSenderId: currentUser.uid,
+      ['unreadCount_' + otherUid]: increment(1)
+    }, { merge:true });
     document.getElementById('pmInput').value = '';
     pendingChatImg.private = null;
     pendingChatSticker.private = null;
@@ -5405,12 +5699,13 @@ async function renderTeman(c) {
     c.innerHTML = `<div class="card-bg rounded-2xl p-8 text-center card-anim"><p class="mb-4">Login dulu untuk akses fitur teman.</p><button onclick="document.getElementById('navAuthMobile').click()" class="bg-amber-500 text-black px-6 py-2 rounded-full font-bold btn-glow">Masuk</button></div>`;
     return;
   }
+  setBadge('v111DmInlineBadge', notifState.dm?.count || 0);
   const friendsSnap = await Promise.all((userProfile.friends || []).map(uid => getDoc(doc(db, 'users', uid))));
   const friends = friendsSnap.filter(s => s.exists()).map(s => ({ id: s.id, ...s.data() }));
   const reqSnap = await Promise.all((userProfile.friendRequests || []).map(uid => getDoc(doc(db, 'users', uid))));
   const requests = reqSnap.filter(s => s.exists()).map(s => ({ id: s.id, ...s.data() }));
   c.innerHTML = `
-    <h2 class="text-2xl font-bold mb-4"><i class="fas fa-user-friends text-amber-400 mr-2"></i>Teman & Chat</h2>
+    <h2 class="text-2xl font-bold mb-4"><i class="fas fa-user-friends text-amber-400 mr-2"></i>Teman & Chat <span id="v111DmInlineBadge" class="notif-badge !static !inline-flex ml-2 hidden">0</span></h2>
     <div class="card-bg rounded-2xl p-4 mb-4 card-anim">
       <label class="text-xs font-semibold text-amber-400 block mb-2">Cari Teman</label>
       <input id="sUser" type="text" placeholder="Ketik username..." class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm mb-2 focus:border-amber-500 transition">
@@ -5770,7 +6065,6 @@ async function renderClanDetail(container, clanId) {
       document.getElementById('clanImgPreview').innerHTML = '';
       document.getElementById('clanStickerPreview').innerHTML = '';
       await addExp(EXP_PER_CHAT);
-      await addClanExp(clanId, 2);
     };
     document.getElementById('clanInput').addEventListener('keypress', e => { if (e.key === 'Enter') document.getElementById('clanSend').click(); });
   }
@@ -6417,28 +6711,65 @@ window.sendFriendRequest = async (uid) => {
 // ============================================================
 async function renderKategori(container) {
   const allCats = [...new Set([...ALL_CATEGORIES, ...customCategories.map(c => c.name)])];
+  selectedCategories = Array.isArray(selectedCategories) ? selectedCategories : [];
   container.innerHTML = `
-    <h2 class="text-2xl font-bold mb-4">Kategori</h2>
+    <div class="flex items-center justify-between gap-3 flex-wrap mb-4">
+      <div><h2 class="text-2xl font-bold">Kategori</h2><p class="text-xs text-slate-400 mt-1">Pilih lebih dari satu kategori untuk memperluas pencarian.</p></div>
+      <button id="v111ClearCats" class="text-xs bg-slate-800 px-3 py-2 rounded-full font-bold">Reset</button>
+    </div>
+    <div class="v111-cat-summary mb-4" id="v111CatSummary">Semua kategori</div>
     <div class="flex flex-wrap gap-2 mb-6" id="catContainer">
-      <button class="cat-btn px-4 py-2 rounded-full bg-amber-500 text-black font-bold text-sm hover:scale-105 transition" data-cat="all">Semua</button>
-      ${allCats.map(c => `<button class="cat-btn px-4 py-2 rounded-full bg-slate-800 text-sm hover:bg-slate-700 transition" data-cat="${escHtml(c)}">${escHtml(c)}</button>`).join('')}
+      ${allCats.map(c => `<button class="cat-btn cat-chip ${selectedCategories.includes(c) ? 'v111-cat-selected' : ''}" data-cat="${escAttr(c)}">${escHtml(c)}</button>`).join('')}
     </div>
     <div id="kategoriList" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-5"></div>`;
-  document.querySelectorAll('.cat-btn').forEach(b => b.onclick = () => {
-    document.querySelectorAll('.cat-btn').forEach(x => x.classList.remove('bg-amber-500','text-black'));
-    b.classList.add('bg-amber-500','text-black');
-    currentCategory = b.dataset.cat; loadKL();
+  const summary = document.getElementById('v111CatSummary');
+  const refreshSummary = () => {
+    summary.textContent = selectedCategories.length
+      ? `Dipilih: ${selectedCategories.join(', ')} • menampilkan karya yang memiliki minimal satu kategori`
+      : 'Semua kategori';
+  };
+  document.querySelectorAll('#catContainer .cat-btn').forEach(b => b.onclick = () => {
+    const cat = b.dataset.cat;
+    if (selectedCategories.includes(cat)) {
+      selectedCategories = selectedCategories.filter(x => x !== cat);
+      b.classList.remove('v111-cat-selected');
+    } else {
+      selectedCategories.push(cat);
+      b.classList.add('v111-cat-selected');
+    }
+    refreshSummary();
+    loadKL();
   });
+  document.getElementById('v111ClearCats').onclick = () => {
+    selectedCategories = [];
+    document.querySelectorAll('#catContainer .cat-btn').forEach(x => x.classList.remove('v111-cat-selected'));
+    refreshSummary();
+    loadKL();
+  };
   async function loadKL() {
     const list = document.getElementById('kategoriList');
+    if (!list) return;
     const snap = await getDocs(collection(db, 'works'));
     let works = []; snap.forEach(d => works.push({ id: d.id, ...d.data() }));
     works = works.filter(w => !isNonPublish(w) && !isTakedown(w));
-    if (currentCategory !== 'all') works = works.filter(w => parseCategories(w.category).includes(currentCategory));
+    if (selectedCategories.length) {
+      works = works.filter(w => {
+        const cats = parseCategories(w.category);
+        return selectedCategories.some(cat => cats.includes(cat));
+      });
+    }
     works.sort((a,b) => (b.views || 0) + (b.likes || 0) * 2 - ((a.views || 0) + (a.likes || 0) * 2));
-    if (works.length === 0) { list.innerHTML = `<div class="col-span-full card-bg rounded-2xl p-12 text-center card-anim"><i class="fas fa-folder-open text-5xl text-amber-400/50 mb-3"></i><p>Belum ada karya.</p></div>`; return; }
+    const authorIds = works.map(w => w.authorId).filter(Boolean);
+    await ensureAuthorProfiles(authorIds, () => {
+      if (document.getElementById('kategoriList')) renderWorkList(document.getElementById('kategoriList'), works, new Set(), true);
+    });
+    if (works.length === 0) {
+      list.innerHTML = `<div class="col-span-full card-bg rounded-2xl p-12 text-center card-anim"><i class="fas fa-folder-open text-5xl text-amber-400/50 mb-3"></i><p>Belum ada karya dengan kategori tersebut.</p></div>`;
+      return;
+    }
     renderWorkList(list, works, new Set(), true);
   }
+  refreshSummary();
   loadKL();
 }
 
@@ -7123,11 +7454,13 @@ async function renderCreatorDashboard(container) {
         const c = document.getElementById('cc-' + sid).value.trim();
         if (!t) { showToast('Judul wajib'); return; }
         if (!c) { showToast('Isi wajib'); return; }
-        await addDoc(collection(db,'works',wid,'chapters'), { number: next, title: t, content: c, images: [], groupId, createdAt: serverTimestamp() });
+        const newChapterRef = await addDoc(collection(db,'works',wid,'chapters'), { number: next, title: t, content: c, images: [], groupId, createdAt: serverTimestamp() });
+        await createChapterNotifications(wid, { id:newChapterRef.id, number:next, title:t });
       } else {
         const images = getMultiImages('mi-' + sid);
         if (images.length === 0) { showToast('Pilih minimal 1 gambar'); return; }
-        await addDoc(collection(db,'works',wid,'chapters'), { number: next, title: t, content: '', images: images, coverImage: images[0], groupId, createdAt: serverTimestamp() });
+        const newChapterRef = await addDoc(collection(db,'works',wid,'chapters'), { number: next, title: t, content: '', images: images, coverImage: images[0], groupId, createdAt: serverTimestamp() });
+        await createChapterNotifications(wid, { id:newChapterRef.id, number:next, title:t });
         const workRef = doc(db, 'works', wid);
         const workSnap = await getDoc(workRef);
         if (workSnap.exists()) { const w = workSnap.data(); if (!w.coverURL || w.coverURL === '') await updateDoc(workRef, { coverURL: images[0] }); }
