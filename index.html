@@ -14,8 +14,14 @@
 }
 </script>
 <meta name="google-site-verification" content="GvyTGbIx3Zov0CXr0f1voJ2LJnac-ppCl62NStzdY3E">
-<meta name="description" content="KomiNovel - Platform baca & tulis Novel dan Komik online gratis. Versi 1.11">
+<meta name="description" content="KomiNovel - Platform baca & tulis Novel dan Komik online gratis. Versi 1.12">
 <link rel="icon" href="https://i.ibb.co.com/SDTthJ7m/Gemini-Generated-Image-fhupt4fhupt4fhup.jpg">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="https://i.ibb.co.com/SDTthJ7m/Gemini-Generated-Image-fhupt4fhupt4fhup.jpg">
+<meta name="theme-color" content="#0f0f1a">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="KomiNovel">
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
@@ -909,6 +915,35 @@ body{font-family:'Inter',sans-serif;background:#0f0f1a;color:#e2e8f0;overflow-x:
   color:#fbbf24;border-radius:12px;padding:9px 12px;font-size:12px;font-weight:800;
 }
 
+
+/* ============================================================
+   v1.12 — PUSH NOTIFICATION
+   ============================================================ */
+.v111-notif-panel{overflow-y:auto;overscroll-behavior:contain}
+.v111-notif-panel .v111-notif-list{max-height:none;overflow:visible}
+.push-settings-slot:empty{display:none}
+.push-settings{padding:12px 14px;border-bottom:1px solid #2d2d44;background:rgba(251,191,36,.05)}
+.push-page-slot .push-settings{border:1px solid #2d2d44;border-radius:16px;margin-bottom:12px}
+.push-title{font-size:13px;font-weight:800;color:#fbbf24}
+.push-title i{margin-right:6px}
+.push-desc{font-size:11px;color:#94a3b8;margin-top:2px;line-height:1.5}
+.push-desc.block{display:block}
+.push-row-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.push-link{font-size:11px;font-weight:700;color:#f87171}
+.push-pref{display:flex;align-items:flex-start;gap:10px;padding:6px 0;cursor:pointer;font-size:13px}
+.push-pref .role-checkbox{margin-top:2px}
+.push-enable-btn{margin-top:8px;width:100%;background:#fbbf24;color:#0f0f1a;font-weight:800;font-size:13px;padding:9px 12px;border-radius:999px}
+.push-ask-banner{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(88px + env(safe-area-inset-bottom,0px));width:min(440px,calc(100vw - 24px));z-index:270;display:flex;align-items:center;gap:10px;padding:12px;border-radius:18px;background:#1a1a2e;border:1px solid #fbbf24;box-shadow:0 12px 36px rgba(0,0,0,.5)}
+.push-ask-icon{width:38px;height:38px;border-radius:50%;background:rgba(251,191,36,.18);color:#fbbf24;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.push-ask-text{flex:1;min-width:0;display:flex;flex-direction:column;font-size:13px}
+.push-ask-text span{font-size:11px;color:#94a3b8;line-height:1.4}
+.push-ask-yes{background:#fbbf24;color:#0f0f1a;font-weight:800;font-size:12px;padding:8px 12px;border-radius:999px;flex-shrink:0}
+.push-ask-no{color:#94a3b8;font-size:22px;line-height:1;padding:0 4px;flex-shrink:0}
+[data-theme="light"] .push-settings{border-color:#d8deea;background:rgba(245,158,11,.08)}
+[data-theme="light"] .push-page-slot .push-settings{border-color:#d8deea}
+[data-theme="light"] .push-title{color:#b45309}
+[data-theme="light"] .push-desc,[data-theme="light"] .push-ask-text span{color:#64748b}
+[data-theme="light"] .push-ask-banner{background:#fff;border-color:#f59e0b;box-shadow:0 12px 36px rgba(15,23,42,.18)}
 </style>
 </head><body class="min-h-screen">
 
@@ -935,7 +970,7 @@ body{font-family:'Inter',sans-serif;background:#0f0f1a;color:#e2e8f0;overflow-x:
 <div class="flex items-center justify-center gap-2 flex-wrap">
 <span>&copy; <span id="footerYear">2026</span> KomiNovel</span>
 </div>
-<p class="text-[10px] text-slate-600">v1.11</p>
+<p class="text-[10px] text-slate-600">v1.12</p>
 </footer>
 </div>
 
@@ -987,6 +1022,7 @@ body{font-family:'Inter',sans-serif;background:#0f0f1a;color:#e2e8f0;overflow-x:
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 import { getAuth, signInAnonymously, GoogleAuthProvider, signInWithPopup, linkWithPopup, onAuthStateChanged, signOut, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, collection, addDoc, getDocs, query, where, orderBy, onSnapshot, serverTimestamp, limit, increment } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+import { getMessaging, getToken, deleteToken, onMessage, isSupported } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-messaging.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDmAEREMEbxAFFBXGzwC25C6_Fty_3x7h0",
@@ -1001,8 +1037,9 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const googleProvider = new GoogleAuthProvider();
 
-const APP_VERSION = '1.11';
+const APP_VERSION = '1.12';
 const APP_VERSION_NOTES = [
+  'v1.12 — NOTIFIKASI PUSH: komik/novel baru, chapter/episode terbaru, berita, chat publik, chat clan, dan pesan pribadi otomatis dikirim ke semua user (web ditutup pun tetap masuk). Bisa diatur per jenis lewat ikon lonceng.',
   'v1.11 — Kategori sekarang bisa memilih lebih dari satu kategori, data foto profil + centang kreator dibuat realtime, notifikasi episode/chapter baru tampil satu per satu dan bisa langsung membuka karya, badge DM menunjukkan pesan yang belum dibaca, dan level user + level clan tidak lagi dibatasi maksimum.',
   'v1.10 — Centang verifikasi penulis/komikus (kuning/oranye) kini tampil di semua tempat (kartu karya, chat publik, chat clan, DM, daftar teman, member clan), banner beranda tanpa animasi transisi (tetap ganti otomatis, ringan untuk HP low-end), dan tema terang diperbaiki total (bubble chat, panel, teks, tombol).',
   'v1.9 — FITUR REPORT karya (auto-takedown jika 10 report), STIKER di semua chat (admin & user bisa tambah, user bisa save stiker orang), BADGE NOTIFIKASI MERAH di chat/berita yang hilang setelah dilihat.',
@@ -3501,6 +3538,7 @@ function renderReviewReaderModal() {
       if (!confirm('Publish karya ini? Pembaca akan bisa membaca semua chapter/eps.')) return;
       try {
         await updateDoc(doc(db, 'works', reviewWorkId), { status: 'publish', updatedAt: serverTimestamp() });
+        pushNotify({ kind: 'work', workId: reviewWorkId });
         showToast('✅ Karya berhasil dipublish!');
         closeReviewModal();
         const main = document.getElementById('mainContent');
@@ -3791,6 +3829,7 @@ async function initAuth() {
       document.getElementById('navAuthMobile').innerHTML = `<i class="fas fa-sign-out-alt"></i>`;
       renderPage();
       setTimeout(() => { initNotifListener(); initChapterNotificationListener(); }, 1200);
+      setTimeout(() => { pushOnLogin(); }, 2200);
       setTimeout(() => checkBirthdays(), 1500);
       setTimeout(() => boostOwnerFollowers(), 2500);
       if (ownerFollowerInterval) clearInterval(ownerFollowerInterval);
@@ -3829,6 +3868,7 @@ async function signInWithGoogle() {
 }
 async function signInAsGuest() { try { await signInAnonymously(auth); showToast('Guest masuk'); } catch (e) { showToast('Gagal: ' + e.message); } }
 async function logout() {
+  try { await pushDetachToken(); } catch (e) {}
   await signOut(auth);
   isAdminSession = false; adminEmail = null;
   localStorage.removeItem('adminSession'); localStorage.removeItem('adminEmail'); localStorage.removeItem('ownerSession');
@@ -3908,6 +3948,250 @@ async function addClanExp(clanId, amount) {
     const l = getClanLevelFromExp(e);
     await updateDoc(ref, { exp: e, level: l, updatedAt: serverTimestamp() });
   } catch (e) {}
+}
+
+// ============================================================
+// ===== v1.12 — PUSH NOTIFICATION (FCM) ======================
+// Komik/Novel baru, chapter/episode baru, berita, chat publik,
+// chat clan & pesan pribadi -> notifikasi ke HP/PC (web ditutup pun masuk)
+// ============================================================
+const VAPID_KEY = 'BMpHpbQhI5aY4PgW0eBEKYrytkl1FebiEA9nOd8hsCfx5U5gXwL5yguq0ps1_Cce0nbgMVdWWZtxrQ8pMoJZDCQ';
+const PUSH_API_URL = '/api/push';
+const PUSH_PREFS_KEY = 'kominovel_push_prefs';
+const PUSH_ASK_KEY = 'kominovel_push_ask';
+const PUSH_PREF_DEFS = [
+  { key:'works',  label:'Komik & Novel baru', desc:'Karya baru + episode/chapter terbaru' },
+  { key:'berita', label:'Berita',             desc:'Pengumuman dari admin' },
+  { key:'chat',   label:'Chat publik',        desc:'Pesan baru di chat publik' },
+  { key:'clan',   label:'Chat clan',          desc:'Pesan baru di clan kamu' },
+  { key:'dm',     label:'Pesan pribadi',      desc:'DM masuk dari teman' }
+];
+let pushMessaging = null, pushSwReg = null, pushToken = null, pushSupported = false;
+let pushInitPromise = null, pushForegroundBound = false;
+
+function pushLoadPrefs() {
+  const prefs = {};
+  PUSH_PREF_DEFS.forEach(p => { prefs[p.key] = true; });
+  try {
+    const saved = JSON.parse(localStorage.getItem(PUSH_PREFS_KEY) || '{}');
+    PUSH_PREF_DEFS.forEach(p => { if (typeof saved[p.key] === 'boolean') prefs[p.key] = saved[p.key]; });
+  } catch (e) {}
+  return prefs;
+}
+function pushIsIOSNeedInstall() {
+  const ua = navigator.userAgent || '';
+  const isIOS = /iphone|ipad|ipod/i.test(ua);
+  const standalone = (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || navigator.standalone;
+  return isIOS && !standalone;
+}
+
+function pushInit() {
+  if (pushInitPromise) return pushInitPromise;
+  pushInitPromise = (async () => {
+    try {
+      if (!('serviceWorker' in navigator) || !('Notification' in window) || !('PushManager' in window)) return false;
+      if (location.protocol !== 'https:' && location.hostname !== 'localhost') return false;
+      if (!(await isSupported())) return false;
+      pushMessaging = getMessaging(app);
+      pushSwReg = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+      pushSupported = true;
+      if (!pushForegroundBound) {
+        pushForegroundBound = true;
+        onMessage(pushMessaging, handlePushForeground);
+      }
+      return true;
+    } catch (e) {
+      console.warn('push init gagal:', e);
+      return false;
+    }
+  })();
+  return pushInitPromise;
+}
+
+async function pushEnsureToken() {
+  if (!pushSupported || !currentUser) return null;
+  if (!('Notification' in window) || Notification.permission !== 'granted') return null;
+  try {
+    const token = await getToken(pushMessaging, { vapidKey: VAPID_KEY, serviceWorkerRegistration: pushSwReg });
+    if (!token) return null;
+    pushToken = token;
+    await setDoc(doc(db, 'fcmTokens', token), {
+      token,
+      uid: currentUser.uid,
+      prefs: pushLoadPrefs(),
+      platform: String(navigator.platform || '').slice(0, 40),
+      ua: String(navigator.userAgent || '').slice(0, 180),
+      updatedAt: serverTimestamp()
+    }, { merge: true });
+    return token;
+  } catch (e) {
+    console.warn('push token gagal:', e);
+    return null;
+  }
+}
+
+async function pushEnable() {
+  if (!pushSupported) { showToast('Notifikasi belum didukung di browser/perangkat ini'); return false; }
+  if (Notification.permission === 'denied') {
+    showToast('Notifikasi diblokir. Buka pengaturan situs di browser lalu izinkan notifikasi.', 5000);
+    return false;
+  }
+  let perm = Notification.permission;
+  if (perm !== 'granted') perm = await Notification.requestPermission();
+  if (perm !== 'granted') { showToast('Izin notifikasi tidak diberikan'); refreshPushSettingsUI(); return false; }
+  const t = await pushEnsureToken();
+  if (t) showToast('🔔 Notifikasi aktif!');
+  else showToast('Gagal mengaktifkan notifikasi. Coba lagi.');
+  refreshPushSettingsUI();
+  return !!t;
+}
+
+async function pushDisable() {
+  try {
+    if (pushToken) await deleteDoc(doc(db, 'fcmTokens', pushToken));
+    if (pushMessaging) await deleteToken(pushMessaging);
+  } catch (e) { console.warn('push disable:', e); }
+  pushToken = null;
+  showToast('Notifikasi dimatikan');
+  refreshPushSettingsUI();
+}
+
+// dipanggil saat logout: device ini berhenti menerima notif akun lama
+async function pushDetachToken() {
+  try {
+    if (pushToken && currentUser) await deleteDoc(doc(db, 'fcmTokens', pushToken));
+  } catch (e) {}
+  pushToken = null;
+}
+
+async function pushSetPref(key, val) {
+  const prefs = pushLoadPrefs();
+  prefs[key] = !!val;
+  try { localStorage.setItem(PUSH_PREFS_KEY, JSON.stringify(prefs)); } catch (e) {}
+  if (pushToken && currentUser) {
+    try {
+      await setDoc(doc(db, 'fcmTokens', pushToken), { token: pushToken, uid: currentUser.uid, prefs, updatedAt: serverTimestamp() }, { merge: true });
+    } catch (e) { showToast('Gagal menyimpan pengaturan notifikasi'); }
+  }
+}
+
+async function pushOnLogin() {
+  const ok = await pushInit();
+  if (ok && Notification.permission === 'granted') await pushEnsureToken();
+  else if (ok && Notification.permission === 'default') pushMaybeShowAskBanner();
+  refreshPushSettingsUI();
+}
+
+function pushMaybeShowAskBanner() {
+  try {
+    const last = Number(localStorage.getItem(PUSH_ASK_KEY) || 0);
+    if (last && Date.now() - last < 3 * 24 * 60 * 60 * 1000) return;
+  } catch (e) {}
+  if (document.getElementById('pushAskBanner')) return;
+  const bar = document.createElement('div');
+  bar.id = 'pushAskBanner';
+  bar.className = 'push-ask-banner';
+  bar.innerHTML = `
+    <span class="push-ask-icon"><i class="fas fa-bell"></i></span>
+    <span class="push-ask-text">
+      <b>Aktifkan notifikasi?</b>
+      <span>Dapat info komik/novel baru, chapter terbaru, dan chat masuk.</span>
+    </span>
+    <button type="button" id="pushAskYes" class="push-ask-yes">Aktifkan</button>
+    <button type="button" id="pushAskNo" class="push-ask-no" aria-label="Nanti saja">&times;</button>`;
+  document.body.appendChild(bar);
+  document.getElementById('pushAskYes').onclick = async () => { bar.remove(); await pushEnable(); };
+  document.getElementById('pushAskNo').onclick = () => {
+    try { localStorage.setItem(PUSH_ASK_KEY, String(Date.now())); } catch (e) {}
+    bar.remove();
+  };
+}
+
+function pushSettingsHtml() {
+  if (!currentUser) return '';
+  const wrap = (inner) => `<div class="push-settings">${inner}</div>`;
+  if (!pushSupported) {
+    const ios = pushIsIOSNeedInstall();
+    return wrap(`<p class="push-title"><i class="fas fa-bell-slash"></i> Notifikasi push belum tersedia</p>
+      <p class="push-desc">${ios ? 'Di iPhone/iPad: buka lewat Safari, tekan tombol Bagikan, pilih <b>Tambah ke Layar Utama</b>, lalu buka KomiNovel dari ikon itu.' : 'Browser/perangkat ini belum mendukung notifikasi push.'}</p>`);
+  }
+  if (Notification.permission === 'denied') {
+    return wrap(`<p class="push-title"><i class="fas fa-ban"></i> Notifikasi diblokir</p>
+      <p class="push-desc">Buka pengaturan situs di browser (ikon gembok di address bar), ubah Notifikasi menjadi <b>Izinkan</b>, lalu muat ulang halaman.</p>`);
+  }
+  if (Notification.permission === 'granted' && pushToken) {
+    const prefs = pushLoadPrefs();
+    return wrap(`<div class="push-row-head"><p class="push-title"><i class="fas fa-bell"></i> Notifikasi aktif</p>
+        <button type="button" data-push-act="disable" class="push-link">Matikan</button></div>
+      ${PUSH_PREF_DEFS.map(p => `
+        <label class="push-pref">
+          <input type="checkbox" class="role-checkbox" data-push-pref="${p.key}" ${prefs[p.key] ? 'checked' : ''}>
+          <span><b>${p.label}</b><span class="push-desc block">${p.desc}</span></span>
+        </label>`).join('')}`);
+  }
+  return wrap(`<p class="push-title"><i class="fas fa-bell"></i> Dapatkan notifikasi</p>
+    <p class="push-desc">Komik/novel baru, chapter terbaru, berita, dan chat langsung masuk ke perangkatmu.</p>
+    <button type="button" data-push-act="enable" class="push-enable-btn">Aktifkan Notifikasi</button>`);
+}
+
+function refreshPushSettingsUI() {
+  document.querySelectorAll('.push-settings-slot').forEach(slot => {
+    slot.innerHTML = pushSettingsHtml();
+    slot.querySelectorAll('[data-push-act]').forEach(btn => {
+      btn.onclick = async (e) => {
+        e.preventDefault(); e.stopPropagation();
+        if (btn.dataset.pushAct === 'enable') await pushEnable();
+        else if (btn.dataset.pushAct === 'disable') await pushDisable();
+      };
+    });
+    slot.querySelectorAll('[data-push-pref]').forEach(cb => {
+      cb.onchange = () => pushSetPref(cb.dataset.pushPref, cb.checked);
+    });
+  });
+}
+
+// Notifikasi saat web sedang terbuka (tampil sebagai bar di atas)
+function handlePushForeground(payload) {
+  const d = (payload && payload.data) || {};
+  if (!d.title) return;
+  const h = getHash();
+  if (d.kind === 'chat' && h === 'chat') return;
+  if (d.kind === 'clan' && h === 'clan/' + d.clanId) return;
+  if (d.kind === 'dm' && h === 'privatechat/' + d.fromUid) return;
+  const old = document.getElementById('pushLiveToast');
+  if (old) old.remove();
+  const iconMap = { work:'fa-book-open', chapter:'fa-book-open', berita:'fa-newspaper', chat:'fa-comments', clan:'fa-shield-alt', dm:'fa-envelope' };
+  const bar = document.createElement('button');
+  bar.id = 'pushLiveToast';
+  bar.type = 'button';
+  bar.className = 'fixed top-20 left-1/2 -translate-x-1/2 z-[290] max-w-[calc(100vw-24px)] w-[420px] text-left px-4 py-3 rounded-2xl shadow-2xl border border-amber-400/40 bg-slate-900 text-white flex items-center gap-3';
+  bar.innerHTML = `
+    <span class="w-10 h-10 rounded-full bg-amber-500/20 text-amber-300 flex items-center justify-center flex-shrink-0"><i class="fas ${iconMap[d.kind] || 'fa-bell'}"></i></span>
+    <span class="min-w-0 flex-1">
+      <span class="block text-sm font-bold truncate">${escHtml(d.title)}</span>
+      <span class="block text-xs text-slate-400 truncate">${escHtml(d.body || '')}</span>
+    </span>
+    <i class="fas fa-chevron-right text-slate-500"></i>`;
+  bar.onclick = () => { if (d.hash) window.location.hash = d.hash; bar.remove(); };
+  document.body.appendChild(bar);
+  setTimeout(() => { if (bar.isConnected) bar.remove(); }, 5000);
+}
+
+// Minta server mengirim push (server memverifikasi sendiri datanya dari Firestore)
+function pushNotify(payload) {
+  (async () => {
+    try {
+      if (!currentUser || !PUSH_API_URL) return;
+      const idToken = await currentUser.getIdToken();
+      const res = await fetch(PUSH_API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + idToken },
+        body: JSON.stringify(payload),
+        keepalive: true
+      });
+      if (!res.ok) { const t = await res.text(); console.warn('push api:', res.status, t); }
+    } catch (e) { console.warn('push api error:', e); }
+  })();
 }
 
 function initNotifListener() {
@@ -4072,8 +4356,10 @@ function openV111NotifPanel() {
         <div><b class="text-sm">Notifikasi</b><p class="text-[10px] text-slate-500">Episode/chapter baru & aktivitas akun</p></div>
         <button id="v111NotifReadAll" class="text-xs text-amber-400 font-bold">Tandai semua dibaca</button>
       </div>
+      <div class="push-settings-slot"></div>
       <div id="v111NotifList" class="v111-notif-list"></div>`;
     document.body.appendChild(panel);
+    refreshPushSettingsUI();
     panel.querySelector('#v111NotifReadAll').onclick = async () => {
       await markAllV111NotificationsRead();
       renderV111NotifPanel();
@@ -4118,7 +4404,9 @@ async function renderV111NotificationsPage(container) {
       <p class="text-xs text-slate-400 mt-1">Update episode/chapter dari kreator yang kamu ikuti.</p></div>
       <button id="v111ReadAllPage" class="text-xs bg-slate-800 px-3 py-2 rounded-full font-bold">Tandai semua dibaca</button>
     </div>
+    <div class="push-settings-slot push-page-slot"></div>
     <div id="v111PageList" class="space-y-2"></div>`;
+  refreshPushSettingsUI();
   const list = document.getElementById('v111PageList');
   const render = () => {
     const arr = v111NotifItems.slice().sort((a,b)=>(b.createdAt?.toDate?.()?.getTime?.()||0)-(a.createdAt?.toDate?.()?.getTime?.()||0));
@@ -4443,8 +4731,9 @@ async function renderPanduan(container) {
 
   const defaultPanduan = `
     <h3><i class="fas fa-code-branch"></i> 0. Versi Website</h3>
-    <p>KomiNovel saat ini versi <b>v1.11</b>. Update terbaru:</p>
+    <p>KomiNovel saat ini versi <b>v1.12</b>. Update terbaru:</p>
     <ul>
+      <li>🔔 <b>NOTIFIKASI PUSH</b> — Komik/novel baru, chapter/episode terbaru, berita, chat publik, chat clan, dan pesan pribadi langsung masuk ke HP/PC kamu, bahkan saat web ditutup. Aktifkan lewat ikon lonceng, dan atur jenis notifikasi sesuai keinginan. (iPhone: tambahkan KomiNovel ke Layar Utama dulu.)</li>
       <li>✅ <b>CENTANG PENULIS/KOMIKUS</b> — Centang kuning (penulis novel) &amp; oranye (komikus) sekarang tampil konsisten di kartu karya, chat, clan, dan daftar teman.</li>
       <li>⚡ <b>BANNER LEBIH RINGAN</b> — Banner beranda tetap berganti otomatis tapi tanpa animasi, supaya tidak lag di HP low-end.</li>
       <li>☀️ <b>TEMA TERANG DIPERBAIKI</b> — Bubble chat, panel, dan teks tidak lagi menghitam/transparan.</li>
@@ -5325,12 +5614,13 @@ async function openBeritaModal(id, container) {
       if (id) {
         await updateDoc(doc(db, 'berita', id), { title, content: cnt, image: img, updatedAt: serverTimestamp() });
       } else {
-        await addDoc(collection(db, 'berita'), {
+        const beritaRef = await addDoc(collection(db, 'berita'), {
           title, content: cnt, image: img, pinned: false,
           authorId: currentUser?.uid || 'admin',
           authorName: userProfile?.username || 'Admin',
           createdAt: serverTimestamp()
         });
+        pushNotify({ kind: 'berita', id: beritaRef.id });
       }
       showToast('Berita disimpan!');
       modal.classList.add('hidden');
@@ -5674,6 +5964,7 @@ async function renderPrivateChat(container, otherUid) {
       lastSenderId: currentUser.uid,
       ['unreadCount_' + otherUid]: increment(1)
     }, { merge:true });
+    pushNotify({ kind: 'dm', chatId, id: msgRef.id });
     document.getElementById('pmInput').value = '';
     pendingChatImg.private = null;
     pendingChatSticker.private = null;
@@ -6056,7 +6347,8 @@ async function renderClanDetail(container, clanId) {
       if (img) msgData.image = img;
       if (sticker) msgData.sticker = sticker;
       if (replyingToClan) { msgData.replyTo = replyingToClan.id; msgData.replyToText = replyingToClan.text || (replyingToClan.image ? '🖼️ Gambar' : (replyingToClan.sticker ? '🎨 Stiker' : '')); msgData.replyToName = replyingToClan.username; }
-      await addDoc(collection(db, 'clans', clanId, 'messages'), msgData);
+      const clanMsgRef = await addDoc(collection(db, 'clans', clanId, 'messages'), msgData);
+      pushNotify({ kind: 'clan', clanId, id: clanMsgRef.id });
       document.getElementById('clanInput').value = '';
       replyingToClan = null;
       pendingChatImg.clan = null;
@@ -6933,7 +7225,8 @@ async function renderChat(container) {
     if (img) msgData.image = img;
     if (sticker) msgData.sticker = sticker;
     if (replyingToPublic) { msgData.replyTo = replyingToPublic.id; msgData.replyToText = replyingToPublic.text || (replyingToPublic.image ? '🖼️ Gambar' : (replyingToPublic.sticker ? '🎨 Stiker' : '')); msgData.replyToName = replyingToPublic.username; }
-    await addDoc(collection(db,'chats'), msgData);
+    const publicMsgRef = await addDoc(collection(db,'chats'), msgData);
+    pushNotify({ kind: 'chat', id: publicMsgRef.id });
     input.value = '';
     replyingToPublic = null;
     pendingChatImg.public = null;
@@ -7456,11 +7749,13 @@ async function renderCreatorDashboard(container) {
         if (!c) { showToast('Isi wajib'); return; }
         const newChapterRef = await addDoc(collection(db,'works',wid,'chapters'), { number: next, title: t, content: c, images: [], groupId, createdAt: serverTimestamp() });
         await createChapterNotifications(wid, { id:newChapterRef.id, number:next, title:t });
+        pushNotify({ kind: 'chapter', workId: wid, chapterId: newChapterRef.id });
       } else {
         const images = getMultiImages('mi-' + sid);
         if (images.length === 0) { showToast('Pilih minimal 1 gambar'); return; }
         const newChapterRef = await addDoc(collection(db,'works',wid,'chapters'), { number: next, title: t, content: '', images: images, coverImage: images[0], groupId, createdAt: serverTimestamp() });
         await createChapterNotifications(wid, { id:newChapterRef.id, number:next, title:t });
+        pushNotify({ kind: 'chapter', workId: wid, chapterId: newChapterRef.id });
         const workRef = doc(db, 'works', wid);
         const workSnap = await getDoc(workRef);
         if (workSnap.exists()) { const w = workSnap.data(); if (!w.coverURL || w.coverURL === '') await updateDoc(workRef, { coverURL: images[0] }); }
@@ -7821,7 +8116,7 @@ async function renderAdminPanel(container) {
       const desc = document.getElementById('adminUploadDesc').value.trim();
       const coverURL = getCoverValue('adminUploadCover');
       if (!title || !teaser || cats.length === 0 || !coverURL) { showToast('Lengkapi'); return; }
-      await addDoc(collection(db,'works'), {
+      const newAdminWorkRef = await addDoc(collection(db,'works'), {
         title, teaser, type, category, description: desc, coverURL, status: 'publish',
         authorId: currentUser?.uid || 'admin', authorName: userProfile?.username || 'Admin',
         authorPhotoURL: userProfile?.photoURL || '', authorSosmed: userProfile?.sosmed || {},
@@ -7832,6 +8127,7 @@ async function renderAdminPanel(container) {
         takedown: { active: false, reason: '', by: '', at: null },
         createdAt: serverTimestamp(), updatedAt: serverTimestamp()
       });
+      pushNotify({ kind: 'work', workId: newAdminWorkRef.id });
       showToast('Dibuat'); window.location.hash = 'creator';
     };
   }
