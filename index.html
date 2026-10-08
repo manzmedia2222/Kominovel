@@ -1039,6 +1039,7 @@ const googleProvider = new GoogleAuthProvider();
 
 const APP_VERSION = '1.12';
 const APP_VERSION_NOTES = [
+  'v1.12 — NOTIFIKASI PUSH dan kustom: admin/owner dapat mengirim pengumuman langsung dari navbar Notifikasi; member dapat keluar dari clan sendiri; perbaikan pengiriman jawaban Minigame Gambar & Tebak.',
   'v1.12 — NOTIFIKASI PUSH: komik/novel baru, chapter/episode terbaru, berita, chat publik, chat clan, dan pesan pribadi otomatis dikirim ke semua user (web ditutup pun tetap masuk). Bisa diatur per jenis lewat ikon lonceng.',
   'v1.11 — Kategori sekarang bisa memilih lebih dari satu kategori, data foto profil + centang kreator dibuat realtime, notifikasi episode/chapter baru tampil satu per satu dan bisa langsung membuka karya, badge DM menunjukkan pesan yang belum dibaca, dan level user + level clan tidak lagi dibatasi maksimum.',
   'v1.10 — Centang verifikasi penulis/komikus (kuning/oranye) kini tampil di semua tempat (kartu karya, chat publik, chat clan, DM, daftar teman, member clan), banner beranda tanpa animasi transisi (tetap ganti otomatis, ringan untuk HP low-end), dan tema terang diperbaiki total (bubble chat, panel, teks, tombol).',
@@ -4357,12 +4358,41 @@ function openV111NotifPanel() {
         <button id="v111NotifReadAll" class="text-xs text-amber-400 font-bold">Tandai semua dibaca</button>
       </div>
       <div class="push-settings-slot"></div>
+      ${currentUser && userProfile && isAdminUser(userProfile) ? `<div class="px-3 py-3 border-b border-slate-700/60"><button id="customNotifToggle" type="button" class="w-full text-left text-xs font-black text-amber-400"><i class="fas fa-paper-plane mr-2"></i>Kirim Notifikasi Kustom</button><div id="customNotifForm" class="hidden mt-3 space-y-2"><input id="customNotifTitle" maxlength="100" placeholder="Judul notifikasi" class="w-full rounded-lg px-3 py-2 text-sm bg-slate-800 border border-slate-700"><textarea id="customNotifBody" maxlength="500" rows="3" placeholder="Isi pesan untuk semua pengguna..." class="w-full rounded-lg px-3 py-2 text-sm bg-slate-800 border border-slate-700"></textarea><button id="customNotifSend" type="button" class="w-full rounded-lg bg-amber-500 text-black font-black text-sm py-2"><i class="fas fa-paper-plane mr-1"></i>Kirim ke Semua User</button><p class="text-[10px] text-slate-500">Notifikasi akan masuk ke pusat notifikasi setiap pengguna.</p></div></div>` : ''}
       <div id="v111NotifList" class="v111-notif-list"></div>`;
     document.body.appendChild(panel);
     refreshPushSettingsUI();
     panel.querySelector('#v111NotifReadAll').onclick = async () => {
       await markAllV111NotificationsRead();
       renderV111NotifPanel();
+    };
+    const customToggle = panel.querySelector('#customNotifToggle');
+    if (customToggle) customToggle.onclick = () => panel.querySelector('#customNotifForm')?.classList.toggle('hidden');
+    const customSend = panel.querySelector('#customNotifSend');
+    if (customSend) customSend.onclick = async () => {
+      if (!currentUser || !userProfile || !isAdminUser(userProfile)) { showToast('Akses ditolak.'); return; }
+      const title = panel.querySelector('#customNotifTitle')?.value.trim() || '';
+      const body = panel.querySelector('#customNotifBody')?.value.trim() || '';
+      if (!title || !body) { showToast('Judul dan isi notifikasi wajib diisi.'); return; }
+      customSend.disabled = true; customSend.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i>Mengirim...';
+      try {
+        const usersSnap = await getDocs(collection(db, 'users'));
+        let sent = 0;
+        for (const userDoc of usersSnap.docs) {
+          if (userDoc.id === currentUser.uid) continue;
+          await addDoc(collection(db, 'notifications'), {
+            recipientId: userDoc.id, type: 'custom_admin', title, body,
+            senderId: currentUser.uid, senderName: userProfile.username || 'Admin',
+            read: false, createdAt: serverTimestamp()
+          });
+          sent++;
+        }
+        showToast(`Notifikasi terkirim ke ${sent} pengguna.`);
+        panel.querySelector('#customNotifTitle').value = '';
+        panel.querySelector('#customNotifBody').value = '';
+        panel.querySelector('#customNotifForm')?.classList.add('hidden');
+      } catch (err) { showToast('Gagal mengirim notifikasi: ' + err.message); }
+      finally { customSend.disabled = false; customSend.innerHTML = '<i class="fas fa-paper-plane mr-1"></i>Kirim ke Semua User'; }
     };
     renderV111NotifPanel();
   } else {
@@ -6135,6 +6165,7 @@ async function renderClanDetail(container, clanId) {
         <div class="flex flex-col md:flex-row gap-2 flex-wrap justify-center">
           ${!isMember && currentUser && !hasPendingReq ? `<button id="joinClan" class="bg-green-600 text-white font-bold px-6 py-2 rounded-full hover:scale-105 transition">Request Join</button>` : ''}
           ${hasPendingReq ? `<span class="bg-yellow-600/30 text-yellow-300 font-bold px-4 py-2 rounded-full text-sm border border-yellow-600/50">⏳ Menunggu Persetujuan</span>` : ''}
+          ${isMember && !isOwner ? `<button id="leaveClanBtn" class="bg-red-700 text-white font-bold px-4 py-2 rounded-full text-sm hover:scale-105 transition"><i class="fas fa-sign-out-alt mr-1"></i>Keluar Clan</button>` : ''}
           ${isOwner ? `
             <button id="editClanBtn" class="bg-blue-600 text-white font-bold px-4 py-2 rounded-full text-sm hover:scale-105 transition"><i class="fas fa-edit mr-1"></i>Edit</button>
             <button id="deleteClanBtn" class="bg-red-700 text-white font-bold px-4 py-2 rounded-full text-sm hover:scale-105 transition"><i class="fas fa-trash mr-1"></i>Hapus</button>
@@ -6231,6 +6262,31 @@ async function renderClanDetail(container, clanId) {
       renderPage();
     };
   }
+  if (document.getElementById('leaveClanBtn')) {
+    document.getElementById('leaveClanBtn').onclick = async () => {
+      if (!currentUser || clan.leader === currentUser.uid) { showToast('Owner tidak bisa keluar sebelum menyerahkan kepemimpinan atau menghapus clan.'); return; }
+      if (!confirm(`Yakin keluar dari clan "${clan.name}"?`)) return;
+      try {
+        const freshSnap = await getDoc(doc(db, 'clans', clanId));
+        if (!freshSnap.exists()) throw new Error('Clan tidak ditemukan');
+        const fresh = freshSnap.data();
+        if (fresh.leader === currentUser.uid) { showToast('Owner tidak bisa keluar dari clan.'); return; }
+        await updateDoc(doc(db, 'clans', clanId), {
+          members: (fresh.members || []).filter(uid => uid !== currentUser.uid),
+          admins: (fresh.admins || []).filter(uid => uid !== currentUser.uid),
+          joinRequests: (fresh.joinRequests || []).filter(uid => uid !== currentUser.uid),
+          updatedAt: serverTimestamp()
+        });
+        await updateDoc(doc(db, 'users', currentUser.uid), { clanId: null });
+        if (userProfile) userProfile.clanId = null;
+        await loadClansCache();
+        showToast('Kamu berhasil keluar dari clan.');
+        window.location.hash = 'clan';
+        renderPage();
+      } catch (err) { showToast('Gagal keluar dari clan: ' + err.message); }
+    };
+  }
+
   if (document.getElementById('editClanBtn')) {
     document.getElementById('editClanBtn').onclick = () => document.getElementById('editClanForm').classList.toggle('hidden');
     document.getElementById('cancelEditClanBtn').onclick = () => document.getElementById('editClanForm').classList.add('hidden');
@@ -8989,36 +9045,49 @@ window.mgDrawerRespond = async (roomId, type) => {
 
 window.mgSubmitGuess = async () => {
   const input = document.getElementById('mgGuessInput');
-  if (!input) return;
-  const guess = input.value.trim().toLowerCase();
-  if (!guess) return;
-  if (mgGuessSubmitting) return;
+  const button = document.getElementById('mgGuessBtn');
+  if (!input || !currentUser || !userProfile) return;
+  const normalizeGuess = value => String(value || '').normalize('NFKC').trim().toLocaleLowerCase('id').replace(/\s+/g, ' ');
+  const guess = normalizeGuess(input.value);
+  if (!guess || mgGuessSubmitting) return;
+  const roomId = mgCurrentRoom?.id || getHash().match(/^minigame\/(.+)$/)?.[1] || '';
+  if (!roomId) { showToast('Room tidak ditemukan. Coba masuk ulang ke room.'); return; }
   mgGuessSubmitting = true;
+  if (button) { button.disabled = true; button.dataset.originalHtml = button.innerHTML; button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; }
   try {
-    const roomSnap = await getDoc(doc(db, 'mg_rooms', mgCurrentRoom?.id || ''));
-    if (!roomSnap.exists()) { mgGuessSubmitting = false; return; }
-    const room = roomSnap.data();
-    if (room.drawerId === currentUser.uid) { showToast('Kamu penggambar, tidak bisa menebak!'); mgGuessSubmitting = false; return; }
-    if (room.roundStatus !== 'drawing') { showToast('Ronde sudah selesai'); mgGuessSubmitting = false; return; }
-    const log = room.guessLog || [];
-    const isCorrect = guess === room.word.toLowerCase();
-    log.push({ type: isCorrect ? 'correct' : 'wrong', text: `${isCorrect ? '✅' : '❌'} ${userProfile.username}: "${guess}"`, uid: currentUser.uid, at: Date.now() });
+    const roomRef = doc(db, 'mg_rooms', roomId);
+    const roomSnap = await getDoc(roomRef);
+    if (!roomSnap.exists()) { showToast('Room tidak ditemukan.'); return; }
+    const room = { id: roomSnap.id, ...roomSnap.data() };
+    mgCurrentRoom = room;
+    if (!(room.players || []).includes(currentUser.uid)) { showToast('Kamu bukan anggota room ini.'); return; }
+    if (room.drawerId === currentUser.uid) { showToast('Kamu penggambar, tidak bisa menebak!'); return; }
+    if (room.roundStatus !== 'drawing' || room.status !== 'playing') { showToast('Ronde sudah selesai.'); return; }
+    const answer = normalizeGuess(room.word);
+    if (!answer) { showToast('Kata tebakan belum tersedia.'); return; }
+    const log = [...(room.guessLog || [])];
+    const isCorrect = guess === answer;
+    log.push({ type: isCorrect ? 'correct' : 'wrong', text: `${isCorrect ? '✅' : '❌'} ${userProfile.username || 'Player'}: "${guess}"`, uid: currentUser.uid, at: Date.now() });
     const updates = { guessLog: log, updatedAt: serverTimestamp() };
     if (isCorrect) {
       updates.roundStatus = 'correct';
       updates.status = 'finished';
       updates.endTime = Date.now();
-      const scores = room.scores || {};
+      const scores = { ...(room.scores || {}) };
       scores[currentUser.uid] = (scores[currentUser.uid] || 0) + 10;
       scores[room.drawerId] = (scores[room.drawerId] || 0) + 5;
       updates.scores = scores;
     }
-    await updateDoc(doc(db, 'mg_rooms', room.id), updates);
+    await updateDoc(roomRef, updates);
     input.value = '';
-  } catch (err) { showToast('Gagal: ' + err.message); }
-  mgGuessSubmitting = false;
+    if (!isCorrect) input.focus();
+  } catch (err) { showToast('Gagal mengirim jawaban: ' + (err?.message || 'Kesalahan tidak diketahui')); }
+  finally {
+    mgGuessSubmitting = false;
+    const liveButton = document.getElementById('mgGuessBtn');
+    if (liveButton) { liveButton.disabled = false; liveButton.innerHTML = liveButton.dataset.originalHtml || '<i class="fas fa-paper-plane"></i>'; }
+  }
 };
-
 document.addEventListener('click', (e) => {
   if (e.target && (e.target.id === 'mgGuessBtn' || e.target.closest('#mgGuessBtn'))) window.mgSubmitGuess();
 });
