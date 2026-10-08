@@ -1,0 +1,9 @@
+{
+  "name": "kominovel-push",
+  "version": "1.12.0",
+  "private": true,
+  "engines": { "node": ">=18" },
+  "dependencies": {
+    "firebase-admin": "^13.0.0"
+  }
+}

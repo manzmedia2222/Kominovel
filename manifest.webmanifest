@@ -1,0 +1,13 @@
+{
+  "name": "KomiNovel",
+  "short_name": "KomiNovel",
+  "description": "Baca & tulis Novel dan Komik online gratis",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0f0f1a",
+  "theme_color": "#0f0f1a",
+  "icons": [
+    { "src": "https://i.ibb.co.com/SDTthJ7m/Gemini-Generated-Image-fhupt4fhupt4fhup.jpg", "sizes": "512x512", "type": "image/jpeg", "purpose": "any" }
+  ]
+}
