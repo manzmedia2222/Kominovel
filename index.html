@@ -944,6 +944,64 @@ body{font-family:'Inter',sans-serif;background:#0f0f1a;color:#e2e8f0;overflow-x:
 [data-theme="light"] .push-title{color:#b45309}
 [data-theme="light"] .push-desc,[data-theme="light"] .push-ask-text span{color:#64748b}
 [data-theme="light"] .push-ask-banner{background:#fff;border-color:#f59e0b;box-shadow:0 12px 36px rgba(15,23,42,.18)}
+
+/* ===== ABOUT DEV PAGE ===== */
+.dev-hero{background:linear-gradient(135deg,#2a1f0a,#1a1a2e 60%,#0f1a2e);border:1px solid #3b3b5c;border-radius:20px;padding:28px 20px;text-align:center}
+.dev-avatar{width:96px;height:96px;margin:0 auto 14px;border-radius:50%;background:linear-gradient(135deg,#fbbf24,#ea580c);display:flex;align-items:center;justify-content:center;color:#0f0f1a;font-size:34px;font-weight:900;border:3px solid #fbbf24}
+.dev-name{font-size:26px;font-weight:900;color:#fbbf24;line-height:1.2}
+.dev-role{font-size:13px;color:#94a3b8;margin-top:6px}
+.dev-chip-row{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:14px}
+.dev-chip{font-size:11px;font-weight:700;padding:4px 10px;border-radius:999px;background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.35);color:#fcd34d}
+.dev-section{background:#1a1a2e;border:1px solid #2d2d44;border-radius:16px;padding:20px;margin-top:14px}
+.dev-section h3{display:flex;align-items:center;gap:10px;font-size:17px;font-weight:900;color:#fbbf24;margin:0 0 10px}
+.dev-section h3 i{width:30px;height:30px;border-radius:8px;background:rgba(251,191,36,.18);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.dev-section p{font-size:14px;line-height:1.85;color:#cbd5e1;margin:0 0 10px;overflow-wrap:anywhere}
+.dev-section p:last-child{margin-bottom:0}
+.dev-section ul{list-style:none;padding:0;margin:8px 0}
+.dev-section ul li{position:relative;font-size:14px;line-height:1.75;color:#cbd5e1;padding:5px 0 5px 22px;overflow-wrap:anywhere}
+.dev-section ul li::before{content:'▸';position:absolute;left:4px;color:#fbbf24;font-weight:900}
+.dev-section b{color:#f1f5f9}
+.dev-quote{border-left:3px solid #fbbf24;background:rgba(251,191,36,.08);padding:12px 14px;border-radius:10px;font-size:14px;line-height:1.8;color:#fde68a;font-style:italic;margin:10px 0;overflow-wrap:anywhere}
+.dev-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:10px}
+@media(min-width:640px){.dev-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.dev-stat{background:#12121f;border:1px solid #2d2d44;border-radius:12px;padding:12px;text-align:center}
+.dev-stat i{color:#fbbf24;font-size:20px;margin-bottom:6px}
+.dev-stat .t{font-size:13px;font-weight:800;color:#f1f5f9}
+.dev-stat .d{font-size:11px;color:#94a3b8;margin-top:3px;line-height:1.5}
+.dev-ver{border-left:2px solid #3b3b5c;padding:2px 0 2px 14px;margin:0 0 12px 6px;position:relative}
+.dev-ver::before{content:'';position:absolute;left:-6px;top:6px;width:10px;height:10px;border-radius:50%;background:#fbbf24}
+.dev-ver .v{font-size:12px;font-weight:900;color:#fbbf24}
+.dev-ver .n{font-size:13px;line-height:1.7;color:#cbd5e1;margin-top:2px;overflow-wrap:anywhere}
+.dev-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 20px;border-radius:999px;font-weight:800;font-size:14px;text-decoration:none;transition:transform .15s}
+.dev-btn:hover{transform:scale(1.04)}
+.dev-btn-gold{background:#f59e0b;color:#0f0f1a}
+.dev-btn-green{background:#16a34a;color:#fff}
+.dev-faq{background:#12121f;border:1px solid #2d2d44;border-radius:12px;padding:12px 14px;margin-top:8px}
+.dev-faq summary{cursor:pointer;font-size:14px;font-weight:800;color:#f1f5f9;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.dev-faq summary::-webkit-details-marker{display:none}
+.dev-faq[open] summary{color:#fbbf24;margin-bottom:8px}
+.dev-faq p{font-size:13px;margin:0}
+[data-theme="light"] .dev-hero{background:linear-gradient(135deg,#fff7e6,#ffffff 60%,#eef4ff);border-color:#d8deea}
+[data-theme="light"] .dev-name{color:#b45309}
+[data-theme="light"] .dev-role{color:#64748b}
+[data-theme="light"] .dev-chip{background:rgba(245,158,11,.12);border-color:rgba(245,158,11,.5);color:#92400e}
+[data-theme="light"] .dev-section{background:#ffffff;border-color:#d8deea}
+[data-theme="light"] .dev-section h3{color:#b45309}
+[data-theme="light"] .dev-section h3 i{background:rgba(245,158,11,.18)}
+[data-theme="light"] .dev-section p,[data-theme="light"] .dev-section ul li{color:#334155}
+[data-theme="light"] .dev-section b{color:#0f172a}
+[data-theme="light"] .dev-section ul li::before{color:#d97706}
+[data-theme="light"] .dev-quote{background:rgba(245,158,11,.1);color:#92400e;border-left-color:#f59e0b}
+[data-theme="light"] .dev-stat{background:#f8fafc;border-color:#d8deea}
+[data-theme="light"] .dev-stat i{color:#d97706}
+[data-theme="light"] .dev-stat .t{color:#0f172a}
+[data-theme="light"] .dev-stat .d{color:#64748b}
+[data-theme="light"] .dev-ver{border-left-color:#cbd5e1}
+[data-theme="light"] .dev-ver .v{color:#b45309}
+[data-theme="light"] .dev-ver .n{color:#334155}
+[data-theme="light"] .dev-faq{background:#f8fafc;border-color:#d8deea}
+[data-theme="light"] .dev-faq summary{color:#0f172a}
+[data-theme="light"] .dev-faq[open] summary{color:#b45309}
 </style>
 </head><body class="min-h-screen">
 
@@ -966,10 +1024,39 @@ body{font-family:'Inter',sans-serif;background:#0f0f1a;color:#e2e8f0;overflow-x:
 </div>
 </header>
 <main id="mainContent" class="min-h-[70vh]"></main>
-<footer class="mt-12 text-center text-xs text-slate-500 border-t border-slate-800 pt-6 space-y-2">
+<footer class="mt-12 text-center text-xs text-slate-500 border-t border-slate-800 pt-6 space-y-3">
 <div class="flex items-center justify-center gap-2 flex-wrap">
 <span>&copy; <span id="footerYear">2026</span> KomiNovel</span>
 </div>
+
+<div class="max-w-2xl mx-auto px-3">
+<p class="text-sm font-bold text-amber-400 mb-2"><i class="fas fa-heart mr-1"></i> Dibuat untuk kreator lokal</p>
+<p class="text-xs leading-relaxed text-slate-400">
+KomiNovel hadir untuk membantu komikus dan novelis lokal yang kesulitan menemukan platform untuk membagikan karya mereka.
+Di sini, kreator bisa menerbitkan cerita dan komik tanpa biaya. Tidak perlu membayar sepeser pun untuk menggunakan KomiNovel.
+</p>
+</div>
+
+<details class="max-w-2xl mx-auto text-left rounded-xl border border-slate-700 bg-slate-900/40 p-3">
+<summary class="cursor-pointer list-none flex items-center justify-center gap-2 font-bold text-slate-300 hover:text-amber-400">
+<i class="fas fa-code text-amber-400"></i>
+<span>About Developer</span>
+<i class="fas fa-chevron-down text-[10px]"></i>
+</summary>
+<div class="pt-3 text-center space-y-2">
+<p class="text-sm font-bold text-slate-200">Hijrah Abdur Rahman</p>
+<p class="text-xs leading-relaxed text-slate-400">
+KomiNovel dibuat dengan tujuan sederhana: menyediakan ruang yang mudah dijangkau bagi komikus dan novelis lokal untuk memperkenalkan karya mereka kepada pembaca.
+Platform ini dibangun agar kreator bisa mulai berkarya dan membagikan cerita tanpa terbebani biaya platform.
+</p>
+<a href="https://hijrah-abdur-rahman-portofolio.vercel.app/" target="_blank" rel="noopener noreferrer"
+class="inline-flex items-center gap-2 mt-1 px-4 py-2 rounded-full bg-amber-500 hover:bg-amber-400 text-black font-bold transition">
+<i class="fas fa-globe"></i> Kunjungi Portofolio Developer
+<i class="fas fa-arrow-up-right-from-square text-xs"></i>
+</a>
+</div>
+</details>
+
 <p class="text-[10px] text-slate-600">v1.12</p>
 </footer>
 </div>
@@ -2591,6 +2678,7 @@ const NAV_MAP = [
   { id:'kritik', icon:'fa-envelope', label:'Kritik & Saran' },
   { id:'stikerku', icon:'fa-sticky-note', label:'Stiker Saya', color:'text-pink-400' },
   { id:'profil', icon:'fa-user-circle', label:'Profil' },
+  { id:'about-dev', icon:'fa-code', label:'About Dev', color:'text-sky-400' },
   { id:'admin', icon:'fa-crown', label:'Admin Panel', color:'text-amber-400', roleCheck:() => isAdminUser(userProfile) }
 ];
 function updateActiveNav() {
@@ -4605,6 +4693,7 @@ async function renderPage() {
   else if (hash === 'stikerku') await renderStikerKu(main);
   else if (hash === 'notifikasi') await renderV111NotificationsPage(main);
   else if (hash === 'profil') await renderProfil(main);
+  else if (hash === 'about-dev') await renderAboutDev(main);
   else await renderHome(main);
 }
 
@@ -4917,6 +5006,161 @@ async function renderPanduan(container) {
       };
     };
   }
+}
+
+
+// ============================================================
+// ===== ABOUT DEV ============================================
+// ============================================================
+async function renderAboutDev(container) {
+  const PORTFOLIO_URL = 'https://hijrah-abdur-rahman-portofolio.vercel.app/';
+  const waLink = 'https://wa.me/' + WA_NUMBER.replace(/^0/, '62') + '?text=' + encodeURIComponent('Halo Developer KomiNovel! Saya ingin bertanya / memberi masukan tentang KomiNovel.');
+  const verList = (typeof APP_VERSION_NOTES !== 'undefined' ? APP_VERSION_NOTES : []).map(n => {
+    const idx = n.indexOf(' — ');
+    const v = idx > -1 ? n.slice(0, idx) : '';
+    const t = idx > -1 ? n.slice(idx + 3) : n;
+    return `<div class="dev-ver"><div class="v">${escHtml(v)}</div><div class="n">${escHtml(t)}</div></div>`;
+  }).join('');
+
+  container.innerHTML = `
+  <div class="max-w-4xl mx-auto card-anim">
+
+    <div class="dev-hero">
+      <div class="dev-avatar">HA</div>
+      <div class="dev-name">Hijrah Abdur Rahman</div>
+      <div class="dev-role">Developer &amp; Pembuat KomiNovel</div>
+      <div class="dev-chip-row">
+        <span class="dev-chip"><i class="fas fa-code mr-1"></i>Web Developer</span>
+        <span class="dev-chip"><i class="fas fa-book-open mr-1"></i>Platform Novel &amp; Komik</span>
+        <span class="dev-chip"><i class="fas fa-heart mr-1"></i>Untuk Kreator Lokal</span>
+        <span class="dev-chip"><i class="fas fa-code-branch mr-1"></i>Versi ${escHtml(APP_VERSION)}</span>
+      </div>
+      <div class="flex flex-wrap gap-2 justify-center mt-5">
+        <a class="dev-btn dev-btn-gold" href="${PORTFOLIO_URL}" target="_blank" rel="noopener noreferrer"><i class="fas fa-globe"></i> Portofolio Developer <i class="fas fa-arrow-up-right-from-square text-xs"></i></a>
+        <a class="dev-btn dev-btn-green" href="${waLink}" target="_blank" rel="noopener noreferrer"><i class="fab fa-whatsapp"></i> Hubungi via WhatsApp</a>
+      </div>
+    </div>
+
+    <div class="dev-section">
+      <h3><i class="fas fa-user"></i> Perkenalan</h3>
+      <p>Halo, selamat datang di halaman <b>About Dev</b>! Saya <b>Hijrah Abdur Rahman</b>, orang yang membangun dan mengembangkan <b>KomiNovel</b> dari nol. Mulai dari tampilan halaman, sistem login, tempat membaca karya, ruang obrolan, sampai fitur-fitur kecil yang mungkin tidak terlihat, semuanya dirancang dan dirawat dengan satu tujuan yang sama: membuat sebuah rumah yang nyaman bagi para pembaca dan pencipta cerita.</p>
+      <p>Halaman ini saya buat supaya kamu bisa mengenal siapa yang ada di balik website ini, apa alasan KomiNovel dibuat, bagaimana cara kerjanya, dan ke mana kamu bisa menghubungi saya kalau ada pertanyaan, masukan, atau kendala saat memakai KomiNovel.</p>
+    </div>
+
+    <div class="dev-section">
+      <h3><i class="fas fa-lightbulb"></i> Kenapa KomiNovel Dibuat?</h3>
+      <p>Banyak komikus dan novelis lokal punya cerita bagus, tetapi kesulitan menemukan tempat untuk membagikannya. Ada yang terbentur biaya, ada yang bingung memulai dari mana, dan ada pula yang merasa karyanya tenggelam di antara platform besar yang sangat ramai. Dari situlah ide KomiNovel muncul.</p>
+      <div class="dev-quote">KomiNovel dibuat dengan tujuan sederhana: menyediakan ruang yang mudah dijangkau bagi komikus dan novelis lokal untuk memperkenalkan karya mereka kepada pembaca.</div>
+      <p>Di KomiNovel, kreator bisa menerbitkan novel dan komik <b>tanpa biaya</b>. Tidak ada biaya pendaftaran, tidak ada biaya bulanan, dan tidak ada biaya untuk mempublikasikan karya. Pembaca pun bisa menikmati semua karya secara gratis. Prinsipnya: siapa pun yang punya cerita berhak punya tempat untuk bercerita.</p>
+    </div>
+
+    <div class="dev-section">
+      <h3><i class="fas fa-bullseye"></i> Visi &amp; Misi</h3>
+      <p><b>Visi:</b> Menjadi ruang berkarya yang ramah, gratis, dan mudah diakses bagi kreator cerita lokal, sekaligus tempat bagi pembaca menemukan karya-karya baru dari sesama anak bangsa.</p>
+      <p><b>Misi yang saya pegang saat mengembangkan KomiNovel:</b></p>
+      <ul>
+        <li><b>Gratis untuk semua.</b> Membaca, menulis, dan mempublikasikan karya tidak boleh terhalang biaya.</li>
+        <li><b>Mudah dipakai.</b> Tampilan dibuat sederhana dan nyaman, terutama untuk pengguna HP, karena sebagian besar pembaca membuka KomiNovel lewat ponsel.</li>
+        <li><b>Mendukung kreator lokal.</b> Karya, profil, jumlah pengikut, dan level kreator ditampilkan agar kerja keras mereka terlihat dan dihargai.</li>
+        <li><b>Aman dan nyaman.</b> Ada aturan konten, fitur laporan karya, dan peran Admin/Owner supaya lingkungan tetap sehat.</li>
+        <li><b>Terus berkembang.</b> Fitur baru ditambahkan dan masalah diperbaiki secara bertahap berdasarkan kebutuhan pengguna.</li>
+      </ul>
+    </div>
+
+    <div class="dev-section">
+      <h3><i class="fas fa-layer-group"></i> Yang Ada di KomiNovel</h3>
+      <p>Berikut gambaran singkat fitur utama yang saat ini tersedia di KomiNovel:</p>
+      <div class="dev-grid">
+        <div class="dev-stat"><i class="fas fa-book-open"></i><div class="t">Baca Novel &amp; Komik</div><div class="d">Karya dibagi per chapter/episode dengan mode baca yang nyaman dan layar penuh.</div></div>
+        <div class="dev-stat"><i class="fas fa-pen-fancy"></i><div class="t">Dashboard Kreator</div><div class="d">Tempat penulis dan komikus mengelola karya, chapter, dan status publikasi.</div></div>
+        <div class="dev-stat"><i class="fas fa-comments"></i><div class="t">Chat Publik &amp; DM</div><div class="d">Ngobrol dengan sesama pengguna, lengkap dengan stiker dan gambar.</div></div>
+        <div class="dev-stat"><i class="fas fa-users"></i><div class="t">Clan</div><div class="d">Bentuk atau gabung komunitas, punya chat sendiri dan level clan.</div></div>
+        <div class="dev-stat"><i class="fas fa-trophy"></i><div class="t">Leaderboard</div><div class="d">Peringkat pengguna dan kreator, serta daftar Top Followers.</div></div>
+        <div class="dev-stat"><i class="fas fa-gamepad"></i><div class="t">Mini Game</div><div class="d">Permainan seru bersama pengguna lain, seperti gambar dan tebak.</div></div>
+        <div class="dev-stat"><i class="fas fa-bell"></i><div class="t">Notifikasi Push</div><div class="d">Kabar karya baru, chapter terbaru, berita, dan pesan masuk langsung ke perangkatmu.</div></div>
+        <div class="dev-stat"><i class="fas fa-tags"></i><div class="t">Kategori &amp; Bookmark</div><div class="d">Cari karya berdasarkan kategori dan simpan favoritmu untuk dibaca lagi.</div></div>
+        <div class="dev-stat"><i class="fas fa-adjust"></i><div class="t">Tema Gelap &amp; Terang</div><div class="d">Pilih tampilan yang paling nyaman untuk matamu.</div></div>
+      </div>
+    </div>
+
+    <div class="dev-section">
+      <h3><i class="fas fa-hand-holding-heart"></i> Komitmen untuk Kreator</h3>
+      <p>Sebagai developer, saya ingin KomiNovel menjadi tempat yang adil bagi semua kreator, baik yang baru mulai maupun yang sudah punya banyak pembaca. Karena itu ada beberapa hal yang saya jaga:</p>
+      <ul>
+        <li><b>Karya tetap milik kreator.</b> KomiNovel hanya menjadi wadah untuk menampilkan karya, bukan untuk mengambil hak atas karya.</li>
+        <li><b>Tanpa biaya tersembunyi.</b> Menerbitkan karya di KomiNovel tidak dipungut bayaran.</li>
+        <li><b>Karya orisinal dihargai.</b> Plagiarisme dilarang, dan karya yang melanggar aturan bisa di-takedown.</li>
+        <li><b>Review sebelum publish.</b> Karya baru berstatus belum publish sampai kreator sendiri yang mempublikasikannya, sehingga kreator punya waktu merapikan karyanya.</li>
+        <li><b>Suara kreator didengar.</b> Kritik dan saran dari kreator sangat membantu menentukan fitur apa yang perlu dibuat selanjutnya.</li>
+      </ul>
+    </div>
+
+    <div class="dev-section">
+      <h3><i class="fas fa-shield-alt"></i> Keamanan &amp; Kenyamanan Komunitas</h3>
+      <p>Platform yang terbuka harus tetap aman. Itulah alasan KomiNovel punya aturan yang jelas di halaman <b>Panduan</b>. Konten dewasa 18+, kekerasan berlebihan, plagiarisme, SARA, ujaran kebencian, dan perundungan tidak diperbolehkan.</p>
+      <p>Jika kamu menemukan karya yang melanggar, gunakan tombol <b>Report</b> di halaman baca. Setiap laporan membantu menjaga KomiNovel tetap nyaman. Ketika laporan terhadap satu karya mencapai batas tertentu, sistem akan menurunkan karya tersebut secara otomatis, lalu Admin/Owner dapat meninjau lebih lanjut. Mohon gunakan fitur ini dengan jujur dan bijak, karena laporan palsu juga merugikan kreator.</p>
+    </div>
+
+    <div class="dev-section">
+      <h3><i class="fas fa-cogs"></i> Teknologi di Balik KomiNovel</h3>
+      <p>Untuk kamu yang penasaran dengan sisi teknisnya, KomiNovel dibangun dengan teknologi web modern yang ringan dan bisa dijalankan di hampir semua perangkat:</p>
+      <ul>
+        <li><b>HTML, CSS, dan JavaScript</b> sebagai fondasi seluruh halaman.</li>
+        <li><b>Tailwind CSS</b> untuk membuat tampilan yang rapi dan responsif di layar HP maupun komputer.</li>
+        <li><b>Firebase Authentication</b> untuk sistem masuk dengan akun Google atau sebagai tamu.</li>
+        <li><b>Cloud Firestore</b> sebagai basis data realtime, sehingga chat, notifikasi, foto profil, dan data kreator bisa diperbarui langsung.</li>
+        <li><b>Firebase Cloud Messaging</b> untuk notifikasi push, bahkan ketika website sedang ditutup.</li>
+        <li><b>Font Awesome</b> untuk ikon dan <b>Inter</b> sebagai font utama.</li>
+        <li><b>Hosting di Vercel</b> agar website bisa dibuka dengan cepat.</li>
+      </ul>
+      <p>Tampilan sengaja dibuat ringan, misalnya banner beranda tanpa animasi berat, supaya tetap lancar di HP dengan spesifikasi sederhana.</p>
+    </div>
+
+    <div class="dev-section">
+      <h3><i class="fas fa-history"></i> Perjalanan Pembaruan</h3>
+      <p>KomiNovel terus diperbarui. Berikut catatan pembaruan yang pernah dirilis, dari yang paling baru:</p>
+      <div class="mt-3">${verList}</div>
+    </div>
+
+    <div class="dev-section">
+      <h3><i class="fas fa-route"></i> Rencana ke Depan</h3>
+      <p>Pengembangan KomiNovel belum selesai. Saya ingin terus memperbaiki pengalaman membaca dan menulis, menjaga kecepatan website, dan menambah fitur yang benar-benar berguna bagi pengguna. Arah pengembangan akan sangat dipengaruhi oleh masukan dari kamu, jadi jangan ragu menyampaikan ide lewat menu <b>Kritik &amp; Saran</b>.</p>
+      <p>Semua rencana tersebut tetap berpegang pada prinsip awal KomiNovel: gratis, mudah, dan berpihak pada kreator lokal.</p>
+    </div>
+
+    <div class="dev-section">
+      <h3><i class="fas fa-question-circle"></i> Pertanyaan yang Sering Ditanyakan</h3>
+      <details class="dev-faq"><summary>Apakah KomiNovel benar-benar gratis? <i class="fas fa-chevron-down text-xs"></i></summary><p>Ya. Membaca, menulis, dan menerbitkan karya di KomiNovel tidak dipungut biaya. Platform ini dibuat untuk membantu kreator lokal, bukan untuk membebani mereka.</p></details>
+      <details class="dev-faq"><summary>Bagaimana cara menjadi penulis atau komikus? <i class="fas fa-chevron-down text-xs"></i></summary><p>Masuk dengan akun Google, lalu buka menu <b>Daftar</b> di navigasi bawah untuk mengajukan peran Penulis atau Komikus. Setelah pengajuan diterima, kamu bisa membuka menu <b>Kreator</b> untuk mulai mengelola karya.</p></details>
+      <details class="dev-faq"><summary>Kenapa karya saya belum muncul di beranda? <i class="fas fa-chevron-down text-xs"></i></summary><p>Karya baru otomatis berstatus belum publish. Kamu perlu membuka halaman Kreator, memilih karya, lalu menekan tombol <b>Review &amp; Publish</b>. Setelah dipublikasikan, karya akan tampil untuk pembaca.</p></details>
+      <details class="dev-faq"><summary>Saya menemukan bug atau error, harus bagaimana? <i class="fas fa-chevron-down text-xs"></i></summary><p>Kirimkan lewat menu <b>Kritik &amp; Saran</b> atau hubungi saya melalui WhatsApp. Ceritakan halaman mana yang bermasalah, apa yang kamu lakukan sebelum masalah muncul, dan jenis perangkat yang dipakai. Semakin jelas laporannya, semakin cepat masalah bisa diperbaiki.</p></details>
+      <details class="dev-faq"><summary>Bagaimana cara melaporkan karya yang melanggar aturan? <i class="fas fa-chevron-down text-xs"></i></summary><p>Buka karya tersebut, lalu tekan tombol <b>Report</b> di halaman baca, pilih alasan yang sesuai, dan kirim. Satu pengguna hanya dapat melapor satu kali untuk satu karya.</p></details>
+    </div>
+
+    <div class="dev-section">
+      <h3><i class="fas fa-envelope-open-text"></i> Hubungi Developer</h3>
+      <p>Punya pertanyaan, ide fitur, laporan masalah, atau ingin bekerja sama? Kamu bisa menghubungi saya lewat cara berikut:</p>
+      <ul>
+        <li><b>WhatsApp:</b> ${escHtml(WA_NUMBER)} (tekan tombol hijau di bawah untuk langsung membuka chat)</li>
+        <li><b>Kritik &amp; Saran:</b> kirim lewat menu Kritik &amp; Saran di dalam KomiNovel</li>
+        <li><b>Portofolio:</b> lihat karya dan proyek saya yang lain di website portofolio</li>
+      </ul>
+      <div class="flex flex-wrap gap-2 mt-4">
+        <a class="dev-btn dev-btn-green" href="${waLink}" target="_blank" rel="noopener noreferrer"><i class="fab fa-whatsapp"></i> Chat WhatsApp</a>
+        <a class="dev-btn dev-btn-gold" href="${PORTFOLIO_URL}" target="_blank" rel="noopener noreferrer"><i class="fas fa-globe"></i> Buka Portofolio</a>
+        <button type="button" class="dev-btn" style="background:#334155;color:#e2e8f0" onclick="window.location.hash='kritik'"><i class="fas fa-envelope"></i> Kritik &amp; Saran</button>
+      </div>
+    </div>
+
+    <div class="dev-section text-center">
+      <h3 style="justify-content:center"><i class="fas fa-heart"></i> Terima Kasih</h3>
+      <p>Terima kasih sudah menjadi bagian dari KomiNovel, baik sebagai pembaca yang setia maupun sebagai kreator yang berani membagikan karyanya. Tanpa kalian, KomiNovel hanyalah kumpulan kode. Karena kalian, tempat ini hidup.</p>
+      <p><b>Selamat membaca, selamat berkarya, dan sampai jumpa di halaman cerita berikutnya!</b></p>
+      <p class="text-xs" style="opacity:.7">KomiNovel v${escHtml(APP_VERSION)} &mdash; Dibuat dengan <i class="fas fa-heart" style="color:#ef4444"></i> oleh Hijrah Abdur Rahman</p>
+    </div>
+
+  </div>`;
+  window.scrollTo(0, 0);
 }
 
 
