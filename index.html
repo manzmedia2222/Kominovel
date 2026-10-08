@@ -1238,8 +1238,21 @@ function sensor(text) { if (!text) return ''; let r = text; KATA_KASAR.forEach(k
 function getLevelFromExp(e) { return Math.max(1, Math.floor(Number(e || 0)/20)+1); }
 function getClanLevelFromExp(e) { return Math.max(1, Math.floor(Number(e || 0)/10)+1); }
 function fmtDate(ts) { if (!ts) return ''; const d = ts.toDate ? ts.toDate() : new Date(ts); return d.toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}); }
-function hasRole(p, r) { if (!p) return false; const roles = p.roles || (p.role ? [p.role] : ['pembaca']); return roles.includes(r); }
-function isCreator(p) { return hasRole(p,'penulis') || hasRole(p,'komikus'); }
+function normalizeRoleValue(value) {
+  if (Array.isArray(value)) return value;
+  if (typeof value === 'string' && value.trim()) return value.split(/[;,]/).map(x => x.trim()).filter(Boolean);
+  return [];
+}
+function hasRole(p, r) {
+  if (!p || !r) return false;
+  const roles = [...normalizeRoleValue(p.roles), ...normalizeRoleValue(p.role)];
+  const wanted = String(r).trim().toLowerCase();
+  return roles.some(role => String(role).trim().toLowerCase() === wanted);
+}
+function isCreator(p) {
+  return hasRole(p,'penulis') || hasRole(p,'komikus') ||
+    String(p?.creatorStatus || p?.applicationStatus || '').trim().toLowerCase() === 'accepted';
+}
 function isAdminUser(p) { return hasRole(p,'admin') || hasRole(p,'owner') || isAdminSession; }
 function isOwnerUser(p) { return hasRole(p,'owner'); }
 function safeId(s) { return String(s).replace(/[^a-zA-Z0-9_-]/g,''); }
@@ -4264,7 +4277,20 @@ function initChapterNotificationListener() {
             const ta = a.createdAt?.toDate?.()?.getTime?.() || 0;
             const tb = b.createdAt?.toDate?.()?.getTime?.() || 0;
             return ta - tb;
-          }).forEach(enqueueV111Notif);
+          }).forEach(n => {
+            enqueueV111Notif(n);
+            if (n.type === 'custom_admin' && document.visibilityState === 'visible' &&
+                'Notification' in window && Notification.permission === 'granted') {
+              try {
+                const browserNotif = new Notification(n.title || 'KomiNovel', {
+                  body: n.body || 'Ada pengumuman baru dari admin.',
+                  icon: 'https://i.ibb.co.com/SDTthJ7m/Gemini-Generated-Image-fhupt4fhupt4fhup.jpg',
+                  tag: 'kominovel-' + n.id
+                });
+                browserNotif.onclick = () => { window.focus(); openV111NotifPanel(); browserNotif.close(); };
+              } catch (e) { console.warn('Notifikasi browser tidak dapat ditampilkan:', e); }
+            }
+          });
         }
         v111NotifInitialized = true;
         renderV111NotifPanel();
@@ -4327,7 +4353,7 @@ function renderV111NotifPanel() {
   }
   list.innerHTML = v111NotifItems.slice(0,50).map(n => `
     <button class="v111-notif-item w-full text-left ${n.read ? '' : 'unread'}" data-notif-id="${escAttr(n.id)}">
-      <span class="w-10 h-10 rounded-full bg-blue-500/15 text-blue-300 flex items-center justify-center flex-shrink-0"><i class="fas fa-book-open"></i></span>
+      <span class="w-10 h-10 rounded-full ${n.type === 'custom_admin' ? 'bg-amber-500/15 text-amber-300' : 'bg-blue-500/15 text-blue-300'} flex items-center justify-center flex-shrink-0"><i class="fas ${n.type === 'custom_admin' ? 'fa-bullhorn' : 'fa-book-open'}"></i></span>
       <span class="min-w-0 flex-1">
         <span class="block text-sm font-bold">${escHtml(n.title || 'Notifikasi')}</span>
         <span class="block text-xs text-slate-400">${escHtml(n.body || '')}</span>
@@ -4387,7 +4413,8 @@ function openV111NotifPanel() {
           });
           sent++;
         }
-        showToast(`Notifikasi terkirim ke ${sent} pengguna.`);
+        try { pushNotify({ kind: 'custom', title, body, audience: 'all' }); } catch (pushErr) { console.warn('Push kustom tidak terkirim:', pushErr); }
+        showToast(`Notifikasi masuk ke pusat notifikasi ${sent} pengguna. Push saat aplikasi tertutup memerlukan dukungan server FCM.`);
         panel.querySelector('#customNotifTitle').value = '';
         panel.querySelector('#customNotifBody').value = '';
         panel.querySelector('#customNotifForm')?.classList.add('hidden');
@@ -4531,8 +4558,21 @@ async function renderPage() {
     if (!isAdminSession && !hasRole(userProfile, 'admin') && !hasRole(userProfile, 'owner')) { renderAdminLogin(main); return; }
     await renderAdminPanel(main);
   } else if (hash.startsWith('creator')) {
+    if (currentUser && !currentUser.isAnonymous) {
+      try {
+        const freshProfile = await getDoc(doc(db, 'users', currentUser.uid));
+        if (freshProfile.exists()) userProfile = { id: currentUser.uid, ...freshProfile.data() };
+      } catch (err) { console.warn('Gagal menyegarkan profil kreator:', err); }
+    }
     if (!isCreator(userProfile) && !isAdminSession) {
-      main.innerHTML = `<div class="card-bg rounded-2xl p-8 text-center"><i class="fas fa-lock text-4xl text-red-400 mb-4"></i><h2 class="text-xl font-bold">Akses Ditolak</h2></div>`;
+      const rolesShown = [...normalizeRoleValue(userProfile?.roles), ...normalizeRoleValue(userProfile?.role)];
+      main.innerHTML = `<div class="card-bg rounded-2xl p-8 text-center">
+        <i class="fas fa-lock text-4xl text-red-400 mb-4"></i>
+        <h2 class="text-xl font-bold mb-2">Akses Kreator Belum Terbuka</h2>
+        <p class="text-sm text-slate-400 mb-3">Akun ini belum terbaca memiliki role Penulis atau Komikus. Jika pengajuan sudah diterima, kemungkinan data role belum tersinkron atau tersimpan di field berbeda.</p>
+        <p class="text-xs text-slate-500 mb-4">Role terbaca: ${escHtml(rolesShown.join(', ') || 'belum tersedia')}</p>
+        <button class="bg-amber-500 text-black font-bold px-5 py-2 rounded-full" onclick="location.reload()">Muat Ulang Profil</button>
+      </div>`;
       return;
     }
     await renderCreatorDashboard(main);
