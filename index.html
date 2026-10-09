@@ -1002,6 +1002,23 @@ body{font-family:'Inter',sans-serif;background:#0f0f1a;color:#e2e8f0;overflow-x:
 [data-theme="light"] .dev-faq{background:#f8fafc;border-color:#d8deea}
 [data-theme="light"] .dev-faq summary{color:#0f172a}
 [data-theme="light"] .dev-faq[open] summary{color:#b45309}
+
+/* ===== VIDEO TUTORIAL (YouTube Shorts embed) ===== */
+.vt-card{border:2px solid #fbbf24;background:linear-gradient(135deg,#2a1f0a,#1a1a2e);border-radius:20px;padding:16px;margin-bottom:16px}
+.vt-head{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.vt-head h3{font-size:16px;font-weight:900;color:#fbbf24;margin:0}
+.vt-head i{width:32px;height:32px;border-radius:10px;background:rgba(251,191,36,.18);color:#fbbf24;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.vt-desc{font-size:12px;color:#cbd5e1;line-height:1.6;margin-bottom:12px}
+.vt-frame{position:relative;width:min(100%,320px);aspect-ratio:9/16;margin:0 auto;border-radius:16px;overflow:hidden;background:#000;border:1px solid #3b3b5c}
+.vt-frame iframe,.vt-poster{position:absolute;inset:0;width:100%;height:100%;border:0}
+.vt-poster{cursor:pointer;display:flex;align-items:center;justify-content:center;background:#0f0f1a center/cover no-repeat;padding:0}
+.vt-poster::after{content:'';position:absolute;inset:0;background:rgba(0,0,0,.35)}
+.vt-play{position:relative;z-index:2;width:68px;height:68px;border-radius:50%;background:linear-gradient(135deg,#fbbf24,#d97706);color:#0f0f1a;display:flex;align-items:center;justify-content:center;font-size:26px;padding-left:4px}
+.vt-poster:hover .vt-play{filter:brightness(1.1)}
+.vt-label{position:absolute;z-index:2;left:10px;right:10px;bottom:10px;text-align:center;font-size:11px;font-weight:800;color:#fff;background:rgba(15,15,26,.75);border-radius:999px;padding:6px 10px}
+[data-theme="light"] .vt-card{background:linear-gradient(135deg,#fff4d1,#fff);border-color:#f59e0b}
+[data-theme="light"] .vt-head h3{color:#b45309}
+[data-theme="light"] .vt-desc{color:#475569}
 </style>
 </head><body class="min-h-screen">
 
@@ -5128,6 +5145,7 @@ async function renderPanduan(container) {
         </ul>
         <p class="text-red-300 text-xs mt-3 font-bold">🚨 Karya yang melanggar akan DI-TAKEDOWN. Jika report mencapai 10, OTOMATIS tertakedown!</p>
       </div>
+      ${tutorialVideoHtml()}
       <div id="panduanContent" class="card-bg rounded-2xl p-6 md:p-8 guide-content">${panduanText || defaultPanduan}</div>
     </div>`;
 
@@ -7990,6 +8008,26 @@ async function renderProfil(container) {
 // ============================================================
 // ===== CREATOR DASHBOARD ====================================
 // ============================================================
+const TUTORIAL_VIDEO_ID = 'E013t_Jh38U'; // https://youtube.com/shorts/E013t_Jh38U
+function tutorialVideoHtml() {
+  const id = TUTORIAL_VIDEO_ID;
+  return `<div class="vt-card">
+    <div class="vt-head"><i class="fas fa-play-circle"></i><h3>Video Tutorial: Upload Komik dengan Link ImgBB</h3></div>
+    <p class="vt-desc">Tonton langsung di sini tanpa membuka YouTube. Video ini menunjukkan cara mengunggah gambar komik ke ImgBB lalu menempelkan link-nya saat membuat episode.</p>
+    <div class="vt-frame">
+      <button type="button" class="vt-poster" style="background-image:url('https://i.ytimg.com/vi/${id}/hqdefault.jpg')" onclick="window.playTutorialVideo(this)" aria-label="Putar video tutorial">
+        <span class="vt-play"><i class="fas fa-play"></i></span>
+        <span class="vt-label">Ketuk untuk memutar</span>
+      </button>
+    </div>
+  </div>`;
+}
+window.playTutorialVideo = (btn) => {
+  const frame = btn && btn.parentElement;
+  if (!frame) return;
+  frame.innerHTML = '<iframe src="https://www.youtube.com/embed/' + TUTORIAL_VIDEO_ID + '?autoplay=1&rel=0&playsinline=1&modestbranding=1" title="Video Tutorial Upload Komik" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>';
+};
+
 async function renderCreatorDashboard(container) {
   container.innerHTML = `
     <div class="flex justify-between items-center mb-6 flex-wrap gap-2">
@@ -8004,6 +8042,7 @@ async function renderCreatorDashboard(container) {
       <button id="creatorTabUpload" class="px-4 py-2 rounded-full bg-amber-500 text-black font-bold text-sm hover:scale-105 transition">Buat Baru</button>
       <button id="creatorTabManage" class="px-4 py-2 rounded-full bg-slate-800 text-slate-300 text-sm hover:bg-slate-700 transition">Kelola</button>
     </div>
+    ${tutorialVideoHtml()}
     <div id="creatorContent"></div>`;
   document.getElementById('openGuideBtn').onclick = showUploadGuide;
   const cC = document.getElementById('creatorContent');
