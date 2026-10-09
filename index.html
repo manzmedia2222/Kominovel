@@ -6384,8 +6384,9 @@ async function renderPrivateChat(container, otherUid) {
     </div>`;
   const msgsDiv = document.getElementById('pmMsgs');
   let lastId = null;
-  privateChatUnsub = onSnapshot(query(collection(db, 'privateChats', chatId, 'messages'), orderBy('createdAt', 'asc'), limit(100)), snap => {
+  privateChatUnsub = onSnapshot(query(collection(db, 'privateChats', chatId, 'messages'), orderBy('createdAt', 'desc'), limit(100)), snap => {
     const arr = []; snap.forEach(d => arr.push({ id: d.id, ...d.data() }));
+    arr.reverse();
     if (arr.length === 0) { msgsDiv.innerHTML = '<p class="text-slate-500 text-sm text-center">Belum ada pesan.</p>'; return; }
     const lastMsg = arr[arr.length - 1];
     const isNew = lastId && lastMsg.id !== lastId;
@@ -6770,8 +6771,9 @@ async function renderClanDetail(container, clanId) {
   }
   const msgsDiv = document.getElementById('clanMsgs');
   let lastId = null;
-  clanChatUnsub = onSnapshot(query(collection(db, 'clans', clanId, 'messages'), orderBy('createdAt', 'asc'), limit(100)), snap => {
+  clanChatUnsub = onSnapshot(query(collection(db, 'clans', clanId, 'messages'), orderBy('createdAt', 'desc'), limit(100)), snap => {
     const arr = []; snap.forEach(d => arr.push({ id: d.id, ...d.data() }));
+    arr.reverse();
     if (arr.length === 0) { msgsDiv.innerHTML = '<p class="text-slate-500 text-xs text-center">Belum ada pesan.</p>'; return; }
     const lastMsg = arr[arr.length - 1];
     const isNew = lastId && lastMsg.id !== lastId;
@@ -7634,9 +7636,13 @@ async function renderChat(container) {
   const sendBtn = document.getElementById('sendChat');
   let rawMessages = [];
   let lastId = null;
-  chatUnsub = onSnapshot(query(collection(db,'chats'), orderBy('createdAt','asc'), limit(100)), snapshot => {
+  chatUnsub = onSnapshot(query(collection(db,'chats'), orderBy('createdAt','desc'), limit(100)), snapshot => {
     rawMessages = []; snapshot.forEach(d => rawMessages.push({ id: d.id, ...d.data() }));
+    rawMessages.reverse(); // 100 pesan TERBARU, urut lama -> baru
     renderMsgs();
+  }, err => {
+    console.error('Listener chat publik error:', err);
+    showToast('Chat publik error: ' + (err.code || err.message));
   });
   loadAllUsersCache().then(() => renderMsgs());
   if (Object.keys(clansCache).length === 0) {
@@ -7734,16 +7740,22 @@ async function renderChat(container) {
     if (img) msgData.image = img;
     if (sticker) msgData.sticker = sticker;
     if (replyingToPublic) { msgData.replyTo = replyingToPublic.id; msgData.replyToText = replyingToPublic.text || (replyingToPublic.image ? '🖼️ Gambar' : (replyingToPublic.sticker ? '🎨 Stiker' : '')); msgData.replyToName = replyingToPublic.username; }
-    const publicMsgRef = await addDoc(collection(db,'chats'), msgData);
-    pushNotify({ kind: 'chat', id: publicMsgRef.id });
-    input.value = '';
-    replyingToPublic = null;
-    pendingChatImg.public = null;
-    pendingChatSticker.public = null;
-    document.getElementById('publicReplyPreview').innerHTML = '';
-    document.getElementById('publicImgPreview').innerHTML = '';
-    document.getElementById('publicStickerPreview').innerHTML = '';
-    await addExp(EXP_PER_CHAT);
+    try {
+      const publicMsgRef = await addDoc(collection(db,'chats'), msgData);
+      pushNotify({ kind: 'chat', id: publicMsgRef.id });
+      input.value = '';
+      replyingToPublic = null;
+      pendingChatImg.public = null;
+      pendingChatSticker.public = null;
+      document.getElementById('publicReplyPreview').innerHTML = '';
+      document.getElementById('publicImgPreview').innerHTML = '';
+      document.getElementById('publicStickerPreview').innerHTML = '';
+    } catch (err) {
+      console.error('Gagal kirim chat publik:', err);
+      showToast('Gagal kirim: ' + (err.code || err.message));
+      return;
+    }
+    try { await addExp(EXP_PER_CHAT); } catch (err) { console.warn('addExp gagal:', err); }
   };
   input.addEventListener('keypress', e => { if (e.key === 'Enter') sendBtn.click(); });
 }
