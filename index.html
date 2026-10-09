@@ -1237,9 +1237,9 @@ const VERIFIED_BLUE = 100000;
 const FOLLOWER_INTERVAL = 60 * 60 * 1000;
 const OWNER_FOLLOWER_RATE = 100000;
 
-const AUTO_BOOST_INTERVAL = 5 * 60 * 1000;
-const AUTO_VIEW_AMOUNT = 20;
-const AUTO_LIKE_AMOUNT = 20;
+const AUTO_BOOST_INTERVAL = 15 * 60 * 1000;
+const AUTO_VIEW_AMOUNT = 60;
+const AUTO_LIKE_AMOUNT = 60;
 
 const ALL_CATEGORIES = [
   'Action','Adventure','Romance','Fantasy','Slice of Life','Horror','Comedy','Mystery','Sci-Fi','Thriller',
@@ -1355,7 +1355,109 @@ function formatCount(n) {
 }
 function getHash() { return window.location.hash.replace('#','') || 'home'; }
 function parseCategories(c) { if (!c) return []; if (Array.isArray(c)) return c; return String(c).split(',').map(x => x.trim()).filter(x => x); }
-function parseImgbbUrls(t) { return t.split('\n').map(u => u.trim()).filter(u => u.startsWith('http')); }
+// ============================================================
+// ===== EKSTRAKTOR LINK GAMBAR (ImgBB embed / BBCode / Markdown / link biasa)
+// User boleh paste kode embed ImgBB apa adanya, misalnya:
+//   <a href="https://ibb.co.com/xxxx"><img src="https://i.ibb.co.com/yyyy/nama.png" alt="..." border="0"></a>
+// Sistem otomatis hanya mengambil link gambarnya (src), bukan link halaman viewer (href).
+// Bisa banyak sekaligus (dipisah baris/spasi/tanpa pemisah), bisa dicampur dengan link langsung.
+// ============================================================
+const IMG_VIEWER_HOST_RE = /^(?:www\.)?(?:ibb\.co(?:\.com)?|imgbb\.com)$/i;
+function decodeHtmlEntities(str) {
+  return String(str == null ? '' : str)
+    .replace(/&amp;/gi, '&').replace(/&quot;/gi, '"').replace(/&#0*39;|&apos;/gi, "'")
+    .replace(/&lt;/gi, '<').replace(/&gt;/gi, '>').replace(/&#x2F;/gi, '/');
+}
+function normalizeImgCandidate(raw, stripTail) {
+  let u = decodeHtmlEntities(raw).trim();
+  if (stripTail) u = u.replace(/[>)\]"',;.]+$/, '');
+  if (u.startsWith('//')) u = 'https:' + u;
+  if (!/^https?:\/\//i.test(u)) return '';
+  try { new URL(u); } catch (e) { return ''; }
+  return u;
+}
+function isImgViewerPage(u) {
+  try { return IMG_VIEWER_HOST_RE.test(new URL(u).hostname); } catch (e) { return false; }
+}
+function analyzeImageInput(input) {
+  const text = String(input == null ? '' : input);
+  const urls = [];
+  let viewerLinks = 0;
+  const TOKEN = new RegExp([
+    '<img\\b(?:"[^"]*"|\'[^\']*\'|[^>"\'])*>',                 // tag <img ...>
+    '\\[img(?:=[^\\]]*)?\\]\\s*([^\\[\\s]+?)\\s*\\[\\/img\\]', // BBCode [img]url[/img]   -> grup 1
+    '!\\[[^\\]]*\\]\\(\\s*<?([^)\\s>]+)>?[^)]*\\)',            // Markdown ![alt](url)    -> grup 2
+    '<a\\b(?:"[^"]*"|\'[^\']*\'|[^>"\'])*>',                   // tag <a ...>  (dilewati)
+    '\\[url(?:=[^\\]]*)?\\]',                                  // BBCode [url=...] (dilewati)
+    '\\]\\(\\s*<?([^)\\s>]+)>?[^)]*\\)',                       // ](link) pembungkus Markdown -> grup 3
+    '(?:https?:)?\\/\\/[^\\s"\'<>\\[\\]()]+'                   // link mentah
+  ].join('|'), 'gi');
+  let m, lastEnd = -1, lastWasMdImg = false;
+  while ((m = TOKEN.exec(text)) !== null) {
+    const tok = m[0];
+    const lower = tok.toLowerCase();
+    let handledMdImg = false;
+    if (lower.startsWith('<img')) {
+      const sm = tok.match(/\b(?:data-src|src)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/i);
+      const val = sm ? (sm[1] || sm[2] || sm[3] || '') : '';
+      const u = normalizeImgCandidate(val, false);
+      if (u) urls.push(u);
+    } else if (lower.startsWith('[img')) {
+      const u = normalizeImgCandidate(m[1] || '', false);
+      if (u) urls.push(u);
+    } else if (lower.startsWith('![')) {
+      const u = normalizeImgCandidate(m[2] || '', false);
+      if (u) urls.push(u);
+      handledMdImg = true;
+    } else if (lower.startsWith('<a') || lower.startsWith('[url')) {
+      // link pembungkus (halaman viewer) -> abaikan
+    } else if (tok.startsWith('](')) {
+      // ](link): kalau menempel tepat setelah gambar Markdown, itu link pembungkus -> abaikan
+      if (!(lastWasMdImg && m.index === lastEnd)) {
+        const u = normalizeImgCandidate(m[3] || '', false);
+        if (u) { if (isImgViewerPage(u)) viewerLinks++; else urls.push(u); }
+      }
+    } else {
+      const u = normalizeImgCandidate(tok, true);
+      if (u) { if (isImgViewerPage(u)) viewerLinks++; else urls.push(u); }
+    }
+    lastEnd = m.index + tok.length;
+    lastWasMdImg = handledMdImg;
+  }
+  return { urls, viewerLinks };
+}
+function extractImageUrls(input) { return analyzeImageInput(input).urls; }
+function extractFirstImageUrl(input) { return extractImageUrls(input)[0] || ''; }
+function parseImgbbUrls(t) { return extractImageUrls(t); }
+function looksLikeImgMarkup(t) { return /<\s*(?:img|a)\b|\[\s*(?:img|url)\b|!\[[^\]]*\]\(/i.test(String(t || '')); }
+// Pasang ke <input>/<textarea>: saat paste atau keluar dari kolom, kode embed otomatis diganti link bersih.
+function bindSmartUrlInput(el, multi) {
+  if (!el || el.dataset.smartBound === '1') return;
+  el.dataset.smartBound = '1';
+  const process = (fromPaste) => {
+    const raw = el.value;
+    if (!raw || !raw.trim()) return;
+    const info = analyzeImageInput(raw);
+    if (info.urls.length === 0) {
+      if (info.viewerLinks > 0) showToast('⚠️ Itu link halaman ImgBB (viewer), bukan link gambar. Salin "HTML full linked" atau "Direct link" dari ImgBB.', 5000);
+      return;
+    }
+    if (looksLikeImgMarkup(raw)) {
+      el.value = multi ? info.urls.join('\n') : info.urls[0];
+      el.dispatchEvent(new Event('input', { bubbles: true }));
+      if (fromPaste) {
+        if (multi) showToast('✅ ' + info.urls.length + ' link gambar diambil otomatis dari kode embed');
+        else if (info.urls.length > 1) showToast('✅ Link gambar diambil otomatis (kolom ini hanya untuk 1 gambar, dipakai yang pertama)', 4000);
+        else showToast('✅ Link gambar diambil otomatis dari kode embed');
+      }
+    } else if (!multi && info.urls.length > 1) {
+      el.value = info.urls[0];
+      el.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+  };
+  el.addEventListener('paste', () => setTimeout(() => process(true), 0));
+  el.addEventListener('blur', () => process(false));
+}
 function getVerifiedBadge(followers) {
   if (!followers) followers = 0;
   if (followers >= VERIFIED_BLUE) return '<span class="verified-badge blue" title="Verified 100K+"><i class="fas fa-check"></i></span>';
@@ -1648,7 +1750,7 @@ function renderStickerTab(tab) {
           <input type="file" id="globalStickerFile" accept="image/*" class="hidden">
         </label>
         <input id="globalStickerName" type="text" placeholder="Nama stiker (opsional)" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs mb-2">
-        <input id="globalStickerUrl" type="text" placeholder="Atau paste URL gambar" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs mb-2">
+        <input id="globalStickerUrl" type="text" placeholder="Atau paste link / kode embed ImgBB" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs mb-2">
         <div id="globalStickerPreview" class="mb-2"></div>
         <button id="saveGlobalStickerBtn" class="w-full bg-green-600 text-white font-bold py-2 rounded-lg text-xs hover:scale-105 transition">Simpan Stiker Global</button>
       </div>
@@ -1669,12 +1771,13 @@ function renderStickerTab(tab) {
       fileInp.value = '';
     };
     urlInp.oninput = () => {
-      const url = urlInp.value.trim();
+      const url = extractFirstImageUrl(urlInp.value);
       if (url) {
         pendingUrl = url;
         preview.innerHTML = `<img src="${url}" class="w-20 h-20 object-contain bg-slate-800 rounded-lg p-1" onerror="this.style.opacity='0.3'">`;
       }
     };
+    bindSmartUrlInput(urlInp, false);
     document.getElementById('saveGlobalStickerBtn').onclick = async () => {
       const name = document.getElementById('globalStickerName').value.trim();
       if (!pendingUrl) { showToast('Pilih gambar atau paste URL dulu'); return; }
@@ -2149,30 +2252,28 @@ window.toggleMaintenance = async function(enable) {
 // ============================================================
 // ===== USERS CACHE ==========================================
 // ============================================================
-async function loadAllUsersCache() {
+let _usersCacheAt = 0;
+async function loadAllUsersCache(force) {
   if (usersCacheUnsub) { try { usersCacheUnsub(); } catch(e){} usersCacheUnsub = null; }
-  return new Promise((resolve) => {
-    usersCacheUnsub = onSnapshot(collection(db, 'users'), snap => {
-      snap.forEach(d => {
-        usersCache[d.id] = { id: d.id, ...d.data() };
-      });
-      if (currentUser && usersCache[currentUser.uid] && userProfile) {
-        const fresh = usersCache[currentUser.uid];
-        userProfile.roles = fresh.roles || userProfile.roles;
-        userProfile.role = fresh.role || userProfile.role;
-        userProfile.username = fresh.username || userProfile.username;
-        userProfile.photoURL = fresh.photoURL || userProfile.photoURL;
-        userProfile.level = fresh.level ?? userProfile.level;
-        userProfile.followerCount = fresh.followerCount ?? userProfile.followerCount;
-        userProfile.featuredCreator = fresh.featuredCreator ?? userProfile.featuredCreator;
-        userProfile.clanId = fresh.clanId ?? userProfile.clanId;
-      }
-      resolve();
-    }, err => {
-      console.warn('usersCache listener error:', err.message);
-      resolve();
-    });
-  });
+  if (!force && Object.keys(usersCache).length > 0 && Date.now() - _usersCacheAt < 5 * 60 * 1000) return;
+  try {
+    const snap = await getDocs(collection(db, 'users'));
+    snap.forEach(d => { usersCache[d.id] = { id: d.id, ...d.data() }; });
+    _usersCacheAt = Date.now();
+    if (currentUser && usersCache[currentUser.uid] && userProfile) {
+      const fresh = usersCache[currentUser.uid];
+      userProfile.roles = fresh.roles || userProfile.roles;
+      userProfile.role = fresh.role || userProfile.role;
+      userProfile.username = fresh.username || userProfile.username;
+      userProfile.photoURL = fresh.photoURL || userProfile.photoURL;
+      userProfile.level = fresh.level ?? userProfile.level;
+      userProfile.followerCount = fresh.followerCount ?? userProfile.followerCount;
+      userProfile.featuredCreator = fresh.featuredCreator ?? userProfile.featuredCreator;
+      userProfile.clanId = fresh.clanId ?? userProfile.clanId;
+    }
+  } catch (err) {
+    console.warn('usersCache load error:', err.message);
+  }
 }
 
 function getRoleTagsForUid(uid, fallbackProfile = null) {
@@ -2497,7 +2598,14 @@ function listenAutoBoostState() {
 
 async function autoBoostAllWorks() {
   if (!autoBoostEnabled) return;
+  if (document.hidden) return;
   try {
+    // Lease: cukup SATU klien per interval yang menjalankan boost (bukan semua user online)
+    const leaseRef = doc(db, 'settings', 'autoBoost');
+    const leaseSnap = await getDoc(leaseRef);
+    const lastRun = leaseSnap.exists() ? (leaseSnap.data().lastRunMs || 0) : 0;
+    if (Date.now() - lastRun < AUTO_BOOST_INTERVAL - 15000) return;
+    try { await updateDoc(leaseRef, { lastRunMs: Date.now() }); } catch (e) { return; } // tidak punya izin tulis -> jangan jalankan
     const snap = await getDocs(collection(db, 'works'));
     if (snap.empty) return;
     const promises = [];
@@ -2664,10 +2772,9 @@ async function checkBirthdays() {
   try {
     const today = new Date();
     const todayMMDD = `${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
-    const snap = await getDocs(collection(db, 'users'));
+    await loadAllUsersCache();
     const bdayUsers = [];
-    snap.forEach(d => {
-      const u = { id: d.id, ...d.data() };
+    Object.values(usersCache).forEach(u => {
       if (!u.birthday) return;
       const roles = u.roles || [u.role || 'pembaca'];
       const isKreator = roles.includes('penulis') || roles.includes('komikus');
@@ -2988,7 +3095,7 @@ function coverField(id) {
       </label>
       <a href="https://imgbb.com" target="_blank" class="bg-slate-700 text-slate-300 px-3 py-2 rounded-lg text-xs font-bold hover:bg-slate-600 transition"><i class="fas fa-external-link-alt mr-1"></i>ImgBB</a>
     </div>
-    <input type="text" id="${id}-url" placeholder="Atau paste URL ImgBB" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm">
+    <input type="text" id="${id}-url" placeholder="Atau paste link / kode embed ImgBB (HTML/BBCode)" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm">
     <div id="${id}-preview" class="mt-2"></div>
   </div>`;
 }
@@ -3016,9 +3123,10 @@ function attachCoverHandler(id) {
       } catch (err) { preview.innerHTML = `<span class="text-xs text-red-400">Gagal: ${err.message}</span>`; }
     };
   }
+  bindSmartUrlInput(urlInput, false);
   urlInput.oninput = () => {
-    if (urlInput.value.trim()) {
-      const url = urlInput.value.trim();
+    const url = extractFirstImageUrl(urlInput.value);
+    if (url) {
       const safeUrl = escAttr(url);
       window[`_${id}_cover`] = url;
       preview.innerHTML = `
@@ -3030,7 +3138,7 @@ function attachCoverHandler(id) {
     }
   };
 }
-function getCoverValue(id) { return window[`_${id}_cover`] || document.getElementById(`${id}-url`)?.value.trim() || ''; }
+function getCoverValue(id) { return window[`_${id}_cover`] || extractFirstImageUrl(document.getElementById(`${id}-url`)?.value || '') || ''; }
 
 function multiImageField(containerId) {
   return `<div class="bg-slate-900/50 border border-amber-500/30 rounded-xl p-3 mt-2">
@@ -3042,7 +3150,7 @@ function multiImageField(containerId) {
       </label>
       <a href="https://imgbb.com" target="_blank" class="bg-slate-700 text-slate-300 px-3 py-2 rounded-lg text-xs font-bold hover:bg-slate-600 transition"><i class="fas fa-external-link-alt mr-1"></i>ImgBB</a>
     </div>
-    <textarea id="${containerId}-urls" rows="2" placeholder="Atau paste URL gambar, 1 per baris" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs font-mono"></textarea>
+    <textarea id="${containerId}-urls" rows="3" placeholder="Atau paste link / kode embed ImgBB (HTML/BBCode). Boleh banyak sekaligus, link yang dibutuhkan diambil otomatis." class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs font-mono"></textarea>
     <div id="${containerId}-preview" class="mt-2"></div>
     <div id="${containerId}-progress" class="upload-progress hidden"></div>
   </div>`;
@@ -3182,7 +3290,7 @@ function attachMultiImageHandlers(containerId) {
     });
   }
   const urlTextarea = document.getElementById(`${containerId}-urls`);
-  if (urlTextarea) urlTextarea.oninput = renderPreview;
+  if (urlTextarea) { urlTextarea.oninput = renderPreview; bindSmartUrlInput(urlTextarea, true); }
   window[`_${containerId}_render`] = renderPreview;
   renderPreview();
 }
@@ -3371,7 +3479,7 @@ window.openEditWorkModal = async (wid) => {
             </label>
             <a href="https://imgbb.com" target="_blank" class="bg-slate-700 text-slate-300 px-3 py-2 rounded-lg text-xs font-bold hover:bg-slate-600 transition"><i class="fas fa-external-link-alt mr-1"></i>ImgBB</a>
           </div>
-          <input type="text" id="editWCover-url" placeholder="Atau paste URL ImgBB baru" value="${escHtml(w.coverURL || '')}" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm">
+          <input type="text" id="editWCover-url" placeholder="Atau paste link / kode embed ImgBB baru" value="${escHtml(w.coverURL || '')}" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm">
           <div id="editWCover-preview" class="mt-2"></div>
         </div>
       </div>
@@ -3415,8 +3523,9 @@ window.openEditWorkModal = async (wid) => {
       showToast('✅ Sampul baru terupload');
     } catch (err) { preview.innerHTML = `<span class="text-xs text-red-400">Gagal: ${err.message}</span>`; }
   };
+  bindSmartUrlInput(urlInput, false);
   urlInput.oninput = () => {
-    const url = urlInput.value.trim();
+    const url = extractFirstImageUrl(urlInput.value);
     window[`_editWCover_cover`] = url;
     renderCoverPreview(url);
   };
@@ -3436,7 +3545,7 @@ window.openEditWorkModal = async (wid) => {
     const cats = getSelectedCats('editWCategories');
     const category = cats.join(', ');
     const desc = document.getElementById('editWDesc').value.trim();
-    const coverURL = window[`_editWCover_cover`] || urlInput.value.trim();
+    const coverURL = window[`_editWCover_cover`] || extractFirstImageUrl(urlInput.value);
 
     if (!title || !teaser || cats.length === 0 || !coverURL) {
       showToast('Lengkapi semua field bertanda *');
@@ -4563,7 +4672,7 @@ async function initPrivateNotifListener() {
   if (!currentUser || notifPrivateInit) return;
   notifPrivateInit = true;
   try {
-    const unsub = onSnapshot(collection(db,'privateChats'), snap => {
+    const unsub = onSnapshot(query(collection(db,'privateChats'), where('participants','array-contains',currentUser.uid)), snap => {
       let total = 0;
       snap.forEach(d => {
         const data = d.data() || {};
@@ -7511,14 +7620,13 @@ async function renderChat(container) {
     rawMessages = []; snapshot.forEach(d => rawMessages.push({ id: d.id, ...d.data() }));
     renderMsgs();
   });
-  chatUsersUnsub = onSnapshot(collection(db,'users'), snap => {
-    snap.forEach(d => usersCache[d.id] = { id: d.id, ...d.data() });
-    renderMsgs();
-  });
-  onSnapshot(collection(db,'clans'), snap => {
-    clansCache = {}; snap.forEach(d => clansCache[d.id] = { id: d.id, ...d.data() });
-    renderMsgs();
-  });
+  loadAllUsersCache().then(() => renderMsgs());
+  if (Object.keys(clansCache).length === 0) {
+    getDocs(collection(db,'clans')).then(snap => {
+      snap.forEach(d => clansCache[d.id] = { id: d.id, ...d.data() });
+      renderMsgs();
+    }).catch(() => {});
+  }
   function renderMsgs() {
     if (rawMessages.length === 0) { messagesDiv.innerHTML = '<p class="text-slate-500 text-sm text-center">Belum ada pesan.</p>'; return; }
     const lastMsg = rawMessages[rawMessages.length - 1];
@@ -8433,7 +8541,7 @@ async function renderAdminPanel(container) {
             <input type="file" id="adminGlobalStickerFile" accept="image/*" class="hidden">
           </label>
           <input id="adminGlobalStickerName" type="text" placeholder="Nama stiker (opsional)" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm mb-2">
-          <input id="adminGlobalStickerUrl" type="text" placeholder="Atau paste URL gambar" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm mb-2">
+          <input id="adminGlobalStickerUrl" type="text" placeholder="Atau paste link / kode embed ImgBB" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm mb-2">
           <div id="adminGlobalStickerPreview" class="mb-2"></div>
           <button id="adminSaveGlobalSticker" class="w-full bg-green-600 text-white font-bold py-2 rounded-full text-sm hover:scale-105 transition">Simpan Stiker Global</button>
         </div>
@@ -8465,9 +8573,10 @@ async function renderAdminPanel(container) {
       fileInp.value = '';
     };
     urlInp.oninput = () => {
-      const url = urlInp.value.trim();
+      const url = extractFirstImageUrl(urlInp.value);
       if (url) { pendingUrl = url; preview.innerHTML = `<img src="${url}" class="w-24 h-24 object-contain bg-slate-800 rounded-lg p-1" onerror="this.style.opacity='0.3'">`; }
     };
+    bindSmartUrlInput(urlInp, false);
     document.getElementById('adminSaveGlobalSticker').onclick = async () => {
       const name = document.getElementById('adminGlobalStickerName').value.trim();
       if (!pendingUrl) { showToast('Pilih gambar atau paste URL dulu'); return; }
