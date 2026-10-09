@@ -2376,25 +2376,68 @@ document.addEventListener('error', (e) => {
   const next = chain[idx + 1];
   if (next) { e.stopImmediatePropagation(); t.src = next; }
 }, true);
-const IMGBB_KEY = 'ba3afa5b0d8e2ea7a8dc2098ac38aad6';
+// Daftar API key ImgBB. Tambahkan key dari akun ImgBB lain (gratis) supaya limit dibagi rata.
+// Daftar & ambil key di https://api.imgbb.com/
+const IMGBB_KEYS = [
+  'ba3afa5b0d8e2ea7a8dc2098ac38aad6',
+  'a77fa26a263ce841008b6bf0bd0c2e82',
+  'e10c9e687fd1325aa94efec1f384d10a',
+  'a061ef2ae3d290463d7cd10fdfd9da46'
+];
 const IMGBB_MAX_MB = 32;
-async function uploadToImgbb(file) {
-  if (!file || !file.type || !file.type.startsWith('image/')) throw new Error('Bukan gambar');
-  if (file.size > IMGBB_MAX_MB * 1024 * 1024) throw new Error(`Ukuran file > ${IMGBB_MAX_MB} MB`);
+const IMGBB_GAP_MS = 1200;          // jeda minimal antar upload (semua upload diantrekan)
+const IMGBB_COOLDOWN_MS = 10 * 60 * 1000; // key yang kena limit diistirahatkan 10 menit
+const _ibbCooldown = {};            // key -> waktu boleh dipakai lagi
+let _ibbRR = 0;                     // pointer round-robin
+let _ibbQueue = Promise.resolve();
+let _ibbLastAt = 0;
+
+function _ibbPickKey() {
+  const now = Date.now();
+  for (let i = 0; i < IMGBB_KEYS.length; i++) {
+    const k = IMGBB_KEYS[(_ibbRR + i) % IMGBB_KEYS.length];
+    if ((_ibbCooldown[k] || 0) <= now) { _ibbRR = (_ibbRR + i + 1) % IMGBB_KEYS.length; return k; }
+  }
+  return null;
+}
+function _ibbIsRateLimit(status, msg) {
+  return status === 429 || /rate\s*limit|too many/i.test(String(msg || ''));
+}
+async function _ibbDoUpload(file) {
   let lastErr = 'Upload gagal';
-  for (let attempt = 1; attempt <= 3; attempt++) {
+  let netTries = 0;
+  while (true) {
+    const key = _ibbPickKey();
+    if (!key) throw new Error('Server upload sedang penuh. Coba lagi beberapa menit lagi ya.');
+    const wait = _ibbLastAt + IMGBB_GAP_MS - Date.now();
+    if (wait > 0) await new Promise(r => setTimeout(r, wait));
     try {
       const fd = new FormData();
       fd.append('image', file);
-      const res = await fetch('https://api.imgbb.com/1/upload?key=' + IMGBB_KEY, { method: 'POST', body: fd });
+      const res = await fetch('https://api.imgbb.com/1/upload?key=' + key, { method: 'POST', body: fd });
+      _ibbLastAt = Date.now();
       const json = await res.json().catch(() => ({}));
       if (res.ok && json.success && json.data && json.data.url) return await pickWorkingUrl(json.data.url);
-      lastErr = (json.error && (json.error.message || json.error)) || ('HTTP ' + res.status);
-      if (res.status === 400) break;
-    } catch (e) { lastErr = 'Koneksi bermasalah'; }
-    await new Promise(r => setTimeout(r, 800 * attempt));
+      const msg = (json.error && (json.error.message || json.error)) || ('HTTP ' + res.status);
+      if (_ibbIsRateLimit(res.status, msg)) { _ibbCooldown[key] = Date.now() + IMGBB_COOLDOWN_MS; lastErr = 'Rate limit'; continue; } // coba key lain, tanpa retry beruntun
+      if (res.status === 400) throw new Error(String(msg));
+      lastErr = String(msg);
+      throw new Error(lastErr);
+    } catch (e) {
+      if (e && e.message && e.message !== 'Failed to fetch' && !/NetworkError|Load failed/i.test(e.message)) throw e;
+      _ibbLastAt = Date.now();
+      if (++netTries >= 2) throw new Error('Koneksi bermasalah, coba lagi.');
+      await new Promise(r => setTimeout(r, 1500 * netTries));
+    }
   }
-  throw new Error(String(lastErr));
+}
+function uploadToImgbb(file) {
+  if (!file || !file.type || !file.type.startsWith('image/')) return Promise.reject(new Error('Bukan gambar'));
+  if (file.size > IMGBB_MAX_MB * 1024 * 1024) return Promise.reject(new Error(`Ukuran file > ${IMGBB_MAX_MB} MB`));
+  // Antrekan: semua upload (dari tab ini) jalan satu per satu dengan jeda
+  const job = _ibbQueue.then(() => _ibbDoUpload(file));
+  _ibbQueue = job.catch(() => {});
+  return job;
 }
 function compressImage(file) { return uploadToImgbb(file); }
 
