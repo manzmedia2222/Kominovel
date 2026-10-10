@@ -1125,7 +1125,7 @@ class="inline-flex items-center gap-2 mt-1 px-4 py-2 rounded-full bg-amber-500 h
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 import { getAuth, signInAnonymously, GoogleAuthProvider, signInWithPopup, linkWithPopup, onAuthStateChanged, signOut, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, collection, addDoc, getDocs, query, where, orderBy, onSnapshot, serverTimestamp, limit, increment } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, collection, addDoc, getDocs, query, where, orderBy, onSnapshot, serverTimestamp, limit, increment, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 import { getMessaging, getToken, deleteToken, onMessage, isSupported } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-messaging.js";
 
 const firebaseConfig = {
@@ -7371,7 +7371,7 @@ async function renderReader(container, novelId, chapterId = null) {
             </div>
             <div id="comment-text-${c.id}" class="text-sm">${sensor(c.text || '')}</div>
             <div class="flex items-center gap-3 mt-2 text-xs">
-              <button onclick="likeComment('${novelId}','${currentChapter.id}','${c.id}')" class="text-slate-400 hover:text-red-400 transition"><i class="fas fa-heart"></i> ${c.likes || 0}</button>
+              <button onclick="likeComment('${novelId}','${currentChapter.id}','${c.id}')" class="${currentUser && (c.likedBy || []).includes(currentUser.uid) ? 'text-red-500' : 'text-slate-400 hover:text-red-400'} transition"><i class="fas fa-heart"></i> ${c.likes || 0}</button>
               <button onclick="showReplyInput('${c.id}')" class="text-slate-400 hover:text-amber-400 transition"><i class="fas fa-reply"></i> Balas</button>
               ${isOwnComment ? `<button onclick="editComment('${novelId}','${currentChapter.id}','${c.id}')" class="text-blue-400 hover:text-blue-300 transition"><i class="fas fa-edit"></i> Edit</button>` : ''}
               ${canDelete ? `<button onclick="deleteComment('${novelId}','${currentChapter.id}','${c.id}')" class="text-red-400 hover:text-red-300 transition"><i class="fas fa-trash"></i> Hapus</button>` : ''}
@@ -7408,7 +7408,7 @@ async function renderReader(container, novelId, chapterId = null) {
     const uname = userProfile.username || currentUser.displayName || 'User';
     const uphoto = userProfile.photoURL || currentUser.photoURL || '';
     if (text) {
-      await addDoc(commentsRef, { userId: currentUser.uid, username: uname, photoURL: uphoto, userLevel: userProfile.level || 1, isAdmin: isAdminUser(userProfile), isPenulis: hasRole(userProfile, 'penulis'), isKomikus: hasRole(userProfile, 'komikus'), text: sensor(text), likes: 0, parentId: null, edited: false, createdAt: serverTimestamp() });
+      await addDoc(commentsRef, { userId: currentUser.uid, username: uname, photoURL: uphoto, userLevel: userProfile.level || 1, isAdmin: isAdminUser(userProfile), isPenulis: hasRole(userProfile, 'penulis'), isKomikus: hasRole(userProfile, 'komikus'), text: sensor(text), likes: 0, likedBy: [], parentId: null, edited: false, createdAt: serverTimestamp() });
       await trackWorkActivity(novelId,'comments',1);
       await addExp(EXP_PER_COMMENT);
     }
@@ -7435,8 +7435,22 @@ async function recalcWorkRating(workId) {
 
 window.likeComment = async (wid,cid,id) => {
   if (!currentUser) { showToast('Login dulu'); return; }
-  const r = doc(db,'works',wid,'chapters',cid,'comments',id); const s = await getDoc(r);
-  if (s.exists()) await updateDoc(r, { likes: (s.data().likes || 0) + 1 });
+  if (window._likingComments?.has(id)) return; // cegah klik beruntun
+  (window._likingComments ||= new Set()).add(id);
+  try {
+    const r = doc(db,'works',wid,'chapters',cid,'comments',id); const s = await getDoc(r);
+    if (!s.exists()) return;
+    const likedBy = s.data().likedBy || [];
+    const uid = currentUser.uid;
+    if (likedBy.includes(uid)) {
+      // sudah like -> unlike
+      await updateDoc(r, { likedBy: arrayRemove(uid), likes: Math.max(0, (s.data().likes || 0) - 1) });
+    } else {
+      await updateDoc(r, { likedBy: arrayUnion(uid), likes: (s.data().likes || 0) + 1 });
+    }
+  } finally {
+    window._likingComments.delete(id);
+  }
 };
 window.showReplyInput = id => document.getElementById('reply-input-' + id)?.classList.toggle('hidden');
 window.submitReply = async (wid,cid,pid) => {
