@@ -1555,66 +1555,93 @@ function markNotifSeen(type, ts) {
 window.markNotifSeen = markNotifSeen;
 
 function startNotifListeners() {
-  // Bersihkan listener lama
-  notifListeners.forEach(u => { try { u(); } catch(e){} });
+  notifListeners.forEach(unsub => { try { unsub(); } catch (e) {} });
   notifListeners = [];
+  if (!db) return;
 
-  // Chat publik
+  // Hindari menghitung ulang pesan lama setiap listener pertama kali aktif.
+  let publicReady = false;
+  const seenPublicIds = new Set();
   try {
-    const chatQ = query(collection(db, 'chats'), orderBy('createdAt', 'desc'), limit(1));
-    const u1 = onSnapshot(chatQ, snap => {
-      snap.forEach(d => {
-        const msg = d.data();
-        const ts = msg.createdAt?.toDate?.()?.getTime() || Date.now();
-        if (msg.userId === currentUser?.uid) return;
-        if (ts > (notifState.chat?.lastSeen || 0)) {
-          notifState.chat.count = (notifState.chat.count || 0) + 1;
+    const chatQ = query(collection(db, 'chats'), orderBy('createdAt', 'desc'), limit(30));
+    const unsubChat = onSnapshot(chatQ, snap => {
+      if (!publicReady) {
+        snap.docs.forEach(d => seenPublicIds.add(d.id));
+        publicReady = true;
+        return;
+      }
+      snap.docChanges().forEach(change => {
+        if (change.type !== 'added' || seenPublicIds.has(change.doc.id)) return;
+        seenPublicIds.add(change.doc.id);
+        const msg = change.doc.data() || {};
+        if (!currentUser || msg.userId === currentUser.uid) return;
+        const ts = msg.createdAt?.toDate?.()?.getTime?.() || Date.now();
+        if (ts > Number(notifState.chat?.lastSeen || 0)) {
+          notifState.chat.count = Math.min(999, Number(notifState.chat.count || 0) + 1);
           saveNotifState();
           updateBadges();
         }
       });
-    });
-    notifListeners.push(u1);
-  } catch (e) { console.warn('notif chat err', e); }
+      while (seenPublicIds.size > 500) seenPublicIds.delete(seenPublicIds.values().next().value);
+    }, err => console.error('[KomiNovel notif] Chat publik gagal:', err));
+    notifListeners.push(unsubChat);
+  } catch (e) { console.error('[KomiNovel notif] Listener chat publik gagal dibuat:', e); }
 
-  // Berita
+  let beritaReady = false;
+  const seenBeritaIds = new Set();
   try {
-    const beritaQ = query(collection(db, 'berita'), orderBy('createdAt', 'desc'), limit(5));
-    const u2 = onSnapshot(beritaQ, snap => {
-      snap.docChanges().forEach(ch => {
-        if (ch.type === 'added') {
-          const b = ch.doc.data();
-          const ts = b.createdAt?.toDate?.()?.getTime() || Date.now();
-          if (ts > (notifState.berita?.lastSeen || 0)) {
-            notifState.berita.count = (notifState.berita.count || 0) + 1;
-            saveNotifState();
-            updateBadges();
-          }
+    const beritaQ = query(collection(db, 'berita'), orderBy('createdAt', 'desc'), limit(20));
+    const unsubBerita = onSnapshot(beritaQ, snap => {
+      if (!beritaReady) {
+        snap.docs.forEach(d => seenBeritaIds.add(d.id));
+        beritaReady = true;
+        return;
+      }
+      snap.docChanges().forEach(change => {
+        if (change.type !== 'added' || seenBeritaIds.has(change.doc.id)) return;
+        seenBeritaIds.add(change.doc.id);
+        const b = change.doc.data() || {};
+        const ts = b.createdAt?.toDate?.()?.getTime?.() || Date.now();
+        if (currentUser && ts > Number(notifState.berita?.lastSeen || 0)) {
+          notifState.berita.count = Math.min(999, Number(notifState.berita.count || 0) + 1);
+          saveNotifState();
+          updateBadges();
         }
       });
-    });
-    notifListeners.push(u2);
-  } catch (e) { console.warn('notif berita err', e); }
+      while (seenBeritaIds.size > 500) seenBeritaIds.delete(seenBeritaIds.values().next().value);
+    }, err => console.error('[KomiNovel notif] Berita gagal:', err));
+    notifListeners.push(unsubBerita);
+  } catch (e) { console.error('[KomiNovel notif] Listener berita gagal dibuat:', e); }
 }
 
 function startClanNotifListener() {
-  if (!userProfile?.clanId) return;
+  if (!currentUser || !userProfile?.clanId) return;
+  const clanId = userProfile.clanId;
+  let ready = false;
+  const seenIds = new Set();
   try {
-    const cq = query(collection(db, 'clans', userProfile.clanId, 'messages'), orderBy('createdAt', 'desc'), limit(1));
-    const u = onSnapshot(cq, snap => {
-      snap.forEach(d => {
-        const msg = d.data();
+    const cq = query(collection(db, 'clans', clanId, 'messages'), orderBy('createdAt', 'desc'), limit(30));
+    const unsub = onSnapshot(cq, snap => {
+      if (!ready) {
+        snap.docs.forEach(d => seenIds.add(d.id));
+        ready = true;
+        return;
+      }
+      snap.docChanges().forEach(change => {
+        if (change.type !== 'added' || seenIds.has(change.doc.id)) return;
+        seenIds.add(change.doc.id);
+        const msg = change.doc.data() || {};
         if (msg.userId === currentUser?.uid) return;
-        const ts = msg.createdAt?.toDate?.()?.getTime() || Date.now();
-        if (ts > (notifState.clan?.lastSeen || 0)) {
-          notifState.clan.count = (notifState.clan.count || 0) + 1;
+        const ts = msg.createdAt?.toDate?.()?.getTime?.() || Date.now();
+        if (ts > Number(notifState.clan?.lastSeen || 0)) {
+          notifState.clan.count = Math.min(999, Number(notifState.clan.count || 0) + 1);
           saveNotifState();
           updateBadges();
         }
       });
-    });
-    notifListeners.push(u);
-  } catch (e) { console.warn('notif clan err', e); }
+    }, err => console.error('[KomiNovel notif] Chat clan gagal:', err));
+    notifListeners.push(unsub);
+  } catch (e) { console.error('[KomiNovel notif] Listener clan gagal dibuat:', e); }
 }
 
 // ============================================================
@@ -4086,7 +4113,7 @@ async function initAuth() {
         usersCache[currentUser.uid] = { id: currentUser.uid, ...userProfile };
         updateBadges();
         if (typeof renderMobileNav === 'function') renderMobileNav();
-      }, () => {});
+      }, err => console.error('[KomiNovel] Sinkronisasi profil gagal:', err));
       await loadClansCache();
       await loadCustomCategories();
       await loadAllUsersCache();
@@ -4552,9 +4579,9 @@ function initChapterNotificationListener() {
         v111NotifInitialized = true;
         renderV111NotifPanel();
       },
-      () => {}
+      err => console.error('[KomiNovel notif] Pusat notifikasi gagal:', err)
     );
-  } catch(e) {}
+  } catch(e) { console.error('[KomiNovel notif] Listener pusat gagal dibuat:', e); }
 }
 
 async function createChapterNotifications(workId, chapterData) {
@@ -4700,9 +4727,9 @@ async function initPrivateNotifListener() {
       notifState.dm.count = total;
       saveNotifState();
       updateBadges();
-    });
+    }, err => console.error('[KomiNovel notif] DM gagal:', err));
     notifPrivateUnsubs.push(unsub);
-  } catch(e) {}
+  } catch(e) { console.error('[KomiNovel notif] Listener DM gagal dibuat:', e); }
 }
 
 
