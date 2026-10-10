@@ -1020,6 +1020,14 @@ body{font-family:'Inter',sans-serif;background:#0f0f1a;color:#e2e8f0;overflow-x:
 [data-theme="light"] .vt-head h3{color:#b45309}
 [data-theme="light"] .vt-desc{color:#475569}
 </style>
+
+<style id="lowDevicePerformanceStyles">
+  /* Hemat bandwidth dan decoding: gambar di luar viewport dimuat saat diperlukan. */
+  img { max-width: 100%; }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { scroll-behavior: auto !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+  }
+</style>
 </head><body class="min-h-screen">
 
 <div id="app" class="max-w-7xl mx-auto p-3 md:p-4 pb-24">
@@ -2596,11 +2604,72 @@ async function _ibbDoUpload(file) {
     }
   }
 }
+// Kompres gambar besar di perangkat sebelum dikirim ke ImgBB.
+// File kecil dibiarkan apa adanya; gambar transparan tetap transparan melalui WebP.
+const IMAGE_COMPRESS_THRESHOLD = 700 * 1024; // mulai kompres di atas 700 KB
+const IMAGE_TARGET_BYTES = 850 * 1024;       // target sekitar 850 KB
+const IMAGE_MAX_DIMENSION = 2400;             // batasi resolusi berlebihan untuk perangkat low-end
+function _loadImageForCompression(file) {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => { URL.revokeObjectURL(url); resolve(img); };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('Gambar tidak bisa dibaca untuk dikompres')); };
+    img.src = url;
+  });
+}
+function _canvasToBlob(canvas, type, quality) {
+  return new Promise(resolve => canvas.toBlob(resolve, type, quality));
+}
+async function optimizeImageFile(file) {
+  if (!file || !file.type || !file.type.startsWith('image/')) return file;
+  // Jangan mengubah animasi GIF, SVG, atau file yang sudah cukup ringan.
+  if (file.size <= IMAGE_COMPRESS_THRESHOLD || /image\/(gif|svg\+xml)/i.test(file.type)) return file;
+  let img;
+  try { img = await _loadImageForCompression(file); }
+  catch (e) { console.warn('Kompresi dilewati:', e); return file; }
+  const originalW = img.naturalWidth || img.width;
+  const originalH = img.naturalHeight || img.height;
+  if (!originalW || !originalH) return file;
+  const scale = Math.min(1, IMAGE_MAX_DIMENSION / Math.max(originalW, originalH));
+  const canvas = document.createElement('canvas');
+  canvas.width = Math.max(1, Math.round(originalW * scale));
+  canvas.height = Math.max(1, Math.round(originalH * scale));
+  const ctx = canvas.getContext('2d', { alpha: true });
+  if (!ctx) return file;
+  // PNG/WebP tetap punya alpha; JPEG cocok untuk foto/cover tanpa transparansi.
+  const keepAlpha = file.type.toLowerCase() === 'image/png' || file.type.toLowerCase() === 'image/webp';
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+  ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+  let outputType = keepAlpha ? 'image/webp' : 'image/jpeg';
+  let blob = null;
+  for (const quality of [0.86, 0.80, 0.74, 0.68]) {
+    blob = await _canvasToBlob(canvas, outputType, quality);
+    if (blob && (blob.size <= IMAGE_TARGET_BYTES || quality === 0.68)) break;
+  }
+  // Jika browser tidak mendukung format target, coba JPEG sebagai fallback.
+  if (!blob || !blob.size || (keepAlpha && blob.type !== 'image/webp')) {
+    outputType = 'image/jpeg';
+    for (const quality of [0.84, 0.78, 0.70]) {
+      blob = await _canvasToBlob(canvas, outputType, quality);
+      if (blob && (blob.size <= IMAGE_TARGET_BYTES || quality === 0.70)) break;
+    }
+  }
+  // Jangan mengganti file jika hasilnya tidak lebih kecil secara bermakna.
+  if (!blob || !blob.size || blob.size >= file.size * 0.95) return file;
+  const ext = blob.type === 'image/webp' ? 'webp' : 'jpg';
+  const baseName = String(file.name || 'gambar').replace(/\.[^.]+$/, '');
+  const optimized = new File([blob], `${baseName}-optimized.${ext}`, { type: blob.type || outputType, lastModified: Date.now() });
+  console.info(`[KomiNovel] Gambar dikompres: ${(file.size/1024/1024).toFixed(2)} MB → ${(optimized.size/1024).toFixed(0)} KB`);
+  return optimized;
+}
 function uploadToImgbb(file) {
   if (!file || !file.type || !file.type.startsWith('image/')) return Promise.reject(new Error('Bukan gambar'));
-  if (file.size > IMGBB_MAX_MB * 1024 * 1024) return Promise.reject(new Error(`Ukuran file > ${IMGBB_MAX_MB} MB`));
-  // Antrekan: semua upload (dari tab ini) jalan satu per satu dengan jeda
-  const job = _ibbQueue.then(() => _ibbDoUpload(file));
+  if (file.size > IMGBB_MAX_MB * 1024 * 1024) return Promise.reject(new Error(`Ukuran file asli > ${IMGBB_MAX_MB} MB`));
+  const prepared = optimizeImageFile(file).catch(err => { console.warn('Kompresi gagal, memakai file asli:', err); return file; });
+  // Kompres lebih dulu di perangkat, lalu antrekan upload agar API tidak dibanjiri.
+  const job = _ibbQueue.then(async () => _ibbDoUpload(await prepared));
   _ibbQueue = job.catch(() => {});
   return job;
 }
@@ -3152,6 +3221,9 @@ function getSelectedCats(containerId) {
 function coverField(id) {
   return `<div class="bg-slate-900/50 border border-amber-500/30 rounded-xl p-3 mt-2">
     <label class="text-xs font-semibold text-amber-400 block mb-2">Sampul / Cover <span class="text-red-400">*</span></label>
+    <div class="rounded-lg border border-sky-500/30 bg-sky-950/30 p-2.5 mb-3 text-xs text-sky-100 leading-relaxed">
+      <i class="fas fa-gauge-high mr-1 text-sky-300"></i><b>Saran untuk kreator:</b> gunakan gambar <b>JPG/JPEG</b> yang sudah dikompres agar ukuran file lebih kecil dan KomiNovel lebih lancar, terutama di HP atau perangkat berspesifikasi rendah. Usahakan cover sekitar <b>di bawah 500 KB</b> jika kualitasnya masih bagus. PNG tetap boleh digunakan bila diperlukan.
+    </div>
     <div class="flex flex-wrap gap-2 mb-2">
       <label class="cursor-pointer bg-amber-500 text-black px-3 py-2 rounded-lg text-xs font-bold hover:scale-105 transition">
         <i class="fas fa-upload mr-1"></i>Upload dari Perangkat
@@ -3233,7 +3305,7 @@ function attachMultiImageHandlers(containerId) {
     const files = Array.from(e.target.files);
     if (files.length === 0) return;
     progress.classList.remove('hidden');
-    progress.innerHTML = `Mengupload ${files.length} foto ke ImgBB...<br>`;
+    progress.innerHTML = `Memeriksa ukuran dan mengompres gambar besar bila diperlukan, lalu mengupload ${files.length} foto ke ImgBB...<br>`;
     const newFiles = [];
     for (let i = 0; i < files.length; i++) {
       const f = files[i];
@@ -8637,6 +8709,9 @@ async function renderAdminPanel(container) {
             ${isTD ? `<button class="restoreBtn bg-green-600 text-white px-4 py-1.5 rounded-lg text-xs font-bold hover:scale-105 transition" data-wid="${w.id}"><i class="fas fa-undo mr-1"></i>Restore</button>` : `<button class="takedownBtn bg-red-600 text-white px-4 py-1.5 rounded-lg text-xs font-bold hover:scale-105 transition" data-wid="${w.id}" data-title="${escAttr(w.title)}"><i class="fas fa-ban mr-1"></i>Takedown</button>`}
             <button class="featureWorkBtn ${isUN ? 'bg-yellow-600' : 'bg-slate-700'} text-white px-4 py-1.5 rounded-lg text-xs font-bold hover:scale-105 transition" data-wid="${w.id}" data-featured="${isUN}"><i class="fas fa-star mr-1"></i>${isUN ? 'Hapus Unggulan' : 'Unggulan'}</button>
             <button class="adminViewBtn bg-slate-700 text-slate-300 px-4 py-1.5 rounded-lg text-xs font-bold hover:scale-105 transition" data-wid="${w.id}"><i class="fas fa-eye mr-1"></i>Lihat</button>
+            <button class="adminDownloadCover bg-blue-700 text-white px-4 py-1.5 rounded-lg text-xs font-bold hover:bg-blue-600 transition" data-wid="${w.id}"><i class="fas fa-download mr-1"></i>Download Cover</button>
+            <button class="adminCopyDesc bg-indigo-700 text-white px-4 py-1.5 rounded-lg text-xs font-bold hover:bg-indigo-600 transition" data-wid="${w.id}"><i class="fas fa-copy mr-1"></i>Salin Deskripsi</button>
+            <button class="adminCopyTeaser bg-purple-700 text-white px-4 py-1.5 rounded-lg text-xs font-bold hover:bg-purple-600 transition" data-wid="${w.id}"><i class="fas fa-copy mr-1"></i>Salin Teaser</button>
             ${reports > 0 ? `<button class="viewReportsBtn bg-red-800 text-white px-4 py-1.5 rounded-lg text-xs font-bold hover:scale-105 transition" data-wid="${w.id}" data-title="${escAttr(w.title)}"><i class="fas fa-flag mr-1"></i>Lihat Report (${reports})</button>` : ''}
           </div>
         </div>`;
@@ -8654,6 +8729,45 @@ async function renderAdminPanel(container) {
         loadAdminWorks();
       });
       list.querySelectorAll('.adminViewBtn').forEach(b => b.onclick = () => { window.location.hash = 'reader/' + b.dataset.wid; });
+      list.querySelectorAll('.adminDownloadCover').forEach(b => b.onclick = async () => {
+        const w = works.find(item => item.id === b.dataset.wid);
+        if (!w || !w.coverURL) { showToast('Cover tidak tersedia'); return; }
+        const original = b.innerHTML;
+        b.disabled = true; b.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i>Mengunduh...';
+        try {
+          const response = await fetch(w.coverURL, { mode: 'cors' });
+          if (!response.ok) throw new Error('Cover tidak dapat diambil');
+          const blob = await response.blob();
+          const ext = (blob.type.match(/image\/(jpeg|png|webp|gif|avif)/i) || [,'jpg'])[1].replace('jpeg','jpg');
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url; a.download = (w.title || 'cover-komik-novel').replace(/[\\\\/:*?"<>|]+/g,'-') + '.' + ext;
+          document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+          showToast('Cover berhasil diunduh');
+        } catch (err) {
+          // Jika host gambar memblokir CORS, buka file sumber agar admin tetap bisa menyimpannya.
+          window.open(w.coverURL, '_blank', 'noopener');
+          showToast('Cover dibuka di tab baru. Simpan gambar dari tab tersebut.');
+        } finally { b.disabled = false; b.innerHTML = original; }
+      });
+      async function copyWorkField(wid, field, label) {
+        const w = works.find(item => item.id === wid);
+        const value = w && typeof w[field] === 'string' ? w[field].trim() : '';
+        if (!value) { showToast(label + ' kosong'); return; }
+        try {
+          if (navigator.clipboard && window.isSecureContext) await navigator.clipboard.writeText(value);
+          else {
+            const ta = document.createElement('textarea'); ta.value = value;
+            ta.style.position = 'fixed'; ta.style.opacity = '0';
+            document.body.appendChild(ta); ta.select();
+            const ok = document.execCommand('copy'); ta.remove();
+            if (!ok) throw new Error('Clipboard tidak tersedia');
+          }
+          showToast(label + ' berhasil disalin');
+        } catch (err) { showToast('Gagal menyalin ' + label.toLowerCase()); }
+      }
+      list.querySelectorAll('.adminCopyDesc').forEach(b => b.onclick = () => copyWorkField(b.dataset.wid, 'description', 'Deskripsi'));
+      list.querySelectorAll('.adminCopyTeaser').forEach(b => b.onclick = () => copyWorkField(b.dataset.wid, 'teaser', 'Teaser'));
       list.querySelectorAll('.viewReportsBtn').forEach(b => b.onclick = () => window.openReportsDetailModal(b.dataset.wid, b.dataset.title));
     }
     document.getElementById('adminWorkSearch').oninput = renderList;
@@ -9979,6 +10093,39 @@ window.addEventListener('hashchange', renderPage);
   console.log(`%c🚀 KomiNovel v${APP_VERSION} loaded`, 'background:linear-gradient(135deg,#fbbf24,#d97706);color:#0f0f1a;font-weight:900;padding:4px 12px;border-radius:8px;');
   console.log('%c✨ Update v1.10:', 'color:#fbbf24;font-weight:bold;');
   APP_VERSION_NOTES.forEach(n => console.log('  •', n));
+})();
+</script>
+
+<script id="lowDeviceImageLoading">
+(function () {
+  'use strict';
+  function tuneImage(img) {
+    if (!img || img.tagName !== 'IMG') return;
+    var isHero = !!img.closest('#homeHero');
+    var isBrand = !!img.closest('header') && /logo|brand/i.test((img.alt || '') + ' ' + (img.className || ''));
+    if (!img.hasAttribute('loading')) img.loading = (isHero || isBrand) ? 'eager' : 'lazy';
+    if (!img.hasAttribute('decoding')) img.decoding = 'async';
+    if (isHero) img.setAttribute('fetchpriority', 'high');
+    else if (!img.hasAttribute('fetchpriority')) img.setAttribute('fetchpriority', 'low');
+  }
+  function scanImages(root) {
+    if (!root) return;
+    if (root.tagName === 'IMG') tuneImage(root);
+    if (root.querySelectorAll) root.querySelectorAll('img').forEach(tuneImage);
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function () { scanImages(document); }, { once: true });
+  } else scanImages(document);
+  if ('MutationObserver' in window) {
+    var observer = new MutationObserver(function (records) {
+      records.forEach(function (record) {
+        record.addedNodes.forEach(function (node) {
+          if (node.nodeType === 1) scanImages(node);
+        });
+      });
+    });
+    observer.observe(document.documentElement, { childList: true, subtree: true });
+  }
 })();
 </script>
 </body>
