@@ -2474,6 +2474,26 @@ function saveReadingPos(workId, chapterId, scrollY) {
     localStorage.setItem(READING_POS_KEY, JSON.stringify(data));
   } catch (e) {}
 }
+const READ_CHAPTERS_KEY = 'kominovel_read_chapters_v1';
+function getReadChapterMap() {
+  try { return JSON.parse(localStorage.getItem(READ_CHAPTERS_KEY) || '{}'); } catch (e) { return {}; }
+}
+function isChapterRead(workId, chapterId) {
+  const map = getReadChapterMap();
+  const userKey = currentUser?.uid || 'guest';
+  return !!(map[userKey] && map[userKey][workId] && map[userKey][workId][chapterId]);
+}
+function markChapterRead(workId, chapterId) {
+  if (!workId || !chapterId) return;
+  try {
+    const map = getReadChapterMap();
+    const userKey = currentUser?.uid || 'guest';
+    map[userKey] ||= {}; map[userKey][workId] ||= {};
+    map[userKey][workId][chapterId] = Date.now();
+    localStorage.setItem(READ_CHAPTERS_KEY, JSON.stringify(map));
+  } catch (e) {}
+}
+
 function getReadingPos(workId) {
   try {
     const data = JSON.parse(localStorage.getItem(READING_POS_KEY) || '{}');
@@ -5651,6 +5671,14 @@ async function renderHome(container) {
       <div class="slide-track" id="baruTrack"></div>
     </section>
 
+    <section class="slide-section mb-8" id="sectionSemuaKomik">
+      <div class="slide-header">
+        <div><h2 class="text-orange-400"><i class="fas fa-book-open mr-1"></i>Semua Komik</h2><p class="text-[10px] text-slate-500 mt-1">Semua komik yang sudah dipublikasikan.</p></div>
+        <div class="flex gap-1"><button class="slide-nav-btn" id="semuaPrev" title="Geser kiri"><i class="fas fa-chevron-left"></i></button><button class="slide-nav-btn" id="semuaNext" title="Geser kanan"><i class="fas fa-chevron-right"></i></button></div>
+      </div>
+      <div class="slide-track" id="semuaTrack"></div>
+    </section>
+
     <section class="slide-section mb-8" id="sectionProses">
       <div class="slide-header">
         <h2 class="text-blue-400"><i class="fas fa-clock mr-1"></i>Proses Pengerjaan</h2>
@@ -5684,6 +5712,7 @@ async function renderHome(container) {
   const weeklyTrack=document.getElementById('weeklyTrack');
   const baruTrack=document.getElementById('baruTrack');
   const prosesTrack=document.getElementById('prosesTrack');
+  const semuaTrack=document.getElementById('semuaTrack');
   const homeEmpty=document.getElementById('homeEmpty');
 
   // Cache ranking hanya membaca 1 dokumen untuk masing-masing fitur.
@@ -5696,9 +5725,20 @@ async function renderHome(container) {
   const renderHero = (allWorks) => {
     const hero=document.getElementById('homeHero');
     if (!hero) return;
-    const candidates=allWorks.filter(w=>!isNonPublish(w)&&!isTakedown(w))
-      .sort((a,b)=>(Number(b.featured||0)-Number(a.featured||0)) || ((b.views||0)-(a.views||0)) || ((b.likes||0)-(a.likes||0)))
-      .slice(0,5);
+    const publishedHero=allWorks.filter(w=>!isNonPublish(w)&&!isTakedown(w));
+    const weeklyIds=getCacheWorkIds(popularCache,currentContentType);
+    const byId=new Map(publishedHero.map(w=>[w.id,w]));
+    let candidates=weeklyIds.map(id=>byId.get(id)).filter(Boolean);
+    if(!candidates.length) candidates=[...publishedHero].sort((a,b)=>((b.views||0)-(a.views||0))+((b.likes||0)-(a.likes||0))*2);
+    // Banner hanya menampilkan 3 karya. Utamakan ranking populer minggu ini,
+    // lalu isi slot yang kurang dari karya terbit dengan engagement tertinggi.
+    const uniqueCandidates=[];
+    const seenHeroIds=new Set();
+    const fallbackRank=publishedHero.slice().sort((a,b)=>((Number(b.views)||0)+(Number(b.likes)||0)*2+(Number(b.comments)||0))-((Number(a.views)||0)+(Number(a.likes)||0)*2+(Number(a.comments)||0)));
+    for(const w of [...candidates,...fallbackRank]){
+      if(w && !seenHeroIds.has(w.id)){seenHeroIds.add(w.id);uniqueCandidates.push(w);}
+    }
+    candidates=uniqueCandidates.slice(0,3);
     if (!candidates.length) {
       hero.innerHTML=`<div class="home-hero-slide active"><div class="home-hero-content"><span class="home-hero-type">KomiNovel</span><div class="home-hero-title">Baca & Tulis Karya Gratis</div><div class="home-hero-teaser">Temukan komik dan novel dari para kreator KomiNovel.</div></div></div>`;
       return;
@@ -5730,7 +5770,11 @@ async function renderHome(container) {
     document.getElementById('heroPrev').onclick=e=>{e.stopPropagation();setHero(heroIndex-1)};
     document.getElementById('heroNext').onclick=e=>{e.stopPropagation();setHero(heroIndex+1)};
     hero.querySelectorAll('.home-hero-dot').forEach(b=>b.onclick=e=>{e.stopPropagation();setHero(Number(b.dataset.heroDot))});
-    homeBannerTimer=setInterval(()=>{ if (!document.hidden) setHero(heroIndex+1); },5000);
+    // Ganti slide otomatis tanpa animasi transisi; daftar 3 karya mengikuti cache populer mingguan.
+    if (candidates.length > 1) homeBannerTimer = setInterval(()=>{
+      if (!document.getElementById('homeHero')) { clearInterval(homeBannerTimer); homeBannerTimer=null; return; }
+      setHero(heroIndex+1);
+    }, 5000);
   };
 
   worksUnsub=onSnapshot(q,(snapshot)=>{
@@ -5764,6 +5808,7 @@ async function renderHome(container) {
       : [...published].sort((a,b)=>((b.views||0)-(a.views||0))+((b.likes||0)-(a.likes||0))*2);
     if(!cachedIds.length) populer=populer.slice(0,10);
     const baru=[...published].sort((a,b)=>(b.createdAt?.toDate?.()?.getTime?.()||0)-(a.createdAt?.toDate?.()?.getTime?.()||0)).slice(0,10);
+    const semua=[...published].filter(w=>w.type==='komik').sort((a,b)=>(b.createdAt?.toDate?.()?.getTime?.()||0)-(a.createdAt?.toDate?.()?.getTime?.()||0));
     const proses=[...nonpublished].sort((a,b)=>{
       const at=a.updatedAt?.toDate?.()?.getTime?.()||a.createdAt?.toDate?.()?.getTime?.()||0;
       const bt=b.updatedAt?.toDate?.()?.getTime?.()||b.createdAt?.toDate?.()?.getTime?.()||0;
@@ -5782,28 +5827,32 @@ async function renderHome(container) {
     const order=allWorks.map(w=>w.id);
     const structureChanged=initialLoad||order.length!==currentWorksOrder.length||order.some((id,i)=>id!==currentWorksOrder[i]);
     if(allWorks.length===0){
-      weeklyTrack.innerHTML='';baruTrack.innerHTML='';prosesTrack.innerHTML='';
+      weeklyTrack.innerHTML='';baruTrack.innerHTML='';prosesTrack.innerHTML='';semuaTrack.innerHTML='';
       homeEmpty.classList.remove('hidden');
       document.getElementById('sectionPopulerMinggu').style.display='none';
       document.getElementById('sectionBaru').style.display='none';
       document.getElementById('sectionProses').style.display='none';
+      document.getElementById('sectionSemuaKomik').style.display='none';
       return;
     }
     homeEmpty.classList.add('hidden');
     document.getElementById('sectionPopulerMinggu').style.display='';
     document.getElementById('sectionBaru').style.display='';
     document.getElementById('sectionProses').style.display='';
+    document.getElementById('sectionSemuaKomik').style.display='';
 
     if(structureChanged||initialLoad){
       weeklyTrack.innerHTML=populer.map((w,i)=>renderSlideCard(w,i,newIds)).join('')||'<p class="text-slate-500 text-xs italic px-2">Belum ada karya populer minggu ini.</p>';
       baruTrack.innerHTML=baru.map((w,i)=>renderSlideCard(w,i,newIds)).join('')||'<p class="text-slate-500 text-xs italic px-2">Belum ada karya baru.</p>';
       prosesTrack.innerHTML=proses.map((w,i)=>renderSlideCard(w,i,newIds)).join('')||'<p class="text-slate-500 text-xs italic px-2">Belum ada karya dalam proses.</p>';
+      semuaTrack.innerHTML=semua.map((w,i)=>renderSlideCard(w,i,newIds)).join('')||'<p class="text-slate-500 text-xs italic px-2">Belum ada komik yang dipublikasikan.</p>';
       currentWorksOrder=order;
       currentWorksData={};allWorks.forEach(w=>currentWorksData[w.id]=w);
       lastKnownIds=new Set(order);initialLoad=false;
       attachSlideNav('weeklyPrev','weeklyNext','weeklyTrack');
       attachSlideNav('baruPrev','baruNext','baruTrack');
       attachSlideNav('prosesPrev','prosesNext','prosesTrack');
+      attachSlideNav('semuaPrev','semuaNext','semuaTrack');
     } else {
       allWorks.forEach(w=>currentWorksData[w.id]=w);
       allWorks.forEach(w=>{
@@ -5822,6 +5871,45 @@ async function renderHome(container) {
     currentSearch=keyword;
     renderPage();
   };
+}
+
+
+// ============================================================
+// SHARE KARYA — tersedia untuk semua pengunjung dan semua role
+// Link mengarah ke halaman pembaca, sedangkan cover ikut dibagikan
+// sebagai gambar jika browser mendukung Web Share API.
+// ============================================================
+function shareWork(workId) {
+  // Tidak menunggu Firestore sebelum menyalin: clipboard API butuh aktivasi klik yang masih aktif.
+  if (!workId) { showToast('Link karya tidak tersedia.'); return; }
+  const url = new URL('/', window.location.origin);
+  const work = currentWorksData && currentWorksData[String(workId)];
+  let creatorName = work ? getLiveWorkAuthor(work).name : 'kreator';
+  if (creatorName && creatorName !== 'Anonim') url.searchParams.set('kreator', creatorName);
+  url.hash = `reader/${encodeURIComponent(String(workId))}`;
+  const shareUrl = url.href;
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(shareUrl).then(() => {
+        showToast('Link komik/novel berhasil disalin!');
+      }).catch(() => fallbackCopyWorkUrl(shareUrl));
+      return;
+    }
+  } catch (e) {}
+  fallbackCopyWorkUrl(shareUrl);
+}
+window.shareWork = shareWork;
+function fallbackCopyWorkUrl(url) {
+  try {
+    const field = document.createElement('textarea');
+    field.value = url;
+    field.setAttribute('readonly', '');
+    field.style.position = 'fixed'; field.style.left = '-9999px';
+    document.body.appendChild(field); field.select(); field.setSelectionRange(0, field.value.length);
+    const copied = document.execCommand('copy'); field.remove();
+    if (copied) showToast('Link komik/novel berhasil disalin!');
+    else window.prompt('Salin link komik/novel ini:', url);
+  } catch (e) { window.prompt('Salin link komik/novel ini:', url); }
 }
 
 function renderSlideCard(work, idx, newIds = new Set()) {
@@ -5868,6 +5956,9 @@ function renderSlideCard(work, idx, newIds = new Set()) {
             <button class="like-btn ${liked ? 'liked' : 'text-slate-400'}" onclick="event.stopPropagation();toggleWorkLike('${work.id}')" ${isTD ? 'disabled' : ''}>
               <i class="fas fa-heart text-xs"></i>
             </button>
+            <button type="button" title="Bagikan ${work.type === 'novel' ? 'novel' : 'komik'}" aria-label="Bagikan ${work.type === 'novel' ? 'novel' : 'komik'}" class="ml-1 inline-flex items-center justify-center gap-1 rounded-full bg-blue-600 hover:bg-blue-500 text-white px-2 h-7 text-[10px] font-bold" onclick="event.stopPropagation();shareWork('${work.id}')" ${isTD || isNP ? 'disabled style="opacity:.4;cursor:not-allowed"' : ''}>
+              <i class="fas fa-share-alt text-xs"></i><span>${work.type === 'novel' ? 'Novel' : 'Komik'}</span>
+            </button>
           </div>
         </div>
       </div>
@@ -5880,11 +5971,20 @@ function attachSlideNav(prevId, nextId, trackId) {
   const track = document.getElementById(trackId);
   if (!prev || !next || !track) return;
   const scrollAmount = 400;
-  prev.onclick = () => track.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
-  next.onclick = () => track.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+  const wrapScroll = (direction) => {
+    const max = Math.max(0, track.scrollWidth - track.clientWidth);
+    if (max <= 2) return;
+    const target = track.scrollLeft + direction * scrollAmount;
+    if (direction > 0 && target >= max - 2) track.scrollTo({ left: 0, behavior: 'smooth' });
+    else if (direction < 0 && target <= 2) track.scrollTo({ left: max, behavior: 'smooth' });
+    else track.scrollTo({ left: target, behavior: 'smooth' });
+  };
+  prev.onclick = () => wrapScroll(-1);
+  next.onclick = () => wrapScroll(1);
   const updateBtns = () => {
-    prev.disabled = track.scrollLeft <= 5;
-    next.disabled = track.scrollLeft >= track.scrollWidth - track.clientWidth - 5;
+    const hasOverflow = track.scrollWidth > track.clientWidth + 2;
+    prev.disabled = !hasOverflow;
+    next.disabled = !hasOverflow;
   };
   track.addEventListener('scroll', updateBtns, { passive: true });
   setTimeout(updateBtns, 100);
@@ -7066,6 +7166,26 @@ function nonpublishBanner(work) {
     </div>`;
 }
 
+// Follow karya disimpan pada dokumen profil pengguna.
+async function toggleFollowWork(workId, workTitle = 'karya') {
+  if (!currentUser) { showToast('Login dulu untuk mengikuti karya.'); return; }
+  try {
+    const userRef = doc(db, 'users', currentUser.uid);
+    const snap = await getDoc(userRef);
+    const data = snap.exists() ? snap.data() : {};
+    const followed = Array.isArray(data.followedWorks) ? data.followedWorks : [];
+    const isFollowing = followed.includes(workId);
+    await updateDoc(userRef, { followedWorks: isFollowing ? arrayRemove(workId) : arrayUnion(workId) });
+    if (userProfile) userProfile.followedWorks = isFollowing ? followed.filter(id => id !== workId) : [...followed, workId];
+    showToast(isFollowing ? `Berhenti mengikuti ${workTitle}.` : `Mengikuti ${workTitle}. Notifikasi chapter/episode baru akan masuk ke pusat notifikasi.`);
+    if (window.location.hash.startsWith('#reader/')) renderPage();
+  } catch (e) {
+    console.error('Gagal mengubah ikuti karya:', e);
+    showToast('Gagal mengikuti karya. Periksa izin Firebase.');
+  }
+}
+window.toggleFollowWork = toggleFollowWork;
+
 // ============================================================
 // ===== READER ===============================================
 // ============================================================
@@ -7093,6 +7213,8 @@ async function renderReader(container, novelId, chapterId = null) {
   if (isTakedown(work)) { container.innerHTML = takedownBanner(work); return; }
 
   const canManage = currentUser && (currentUser.uid === work.authorId || isAdminUser(userProfile));
+  const followedWorkIds = Array.isArray(userProfile?.followedWorks) ? userProfile.followedWorks : [];
+  const isFollowingThisWork = !!(currentUser && followedWorkIds.includes(novelId));
 
   if (isNonPublish(work) && !canManage) {
     container.innerHTML = `<button onclick="window.location.hash='home'" class="text-amber-400 mb-4 hover:text-amber-300 transition"><i class="fas fa-arrow-left mr-2"></i>Kembali</button>` + nonpublishBanner(work);
@@ -7104,6 +7226,7 @@ async function renderReader(container, novelId, chapterId = null) {
   let currentChapter = null;
   if (chapterId) currentChapter = chapters.find(c => c.id === chapterId);
   else if (chapters.length > 0) { currentChapter = chapters[0]; window.location.hash = `reader/${novelId}/${currentChapter.id}`; return; }
+  if (currentChapter) markChapterRead(novelId, currentChapter.id);
 
   const viewKey = `viewed_${novelId}`;
   const alreadyViewed = sessionStorage.getItem(viewKey);
@@ -7135,8 +7258,8 @@ async function renderReader(container, novelId, chapterId = null) {
     const idx = chapters.indexOf(ch);
     return `
       <div class="flex items-center gap-1">
-        <button onclick="window.location.hash='reader/${novelId}/${ch.id}'" class="flex-1 text-left px-3 py-2 rounded-lg ${currentChapter && currentChapter.id === ch.id ? 'bg-amber-500/20 border border-amber-500' : 'hover:bg-slate-800'} text-sm truncate transition">
-          ${chapterLabel} ${ch.number || idx+1}${ch.title ? ': ' + escHtml(ch.title) : ''}
+        <button onclick="window.location.hash='reader/${novelId}/${ch.id}'" class="flex-1 text-left px-3 py-2 rounded-lg ${currentChapter && currentChapter.id === ch.id ? 'bg-amber-500/20 border border-amber-500' : 'hover:bg-slate-800'} text-sm transition">
+          <span class="flex items-center gap-2"><span class="truncate flex-1">${chapterLabel} ${ch.number || idx+1}${ch.title ? ': ' + escHtml(ch.title) : ''}</span>${isChapterRead(novelId, ch.id) ? '<span class="text-emerald-400 text-[10px] font-bold whitespace-nowrap"><i class="fas fa-check-circle"></i> Sudah dibaca</span>' : '<span class="text-slate-500 text-[10px] whitespace-nowrap">Belum dibaca</span>'}</span>
         </button>
         ${canManage ? `<button onclick="deleteChapterFromReader('${novelId}','${ch.id}','${ch.number || idx+1}')" class="text-red-400 hover:text-red-300 px-2"><i class="fas fa-trash text-xs"></i></button>` : ''}
       </div>`;
@@ -7179,6 +7302,12 @@ async function renderReader(container, novelId, chapterId = null) {
           <div class="flex-1">
             <h1 class="text-xl md:text-2xl font-black">${work.title}${isUnggulanAuthor ? ' <span class="unggulan-tag">⭐ UNGGULAN</span>' : ''}</h1>
             <p class="text-amber-400/90 italic mt-2">${work.teaser || ''}</p>
+            <button type="button" onclick="shareWork('${work.id}')" class="mt-3 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold shadow-lg">
+              <i class="fas fa-share-alt"></i> Bagikan ${work.type === 'novel' ? 'Novel' : 'Komik'}
+            </button>
+            <button type="button" onclick="toggleFollowWork('${escAttr(novelId)}','${escAttr(work.title || 'karya')}')" class="follow-btn ${isFollowingThisWork ? 'following' : 'not-following'} mt-3 ml-2">
+              <i class="fas fa-${isFollowingThisWork ? 'check' : 'bell'}"></i> ${isFollowingThisWork ? 'Mengikuti Karya' : 'Ikuti Karya & Notifikasi'}
+            </button>
             <p class="text-slate-400 mt-2 text-sm">${work.description || ''}</p>
             <div class="flex items-center gap-3 mt-3 text-sm flex-wrap">${cats.map(c => `<span class="bg-slate-700 px-3 py-1 rounded-full text-xs">${c}</span>`).join('')}</div>
             <div class="mt-3 flex items-center gap-2 cursor-pointer hover:opacity-80" onclick="window.location.hash='user/${work.authorId}'">
@@ -7378,16 +7507,24 @@ async function renderReader(container, novelId, chapterId = null) {
     const parents = arr.filter(c => !c.parentId);
     const replies = arr.filter(c => c.parentId);
     if (parents.length === 0) { div.innerHTML = '<p class="text-slate-500 text-sm">Belum ada komentar.</p>'; return; }
-    div.innerHTML = parents.map(c => {
-      const cReps = replies.filter(r => r.parentId === c.id);
+    const childrenByParent = {};
+    arr.filter(c => c.parentId).forEach(c => { (childrenByParent[c.parentId] ||= []).push(c); });
+    Object.values(childrenByParent).forEach(list => list.sort((a,b) => {
+      const ta = a.createdAt?.toMillis ? a.createdAt.toMillis() : 0;
+      const tb = b.createdAt?.toMillis ? b.createdAt.toMillis() : 0;
+      return ta - tb;
+    }));
+    const renderCommentNode = (c, depth = 0) => {
       const isOwnComment = currentUser && c.userId === currentUser.uid;
       const canDelete = isOwnComment || isAdminUser(userProfile);
       const u = usersCache[c.userId] || {};
       const vB = getVerifiedBadge(u.followerCount || 0) + getCreatorVerifiedBadge(u);
-      return `<div class="comment-card rounded-xl p-3 card-anim" data-commentid="${c.id}">
+      const childComments = childrenByParent[c.id] || [];
+      const avatarSize = depth ? 'w-6 h-6' : 'w-8 h-8';
+      return `<div class="comment-card rounded-xl p-3 card-anim" data-commentid="${c.id}" style="${depth ? 'margin-left:12px;margin-top:8px;border-left:2px solid rgba(251,191,36,.55)' : ''}">
         <div class="flex items-start gap-2">
-          <img src="${c.photoURL || 'https://ui-avatars.com/api/?name='+encodeURIComponent(c.username||'U')}" class="w-8 h-8 rounded-full cursor-pointer hover:scale-110 transition" onclick="window.location.hash='user/${c.userId}'">
-          <div class="flex-1">
+          <img src="${c.photoURL || 'https://ui-avatars.com/api/?name='+encodeURIComponent(c.username||'U')}" class="${avatarSize} rounded-full cursor-pointer hover:scale-110 transition" onclick="window.location.hash='user/${c.userId}'">
+          <div class="flex-1 min-w-0">
             <div class="flex items-center gap-2 text-xs mb-1 flex-wrap">
               <span class="${isGolden(c.userLevel) ? 'gold-glow font-bold' : 'text-slate-300 font-semibold'} cursor-pointer" onclick="window.location.hash='user/${c.userId}'">${c.username || 'Anonim'}${vB}</span>
               ${isGolden(c.userLevel) ? '<i class="fas fa-crown text-amber-400 text-xs"></i>' : ''}
@@ -7396,28 +7533,20 @@ async function renderReader(container, novelId, chapterId = null) {
               <span class="text-slate-500">• ${fmtDate(c.createdAt)}</span>
               ${c.edited ? '<span class="text-slate-500 text-xs italic">(diedit)</span>' : ''}
             </div>
-            <div id="comment-text-${c.id}" class="text-sm">${sensor(c.text || '')}</div>
-            <div class="flex items-center gap-3 mt-2 text-xs">
+            <div id="comment-text-${c.id}" class="text-sm break-words">${sensor(c.text || '')}</div>
+            <div class="flex items-center gap-3 mt-2 text-xs flex-wrap">
               <button onclick="likeComment('${novelId}','${currentChapter.id}','${c.id}')" class="${currentUser && (c.likedBy || []).includes(currentUser.uid) ? 'text-red-500' : 'text-slate-400 hover:text-red-400'} transition"><i class="fas fa-heart"></i> ${c.likes || 0}</button>
               <button onclick="showReplyInput('${c.id}')" class="text-slate-400 hover:text-amber-400 transition"><i class="fas fa-reply"></i> Balas</button>
               ${isOwnComment ? `<button onclick="editComment('${novelId}','${currentChapter.id}','${c.id}')" class="text-blue-400 hover:text-blue-300 transition"><i class="fas fa-edit"></i> Edit</button>` : ''}
               ${canDelete ? `<button onclick="deleteComment('${novelId}','${currentChapter.id}','${c.id}')" class="text-red-400 hover:text-red-300 transition"><i class="fas fa-trash"></i> Hapus</button>` : ''}
             </div>
-            <div id="reply-input-${c.id}" class="hidden mt-2 flex gap-2"><input type="text" id="reply-text-${c.id}" placeholder="Balasan..." class="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-xs"><button onclick="submitReply('${novelId}','${currentChapter.id}','${c.id}')" class="bg-amber-500 text-black px-3 py-1.5 rounded-lg text-xs font-bold">Kirim</button></div>
-            ${cReps.length > 0 ? `<div class="mt-3 space-y-2">${cReps.map(r => {
-              const ru = usersCache[r.userId] || {};
-              const rvB = getVerifiedBadge(ru.followerCount || 0) + getCreatorVerifiedBadge(ru);
-              return `<div class="reply-indent">
-                <div class="flex items-start gap-2">
-                  <img src="${r.photoURL || 'https://ui-avatars.com/api/?name='+encodeURIComponent(r.username||'U')}" class="w-6 h-6 rounded-full">
-                  <div><span class="${isGolden(r.userLevel) ? 'gold-glow font-bold' : 'text-slate-300'} text-xs">${r.username}${rvB}</span> ${getRoleTagsForUid(r.userId, ru)}<p class="text-xs">${sensor(r.text || '')}</p></div>
-                </div>
-              </div>`;
-            }).join('')}</div>` : ''}
+            <div id="reply-input-${c.id}" class="hidden mt-2 flex gap-2"><input type="text" id="reply-text-${c.id}" placeholder="Balas ${String(c.username || 'komentar').replace(/"/g, '&quot;')}..." class="flex-1 min-w-0 bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-xs"><button onclick="submitReply('${novelId}','${currentChapter.id}','${c.id}')" class="bg-amber-500 text-black px-3 py-1.5 rounded-lg text-xs font-bold">Kirim</button></div>
+            ${childComments.length ? `<div class="mt-2 space-y-2">${childComments.map(child => renderCommentNode(child, depth + 1)).join('')}</div>` : ''}
           </div>
         </div>
       </div>`;
-    }).join('');
+    };
+    div.innerHTML = parents.map(c => renderCommentNode(c, 0)).join('');
   });
 
   let selRating = 0;
@@ -8331,6 +8460,26 @@ async function renderCreatorDashboard(container) {
         if (!t) { showToast('Judul wajib'); return; }
         if (!c) { showToast('Isi wajib'); return; }
         const newChapterRef = await addDoc(collection(db,'works',wid,'chapters'), { number: next, title: t, content: c, images: [], groupId, createdAt: serverTimestamp() });
+        try {
+          const workSnapForFollowers = await getDoc(doc(db, 'works', wid));
+          if (workSnapForFollowers.exists()) {
+            const followedWork = { id: wid, ...workSnapForFollowers.data() };
+            const usersSnapForFollowers = await getDocs(collection(db, 'users'));
+            const chapterLabelForNotif = followedWork.type === 'novel' ? 'Episode' : 'Chapter';
+            for (const followerDoc of usersSnapForFollowers.docs) {
+              const follower = followerDoc.data();
+              if (followerDoc.id === currentUser.uid) continue;
+              if (Array.isArray(follower.followedWorks) && follower.followedWorks.includes(wid)) {
+                await addDoc(collection(db, 'notifications'), {
+                  recipientId: followerDoc.id, type: 'followed_work_update',
+                  title: `${followedWork.type === 'novel' ? 'Episode' : 'Chapter'} baru`,
+                  body: `${followedWork.title || 'Karya yang kamu ikuti'} memiliki ${chapterLabelForNotif.toLowerCase()} baru: ${t || 'Tanpa judul'}`,
+                  workId: wid, chapterId: newChapterRef.id, read: false, createdAt: serverTimestamp()
+                });
+              }
+            }
+          }
+        } catch (followNotifError) { console.warn('Notifikasi pengikut karya gagal dibuat:', followNotifError); }
         await createChapterNotifications(wid, { id:newChapterRef.id, number:next, title:t });
         pushNotify({ kind: 'chapter', workId: wid, chapterId: newChapterRef.id });
       } else {
