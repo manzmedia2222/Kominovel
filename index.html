@@ -27,6 +27,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
 *{-webkit-tap-highlight-color:transparent}
+.skel-bar{background:linear-gradient(90deg,#1a1a2e 25%,#25253d 50%,#1a1a2e 75%);background-size:200% 100%;animation:skelShift 1.2s linear infinite;border-radius:10px}
+@keyframes skelShift{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.komi-skel{padding:4px 0}
 html{-webkit-text-size-adjust:100%}
 body{font-family:'Inter',sans-serif;background:#0f0f1a;color:#e2e8f0;overflow-x:hidden;padding-bottom:80px}
 .gold-glow{text-shadow:none;color:#fbbf24}
@@ -4147,12 +4150,27 @@ function closeReviewModal() {
 // ============================================================
 // ===== LOAD CLANS CACHE =====================================
 // ============================================================
-async function loadClansCache() {
-  try {
-    const snap = await getDocs(collection(db, 'clans'));
-    clansCache = {};
-    snap.forEach(d => { clansCache[d.id] = { id: d.id, ...d.data() }; });
-  } catch (e) {}
+let _clansCacheAt = 0, _clansLoading = null;
+async function loadClansCache(force) {
+  // Cache 2 menit: tidak ambil ulang dari Firebase di setiap pindah halaman
+  if (!force && _clansCacheAt && Date.now() - _clansCacheAt < 2 * 60 * 1000) return;
+  if (_clansLoading) return _clansLoading;
+  _clansLoading = (async () => {
+    try {
+      const snap = await getDocs(collection(db, 'clans'));
+      const fresh = {};
+      snap.forEach(d => { fresh[d.id] = { id: d.id, ...d.data() }; });
+      clansCache = fresh;
+      _clansCacheAt = Date.now();
+    } catch (e) {}
+    _clansLoading = null;
+  })();
+  return _clansLoading;
+}
+// Dipakai router: kalau sudah pernah dimuat, jangan menunggu (refresh di latar belakang)
+function ensureClansCacheFast() {
+  if (_clansCacheAt) { loadClansCache().catch(()=>{}); return Promise.resolve(); }
+  return Promise.race([loadClansCache(), new Promise(r => setTimeout(r, 1200))]);
 }
 
 // ============================================================
@@ -4384,6 +4402,16 @@ function pushInit() {
       if (!(await isSupported())) return false;
       pushMessaging = getMessaging(app);
       pushSwReg = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+      // Tunggu service worker benar-benar aktif; kalau belum, getToken gagal & notif tidak pernah masuk
+      try { await navigator.serviceWorker.ready; } catch (e) {}
+      if (pushSwReg.installing || pushSwReg.waiting) {
+        await new Promise(res => {
+          const sw = pushSwReg.installing || pushSwReg.waiting;
+          if (!sw || sw.state === 'activated') return res();
+          sw.addEventListener('statechange', () => { if (sw.state === 'activated') res(); });
+          setTimeout(res, 4000);
+        });
+      }
       pushSupported = true;
       if (!pushForegroundBound) {
         pushForegroundBound = true;
@@ -4579,7 +4607,10 @@ function pushNotify(payload) {
         body: JSON.stringify(payload),
         keepalive: true
       });
-      if (!res.ok) { const t = await res.text(); console.warn('push api:', res.status, t); }
+      if (!res.ok) {
+        const t = await res.text(); console.warn('push api:', res.status, t);
+        if (res.status === 404) console.error('[KomiNovel push] /api/push tidak ditemukan di server. Pastikan file api/push.js sudah ter-deploy di Vercel.');
+      }
     } catch (e) { console.warn('push api error:', e); }
   })();
 }
@@ -4658,12 +4689,18 @@ function initChapterNotificationListener() {
             if (n.type === 'custom_admin' && document.visibilityState === 'visible' &&
                 'Notification' in window && Notification.permission === 'granted') {
               try {
-                const browserNotif = new Notification(n.title || 'KomiNovel', {
+                const opts = {
                   body: n.body || 'Ada pengumuman baru dari admin.',
                   icon: 'https://i.ibb.co.com/SDTthJ7m/Gemini-Generated-Image-fhupt4fhupt4fhup.jpg',
-                  tag: 'kominovel-' + n.id
-                });
-                browserNotif.onclick = () => { window.focus(); openV111NotifPanel(); browserNotif.close(); };
+                  tag: 'kominovel-' + n.id,
+                  data: { hash: 'notifikasi' }
+                };
+                if (pushSwReg && pushSwReg.showNotification) {
+                  pushSwReg.showNotification(n.title || 'KomiNovel', opts);
+                } else {
+                  const browserNotif = new Notification(n.title || 'KomiNovel', opts);
+                  browserNotif.onclick = () => { window.focus(); openV111NotifPanel(); browserNotif.close(); };
+                }
               } catch (e) { console.warn('Notifikasi browser tidak dapat ditampilkan:', e); }
             }
           });
@@ -4868,11 +4905,23 @@ async function renderV111NotificationsPage(container) {
 // ============================================================
 // ===== RENDER PAGE (ROUTER) =================================
 // ============================================================
+window.__komiSkeleton = function () {
+  return `<div class="komi-skel" aria-busy="true">
+    <div class="skel-bar" style="height:22px;width:55%;margin:0 auto 14px"></div>
+    <div class="skel-bar" style="height:150px;border-radius:16px;margin-bottom:16px"></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:12px">
+      ${Array.from({length:8}).map(()=>'<div class="skel-bar" style="height:170px;border-radius:12px"></div>').join('')}
+    </div></div>`;
+};
 async function renderPage() {
   if (currentResumeBanner) { try { currentResumeBanner.remove(); } catch(e){} currentResumeBanner = null; }
   if (Object.keys(usersCache).length === 0) {
-    await loadAllUsersCache();
-    await new Promise(r => setTimeout(r, 200));
+    const _m = document.getElementById('mainContent');
+    if (_m && !_m.firstElementChild) _m.innerHTML = window.__komiSkeleton();
+    // Tunggu maksimal 1,5 detik; sisanya lanjut di latar belakang
+    await Promise.race([loadAllUsersCache(), new Promise(r => setTimeout(r, 1500))]);
+  } else if (Date.now() - _usersCacheAt > 5 * 60 * 1000) {
+    loadAllUsersCache(true).catch(()=>{});
   }
   if (isFullscreenReader) {
     isFullscreenReader = false; document.body.style.overflow = '';
@@ -4885,7 +4934,7 @@ async function renderPage() {
   if (privateChatUnsub) { try { privateChatUnsub(); } catch(e){} privateChatUnsub = null; }
   if (worksUnsub) { try { worksUnsub(); } catch(e){} worksUnsub = null; }
   if (homeBannerTimer) { clearInterval(homeBannerTimer); homeBannerTimer = null; }
-  await cleanupHomeAuthorListeners();
+  cleanupHomeAuthorListeners();
   replyingToPublic = null; replyingToClan = null;
   pendingChatImg = { public: null, clan: null, private: null };
   pendingChatSticker = { public: null, clan: null, private: null };
@@ -4898,9 +4947,14 @@ async function renderPage() {
   mgCurrentRoom = null; mgMyRole = null;
   homeIsFirstRender = true;
 
-  await loadClansCache();
+  await ensureClansCacheFast();
   const hash = getHash();
   const main = document.getElementById('mainContent');
+  // Tampilkan kerangka loading seketika supaya klik terasa langsung merespons
+  if (main && !hash.startsWith('chat') && !hash.startsWith('privatechat/') && !hash.startsWith('clan/')) {
+    main.innerHTML = window.__komiSkeleton();
+    window.scrollTo(0, 0);
+  }
 
   if (isMaintenanceBlocked()) {
     document.querySelectorAll('.maintenance-overlay').forEach(el => el.remove());
@@ -4934,7 +4988,7 @@ async function renderPage() {
     if (!isAdminSession && !hasRole(userProfile, 'admin') && !hasRole(userProfile, 'owner')) { renderAdminLogin(main); return; }
     await renderAdminPanel(main);
   } else if (hash.startsWith('creator')) {
-    if (currentUser && !currentUser.isAnonymous) {
+    if (currentUser && !currentUser.isAnonymous && !isCreator(userProfile) && !isAdminSession) {
       try {
         const freshProfile = await getDoc(doc(db, 'users', currentUser.uid));
         if (freshProfile.exists()) userProfile = { id: currentUser.uid, ...freshProfile.data() };
@@ -7263,12 +7317,15 @@ window.toggleFollowWork = toggleFollowWork;
 // ============================================================
 async function renderReader(container, novelId, chapterId = null) {
   if (!novelId) { container.innerHTML = '<p>Karya tidak ditemukan</p>'; return; }
+  // Ambil karya & daftar chapter SEKALIGUS (sebelumnya satu per satu)
+  const chaptersPromise = getDocs(query(collection(db, 'works', novelId, 'chapters'), orderBy('number', 'asc'))).catch(() => null);
   const workSnap = await getDoc(doc(db, 'works', novelId));
   if (!workSnap.exists()) { container.innerHTML = '<p class="text-red-400">Karya tidak ditemukan.</p>'; return; }
   const work = { id: workSnap.id, ...workSnap.data() };
   if (work.authorId) {
     try {
-      const authorSnap = await getDoc(doc(db,'users',work.authorId));
+      const cachedAuthor = usersCache[work.authorId];
+      const authorSnap = cachedAuthor ? { exists: () => true, data: () => cachedAuthor } : await getDoc(doc(db,'users',work.authorId));
       if (authorSnap.exists()) {
         const author = authorSnap.data();
         work.authorName = author.username || work.authorName;
@@ -7293,27 +7350,28 @@ async function renderReader(container, novelId, chapterId = null) {
     return;
   }
 
-  const chaptersSnap = await getDocs(query(collection(db, 'works', novelId, 'chapters'), orderBy('number', 'asc')));
+  let chaptersSnap = await chaptersPromise;
+  if (!chaptersSnap) chaptersSnap = await getDocs(query(collection(db, 'works', novelId, 'chapters'), orderBy('number', 'asc')));
   const chapters = []; chaptersSnap.forEach(d => chapters.push({ id: d.id, ...d.data() }));
   let currentChapter = null;
   if (chapterId) currentChapter = chapters.find(c => c.id === chapterId);
-  else if (chapters.length > 0) { currentChapter = chapters[0]; window.location.hash = `reader/${novelId}/${currentChapter.id}`; return; }
+  else if (chapters.length > 0) {
+    // Langsung tampilkan chapter pertama tanpa render ulang halaman (dulu: ganti hash -> muat semuanya dua kali)
+    currentChapter = chapters[0];
+    try { history.replaceState(null, '', `#reader/${novelId}/${currentChapter.id}`); } catch (e) {}
+  }
   if (currentChapter) markChapterRead(novelId, currentChapter.id);
 
   const viewKey = `viewed_${novelId}`;
   const alreadyViewed = sessionStorage.getItem(viewKey);
   if (!alreadyViewed) {
-    try {
-      await updateDoc(doc(db, 'works', novelId), {
-        views: increment(1),
-        updatedAt: serverTimestamp()
-      });
-      work.views = (work.views || 0) + 1;
-      await trackWorkActivity(novelId,'views',1);
-      sessionStorage.setItem(viewKey, '1');
-    } catch (e) {}
+    // Jalan di latar belakang, tidak menahan tampilan halaman
+    sessionStorage.setItem(viewKey, '1');
+    work.views = (work.views || 0) + 1;
+    updateDoc(doc(db, 'works', novelId), { views: increment(1), updatedAt: serverTimestamp() }).catch(() => {});
+    trackWorkActivity(novelId,'views',1).catch(() => {});
   }
-  if (currentUser && currentChapter) await addExp(EXP_PER_READ);
+  if (currentUser && currentChapter) { Promise.resolve(addExp(EXP_PER_READ)).catch(() => {}); }
 
   const chapterLabel = work.type === 'novel' ? 'Chapter' : 'Eps';
   const cats = parseCategories(work.category);
@@ -10073,6 +10131,16 @@ function handleAuthClick() {
 document.getElementById('navAuthMobile').onclick = handleAuthClick;
 document.getElementById('modalContainer').onclick = e => { if (e.target.id === 'modalContainer') e.target.classList.add('hidden'); };
 window.addEventListener('hashchange', renderPage);
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.addEventListener('message', (e) => {
+    if (e.data && e.data.type === 'kominovel-nav' && e.data.hash) window.location.hash = e.data.hash;
+  });
+}
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible' && currentUser && pushSupported && 'Notification' in window && Notification.permission === 'granted') {
+    pushEnsureToken().catch(() => {});
+  }
+});
 
 // ============================================================
 // ===== INIT =================================================
@@ -10103,10 +10171,14 @@ window.addEventListener('hashchange', renderPage);
     if (!img || img.tagName !== 'IMG') return;
     var isHero = !!img.closest('#homeHero');
     var isBrand = !!img.closest('header') && /logo|brand/i.test((img.alt || '') + ' ' + (img.className || ''));
+    var panels = img.closest('.reader-images');
+    var isFirstPanel = false;
+    if (panels) { var idx = Array.prototype.indexOf.call(panels.querySelectorAll('img'), img); isFirstPanel = idx > -1 && idx < 3; }
+    if (isFirstPanel) { img.loading = 'eager'; img.setAttribute('fetchpriority', 'high'); }
     if (!img.hasAttribute('loading')) img.loading = (isHero || isBrand) ? 'eager' : 'lazy';
     if (!img.hasAttribute('decoding')) img.decoding = 'async';
     if (isHero) img.setAttribute('fetchpriority', 'high');
-    else if (!img.hasAttribute('fetchpriority')) img.setAttribute('fetchpriority', 'low');
+    else if (!isFirstPanel && !img.hasAttribute('fetchpriority')) img.setAttribute('fetchpriority', 'low');
   }
   function scanImages(root) {
     if (!root) return;
