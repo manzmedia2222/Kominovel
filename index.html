@@ -904,6 +904,28 @@ body::before{content:'';position:fixed;inset:0;z-index:-1;background:
 footer{border-top:1px solid rgba(255,255,255,.06)!important}
 footer p{line-height:1.6}
 
+
+/* === TOMBOL SAWERIA (footer) — selalu terlihat di tema gelap & terang === */
+.saweria-wrap{max-width:42rem;margin:0 auto;padding:12px 16px;text-align:center}
+a.saweria-btn,a.saweria-btn:visited{
+  display:flex!important;align-items:center;justify-content:center;gap:10px;
+  width:100%;max-width:360px;margin:0 auto;padding:14px 22px;
+  border-radius:9999px;border:2px solid #f59e0b!important;
+  background:#fbbf24!important;background-color:#fbbf24!important;background-image:none!important;
+  color:#111827!important;-webkit-text-fill-color:#111827!important;
+  font-weight:800;font-size:15px;line-height:1.25;text-decoration:none!important;
+  box-shadow:0 6px 24px rgba(251,191,36,.45);
+  transition:transform .15s ease,box-shadow .15s ease,filter .15s ease;
+}
+a.saweria-btn:hover{transform:translateY(-1px);filter:brightness(1.05);box-shadow:0 10px 28px rgba(251,191,36,.6)}
+a.saweria-btn:active{transform:scale(.98)}
+a.saweria-btn *{color:#111827!important;-webkit-text-fill-color:#111827!important}
+a.saweria-btn .saweria-btn-heart{animation:pulse 1.5s infinite;flex-shrink:0}
+a.saweria-btn .saweria-btn-ext{font-size:12px;flex-shrink:0}
+a.saweria-btn .saweria-btn-text{text-align:center}
+.saweria-note{margin-top:10px;font-size:11px;color:#94a3b8}
+[data-theme="light"] .saweria-note{color:#64748b}
+@media(max-width:380px){a.saweria-btn{font-size:13px;padding:12px 16px}}
 </style>
 
 <style id="lowDevicePerformanceStyles">
@@ -960,13 +982,26 @@ Di sini, kreator bisa menerbitkan cerita dan komik tanpa biaya. Tidak perlu memb
 KomiNovel dibuat dengan tujuan sederhana: menyediakan ruang yang mudah dijangkau bagi komikus dan novelis lokal untuk memperkenalkan karya mereka kepada pembaca.
 Platform ini dibangun agar kreator bisa mulai berkarya dan membagikan cerita tanpa terbebani biaya platform.
 </p>
+<div class="flex flex-col sm:flex-row items-center justify-center gap-2 mt-2">
 <a href="https://hijrah-abdur-rahman-portofolio.vercel.app/" target="_blank" rel="noopener noreferrer"
-class="inline-flex items-center gap-2 mt-1 px-4 py-2 rounded-full bg-amber-500 hover:bg-amber-400 text-black font-bold transition">
+class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500 hover:bg-amber-400 text-black font-bold transition">
 <i class="fas fa-globe"></i> Kunjungi Portofolio Developer
 <i class="fas fa-arrow-up-right-from-square text-xs"></i>
 </a>
+<a href="https://saweriakominovel.pages.dev/" target="_blank" rel="noopener noreferrer" class="saweria-btn" style="max-width:320px;font-size:13px;padding:10px 18px">
+<i class="fas fa-coffee saweria-btn-heart" style="animation:none"></i><span class="saweria-btn-text">Dukung Developer dengan Saweria</span><i class="fas fa-external-link-alt saweria-btn-ext"></i>
+</a>
+</div>
 </div>
 </details>
+
+<!-- Tombol Saweria - Dukung Developer -->
+<div class="saweria-wrap">
+<a href="https://saweriakominovel.pages.dev/" target="_blank" rel="noopener noreferrer" class="saweria-btn">
+<i class="fas fa-heart saweria-btn-heart"></i><span class="saweria-btn-text">Dukung Developer dengan Saweria</span><i class="fas fa-external-link-alt saweria-btn-ext"></i>
+</a>
+<p class="saweria-note">Klik untuk memberi dukungan via Saweria</p>
+</div>
 
 <p class="text-[10px] text-slate-600">v1.13</p>
 </footer>
@@ -3102,7 +3137,11 @@ window.openEditWorkModal = async (wid) => {
   const snap = await getDoc(doc(db, 'works', wid));
   if (!snap.exists()) { showToast('Karya tidak ditemukan'); return; }
   const w = snap.data();
-  if (w.authorId !== currentUser?.uid && !isAdminUser(userProfile)) {
+  const isCollaborator = currentUser && w.collaborators && w.collaborators.some(c => {
+    const uname = (userProfile?.username || '').toLowerCase();
+    return c.toLowerCase() === uname || c.toLowerCase() === (currentUser.uid || '').toLowerCase();
+  });
+  if (w.authorId !== currentUser?.uid && !isCollaborator && !isAdminUser(userProfile)) {
     showToast('Tidak punya akses edit karya ini');
     return;
   }
@@ -3150,6 +3189,15 @@ window.openEditWorkModal = async (wid) => {
         </select>
       </div>
       ${categoryChipsField('editWCategories', parseCategories(w.category))}
+      <div style="background:rgba(251,191,36,0.08); border:1px solid rgba(251,191,36,0.2); border-radius:12px; padding:12px;">
+        <label class="block text-sm font-semibold mb-1" style="color:#fbbf24;"><i class="fas fa-coffee mr-1"></i>Link Saweria / Dukungan Karya <span style="font-size:11px; font-weight:400; color:#94a3b8;">(Bisa link apa aja)</span></label>
+        <input id="editWSaweria" type="url" value="${escAttr(w.saweriaLink || w.saweria || '')}" placeholder="https://saweria.co/namakamu" style="width:100%; background:#1e293b; border:1px solid #334155; border-radius:12px; padding:8px 16px; font-size:13px; color:#fff;">
+      </div>
+      <div style="background:rgba(30,41,59,0.5); border:1px solid #334155; border-radius:12px; padding:12px;">
+        <label class="block text-sm font-semibold mb-1" style="color:#fbbf24;"><i class="fas fa-users mr-1"></i>Kolaborator <span style="font-size:11px; font-weight:400; color:#94a3b8;">(Pisah koma)</span></label>
+        <input id="editWCollaborators" type="text" value="${escAttr((w.collaborators || []).join(', '))}" placeholder="Username kreator lain" style="width:100%; background:#0f172a; border:1px solid #475569; border-radius:12px; padding:8px 16px; font-size:13px; color:#fff;">
+        <div id="editCollabPreview" style="margin-top:8px; display:flex; flex-wrap:wrap; gap:4px;"></div>
+      </div>
       <div>
         <label class="block text-sm font-semibold mb-1">Deskripsi</label>
         <textarea id="editWDesc" rows="3" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm focus:border-amber-500 transition">${escHtml(w.description || '')}</textarea>
@@ -3244,6 +3292,8 @@ window.openEditWorkModal = async (wid) => {
       await updateDoc(doc(db, 'works', wid), {
         title, teaser, type, category, description: desc,
         coverURL, status, isTamat,
+        saweriaLink: (document.getElementById('editWSaweria')?.value || '').trim(), saweria: (document.getElementById('editWSaweria')?.value || '').trim(),
+        collaborators: ((document.getElementById('editWCollaborators')?.value || '').trim().split(',').map(s=>s.trim()).filter(Boolean)),
         updatedAt: serverTimestamp()
       });
       showToast('✅ Karya berhasil diupdate!');
@@ -6074,7 +6124,8 @@ async function renderReader(container, novelId, chapterId = null) {
 
   if (isTakedown(work)) { container.innerHTML = takedownBanner(work); return; }
 
-  const canManage = currentUser && (currentUser.uid === work.authorId || isAdminUser(userProfile));
+  const isWorkCollaborator = currentUser && work.collaborators && work.collaborators.some(c => (userProfile?.username || '').toLowerCase() === c.toLowerCase());
+  const canManage = currentUser && (currentUser.uid === work.authorId || isWorkCollaborator || isAdminUser(userProfile));
   const followedWorkIds = Array.isArray(userProfile?.followedWorks) ? userProfile.followedWorks : [];
   const isFollowingThisWork = !!(currentUser && followedWorkIds.includes(novelId));
 
@@ -6185,6 +6236,20 @@ async function renderReader(container, novelId, chapterId = null) {
               ${reportsCount > 0 ? `<span class="view-badge"><i class="fas fa-flag" style="color:#ef4444"></i> ${reportsCount}/10 report</span>` : ''}
             </div>
             ${socialHtml ? `<div class="flex flex-wrap gap-1 mt-3">${socialHtml}</div>` : ''}
+            ${(work.saweriaLink || work.saweria) ? `
+            <div style="margin-top:16px;">
+              <a href="${work.saweriaLink || work.saweria}" target="_blank" rel="noopener noreferrer" style="display:inline-flex; align-items:center; gap:8px; padding:12px 20px; border-radius:9999px; background:#fbbf24; color:#000 !important; font-weight:900; font-size:13px; box-shadow:0 6px 20px rgba(251,191,36,0.4); text-decoration:none;">
+                <i class="fas fa-coffee" style="color:#000;"></i> <span style="color:#000;">Dukung Karya ini via Saweria</span> <i class="fas fa-external-link-alt" style="font-size:11px; color:#000;"></i>
+              </a>
+              <p style="font-size:11px; color:#64748b; margin-top:6px;">Link dukungan khusus untuk karya ini (bisa Saweria, Trakteer, atau link apapun)</p>
+            </div>` : ''}
+            ${(work.collaborators && work.collaborators.length > 0) ? `
+            <div style="margin-top:16px; background:rgba(30,41,59,0.4); border:1px solid rgba(251,191,36,0.2); border-radius:12px; padding:12px;">
+              <p style="font-size:12px; font-weight:700; color:#fbbf24; margin-bottom:8px;"><i class="fas fa-users mr-1"></i>Kolaborator Karya Ini</p>
+              <div style="display:flex; flex-wrap:wrap; gap:8px;">
+                ${work.collaborators.map(c => `<span style="display:inline-flex; align-items:center; gap:6px; background:#334155; border:1px solid #475569; padding:6px 12px; border-radius:9999px; font-size:12px; font-weight:600; color:#e2e8f0;"><i class="fas fa-user-circle" style="color:#fbbf24;"></i>${escHtml(c)}</span>`).join('')}
+              </div>
+            </div>` : ''}
           </div>
         </div>
         <div class="reader-sidebar mt-4 border-t border-slate-700 pt-4">
@@ -6897,6 +6962,16 @@ async function renderCreatorDashboard(container) {
         <div><label class="block text-sm font-semibold mb-1">Teaser <span class="text-red-400">*</span> <span class="text-xs text-slate-500">(maks 150)</span></label><input id="uploadTeaser" type="text" maxlength="150" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm focus:border-amber-500 transition"><p class="text-xs text-slate-500 mt-1"><span id="teaserCount">0</span>/150</p></div>
         <div><label class="block text-sm font-semibold mb-1">Tipe <span class="text-red-400">*</span></label><select id="uploadType" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm">${opts}</select></div>
         ${categoryChipsField('uploadCategories')}
+        <div style="background:rgba(251,191,36,0.08); border:1px solid rgba(251,191,36,0.2); border-radius:12px; padding:12px;">
+          <label class="block text-sm font-semibold mb-1" style="color:#fbbf24;"><i class="fas fa-coffee mr-1"></i>Link Saweria / Dukungan Karya <span style="font-size:11px; font-weight:400; color:#94a3b8;">(Opsional - bisa link apa aja)</span></label>
+          <input id="uploadSaweria" type="url" placeholder="https://saweria.co/namakamu atau link apapun" style="width:100%; background:#1e293b; border:1px solid #334155; border-radius:12px; padding:8px 16px; font-size:13px; color:#fff;">
+          <p style="font-size:11px; color:#64748b; margin-top:4px;">Link ini akan muncul di halaman baca karya kamu.</p>
+        </div>
+        <div style="background:rgba(30,41,59,0.5); border:1px solid #334155; border-radius:12px; padding:12px;">
+          <label class="block text-sm font-semibold mb-1" style="color:#fbbf24;"><i class="fas fa-users mr-1"></i>Kolaborator <span style="font-size:11px; font-weight:400; color:#94a3b8;">(Opsional)</span></label>
+          <input id="uploadCollaborators" type="text" placeholder="Username kreator lain, pisah koma. Contoh: hijrah, budi" style="width:100%; background:#0f172a; border:1px solid #475569; border-radius:12px; padding:8px 16px; font-size:13px; color:#fff;">
+          <p style="font-size:11px; color:#64748b; margin-top:4px;">Mereka akan tampil sebagai co-author.</p>
+        </div>
         <div><label class="block text-sm font-semibold mb-1">Deskripsi</label><textarea id="uploadDesc" rows="3" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm"></textarea></div>
         ${coverField('uploadCover')}
         <button id="uploadSubmit" class="w-full bg-amber-500 text-black font-bold py-3 rounded-full btn-glow">Buat Karya (Nonpublish)</button>
@@ -6926,6 +7001,8 @@ async function renderCreatorDashboard(container) {
           featuredCreator: userProfile.featuredCreator || false,
           avgRating: 0, ratingCount: 0, isTamat: false, featured: false,
           views: 0, likes: 0, likedBy: [], reports: [],
+          saweriaLink: (document.getElementById('uploadSaweria')?.value || '').trim(), saweria: (document.getElementById('uploadSaweria')?.value || '').trim(),
+          collaborators: ((document.getElementById('uploadCollaborators')?.value || '').trim() ? (document.getElementById('uploadCollaborators').value.trim().split(',').map(s=>s.trim()).filter(Boolean) ) : []),
           takedown: { active: false, reason: '', by: '', at: null },
           createdAt: serverTimestamp(), updatedAt: serverTimestamp()
         });
@@ -8674,5 +8751,44 @@ document.addEventListener('visibilitychange', () => {
   }
 })();
 </script>
+
+<!-- ===== SAWERIA POPUP - DUKUNG DEVELOPER - FIXED VISIBLE ===== -->
+<div id="saweriaPopupOverlay" style="position:fixed; inset:0; z-index:99999; background:rgba(0,0,0,0.82); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); display:flex; align-items:center; justify-content:center; padding:16px; opacity:0; visibility:hidden; transition:opacity .3s ease, visibility .3s ease;">
+  <div id="saweriaPopupCard" style="position:relative; width:100%; max-width:360px; background:linear-gradient(135deg,#1e1e32 0%,#171727 100%); border:1px solid rgba(251,191,36,0.25); border-radius:24px; overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,0.7); transform:scale(.88) translateY(24px); transition:transform .4s cubic-bezier(.34,1.56,.64,1);">
+    <button id="saweriaPopupClose" aria-label="Tutup" style="position:absolute; top:12px; right:12px; width:32px; height:32px; border-radius:50%; background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.15); color:#e2e8f0; display:flex; align-items:center; justify-content:center; cursor:pointer; z-index:2;">
+      <i class="fas fa-times"></i>
+    </button>
+    <div style="background:#fbbf24; padding:22px 20px 24px; text-align:center;">
+      <div style="width:64px; height:64px; border-radius:18px; background:#000; display:inline-flex; align-items:center; justify-content:center; font-size:28px; color:#fbbf24; margin-bottom:12px;"><i class="fas fa-heart"></i></div>
+      <div style="color:#000; font-weight:900; font-size:20px; line-height:1.2;">Dukung Developer<br><span style="font-size:14px; font-weight:800;">dengan Saweria</span></div>
+    </div>
+    <div style="padding:20px; text-align:center; background:#171727;">
+      <div style="font-weight:900; font-size:17px; color:#fff; margin-bottom:6px;">Bantu KomiNovel Tetap Gratis! 🚀</div>
+      <p style="font-size:13px; line-height:1.6; color:#94a3b8; margin-bottom:16px;">KomiNovel 100% gratis untuk kreator. Dukunganmu sangat berarti.</p>
+      <a href="https://saweriakominovel.pages.dev/" target="_blank" rel="noopener noreferrer" id="saweriaPopupBtn" style="display:inline-flex; align-items:center; justify-content:center; gap:8px; width:100%; padding:14px 20px; border-radius:9999px; background:#fbbf24; color:#000 !important; font-weight:900; font-size:14px; box-shadow:0 8px 24px rgba(251,191,36,0.4); text-decoration:none;">
+        <i class="fas fa-coffee" style="color:#000;"></i> <span style="color:#000;">Dukung via Saweria</span> <i class="fas fa-external-link-alt" style="font-size:11px; color:#000;"></i>
+      </a>
+      <button id="saweriaPopupLater" style="margin-top:12px; background:none; border:none; color:#64748b; font-size:12px; font-weight:600; cursor:pointer; padding:6px 12px;">Nanti saja</button>
+    </div>
+  </div>
+</div>
+<style>#saweriaPopupOverlay.show{opacity:1 !important; visibility:visible !important;} #saweriaPopupOverlay.show #saweriaPopupCard{transform:scale(1) translateY(0) !important;}</style>
+<script>
+(function(){
+  var overlay=document.getElementById('saweriaPopupOverlay');
+  var closeBtn=document.getElementById('saweriaPopupClose');
+  var laterBtn=document.getElementById('saweriaPopupLater');
+  var mainBtn=document.getElementById('saweriaPopupBtn');
+  if(!overlay) return;
+  function closePopup(){ overlay.classList.remove('show'); setTimeout(function(){ overlay.style.display='none'; }, 350); try{ localStorage.setItem('saweriaPopupClosedAt', Date.now().toString()); }catch(e){} }
+  function showPopup(){ try{ var last=parseInt(localStorage.getItem('saweriaPopupClosedAt')||'0',10); if(Date.now()-last < 30*60*1000) return; }catch(e){} overlay.style.display='flex'; requestAnimationFrame(function(){ requestAnimationFrame(function(){ overlay.classList.add('show'); }); }); }
+  closeBtn&&closeBtn.addEventListener('click', closePopup);
+  laterBtn&&laterBtn.addEventListener('click', closePopup);
+  overlay.addEventListener('click', function(e){ if(e.target===overlay) closePopup(); });
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape' && overlay.classList.contains('show')) closePopup(); });
+  mainBtn&&mainBtn.addEventListener('click', function(){ setTimeout(closePopup, 400); });
+  if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', function(){ setTimeout(showPopup, 1200); }); } else { setTimeout(showPopup, 1200); }
+})();
+</script>
+<!-- ===== END SAWERIA POPUP ===== -->
 </body>
-</html>
