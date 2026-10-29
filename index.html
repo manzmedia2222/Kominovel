@@ -972,7 +972,8 @@ html[data-theme="light"] .user-birthday{color:#6b21a8}
 
 html[data-theme="light"] .mobile-nav-item{color:#475569!important}
 html[data-theme="light"] .mobile-nav-item.active{color:#b77908!important;background:#fff7df!important}
-</style>\n</head><body class="min-h-screen">
+</style>
+</head><body class="min-h-screen">
 
 <div id="app" class="max-w-7xl mx-auto p-3 md:p-4 pb-24">
 <header class="flex justify-between items-center mb-4 md:mb-6 card-bg rounded-2xl p-3 md:p-4 shadow-xl">
@@ -5663,38 +5664,56 @@ async function renderHome(container) {
 // ============================================================
 async function shareWork(workId) {
   if (!workId) { showToast('Link karya tidak tersedia.'); return; }
+
   const work = currentWorksData && currentWorksData[String(workId)];
-  let creatorName = work ? getLiveWorkAuthor(work).name : 'kreator';
-  const shareUrl = new URL('/api/share', window.location.origin);
-  shareUrl.searchParams.set('id', String(workId));
-  if (creatorName && creatorName !== 'Anonim') shareUrl.searchParams.set('kreator', creatorName);
+  const creatorName = work ? getLiveWorkAuthor(work).name : 'kreator';
   const title = work?.title || 'Karya KomiNovel';
   const text = `${title} karya ${creatorName || 'kreator'} di KomiNovel`;
+  const shareUrl = new URL(`/reader/${encodeURIComponent(String(workId))}`, window.location.origin).href;
+
+  // Laptop/Chromebook: langsung salin URL, tanpa membuka menu berbagi atau menyalin sampul.
+  const isMobileDevice = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent || '');
+  if (!isMobileDevice) {
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(shareUrl);
+        showToast('Link karya berhasil disalin!');
+        return;
+      }
+    } catch (e) {}
+    fallbackCopyWorkUrl(shareUrl);
+    return;
+  }
+
+  // HP tetap bisa memakai menu berbagi, termasuk sampul jika didukung perangkat.
   try {
     if (navigator.share) {
-      const payload = { title, text, url: shareUrl.href };
+      const payload = { title, text, url: shareUrl };
       if (work?.coverURL && navigator.canShare && window.isSecureContext) {
         try {
-          const response = await fetch(work.coverURL, {mode:'cors'});
+          const response = await fetch(work.coverURL, { mode: 'cors' });
           if (response.ok) {
             const blob = await response.blob();
-            const file = new File([blob], 'cover-kominovel.jpg', {type:blob.type || 'image/jpeg'});
-            if (navigator.canShare({files:[file]})) payload.files = [file];
+            const file = new File([blob], 'cover-kominovel.jpg', { type: blob.type || 'image/jpeg' });
+            if (navigator.canShare({ files: [file] })) payload.files = [file];
           }
-        } catch(e) {}
+        } catch (e) {}
       }
       await navigator.share(payload);
       return;
     }
-  } catch(e) { if (e?.name === 'AbortError') return; }
+  } catch (e) {
+    if (e?.name === 'AbortError') return;
+  }
+
   try {
     if (navigator.clipboard && window.isSecureContext) {
-      await navigator.clipboard.writeText(shareUrl.href);
+      await navigator.clipboard.writeText(shareUrl);
       showToast('Link karya berhasil disalin!');
       return;
     }
-  } catch(e) {}
-  fallbackCopyWorkUrl(shareUrl.href);
+  } catch (e) {}
+  fallbackCopyWorkUrl(shareUrl);
 }
 window.shareWork = shareWork;
 function fallbackCopyWorkUrl(url) {
@@ -5702,12 +5721,18 @@ function fallbackCopyWorkUrl(url) {
     const field = document.createElement('textarea');
     field.value = url;
     field.setAttribute('readonly', '');
-    field.style.position = 'fixed'; field.style.left = '-9999px';
-    document.body.appendChild(field); field.select(); field.setSelectionRange(0, field.value.length);
-    const copied = document.execCommand('copy'); field.remove();
-    if (copied) showToast('Link komik/novel berhasil disalin!');
-    else window.prompt('Salin link komik/novel ini:', url);
-  } catch (e) { window.prompt('Salin link komik/novel ini:', url); }
+    field.style.position = 'fixed';
+    field.style.left = '-9999px';
+    document.body.appendChild(field);
+    field.select();
+    field.setSelectionRange(0, field.value.length);
+    const copied = document.execCommand('copy');
+    field.remove();
+    if (copied) showToast('Link karya berhasil disalin!');
+    else window.prompt('Salin link karya ini:', url);
+  } catch (e) {
+    window.prompt('Salin link karya ini:', url);
+  }
 }
 
 function renderSlideCard(work, idx, newIds = new Set()) {
