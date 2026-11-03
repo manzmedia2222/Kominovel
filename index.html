@@ -253,6 +253,12 @@ body::before{content:'';position:fixed;inset:0;z-index:-1;background:
 .review-empty-hint{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;min-height:300px;color:#64748b;text-align:center;padding:20px}
 .review-empty-hint i{font-size:48px;margin-bottom:16px;color:#334155}
 
+/* Modal dan popup harus selalu berada di atas navigasi bawah */
+.nav-bottom{z-index:30!important}
+#modalContainer{z-index:1000!important;isolation:isolate}
+#modalContainer #modalContent{max-height:min(90dvh,900px);padding-bottom:max(24px,env(safe-area-inset-bottom))}
+#toast{z-index:1100!important}
+
 /* === BOTTOM NAVIGATION === */
 :root{
   --nav-height:64px;
@@ -1073,10 +1079,10 @@ class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500 hover:
 <div id="mobileNavItems"></div>
 </div>
 
-<div id="modalContainer" class="fixed inset-0 flex items-center justify-center z-50 hidden modal-overlay p-4">
+<div id="modalContainer" class="fixed inset-0 flex items-center justify-center z-[1000] hidden modal-overlay p-4">
 <div id="modalContent" class="card-bg rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-6 shadow-2xl scrollbar-thin"></div>
 </div>
-<div id="toast" class="fixed bottom-24 right-6 z-50 hidden bg-slate-800 border border-amber-500 rounded-xl px-5 py-3 shadow-2xl text-sm"></div>
+<div id="toast" class="fixed bottom-24 right-6 z-[1100] hidden bg-slate-800 border border-amber-500 rounded-xl px-5 py-3 shadow-2xl text-sm"></div>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 import { getAuth, signInAnonymously, GoogleAuthProvider, signInWithPopup, linkWithPopup, onAuthStateChanged, signOut, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
@@ -1099,9 +1105,10 @@ try {
 } catch (e) { db = getFirestore(app); }
 const googleProvider = new GoogleAuthProvider();
 
-const APP_VERSION = '1.14';
+const APP_VERSION = '1.15';
 const APP_VERSION_NOTES = [
-  'v1.14 — Kolaborasi memakai undangan yang harus diterima, dashboard Kolaborasi Saya, peran Co-author/Editor, pilihan link dukungan Saweria/Trakteer/Ko-fi/PayPal/Lainnya, statistik klik dukungan, laporan komentar, blokir pengguna, notifikasi kreator, fitur bagikan, panduan penggunaan yang lebih lengkap, dan perbaikan tema terang/gelap.',
+  'v1.15 — Pengajuan promosi wajib setelah publish, antrean review promosi admin, perbaikan prioritas modal di atas navbar bawah, dukungan link embed berbagai image hosting, dan upload gambar paralel.',
+  'v1.15.1 — Autocomplete username saat mengundang kolaborator, sehingga akun yang cocok muncul ketika username diketik. v1.14 — Kolaborasi memakai undangan yang harus diterima, dashboard Kolaborasi Saya, peran Co-author/Editor, pilihan link dukungan Saweria/Trakteer/Ko-fi/PayPal/Lainnya, statistik klik dukungan, laporan komentar, blokir pengguna, notifikasi kreator, fitur bagikan, panduan penggunaan yang lebih lengkap, dan perbaikan tema terang/gelap.',
   'v1.13 — PENYEDERHANAAN: Chat Publik, Clan, Stiker, dan Pertemanan/DM dihapus agar KomiNovel fokus ke baca komik & novel, lebih ringan, lebih cepat dibuka, dan lebih aman. Link kini bersih tanpa tanda #, contoh: kominovel.vercel.app/reader/xxxx, dan nama situs di Google menjadi "KomiNovel".',
   'v1.12 — NOTIFIKASI PUSH dan kustom: admin/owner dapat mengirim pengumuman langsung dari navbar Notifikasi; member dapat keluar dari clan sendiri; perbaikan pengiriman jawaban Minigame Gambar & Tebak.',
   'v1.12 — NOTIFIKASI PUSH: komik/novel baru, chapter/episode terbaru, berita, chat publik, chat clan, dan pesan pribadi otomatis dikirim ke semua user (web ditutup pun tetap masuk). Bisa diatur per jenis lewat ikon lonceng.',
@@ -1474,7 +1481,7 @@ function parseCategories(c) { if (!c) return []; if (Array.isArray(c)) return c;
 // Sistem otomatis hanya mengambil link gambarnya (src), bukan link halaman viewer (href).
 // Bisa banyak sekaligus (dipisah baris/spasi/tanpa pemisah), bisa dicampur dengan link langsung.
 // ============================================================
-const IMG_VIEWER_HOST_RE = /^(?:www\.)?(?:ibb\.co(?:\.com)?|imgbb\.com)$/i;
+const IMG_VIEWER_HOST_RE = /^(?:www\.)?(?:ibb\.co(?:\.com)?|imgbb\.com|imgur\.com|freeimage\.host|imgbox\.com)$/i;
 function decodeHtmlEntities(str) {
   return String(str == null ? '' : str)
     .replace(/&amp;/gi, '&').replace(/&quot;/gi, '"').replace(/&#0*39;|&apos;/gi, "'")
@@ -1551,7 +1558,7 @@ function bindSmartUrlInput(el, multi) {
     if (!raw || !raw.trim()) return;
     const info = analyzeImageInput(raw);
     if (info.urls.length === 0) {
-      if (info.viewerLinks > 0) showToast('⚠️ Itu link halaman ImgBB (viewer), bukan link gambar. Salin "HTML full linked" atau "Direct link" dari ImgBB.', 5000);
+      if (info.viewerLinks > 0) showToast('⚠️ Itu link halaman album/viewer. Tempel kode embed HTML atau direct image URL dari hosting tersebut.', 5000);
       return;
     }
     if (looksLikeImgMarkup(raw)) {
@@ -2413,14 +2420,31 @@ async function optimizeImageFile(file) {
   console.info(`[KomiNovel] Gambar dikompres: ${(file.size/1024/1024).toFixed(2)} MB → ${(optimized.size/1024).toFixed(0)} KB`);
   return optimized;
 }
-function uploadToImgbb(file) {
-  if (!file || !file.type || !file.type.startsWith('image/')) return Promise.reject(new Error('Bukan gambar'));
-  if (file.size > IMGBB_MAX_MB * 1024 * 1024) return Promise.reject(new Error(`Ukuran file asli > ${IMGBB_MAX_MB} MB`));
-  const prepared = optimizeImageFile(file).catch(err => { console.warn('Kompresi gagal, memakai file asli:', err); return file; });
-  // Kompres lebih dulu di perangkat, lalu antrekan upload agar API tidak dibanjiri.
-  const job = _ibbQueue.then(async () => _ibbDoUpload(await prepared));
-  _ibbQueue = job.catch(() => {});
-  return job;
+// Pool upload terbatas agar beberapa gambar diproses bersamaan tanpa membanjiri API.
+let _ibbActiveUploads = 0;
+const _ibbUploadWaiters = [];
+async function _ibbAcquireUploadSlot() {
+  if (_ibbActiveUploads < 3) { _ibbActiveUploads++; return; }
+  // Slot tetap dihitung aktif saat dialihkan agar batas paralel tidak terlampaui.
+  await new Promise(resolve => _ibbUploadWaiters.push(resolve));
+}
+function _ibbReleaseUploadSlot() {
+  const next = _ibbUploadWaiters.shift();
+  if (next) next();
+  else _ibbActiveUploads = Math.max(0, _ibbActiveUploads - 1);
+}
+async function uploadToImgbb(file) {
+  if (!file || !file.type || !file.type.startsWith('image/')) throw new Error('Bukan gambar');
+  if (file.size > IMGBB_MAX_MB * 1024 * 1024) throw new Error(`Ukuran file asli > ${IMGBB_MAX_MB} MB`);
+  await _ibbAcquireUploadSlot();
+  try {
+    const prepared = await optimizeImageFile(file).catch(err => {
+      console.warn('Kompresi gagal, memakai file asli:', err); return file;
+    });
+    return await _ibbDoUpload(prepared);
+  } finally {
+    _ibbReleaseUploadSlot();
+  }
 }
 function compressImage(file) { return uploadToImgbb(file); }
 
@@ -3033,7 +3057,7 @@ function multiImageField(containerId) {
       </label>
       <a href="https://imgbb.com" target="_blank" class="bg-slate-700 text-slate-300 px-3 py-2 rounded-lg text-xs font-bold hover:bg-slate-600 transition"><i class="fas fa-external-link-alt mr-1"></i>ImgBB</a>
     </div>
-    <textarea id="${containerId}-urls" rows="3" placeholder="Atau paste link / kode embed ImgBB (HTML/BBCode). Boleh banyak sekaligus, link yang dibutuhkan diambil otomatis." class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs font-mono"></textarea>
+    <textarea id="${containerId}-urls" rows="3" placeholder="Tempel link / embed ImgBB, Imgur, Freeimage.host, Imgbox (HTML/BBCode/Markdown). Bisa banyak sekaligus." class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs font-mono"></textarea>
     <div id="${containerId}-preview" class="mt-2"></div>
     <div id="${containerId}-progress" class="upload-progress hidden"></div>
   </div>`;
@@ -3052,21 +3076,24 @@ function attachMultiImageHandlers(containerId) {
     const files = Array.from(e.target.files);
     if (files.length === 0) return;
     progress.classList.remove('hidden');
-    progress.innerHTML = `Memeriksa ukuran dan mengompres gambar besar bila diperlukan, lalu mengupload ${files.length} foto ke ImgBB...<br>`;
-    const newFiles = [];
-    for (let i = 0; i < files.length; i++) {
-      const f = files[i];
-      progress.innerHTML += `[${i+1}/${files.length}] ${f.name}...<br>`;
+    progress.innerHTML = `Mengoptimalkan dan mengupload ${files.length} gambar secara paralel (maks. 3 proses)...<br>`;
+    const existing = window[`_${containerId}_files`] || [];
+    const results = await Promise.all(files.map(async (f, i) => {
+      const localPreview = URL.createObjectURL(f);
+      progress.innerHTML += `[${i+1}/${files.length}] ${f.name} diproses...<br>`;
       try {
         const dataUrl = await uploadToImgbb(f);
-        newFiles.push({ name: f.name, dataUrl, preview: URL.createObjectURL(f) });
-        progress.innerHTML += `&nbsp;&nbsp;✅ ${(f.size/1024).toFixed(0)} KB terupload<br>`;
+        progress.innerHTML += `&nbsp;&nbsp;✅ ${f.name} selesai (${(f.size/1024).toFixed(0)} KB asli)<br>`;
+        return { ok: true, item: { name: f.name, dataUrl, preview: localPreview } };
       } catch (err) {
-        progress.innerHTML += `&nbsp;&nbsp;❌ ${err.message}<br>`;
+        URL.revokeObjectURL(localPreview);
+        progress.innerHTML += `&nbsp;&nbsp;❌ ${f.name}: ${err.message}<br>`;
+        return { ok: false };
       }
-    }
-    window[`_${containerId}_files`] = [...(window[`_${containerId}_files`] || []), ...newFiles];
-    progress.innerHTML += `<br>Total: ${window[`_${containerId}_files`].length} foto`;
+    }));
+    const newFiles = results.filter(x => x.ok).map(x => x.item);
+    window[`_${containerId}_files`] = [...existing, ...newFiles];
+    progress.innerHTML += `<br>Berhasil: ${newFiles.length}/${files.length} • Total: ${window[`_${containerId}_files`].length} gambar`;
     fileInput.value = '';
     renderPreview();
   };
@@ -3297,6 +3324,8 @@ function getMultiImages(containerId) {
 // ===== EDIT KARYA MODAL =====================================
 // ============================================================
 window.openEditWorkModal = async (wid) => {
+  // Siapkan cache akun agar autocomplete kolaborator dapat menampilkan username.
+  await loadAllUsersCache().catch(() => {});
   const snap = await getDoc(doc(db, 'works', wid));
   if (!snap.exists()) { showToast('Karya tidak ditemukan'); return; }
   const w = snap.data();
@@ -3361,8 +3390,12 @@ window.openEditWorkModal = async (wid) => {
         <input id="editSupportLabel" type="text" value="${escAttr(w.supportLink?.label || '')}" placeholder="Label tombol kustom (opsional)" style="width:100%;background:#1e293b;border:1px solid #334155;border-radius:12px;padding:8px 16px;font-size:13px;color:#fff;">
       </div>
       <div style="background:rgba(30,41,59,0.5); border:1px solid #334155; border-radius:12px; padding:12px;">
-        <label class="block text-sm font-semibold mb-1" style="color:#fbbf24;"><i class="fas fa-users mr-1"></i>Undang Kolaborator <span style="font-size:11px; font-weight:400; color:#94a3b8;">(Pisah koma)</span></label>
-        <input id="editWCollaborators" type="text" value="" placeholder="Username kreator baru, pisah koma" style="width:100%; background:#0f172a; border:1px solid #475569; border-radius:12px; padding:8px 16px; font-size:13px; color:#fff;">
+        <label class="block text-sm font-semibold mb-1" style="color:#fbbf24;"><i class="fas fa-users mr-1"></i>Undang Kolaborator</label>
+        <div style="position:relative;">
+          <input id="editWCollaborators" type="text" autocomplete="off" value="" placeholder="Ketik username kreator..." style="width:100%; background:#0f172a; border:1px solid #475569; border-radius:12px; padding:8px 16px; font-size:13px; color:#fff;">
+          <div id="editWCollabSuggestions" class="hidden" style="position:absolute;z-index:1200;top:calc(100% + 6px);left:0;right:0;max-height:220px;overflow-y:auto;background:#171727;border:1px solid #475569;border-radius:12px;box-shadow:0 12px 32px rgba(0,0,0,.5);"></div>
+        </div>
+        <p class="text-xs text-slate-400 mt-1">Ketik beberapa huruf untuk mencari akun. Klik username yang muncul; bisa memilih lebih dari satu.</p>
         <select id="editCollabRole" style="width:100%;margin-top:8px;background:#0f172a;border:1px solid #475569;border-radius:10px;padding:8px;color:#fff;"><option value="co-author">Co-author</option><option value="editor">Editor</option></select><div id="editCollabPreview" style="margin-top:8px; display:flex; flex-wrap:wrap; gap:4px;"></div><p style="font-size:11px;color:#64748b;margin-top:4px;">Username baru akan menerima undangan, bukan langsung ditambahkan.</p>
       </div>
       <div>
@@ -3430,6 +3463,61 @@ window.openEditWorkModal = async (wid) => {
     renderCoverPreview(url);
   };
 
+  // Autocomplete username kolaborator berdasarkan akun yang terdaftar.
+  const collabInput = document.getElementById('editWCollaborators');
+  const collabSuggestions = document.getElementById('editWCollabSuggestions');
+  const hideCollabSuggestions = () => collabSuggestions.classList.add('hidden');
+  const renderCollabSuggestions = () => {
+    const raw = collabInput.value || '';
+    const parts = raw.split(',');
+    const term = (parts[parts.length - 1] || '').trim().replace(/^@/, '').toLowerCase();
+    if (!term) { hideCollabSuggestions(); return; }
+
+    const alreadySelected = parts.slice(0, -1).map(x => x.trim().replace(/^@/, '').toLowerCase()).filter(Boolean);
+    const matches = Object.values(usersCache || {})
+      .filter(u => u && u.id !== currentUser?.uid && typeof u.username === 'string' && u.username.trim())
+      .filter(u => {
+        const username = u.username.trim().replace(/^@/, '');
+        return username.toLowerCase().includes(term) && !alreadySelected.includes(username.toLowerCase());
+      })
+      .sort((a, b) => {
+        const an = a.username.toLowerCase(), bn = b.username.toLowerCase();
+        return (an.startsWith(term) === bn.startsWith(term)) ? an.localeCompare(bn) : (an.startsWith(term) ? -1 : 1);
+      })
+      .slice(0, 8);
+
+    if (!matches.length) {
+      collabSuggestions.innerHTML = '<div style="padding:12px;font-size:12px;color:#94a3b8;">Tidak ada username yang cocok.</div>';
+      collabSuggestions.classList.remove('hidden');
+      return;
+    }
+    collabSuggestions.innerHTML = matches.map(u => {
+      const username = String(u.username).trim().replace(/^@/, '');
+      const label = u.displayName || u.name || '';
+      return `<button type="button" data-collab-username="${escAttr(username)}" style="display:block;width:100%;text-align:left;padding:10px 12px;border-bottom:1px solid rgba(148,163,184,.12);color:#e2e8f0;background:transparent;">
+        <span style="display:block;font-size:13px;font-weight:700;">@${escHtml(username)}</span>
+        ${label ? `<span style="display:block;font-size:11px;color:#94a3b8;margin-top:2px;">${escHtml(label)}</span>` : ''}
+      </button>`;
+    }).join('');
+    collabSuggestions.classList.remove('hidden');
+  };
+  collabInput.addEventListener('input', renderCollabSuggestions);
+  collabInput.addEventListener('focus', renderCollabSuggestions);
+  collabInput.addEventListener('blur', () => setTimeout(hideCollabSuggestions, 120));
+  collabSuggestions.addEventListener('mousedown', e => {
+    if (e.target.closest('[data-collab-username]')) e.preventDefault();
+  });
+  collabSuggestions.addEventListener('click', e => {
+    const choice = e.target.closest('[data-collab-username]');
+    if (!choice) return;
+    const username = choice.getAttribute('data-collab-username');
+    const parts = collabInput.value.split(',');
+    parts[parts.length - 1] = ` ${username}`;
+    const selected = parts.map(x => x.trim()).filter(Boolean);
+    collabInput.value = selected.join(', ') + ', ';
+    collabInput.focus();
+    renderCollabSuggestions();
+  });
   updateSelectedCount('editWCategories');
 
   const close = () => modal.classList.add('hidden');
@@ -3695,12 +3783,14 @@ function renderReviewReaderModal() {
     pubBtn.onclick = async () => {
       if (!confirm('Publish karya ini? Pembaca akan bisa membaca semua chapter/eps.')) return;
       try {
-        await updateDoc(doc(db, 'works', reviewWorkId), { status: 'publish', updatedAt: serverTimestamp() });
-        pushNotify({ kind: 'work', workId: reviewWorkId });
+        const publishedWorkId = reviewWorkId;
+        await updateDoc(doc(db, 'works', publishedWorkId), { status: 'publish', updatedAt: serverTimestamp() });
+        pushNotify({ kind: 'work', workId: publishedWorkId });
         showToast('✅ Karya berhasil dipublish!');
         closeReviewModal();
         const main = document.getElementById('mainContent');
         if (main && getHash().startsWith('creator')) await renderCreatorDashboard(main);
+        await openMandatoryPromotionRequest(publishedWorkId);
       } catch (e) { showToast('Gagal publish: ' + e.message); }
     };
   }
@@ -3899,6 +3989,77 @@ window.reviewSaveOrder = async () => {
     showToast('✅ Urutan gambar disimpan!');
   } catch (e) { showToast('Gagal: ' + e.message); }
 };
+
+
+// Popup pengajuan promosi wajib setelah kreator berhasil mempublikasikan karya.
+async function openMandatoryPromotionRequest(workId) {
+  if (!currentUser || !workId) return;
+  const workSnap = await getDoc(doc(db, 'works', workId));
+  if (!workSnap.exists()) return;
+  const work = { id: workSnap.id, ...workSnap.data() };
+  const modal = document.getElementById('modalContainer');
+  const content = document.getElementById('modalContent');
+  content.className = 'card-bg rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-6 shadow-2xl scrollbar-thin';
+  content.innerHTML = `
+    <div class="text-center mb-4">
+      <div class="w-16 h-16 rounded-2xl bg-amber-500/15 text-amber-400 flex items-center justify-center text-3xl mx-auto mb-3"><i class="fas fa-bullhorn"></i></div>
+      <h2 class="text-xl font-black text-amber-400">Ajukan Promosi Karya</h2>
+      <p class="text-sm text-slate-300 mt-2">Karya berhasil dipublikasikan. Lengkapi pengajuan promosi agar admin bisa meninjau karya ini.</p>
+    </div>
+    <div class="card-bg rounded-xl p-3 mb-4">
+      <p class="font-bold">${escHtml(work.title || 'Tanpa judul')}</p>
+      <p class="text-xs text-slate-400 mt-1">${work.type === 'komik' ? 'Komik' : 'Novel'} • ${escHtml(userProfile?.username || currentUser.displayName || 'Kreator')}</p>
+    </div>
+    <form id="promotionRequestForm" class="space-y-3">
+      <label class="block text-sm font-bold text-amber-400">Alasan ingin dipromosikan</label>
+      <textarea id="promotionReason" required minlength="15" maxlength="700" rows="4" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm" placeholder="Ceritakan keunggulan karya dan alasan karya ini layak dipromosikan (minimal 15 karakter)."></textarea>
+      <label class="block text-sm font-bold text-amber-400">Target promosi (opsional)</label>
+      <select id="promotionTarget" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm">
+        <option value="Beranda KomiNovel">Beranda KomiNovel</option>
+        <option value="Rekomendasi karya">Rekomendasi karya</option>
+        <option value="Media sosial KomiNovel">Media sosial KomiNovel</option>
+        <option value="Semua kanal yang tersedia">Semua kanal yang tersedia</option>
+      </select>
+      <p class="text-xs text-slate-400">Pengajuan wajib dikirim satu kali. Admin akan memeriksa dan menentukan apakah karya dapat dipromosikan.</p>
+      <button id="sendPromotionRequestBtn" type="submit" class="w-full bg-amber-500 text-black font-black py-3 rounded-full"><i class="fas fa-paper-plane mr-2"></i>Kirim Pengajuan ke Admin</button>
+      <p id="promotionRequestError" class="hidden text-xs text-red-400"></p>
+    </form>`;
+  modal.classList.remove('hidden');
+  document.getElementById('promotionRequestForm').onsubmit = async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('sendPromotionRequestBtn');
+    const reason = document.getElementById('promotionReason').value.trim();
+    const target = document.getElementById('promotionTarget').value;
+    const error = document.getElementById('promotionRequestError');
+    if (reason.length < 15) {
+      error.textContent = 'Alasan minimal 15 karakter.';
+      error.classList.remove('hidden');
+      return;
+    }
+    btn.disabled = true;
+    btn.innerHTML = '<span class="uploading-spinner"></span>Mengirim pengajuan...';
+    try {
+      const requestRef = await addDoc(collection(db, 'promotionRequests'), {
+        workId, workTitle: work.title || 'Tanpa judul', workType: work.type || 'novel',
+        authorId: currentUser.uid, authorName: userProfile?.username || currentUser.displayName || 'Kreator',
+        authorEmail: currentUser.email || '', reason, target, status: 'pending',
+        createdAt: serverTimestamp(), updatedAt: serverTimestamp()
+      });
+      await updateDoc(doc(db, 'works', workId), {
+        promotionRequestId: requestRef.id, promotionRequestStatus: 'pending',
+        promotionRequestedAt: serverTimestamp()
+      });
+      modal.classList.add('hidden');
+      showToast('📨 Pengajuan promosi berhasil dikirim ke admin.');
+    } catch (err) {
+      console.error('Pengajuan promosi gagal:', err);
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-paper-plane mr-2"></i>Kirim Pengajuan ke Admin';
+      error.textContent = 'Gagal mengirim. Periksa izin Firestore untuk koleksi promotionRequests, lalu coba lagi.';
+      error.classList.remove('hidden');
+    }
+  };
+}
 
 function closeReviewModal() {
   document.getElementById('modalContainer').classList.add('hidden');
@@ -7511,6 +7672,7 @@ async function renderAdminPanel(container) {
   <div class="flex flex-wrap gap-2 mb-6">
     <button id="adminTabUsers" class="px-4 py-2 rounded-full bg-amber-500 text-black font-bold text-sm hover:scale-105 transition">User</button>
     <button id="adminTabWorks" class="px-4 py-2 rounded-full bg-slate-800 text-slate-300 text-sm hover:bg-slate-700 transition">Karya</button>
+    <button id="adminTabPromotion" class="px-4 py-2 rounded-full bg-slate-800 text-slate-300 text-sm hover:bg-slate-700 transition"><i class="fas fa-bullhorn mr-1"></i>Promosi</button>
     <button id="adminTabReport" class="px-4 py-2 rounded-full bg-slate-800 text-slate-300 text-sm hover:bg-slate-700 transition"><i class="fas fa-flag mr-1"></i>Report</button>
     <button id="adminTabUpload" class="px-4 py-2 rounded-full bg-slate-800 text-slate-300 text-sm hover:bg-slate-700 transition">Upload</button>
     <button id="adminTabKritik" class="px-4 py-2 rounded-full bg-slate-800 text-slate-300 text-sm hover:bg-slate-700 transition">Kritik</button>
@@ -7996,8 +8158,55 @@ async function renderAdminPanel(container) {
       window.toggleMaintenance(!isOn);
     };
   }
+
+  async function loadPromotionRequests() {
+    aC.innerHTML = '<div class="text-sm text-slate-400 p-4">Memuat pengajuan promosi...</div>';
+    try {
+      const snap = await getDocs(query(collection(db, 'promotionRequests'), orderBy('createdAt', 'desc'), limit(100)));
+      const requests = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      if (!requests.length) {
+        aC.innerHTML = '<div class="card-bg rounded-xl p-6 text-center text-slate-400">Belum ada pengajuan promosi.</div>';
+        return;
+      }
+      aC.innerHTML = `<div class="space-y-3 max-h-[70vh] overflow-y-auto scrollbar-thin">
+        ${requests.map(r => `<article class="card-bg rounded-xl p-4">
+          <div class="flex items-start justify-between gap-2">
+            <div><h3 class="font-black text-amber-400">${escHtml(r.workTitle || 'Tanpa judul')}</h3>
+            <p class="text-xs text-slate-400 mt-1">${escHtml(r.authorName || 'Kreator')} • ${r.workType === 'komik' ? 'Komik' : 'Novel'}</p></div>
+            <span class="text-[10px] font-black px-2 py-1 rounded-full ${r.status === 'approved' ? 'bg-green-900 text-green-300' : r.status === 'rejected' ? 'bg-red-900 text-red-300' : 'bg-amber-900 text-amber-300'}">${escHtml(r.status || 'pending').toUpperCase()}</span>
+          </div>
+          <p class="text-sm text-slate-300 mt-3 whitespace-pre-wrap">${escHtml(r.reason || 'Tidak ada alasan')}</p>
+          <p class="text-xs text-slate-400 mt-2">Target: ${escHtml(r.target || '-')} • ID: ${escHtml(r.workId || '-')}</p>
+          <div class="flex flex-wrap gap-2 mt-3">
+            <button class="open-promotion-work bg-slate-700 text-white text-xs font-bold px-3 py-2 rounded-lg" data-work="${escAttr(r.workId || '')}">Buka Karya</button>
+            <button class="promotion-status bg-green-700 text-white text-xs font-bold px-3 py-2 rounded-lg" data-id="${r.id}" data-status="approved">Setujui</button>
+            <button class="promotion-status bg-red-800 text-white text-xs font-bold px-3 py-2 rounded-lg" data-id="${r.id}" data-status="rejected">Tolak</button>
+            <button class="promotion-status bg-slate-700 text-white text-xs font-bold px-3 py-2 rounded-lg" data-id="${r.id}" data-status="pending">Pending</button>
+          </div>
+        </article>`).join('')}
+      </div>`;
+      aC.querySelectorAll('.promotion-status').forEach(btn => btn.onclick = async () => {
+        try {
+          await updateDoc(doc(db, 'promotionRequests', btn.dataset.id), {
+            status: btn.dataset.status, reviewedAt: serverTimestamp(),
+            reviewedBy: currentUser?.uid || adminEmail || 'admin'
+          });
+          showToast('Status pengajuan diperbarui.');
+          loadPromotionRequests();
+        } catch (e) { showToast('Gagal memperbarui status. Periksa izin Firestore.'); }
+      });
+      aC.querySelectorAll('.open-promotion-work').forEach(btn => btn.onclick = () => {
+        if (btn.dataset.work) navTo('reader/' + encodeURIComponent(btn.dataset.work));
+      });
+    } catch (e) {
+      console.error('Gagal memuat pengajuan promosi:', e);
+      aC.innerHTML = '<div class="card-bg rounded-xl p-4 text-sm text-red-300">Gagal memuat pengajuan. Periksa aturan Firestore untuk koleksi promotionRequests.</div>';
+    }
+  }
+
   document.getElementById('adminTabUsers').onclick = loadUsers;
   document.getElementById('adminTabWorks').onclick = loadAdminWorks;
+  document.getElementById('adminTabPromotion').onclick = loadPromotionRequests;
   document.getElementById('adminTabReport').onclick = loadReportTab;
   document.getElementById('adminTabUpload').onclick = loadUploadForm;
   document.getElementById('adminTabKritik').onclick = loadKritik;
