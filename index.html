@@ -932,6 +932,44 @@ a.saweria-btn .saweria-btn-text{text-align:center}
 .saweria-note{margin-top:10px;font-size:11px;color:#94a3b8}
 [data-theme="light"] .saweria-note{color:#64748b}
 @media(max-width:380px){a.saweria-btn{font-size:13px;padding:12px 16px}}
+
+/* v1.18 — nyaman membaca dan narasi cerita */
+.chapter-support-link{padding:9px 13px;border-radius:999px;background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.32);color:#fbbf24;font-size:12px;font-weight:800;text-decoration:none}
+.novel-chapter-text{max-width:680px!important;margin:18px auto 28px!important;padding:clamp(18px,4vw,42px)!important;border-radius:20px;background:rgba(255,255,255,.025);font-size:19px;line-height:2.15;letter-spacing:.015em;word-spacing:.04em}
+.novel-chapter-text.reader-sepia{background:#f4ead8!important;color:#443728!important;box-shadow:0 8px 30px rgba(0,0,0,.08)}
+.novel-chapter-text.reader-light{background:#fff!important;color:#263247!important;box-shadow:0 8px 30px rgba(0,0,0,.06)}
+.novel-chapter-text.reader-focus{max-width:700px!important;font-size:21px;line-height:2.2;padding:clamp(22px,5vw,50px)!important}
+#novelTtsControls{padding:12px;border-radius:14px;background:rgba(255,255,255,.035);border:1px solid rgba(148,163,184,.14)}
+#novelNarrationStatus{width:100%;padding-left:3px}
+@media(max-width:640px){.novel-chapter-text{font-size:18px;line-height:2.05;padding:20px 18px!important;margin-top:12px!important}.novel-chapter-text.reader-focus{font-size:19px}}
+/* v1.16 — Novel reading experience */
+.novel-reader-tools{position:sticky;top:8px;z-index:8;background:rgba(18,18,31,.96);border:1px solid rgba(251,191,36,.2);border-radius:14px;padding:10px 12px;margin-bottom:22px;backdrop-filter:blur(12px)}
+.novel-reader-tools-top,.novel-reader-meta,.novel-reader-actions,.novel-note-footer{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.novel-reader-tools-top{font-size:12px;font-weight:800;color:#fbbf24}
+.novel-reader-actions button{min-width:34px;height:32px;padding:0 9px;border-radius:9px;background:#292940;color:#e2e8f0;border:1px solid #41415c;font-weight:800;cursor:pointer}
+.novel-reader-actions button:hover{border-color:#fbbf24;color:#fbbf24}
+.novel-reader-meta{justify-content:flex-start;gap:16px;color:#94a3b8;font-size:10px;margin-top:9px}
+.novel-progress-track{height:3px;background:#34344a;border-radius:9px;margin-top:9px;overflow:hidden}
+#novelProgressFill{height:100%;width:0;background:#fbbf24;transition:width .15s}
+.novel-chapter-text{max-width:720px;margin:0 auto;color:#e2e8f0;font-family:Georgia,'Times New Roman',serif;font-size:18px;line-height:2;letter-spacing:.01em;padding:12px 4px 28px;overflow-wrap:anywhere}
+.novel-reader-tools.reader-sepia{background:#f4ead8;border-color:#d8c6a8}
+.novel-reader-tools.reader-sepia .novel-reader-tools-top{color:#805b2b}
+.novel-chapter-text.reader-sepia{background:#f4ead8;color:#443728}
+.novel-chapter-text.reader-light{background:#fff;color:#263247}
+.novel-chapter-text.reader-wide{max-width:980px}
+.novel-chapter-text.reader-focus{max-width:760px;font-size:20px;line-height:2.15;padding:28px 18px}
+.novel-reader-note{max-width:720px;margin:20px auto 4px;border-top:1px solid #34344a;padding-top:14px}
+.novel-reader-note>button{background:#25253d;color:#fbbf24;padding:9px 13px;border-radius:9px;font-size:12px;font-weight:800}
+.novel-reader-note textarea{width:100%;margin-top:10px;background:#10101c;border:1px solid #41415c;border-radius:10px;padding:12px;color:#e2e8f0;font-size:13px}
+.novel-note-footer{font-size:10px;color:#94a3b8;margin-top:7px}
+.novel-note-footer button{background:#fbbf24;color:#171727;border-radius:8px;padding:7px 12px;font-weight:900}
+[data-theme="light"] .novel-reader-tools{background:rgba(255,255,255,.96);border-color:#d8deea}
+[data-theme="light"] .novel-reader-tools-top{color:#b7791f}
+[data-theme="light"] .novel-reader-actions button{background:#f1f5f9;color:#334155;border-color:#cbd5e1}
+[data-theme="light"] .novel-chapter-text{color:#263247}
+[data-theme="light"] .novel-reader-note{border-color:#d8deea}
+[data-theme="light"] .novel-reader-note textarea{background:#fff;color:#172033;border-color:#cbd5e1}
+@media(max-width:640px){.novel-chapter-text{font-size:17px;line-height:1.95;padding:8px 2px 24px}.novel-reader-tools{top:4px}.novel-reader-meta{gap:9px}}
 </style>
 
 <style id="lowDevicePerformanceStyles">
@@ -1105,10 +1143,10 @@ try {
 } catch (e) { db = getFirestore(app); }
 const googleProvider = new GoogleAuthProvider();
 
-const APP_VERSION = '1.15';
+const APP_VERSION = '1.16';
 const APP_VERSION_NOTES = [
-  'v1.15 — Pengajuan promosi wajib setelah publish, antrean review promosi admin, perbaikan prioritas modal di atas navbar bawah, dukungan link embed berbagai image hosting, dan upload gambar paralel.',
-  'v1.15.1 — Autocomplete username saat mengundang kolaborator, sehingga akun yang cocok muncul ketika username diketik. v1.14 — Kolaborasi memakai undangan yang harus diterima, dashboard Kolaborasi Saya, peran Co-author/Editor, pilihan link dukungan Saweria/Trakteer/Ko-fi/PayPal/Lainnya, statistik klik dukungan, laporan komentar, blokir pengguna, notifikasi kreator, fitur bagikan, panduan penggunaan yang lebih lengkap, dan perbaikan tema terang/gelap.',
+  'v1.16 — Narasi TTS otomatis mendeteksi dialog, tanda baca, dan perkiraan emosi; mode baca novel lebih nyaman serta satu link bebas per chapter/episode.',
+  'v1.15 — Pengajuan promosi wajib setelah publish, antrean review promosi admin, perbaikan prioritas modal di atas navbar bawah, dukungan link embed berbagai image hosting, dan upload gambar paralel. v1.15.1 — Autocomplete username saat mengundang kolaborator, sehingga akun yang cocok muncul ketika username diketik. v1.14 — Kolaborasi memakai undangan yang harus diterima, dashboard Kolaborasi Saya, peran Co-author/Editor, pilihan link dukungan Saweria/Trakteer/Ko-fi/PayPal/Lainnya, statistik klik dukungan, laporan komentar, blokir pengguna, notifikasi kreator, fitur bagikan, panduan penggunaan yang lebih lengkap, dan perbaikan tema terang/gelap.',
   'v1.13 — PENYEDERHANAAN: Chat Publik, Clan, Stiker, dan Pertemanan/DM dihapus agar KomiNovel fokus ke baca komik & novel, lebih ringan, lebih cepat dibuka, dan lebih aman. Link kini bersih tanpa tanda #, contoh: kominovel.vercel.app/reader/xxxx, dan nama situs di Google menjadi "KomiNovel".',
   'v1.12 — NOTIFIKASI PUSH dan kustom: admin/owner dapat mengirim pengumuman langsung dari navbar Notifikasi; member dapat keluar dari clan sendiri; perbaikan pengiriman jawaban Minigame Gambar & Tebak.',
   'v1.12 — NOTIFIKASI PUSH: komik/novel baru, chapter/episode terbaru, berita, chat publik, chat clan, dan pesan pribadi otomatis dikirim ke semua user (web ditutup pun tetap masuk). Bisa diatur per jenis lewat ikon lonceng.',
@@ -5634,7 +5672,16 @@ async function renderHome(container) {
     renderPage();
   };
   document.getElementById('searchBtn').onclick = doSearch;
-  document.getElementById('searchInput').addEventListener('keypress', e => { if (e.key === 'Enter') doSearch(); });
+  let liveSearchTimer;
+  document.getElementById('searchInput').addEventListener('input', () => {
+    clearTimeout(liveSearchTimer);
+    liveSearchTimer=setTimeout(() => {
+      const value=document.getElementById('searchInput')?.value.trim() || '';
+      currentSearch=value;
+      renderPage();
+    }, 450);
+  });
+  document.getElementById('searchInput').addEventListener('keypress', e => { if (e.key === 'Enter') { clearTimeout(liveSearchTimer); doSearch(); } });
 
   const weeklyTrack=document.getElementById('weeklyTrack');
   const baruTrack=document.getElementById('baruTrack');
@@ -6509,6 +6556,7 @@ window.toggleFollowWork = toggleFollowWork;
 // ===== READER ===============================================
 // ============================================================
 async function renderReader(container, novelId, chapterId = null) {
+  try { window.speechSynthesis?.cancel(); } catch(e) {}
   if (!novelId) { container.innerHTML = '<p>Karya tidak ditemukan</p>'; return; }
   // Ambil karya & daftar chapter SEKALIGUS (sebelumnya satu per satu)
   const chaptersPromise = getDocs(query(collection(db, 'works', novelId, 'chapters'), orderBy('number', 'asc'))).catch(() => null);
@@ -6676,10 +6724,42 @@ async function renderReader(container, novelId, chapterId = null) {
           <div class="reader-content card-bg rounded-2xl p-4 md:p-6">
             ${currentChapter ? `
               <div class="flex justify-between items-start mb-4 gap-2 flex-wrap">
-                <div>${crumbHtml}<h2 class="text-lg md:text-xl font-bold">${chapterLabel} ${currentChapter.number}${currentChapter.title ? ': ' + currentChapter.title : ''}</h2></div>
+                <div>${crumbHtml}<h2 class="text-lg md:text-xl font-bold">${chapterLabel} ${currentChapter.number}${currentChapter.title ? ': ' + currentChapter.title : ''}</h2>${(currentChapter.supportUrl || currentChapter.paymentUrl) ? `<a href="${escAttr(currentChapter.supportUrl || currentChapter.paymentUrl)}" target="_blank" rel="noopener noreferrer" class="chapter-support-link inline-flex mt-3 items-center gap-2"><i class="fas fa-heart"></i> ${escHtml(currentChapter.supportLabel || 'Dukung kreator / link terkait')} <i class="fas fa-external-link-alt text-[10px]"></i></a>` : ''}</div>
                 ${isKomik && currentChapter.images && currentChapter.images.length > 0 ? `<button onclick="toggleFullscreenReader()" class="bg-amber-500 text-black text-xs font-bold px-3 py-2 rounded-full hover:scale-105 transition"><i class="fas fa-expand"></i> Fullscreen</button>` : ''}
               </div>
-              ${work.type === 'novel' ? `<div class="whitespace-pre-wrap text-slate-200" style="line-height:1.9;font-size:15px;">${currentChapter.content || ''}</div>` : `<div class="reader-images grid grid-cols-1 gap-4">${(currentChapter.images || []).map(img => `<img src="${img}" class="w-full rounded-lg hover:shadow-2xl transition cover-clickable" onclick="window.showImgFullscreen('${escAttr(img)}','${escAttr(currentChapter.title || chapterLabel + ' ' + currentChapter.number)}')">`).join('')}</div>`}
+              ${work.type === 'novel' ? (() => {
+                const novelText = currentChapter.content || '';
+                const wordCount = novelText.trim() ? novelText.trim().split(/\\s+/).length : 0;
+                const readMinutes = Math.max(1, Math.ceil(wordCount / 200));
+                return `<div class="novel-reader-tools" id="novelReaderTools">
+                  <div class="novel-reader-tools-top">
+                    <span><i class="fas fa-book-open"></i> Mode membaca</span>
+                    <div class="novel-reader-actions">
+                      <button type="button" id="readerFontDown" aria-label="Perkecil teks">A−</button>
+                      <button type="button" id="readerFontUp" aria-label="Perbesar teks">A+</button>
+                      <button type="button" id="readerThemeToggle" aria-label="Ganti tema baca"><i class="fas fa-adjust"></i></button>
+                      <button type="button" id="readerWidthToggle" aria-label="Ubah lebar teks"><i class="fas fa-align-center"></i></button>
+                      <button type="button" id="readerFocusToggle" aria-label="Mode fokus"><i class="fas fa-expand"></i></button>
+                    </div>
+                  </div>
+                  <div class="novel-reader-meta"><span><i class="fas fa-align-left"></i> ${formatCount(wordCount)} kata</span><span><i class="far fa-clock"></i> ±${readMinutes} menit baca</span><span id="readerProgressLabel">0% dibaca</span></div>
+                  <div class="flex flex-wrap items-center gap-2 mt-3" id="novelTtsControls">
+                    <button type="button" id="novelSpeakBtn" class="px-4 py-2 rounded-full bg-amber-500 text-slate-950 text-xs font-bold"><i class="fas fa-headphones mr-1"></i> Dengarkan cerita</button>
+                    <button type="button" id="novelPauseBtn" class="px-3 py-2 rounded-full bg-slate-700 text-white text-xs"><i class="fas fa-pause mr-1"></i> Jeda</button>
+                    <button type="button" id="novelStopBtn" class="px-3 py-2 rounded-full bg-slate-700 text-white text-xs"><i class="fas fa-stop mr-1"></i> Selesai</button>
+                    <span class="px-2 py-2 rounded-lg bg-slate-800 text-xs text-amber-200"><i class="fas fa-wand-magic-sparkles mr-1"></i>Emosi otomatis</span>
+                    <select id="novelVoiceSelect" aria-label="Pilih suara" class="px-2 py-2 rounded-lg bg-slate-800 text-xs max-w-full"><option value="">Suara Indonesia otomatis</option></select>
+                    <label class="text-xs text-slate-400">Tempo <input id="novelRate" type="range" min="0.75" max="1.15" step="0.05" value="0.9" class="w-20 align-middle"></label>
+                    <span id="novelNarrationStatus" class="text-[11px] text-slate-400" aria-live="polite">Siap membacakan cerita</span>
+                  </div>
+                  <div class="novel-progress-track"><div id="novelProgressFill"></div></div>
+                </div>
+                <div id="novelChapterText" class="novel-chapter-text whitespace-pre-wrap">${novelText}</div>
+                <div class="novel-reader-note">
+                  <button type="button" id="readerNoteToggle"><i class="fas fa-sticky-note"></i> Catatan pribadi</button>
+                  <div id="readerNotePanel" hidden><textarea id="readerNoteInput" rows="3" placeholder="Tulis catatanmu untuk chapter ini..."></textarea><div class="novel-note-footer"><span>Catatan tersimpan di perangkat ini</span><button type="button" id="readerNoteSave">Simpan catatan</button></div></div>
+                </div>`;
+              })() : `<div class="reader-images grid grid-cols-1 gap-4">${(currentChapter.images || []).map(img => `<img src="${img}" class="w-full rounded-lg hover:shadow-2xl transition cover-clickable" onclick="window.showImgFullscreen('${escAttr(img)}','${escAttr(currentChapter.title || chapterLabel + ' ' + currentChapter.number)}')">`).join('')}</div>`}
             ` : '<p class="text-slate-400">Pilih chapter.</p>'}
           </div>
           ${currentChapter ? (() => {
@@ -6708,6 +6788,156 @@ async function renderReader(container, novelId, chapterId = null) {
       </div>
       ${isKomik && currentChapter && currentChapter.images && currentChapter.images.length > 0 ? `<button id="fullscreenBtn" class="fullscreen-btn" onclick="toggleFullscreenReader()"><i class="fas fa-expand"></i></button>` : ''}
     </div>`;
+
+  // Kontrol kenyamanan membaca novel; preferensi dan catatan tersimpan lokal per pengguna/perangkat.
+  if (!isKomik && currentChapter) {
+    const textEl = document.getElementById('novelChapterText');
+    const toolsEl = document.getElementById('novelReaderTools');
+    const prefsKey = 'kominovel_reader_prefs_v1';
+    let prefs = {};
+    try { prefs = JSON.parse(localStorage.getItem(prefsKey) || '{}') || {}; } catch(e) {}
+    let fontSize = Math.min(26, Math.max(14, Number(prefs.fontSize) || 18));
+    let readingTheme = ['dark','sepia','light'].includes(prefs.theme) ? prefs.theme : 'dark';
+    let wide = !!prefs.wide;
+    const applyReaderPrefs = () => {
+      if (!textEl) return;
+      textEl.style.fontSize = fontSize + 'px';
+      textEl.classList.toggle('reader-sepia', readingTheme === 'sepia');
+      textEl.classList.toggle('reader-light', readingTheme === 'light');
+      textEl.classList.toggle('reader-wide', wide);
+      toolsEl?.classList.toggle('reader-sepia', readingTheme === 'sepia');
+      try { localStorage.setItem(prefsKey, JSON.stringify({fontSize,theme:readingTheme,wide})); } catch(e) {}
+    };
+    document.getElementById('readerFontDown')?.addEventListener('click', () => { fontSize=Math.max(14,fontSize-1); applyReaderPrefs(); });
+    document.getElementById('readerFontUp')?.addEventListener('click', () => { fontSize=Math.min(26,fontSize+1); applyReaderPrefs(); });
+    document.getElementById('readerThemeToggle')?.addEventListener('click', () => { readingTheme=readingTheme==='dark'?'sepia':readingTheme==='sepia'?'light':'dark'; applyReaderPrefs(); });
+    document.getElementById('readerWidthToggle')?.addEventListener('click', () => { wide=!wide; applyReaderPrefs(); });
+    document.getElementById('readerFocusToggle')?.addEventListener('click', () => { textEl?.classList.toggle('reader-focus'); });
+    applyReaderPrefs();
+    // Narasi otomatis: membedakan narasi dan dialog, lalu memperkirakan emosi dari konteks kalimat.
+    if ('speechSynthesis' in window && textEl) {
+      const synth = window.speechSynthesis;
+      const voiceSelect = document.getElementById('novelVoiceSelect');
+      const statusEl = document.getElementById('novelNarrationStatus');
+      let narrationParts = [], partIndex = 0, narrationRun = 0, pauseTimer = null;
+      const setStatus = (message) => { if (statusEl) statusEl.textContent = message; };
+      const loadVoices = () => {
+        const previous = voiceSelect.value;
+        const voices = synth.getVoices();
+        const sorted = [...voices].sort((a,b) => ((a.lang||'').toLowerCase().startsWith('id') ? -1 : 0) - ((b.lang||'').toLowerCase().startsWith('id') ? -1 : 0));
+        voiceSelect.innerHTML = '<option value="">Suara Indonesia otomatis</option>' + sorted.map((v,i)=>`<option value="${i}">${escHtml(v.name)} (${escHtml(v.lang)})</option>`).join('');
+        if (previous) voiceSelect.value = previous;
+        voiceSelect._voices = sorted;
+      };
+      loadVoices(); if (synth.onvoiceschanged !== undefined) synth.onvoiceschanged = loadVoices;
+      const classifyEmotion = (text) => {
+        const t = text.toLowerCase();
+        const has = (words) => words.some(w => t.includes(w));
+        if (/[😂🤣]/u.test(t) || has(['hahaha','wkwk','hehe','lucu','kocak','menggelikan'])) return 'funny';
+        if (has(['marah','kesal','muak','brengsek','benci','berani kau','diam!','pergi!']) || /!{2,}/.test(t)) return 'angry';
+        if (has(['sedih','menangis','air mata','kehilangan','berduka','hancur','kesepian','menyesal'])) return 'sad';
+        if (has(['senang','bahagia','hore','asyik','yeay','akhirnya!','berhasil'])) return 'happy';
+        if (has(['takut','seram','ketakutan','gemetar','jangan…','tolong!'])) return 'fear';
+        if (has(['terkejut','mustahil','apa?!','benarkah','sungguh?!'])) return 'surprised';
+        if (/[?]$/.test(t)) return 'curious';
+        if (/[!！]/.test(t)) return 'excited';
+        return 'neutral';
+      };
+      const splitNarration = (raw) => {
+        const paragraphs = raw.replace(/\r/g,'').split(/\n+/).map(x=>x.trim()).filter(Boolean);
+        const parts=[];
+        paragraphs.forEach(paragraph => {
+          const sentences = paragraph.match(/[^.!?…]+(?:[.!?…]+[”’"'»」』]*)?/g) || [paragraph];
+          sentences.forEach(sentence => {
+            let remaining=sentence.trim();
+            while (remaining.length > 230) {
+              let cut=Math.max(remaining.lastIndexOf(', ',230),remaining.lastIndexOf('; ',230),remaining.lastIndexOf(' ',230));
+              if(cut<90) cut=230;
+              const chunk=remaining.slice(0,cut).trim();
+              parts.push(makePart(chunk)); remaining=remaining.slice(cut).trim();
+            }
+            if(remaining) parts.push(makePart(remaining));
+          });
+          parts.push({text:'',pause:720});
+        });
+        return parts;
+      };
+      const makePart = (text) => {
+        const quoted = /^[“"'«「『]/.test(text) || /[“「『«]/.test(text) || /[”」』»"]$/.test(text);
+        const emotion = classifyEmotion(text);
+        const pause = /[?？！]$/.test(text) ? 560 : /[!！]$/.test(text) ? 480 : /[…]$/.test(text) ? 760 : /[,;:]$/.test(text) ? 260 : 390;
+        return {text, quoted, emotion, pause};
+      };
+      const emotionSettings = {
+        neutral:{rate:1,pitch:1,label:'narasi biasa'}, curious:{rate:.96,pitch:1.08,label:'penasaran'},
+        excited:{rate:1.08,pitch:1.16,label:'antusias'}, happy:{rate:1.06,pitch:1.18,label:'senang'},
+        funny:{rate:1.04,pitch:1.22,label:'lucu'}, angry:{rate:1.08,pitch:.82,label:'marah'},
+        sad:{rate:.82,pitch:.86,label:'sedih'}, fear:{rate:.94,pitch:1.12,label:'takut'},
+        surprised:{rate:1.12,pitch:1.24,label:'terkejut'}
+      };
+      const speakNext = (run) => {
+        if(run!==narrationRun) return;
+        if(partIndex>=narrationParts.length){setStatus('Cerita selesai dibacakan');return;}
+        const part=narrationParts[partIndex];
+        if(!part.text){partIndex++;pauseTimer=setTimeout(()=>speakNext(run),part.pause);return;}
+        const utterance=new SpeechSynthesisUtterance(part.text);
+        const voices=voiceSelect?._voices || synth.getVoices();
+        const selected=voiceSelect?.value;
+        const chosen=selected!=='' ? voices[Number(selected)] : voices.find(v=>(v.lang||'').toLowerCase().startsWith('id'));
+        if(chosen) utterance.voice=chosen;
+        utterance.lang=chosen?.lang || 'id-ID';
+        const emotion=emotionSettings[part.emotion] || emotionSettings.neutral;
+        const baseRate=Number(document.getElementById('novelRate')?.value || .9);
+        // Dialog dibuat sedikit lebih ekspresif daripada narasi; pitch/rate adalah pendekatan yang didukung browser.
+        utterance.rate=Math.max(.72,Math.min(1.25,baseRate*emotion.rate*(part.quoted?1.02:1)));
+        utterance.pitch=Math.max(.65,Math.min(1.45,emotion.pitch*(part.quoted?1.04:1)));
+        utterance.volume=1;
+        utterance.onstart=()=>setStatus(`${part.quoted?'Dialog karakter':'Narasi'} • ${emotion.label} (${partIndex+1}/${narrationParts.filter(p=>p.text).length})`);
+        utterance.onend=()=>{if(run!==narrationRun)return;partIndex++;pauseTimer=setTimeout(()=>speakNext(run),part.pause);};
+        utterance.onerror=(event)=>{if(run===narrationRun && event.error!=='canceled' && event.error!=='interrupted')setStatus('Suara tidak dapat dilanjutkan di browser ini');};
+        synth.speak(utterance);
+      };
+      document.getElementById('novelSpeakBtn')?.addEventListener('click',()=>{
+        narrationRun++; const run=narrationRun; clearTimeout(pauseTimer); synth.cancel();
+        narrationParts=splitNarration(textEl.innerText); partIndex=0;
+        if(!narrationParts.some(p=>p.text)){setStatus('Belum ada teks untuk dibacakan');return;}
+        setStatus('Menganalisis dialog, tanda baca, dan suasana cerita…'); speakNext(run);
+      });
+      document.getElementById('novelPauseBtn')?.addEventListener('click',()=>{
+        if(synth.paused){synth.resume();setStatus('Narasi dilanjutkan');}
+        else if(synth.speaking){synth.pause();setStatus('Narasi dijeda');}
+      });
+      document.getElementById('novelStopBtn')?.addEventListener('click',()=>{
+        narrationRun++;clearTimeout(pauseTimer);synth.cancel();partIndex=0;setStatus('Narasi dihentikan');
+      });
+    } else {
+      const tts=document.getElementById('novelTtsControls'); if(tts) tts.innerHTML='<span class="text-xs text-slate-400">Fitur pembacaan suara tidak didukung browser ini.</span>';
+    }
+    const updateNovelProgress = () => {
+      if (!textEl) return;
+      const rect=textEl.getBoundingClientRect();
+      const total=Math.max(1,textEl.offsetHeight-window.innerHeight);
+      const passed=Math.max(0,Math.min(total, -rect.top));
+      const percent=Math.round(passed/total*100);
+      const fill=document.getElementById('novelProgressFill');
+      const label=document.getElementById('readerProgressLabel');
+      if(fill) fill.style.width=percent+'%';
+      if(label) label.textContent=percent+'% dibaca';
+    };
+    window.addEventListener('scroll', updateNovelProgress, {passive:true});
+    updateNovelProgress();
+    const noteKey=`kominovel_note_${novelId}_${currentChapter.id}`;
+    const noteInput=document.getElementById('readerNoteInput');
+    try { if(noteInput) noteInput.value=localStorage.getItem(noteKey)||''; } catch(e) {}
+    document.getElementById('readerNoteToggle')?.addEventListener('click', () => {
+      const panel=document.getElementById('readerNotePanel');
+      if(panel) panel.hidden=!panel.hidden;
+    });
+    document.getElementById('readerNoteSave')?.addEventListener('click', () => {
+      try { localStorage.setItem(noteKey, noteInput?.value || ''); showToast('Catatan pribadi tersimpan di perangkat ini.'); }
+      catch(e) { showToast('Penyimpanan catatan tidak tersedia.'); }
+    });
+  }
 
   document.getElementById('reportWorkBtn')?.addEventListener('click', () => {
     if (hasReported) { showToast('Kamu sudah report karya ini'); return; }
@@ -7514,6 +7744,7 @@ async function renderCreatorDashboard(container) {
           <input type="text" id="ct-${sid}" placeholder="${w.type === 'novel' ? 'Judul Chapter *' : 'Judul Eps (opsional)'}" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm">
           ${wGroups.length ? `<div><label class="block text-xs font-semibold text-amber-400 mb-1">Masukkan ke ${gl}</label>${groupSelectHtml('cg-' + sid, wGroups, wGroups[wGroups.length - 1].id, w.type)}</div>` : ''}
           ${w.type === 'novel' ? `<textarea id="cc-${sid}" rows="10" placeholder="Isi cerita *" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm"></textarea>` : `${multiImageField('mi-' + sid)}`}
+          <div><label class="block text-xs font-semibold mb-1 text-slate-300">Link pada ${w.type === 'novel' ? 'chapter' : 'episode'} (opsional)</label><input type="url" id="chlink-${sid}" placeholder="Tempel link apa saja (dukungan, sumber, media sosial, dll.)" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm"></div>
           <div class="flex gap-2"><button class="subC bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-bold flex-1 hover:scale-105 transition" data-wid="${w.id}" data-type="${w.type}" data-sid="${sid}">Simpan</button><button class="canC bg-slate-700 text-slate-300 px-4 py-2 rounded-lg text-sm font-bold" data-sid="${sid}">Batal</button></div>
         </div>
       </div>`;
@@ -7567,6 +7798,7 @@ async function renderCreatorDashboard(container) {
         </div>
         <div class="space-y-3">
           <div><label class="block text-sm font-semibold mb-1">Judul ${type === 'novel' ? 'Chapter' : 'Eps'}</label><input id="editChTitle" type="text" value="${escHtml(ch.title || '')}" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm"></div>
+          <div><label class="block text-xs font-semibold mb-1 text-slate-300">Link pada ${type === 'novel' ? 'chapter' : 'episode'} (opsional)</label><input id="editChLink" type="url" value="${escAttr(ch.supportUrl || ch.paymentUrl || '')}" placeholder="Tempel link apa saja" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm"></div>
           <div class="grid grid-cols-3 gap-3">
             <div><label class="block text-sm font-semibold mb-1">Nomor</label><input id="editChNumber" type="number" min="0" value="${ch.number ?? ''}" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm"></div>
             <div class="col-span-2"><label class="block text-sm font-semibold mb-1">${groupLabel(type)}</label>${groupSelectHtml('editChGroup', editGroups, ch.groupId || '', type)}</div>
@@ -7585,7 +7817,7 @@ async function renderCreatorDashboard(container) {
       document.getElementById('saveEditCh').onclick = async () => {
         const newTitle = document.getElementById('editChTitle').value.trim();
         const numVal = parseInt(document.getElementById('editChNumber').value, 10);
-        const extra = { groupId: document.getElementById('editChGroup').value || '' };
+        const extra = { groupId: document.getElementById('editChGroup').value || '', supportUrl: (document.getElementById('editChLink')?.value || '').trim(), supportLabel: 'Buka link' };
         if (!isNaN(numVal)) extra.number = numVal;
         if (type === 'novel') {
           const newContent = document.getElementById('editChContent').value.trim();
@@ -7612,11 +7844,12 @@ async function renderCreatorDashboard(container) {
       const cs = await getDocs(collection(db,'works',wid,'chapters'));
       const next = cs.docs.reduce((m, d) => Math.max(m, Number(d.data().number) || 0), 0) + 1;
       const groupId = document.getElementById('cg-' + sid)?.value || '';
+      const supportUrl = (document.getElementById('chlink-' + sid)?.value || '').trim();
       if (type === 'novel') {
         const c = document.getElementById('cc-' + sid).value.trim();
         if (!t) { showToast('Judul wajib'); return; }
         if (!c) { showToast('Isi wajib'); return; }
-        const newChapterRef = await addDoc(collection(db,'works',wid,'chapters'), { number: next, title: t, content: c, images: [], groupId, createdAt: serverTimestamp() });
+        const newChapterRef = await addDoc(collection(db,'works',wid,'chapters'), { number: next, title: t, content: c, images: [], groupId, supportUrl, supportLabel: 'Buka link', createdAt: serverTimestamp() });
         try {
           const workSnapForFollowers = await getDoc(doc(db, 'works', wid));
           if (workSnapForFollowers.exists()) {
@@ -7642,7 +7875,7 @@ async function renderCreatorDashboard(container) {
       } else {
         const images = getMultiImages('mi-' + sid);
         if (images.length === 0) { showToast('Pilih minimal 1 gambar'); return; }
-        const newChapterRef = await addDoc(collection(db,'works',wid,'chapters'), { number: next, title: t, content: '', images: images, coverImage: images[0], groupId, createdAt: serverTimestamp() });
+        const newChapterRef = await addDoc(collection(db,'works',wid,'chapters'), { number: next, title: t, content: '', images: images, coverImage: images[0], groupId, supportUrl, supportLabel: 'Buka link', createdAt: serverTimestamp() });
         await createChapterNotifications(wid, { id:newChapterRef.id, number:next, title:t });
         pushNotify({ kind: 'chapter', workId: wid, chapterId: newChapterRef.id });
         const workRef = doc(db, 'works', wid);
