@@ -6749,7 +6749,7 @@ async function renderReader(container, novelId, chapterId = null) {
                     <button type="button" id="novelStopBtn" class="px-3 py-2 rounded-full bg-slate-700 text-white text-xs"><i class="fas fa-stop mr-1"></i> Selesai</button>
                     <span class="px-2 py-2 rounded-lg bg-slate-800 text-xs text-amber-200"><i class="fas fa-wand-magic-sparkles mr-1"></i>Emosi otomatis</span>
                     <select id="novelVoiceSelect" aria-label="Pilih suara perempuan" class="px-2 py-2 rounded-lg bg-slate-800 text-xs max-w-full"><option value="">Mencari suara perempuan…</option></select>
-                    <label class="text-xs text-slate-400">Tempo <input id="novelRate" type="range" min="0.75" max="1.15" step="0.05" value="0.9" class="w-20 align-middle"></label>
+                    <label class="text-xs text-slate-400">Tempo <input id="novelRate" type="range" min="0.75" max="1.15" step="0.05" value="0.88" class="w-20 align-middle"></label>
                     <span id="novelNarrationStatus" class="text-[11px] text-slate-400" aria-live="polite">Mencari voice perempuan</span>
                   </div>
                   <div class="novel-progress-track"><div id="novelProgressFill"></div></div>
@@ -6821,34 +6821,36 @@ async function renderReader(container, novelId, chapterId = null) {
       const statusEl = document.getElementById('novelNarrationStatus');
       let narrationParts = [], partIndex = 0, narrationRun = 0, pauseTimer = null;
       const setStatus = (message) => { if (statusEl) statusEl.textContent = message; };
-      // Hanya tampilkan suara yang terindikasi perempuan; jangan diam-diam jatuh ke suara laki-laki.
-      // Browser tidak selalu menyediakan metadata gender, jadi gunakan metadata bila ada dan petunjuk nama voice.
+      // Narator wajib Bahasa Indonesia dan perempuan. Web Speech API tidak menyediakan
+      // metadata gender yang konsisten, jadi gunakan nama voice yang dikenal dan singkirkan kandidat laki-laki.
+      const isIndonesian = (v) => /^id(?:-|_)/i.test(String(v.lang || ''));
       const looksFemale = (v) => {
         const meta = String(v.gender || v.voiceGender || '').toLowerCase();
         if (meta.includes('female') || meta.includes('woman')) return true;
         if (meta.includes('male') || meta.includes('man')) return false;
         const n = String(v.name || '').toLowerCase();
-        return /female|woman|girl|gadis|wanita|perempuan|damayanti|siti|intan|sinta|putri|ayu|melati|zira|andika?\s*female/.test(n);
+        if (/\b(ardi|andika|budi|dimas|indra|male|man)\b/.test(n)) return false;
+        return /female|woman|girl|gadis|wanita|perempuan|damayanti|siti|intan|sinta|putri|ayu|melati|zira|google bahasa indonesia|id-id-x-.*f/.test(n);
       };
       const loadVoices = () => {
         const previous = voiceSelect.value;
         const voices = synth.getVoices();
-        const sorted = voices.filter(looksFemale).sort((a,b) => {
-          const ai=(a.lang||'').toLowerCase().startsWith('id')?0:1;
-          const bi=(b.lang||'').toLowerCase().startsWith('id')?0:1;
-          const an=/natural|online|neural/i.test(a.name)?0:1;
-          const bn=/natural|online|neural/i.test(b.name)?0:1;
-          return ai-bi || an-bn;
+        const sorted = voices.filter(v => isIndonesian(v) && looksFemale(v)).sort((a,b) => {
+          const score = v => {
+            const n=String(v.name||'').toLowerCase();
+            return (/natural|online|neural/i.test(n)?0:10) + (/siti|gadis|female|woman|google bahasa indonesia|id-id-x-.*f/.test(n)?0:3) + (v.localService?2:0);
+          };
+          return score(a)-score(b);
         });
         voiceSelect.innerHTML = sorted.length
-          ? sorted.map((v,i)=>`<option value="${i}">${escHtml(v.name)} (${escHtml(v.lang)})</option>`).join('')
-          : '<option value="">Suara perempuan belum tersedia di perangkat</option>';
+          ? sorted.map((v,i)=>`<option value="${i}">${escHtml(v.name)} — Bahasa Indonesia (perempuan)</option>`).join('')
+          : '<option value="">Voice perempuan Indonesia belum tersedia</option>';
         voiceSelect._voices = sorted;
         if (previous && Number(previous) < sorted.length) voiceSelect.value = previous;
         const speakBtn=document.getElementById('novelSpeakBtn');
         if(speakBtn) speakBtn.disabled = sorted.length===0;
-        if(sorted.length===0) setStatus('Belum ada voice perempuan yang dikenali. Tambahkan voice perempuan di pengaturan perangkat/browser.');
-        else setStatus(`Voice perempuan tersedia: ${sorted.length}`);
+        if(sorted.length===0) setStatus('Belum ditemukan voice perempuan Bahasa Indonesia. Tambahkan voice Indonesia perempuan di pengaturan suara perangkat, lalu muat ulang KomiNovel.');
+        else setStatus(`Narator perempuan Bahasa Indonesia siap: ${sorted[0].name}`);
       };
       loadVoices(); if (synth.onvoiceschanged !== undefined) synth.onvoiceschanged = loadVoices;
       const classifyEmotion = (text) => {
@@ -6886,15 +6888,15 @@ async function renderReader(container, novelId, chapterId = null) {
       const makePart = (text) => {
         const quoted = /^[“"'«「『]/.test(text) || /[“「『«]/.test(text) || /[”」』»"]$/.test(text);
         const emotion = classifyEmotion(text);
-        const pause = /[?？！]$/.test(text) ? 560 : /[!！]$/.test(text) ? 480 : /[…]$/.test(text) ? 760 : /[,;:]$/.test(text) ? 260 : 390;
+        const pause = /[?？！]$/.test(text) ? 620 : /[!！]$/.test(text) ? 520 : /[…]{1,}$/.test(text) ? 850 : /[,;:]$/.test(text) ? 320 : 460;
         return {text, quoted, emotion, pause};
       };
       const emotionSettings = {
-        neutral:{rate:1,pitch:1,label:'narasi biasa'}, curious:{rate:.96,pitch:1.08,label:'penasaran'},
-        excited:{rate:1.08,pitch:1.16,label:'antusias'}, happy:{rate:1.06,pitch:1.18,label:'senang'},
-        funny:{rate:1.04,pitch:1.22,label:'lucu'}, angry:{rate:1.08,pitch:.82,label:'marah'},
-        sad:{rate:.82,pitch:.86,label:'sedih'}, fear:{rate:.94,pitch:1.12,label:'takut'},
-        surprised:{rate:1.12,pitch:1.24,label:'terkejut'}
+        neutral:{rate:.98,pitch:1.01,label:'narasi biasa'}, curious:{rate:.94,pitch:1.06,label:'penasaran'},
+        excited:{rate:1.04,pitch:1.12,label:'antusias'}, happy:{rate:1.03,pitch:1.12,label:'senang'},
+        funny:{rate:1.02,pitch:1.15,label:'lucu'}, angry:{rate:1.04,pitch:.88,label:'marah'},
+        sad:{rate:.86,pitch:.91,label:'sedih'}, fear:{rate:.92,pitch:1.08,label:'takut'},
+        surprised:{rate:1.06,pitch:1.16,label:'terkejut'}
       };
       const speakNext = (run) => {
         if(run!==narrationRun) return;
@@ -6904,12 +6906,12 @@ async function renderReader(container, novelId, chapterId = null) {
         const utterance=new SpeechSynthesisUtterance(part.text);
         const voices=voiceSelect?._voices || [];
         const selected=voiceSelect?.value;
-        const chosen=selected!=='' ? voices[Number(selected)] : voices.find(v=>(v.lang||'').toLowerCase().startsWith('id')) || voices[0];
-        if(!chosen){setStatus('Voice perempuan belum tersedia di perangkat ini.');return;}
+        const chosen=selected!=='' ? voices[Number(selected)] : voices[0];
+        if(!chosen){setStatus('Voice perempuan Bahasa Indonesia belum tersedia. Silakan pasang voice tersebut di perangkat.');return;}
         utterance.voice=chosen;
         utterance.lang=chosen.lang || 'id-ID';
         const emotion=emotionSettings[part.emotion] || emotionSettings.neutral;
-        const baseRate=Number(document.getElementById('novelRate')?.value || .9);
+        const baseRate=Number(document.getElementById('novelRate')?.value || .88);
         // Dialog dibuat sedikit lebih ekspresif daripada narasi; pitch/rate adalah pendekatan yang didukung browser.
         utterance.rate=Math.max(.72,Math.min(1.25,baseRate*emotion.rate*(part.quoted?1.02:1)));
         utterance.pitch=Math.max(.65,Math.min(1.45,emotion.pitch*(part.quoted?1.04:1)));
