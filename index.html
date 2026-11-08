@@ -943,7 +943,10 @@ a.saweria-btn .saweria-btn-text{text-align:center}
 #novelNarrationStatus{width:100%;padding-left:3px}
 @media(max-width:640px){.novel-chapter-text{font-size:18px;line-height:2.05;padding:20px 18px!important;margin-top:12px!important}.novel-chapter-text.reader-focus{font-size:19px}}
 /* v1.16 — Novel reading experience */
-.novel-reader-tools{position:sticky;top:8px;z-index:8;background:rgba(18,18,31,.96);border:1px solid rgba(251,191,36,.2);border-radius:14px;padding:10px 12px;margin-bottom:22px;backdrop-filter:blur(12px)}
+.novel-reader-tools[hidden]{display:none}
+.novel-tools-chip{display:inline-flex;align-items:center;gap:6px;margin-bottom:12px;padding:6px 12px;border-radius:999px;background:#25253d;color:#fbbf24;border:1px solid rgba(251,191,36,.25);font-size:11px;font-weight:800;cursor:pointer}
+.novel-tools-chip[hidden]{display:none}
+.novel-reader-tools{position:static;z-index:8;background:rgba(18,18,31,.96);border:1px solid rgba(251,191,36,.2);border-radius:14px;padding:10px 12px;margin-bottom:22px;backdrop-filter:blur(12px)}
 .novel-reader-tools-top,.novel-reader-meta,.novel-reader-actions,.novel-note-footer{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
 .novel-reader-tools-top{font-size:12px;font-weight:800;color:#fbbf24}
 .novel-reader-actions button{min-width:34px;height:32px;padding:0 9px;border-radius:9px;background:#292940;color:#e2e8f0;border:1px solid #41415c;font-weight:800;cursor:pointer}
@@ -1264,7 +1267,7 @@ const ALL_CATEGORIES = [
 ];
 
 const KATA_KASAR = ['anjing','bangsat','kontol','memek','ngentot','peler','kampang','bajingan','asu','jancok','pepek','titit','bokep','silit','ngewe','colmek','masturbasi'];
-const ROLE_LABELS = { pembaca:'Pembaca', penulis:'Penulis Novel', komikus:'Pembuat Komik', admin:'Admin', owner:'Owner' };
+const ROLE_LABELS = { pembaca:'Pembaca', penulis:'Novelis', komikus:'Pembuat Komik', admin:'Admin', owner:'Owner' };
 const LEVEL_TITLES = [{min:1,max:100,title:'Pemula'},{min:101,max:1000,title:'Pendekar'},{min:1001,max:5000,title:'Master'},{min:5001,max:Number.MAX_SAFE_INTEGER,title:'Dewa Mitos'}];
 const MAX_LEVEL = Number.MAX_SAFE_INTEGER;
 const EXP_PER_READ = 10, EXP_PER_CHAT = 2, EXP_PER_COMMENT = 5;
@@ -1632,9 +1635,9 @@ function getCreatorVerifiedBadge(profile, workType = '') {
   const hasKomikus = roles.includes('komikus');
   const kuning = (t) => '<span class="verified-badge kuning" title="' + t + '"><i class="fas fa-check"></i></span>';
   const oranye = (t) => '<span class="verified-badge oranye" title="' + t + '"><i class="fas fa-check"></i></span>';
-  if (workType === 'novel') return (hasPenulis || isStaff) ? kuning('Pembuat Novel Terverifikasi') : '';
+  if (workType === 'novel') return (hasPenulis || isStaff) ? kuning('Novelis Terverifikasi') : '';
   if (workType === 'komik') return (hasKomikus || isStaff) ? oranye('Pembuat Komik Terverifikasi') : '';
-  return (hasPenulis ? kuning('Penulis Terverifikasi') : '') + (hasKomikus ? oranye('Komikus Terverifikasi') : '');
+  return (hasPenulis ? kuning('Novelis Terverifikasi') : '') + (hasKomikus ? oranye('Komikus Terverifikasi') : '');
 }
 function isTakedown(work) { return work && work.takedown && work.takedown.active === true; }
 function isNonPublish(work) { return work && work.status === 'nonpublish'; }
@@ -2150,7 +2153,7 @@ function getRoleTagsForUid(uid, fallbackProfile = null) {
   let html = '';
   if (isOwner) html += '<span class="owner-tag">👑 OWNER</span> ';
   if (isAdmin) html += '<span class="admin-tag">ADMIN</span> ';
-  if (isPenulis) html += '<span class="penulis-tag">PENULIS</span> ';
+  if (isPenulis) html += '<span class="penulis-tag">NOVELIS</span> ';
   if (isKomikus) html += '<span class="komikus-tag">KOMIKUS</span> ';
   if (isPembaca && !hasHighRole) html += '<span class="pembaca-tag">PEMBACA</span> ';
   return html;
@@ -3828,7 +3831,7 @@ function renderReviewReaderModal() {
         closeReviewModal();
         const main = document.getElementById('mainContent');
         if (main && getHash().startsWith('creator')) await renderCreatorDashboard(main);
-        await openMandatoryPromotionRequest(publishedWorkId);
+        await openPromotionSuggestion(publishedWorkId);
       } catch (e) { showToast('Gagal publish: ' + e.message); }
     };
   }
@@ -4029,75 +4032,97 @@ window.reviewSaveOrder = async () => {
 };
 
 
-// Popup pengajuan promosi wajib setelah kreator berhasil mempublikasikan karya.
-async function openMandatoryPromotionRequest(workId) {
+// Popup rekomendasi promosi (opsional) setelah kreator mempublikasikan karya atau menambah chapter/episode.
+async function openPromotionSuggestion(workId, opts) {
+  opts = opts || {};
   if (!currentUser || !workId) return;
-  const workSnap = await getDoc(doc(db, 'works', workId));
-  if (!workSnap.exists()) return;
-  const work = { id: workSnap.id, ...workSnap.data() };
+  let work;
+  try {
+    const workSnap = await getDoc(doc(db, 'works', workId));
+    if (!workSnap.exists()) return;
+    work = { id: workSnap.id, ...workSnap.data() };
+  } catch (e) { return; }
+  const isChapter = !!opts.chapterId;
+  if (isChapter && work.status !== 'publish') return;
+  const chLabel = work.type === 'komik' ? 'Chapter' : 'Episode';
+  const chText = isChapter ? `${chLabel} ${opts.chapterNumber || ''}${opts.chapterTitle ? ': ' + opts.chapterTitle : ''}`.trim() : '';
   const modal = document.getElementById('modalContainer');
   const content = document.getElementById('modalContent');
-  content.className = 'card-bg rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-6 shadow-2xl scrollbar-thin';
+  const baseClass = 'card-bg rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-6 shadow-2xl scrollbar-thin';
+  const closePopup = () => { modal.classList.add('hidden'); content.className = baseClass; };
+  content.className = baseClass;
   content.innerHTML = `
+    <button type="button" id="promotionCloseBtn" aria-label="Tutup" class="float-right text-slate-400 hover:text-white text-xl leading-none"><i class="fas fa-times"></i></button>
     <div class="text-center mb-4">
       <div class="w-16 h-16 rounded-2xl bg-amber-500/15 text-amber-400 flex items-center justify-center text-3xl mx-auto mb-3"><i class="fas fa-bullhorn"></i></div>
-      <h2 class="text-xl font-black text-amber-400">Ajukan Promosi Karya</h2>
-      <p class="text-sm text-slate-300 mt-2">Karya berhasil dipublikasikan. Lengkapi pengajuan promosi agar admin bisa meninjau karya ini.</p>
+      <h2 class="text-xl font-black text-amber-400">${isChapter ? escHtml(chLabel) + ' baru terbit! 🎉' : 'Karya berhasil dipublikasikan! 🎉'}</h2>
+      <p class="text-sm text-slate-300 mt-2">Rekomendasi: kabari admin supaya ${isChapter ? escHtml(chLabel.toLowerCase()) + ' ini' : 'karyamu'} bisa dipromosikan. Ini opsional, boleh dilewati kapan saja.</p>
     </div>
     <div class="card-bg rounded-xl p-3 mb-4">
       <p class="font-bold">${escHtml(work.title || 'Tanpa judul')}</p>
-      <p class="text-xs text-slate-400 mt-1">${work.type === 'komik' ? 'Komik' : 'Novel'} • ${escHtml(userProfile?.username || currentUser.displayName || 'Kreator')}</p>
+      <p class="text-xs text-slate-400 mt-1">${work.type === 'komik' ? 'Komik' : 'Novel'}${chText ? ' • ' + escHtml(chText) : ''}</p>
     </div>
     <form id="promotionRequestForm" class="space-y-3">
-      <label class="block text-sm font-bold text-amber-400">Alasan ingin dipromosikan</label>
-      <textarea id="promotionReason" required minlength="15" maxlength="700" rows="4" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm" placeholder="Ceritakan keunggulan karya dan alasan karya ini layak dipromosikan (minimal 15 karakter)."></textarea>
-      <label class="block text-sm font-bold text-amber-400">Target promosi (opsional)</label>
+      <label class="block text-sm font-bold text-amber-400">Pesan untuk admin (opsional)</label>
+      <textarea id="promotionReason" maxlength="700" rows="3" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm" placeholder="Contoh: chapter ini penuh kejutan, cocok dipromosikan."></textarea>
+      <label class="block text-sm font-bold text-amber-400">Target promosi</label>
       <select id="promotionTarget" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm">
         <option value="Beranda KomiNovel">Beranda KomiNovel</option>
         <option value="Rekomendasi karya">Rekomendasi karya</option>
         <option value="Media sosial KomiNovel">Media sosial KomiNovel</option>
         <option value="Semua kanal yang tersedia">Semua kanal yang tersedia</option>
       </select>
-      <p class="text-xs text-slate-400">Pengajuan wajib dikirim satu kali. Admin akan memeriksa dan menentukan apakah karya dapat dipromosikan.</p>
-      <button id="sendPromotionRequestBtn" type="submit" class="w-full bg-amber-500 text-black font-black py-3 rounded-full"><i class="fas fa-paper-plane mr-2"></i>Kirim Pengajuan ke Admin</button>
+      <button id="sendPromotionRequestBtn" type="submit" class="w-full bg-amber-500 text-black font-black py-3 rounded-full"><i class="fas fa-paper-plane mr-2"></i>Kirim ke Admin</button>
+      <button id="promotionLaterBtn" type="button" class="w-full bg-slate-700 text-slate-200 font-bold py-3 rounded-full">Nanti saja</button>
       <p id="promotionRequestError" class="hidden text-xs text-red-400"></p>
     </form>`;
   modal.classList.remove('hidden');
+  document.getElementById('promotionCloseBtn').onclick = closePopup;
+  document.getElementById('promotionLaterBtn').onclick = closePopup;
   document.getElementById('promotionRequestForm').onsubmit = async (e) => {
     e.preventDefault();
     const btn = document.getElementById('sendPromotionRequestBtn');
-    const reason = document.getElementById('promotionReason').value.trim();
+    const typed = document.getElementById('promotionReason').value.trim();
+    const reason = typed || (isChapter ? `Ada ${chText} baru, mohon dipertimbangkan untuk dipromosikan.` : 'Karya baru dipublikasikan, mohon dipertimbangkan untuk dipromosikan.');
     const target = document.getElementById('promotionTarget').value;
     const error = document.getElementById('promotionRequestError');
-    if (reason.length < 15) {
-      error.textContent = 'Alasan minimal 15 karakter.';
-      error.classList.remove('hidden');
-      return;
-    }
     btn.disabled = true;
-    btn.innerHTML = '<span class="uploading-spinner"></span>Mengirim pengajuan...';
+    btn.innerHTML = '<span class="uploading-spinner"></span>Mengirim...';
     try {
-      const requestRef = await addDoc(collection(db, 'promotionRequests'), {
+      const payload = {
         workId, workTitle: work.title || 'Tanpa judul', workType: work.type || 'novel',
         authorId: currentUser.uid, authorName: userProfile?.username || currentUser.displayName || 'Kreator',
         authorEmail: currentUser.email || '', reason, target, status: 'pending',
+        requestKind: isChapter ? 'chapter' : 'work',
         createdAt: serverTimestamp(), updatedAt: serverTimestamp()
-      });
-      await updateDoc(doc(db, 'works', workId), {
-        promotionRequestId: requestRef.id, promotionRequestStatus: 'pending',
-        promotionRequestedAt: serverTimestamp()
-      });
-      modal.classList.add('hidden');
-      showToast('📨 Pengajuan promosi berhasil dikirim ke admin.');
+      };
+      if (isChapter) {
+        payload.chapterId = opts.chapterId;
+        payload.chapterNumber = opts.chapterNumber || null;
+        payload.chapterTitle = opts.chapterTitle || '';
+      }
+      const requestRef = await addDoc(collection(db, 'promotionRequests'), payload);
+      if (!isChapter) {
+        try {
+          await updateDoc(doc(db, 'works', workId), {
+            promotionRequestId: requestRef.id, promotionRequestStatus: 'pending',
+            promotionRequestedAt: serverTimestamp()
+          });
+        } catch (e2) { console.warn('Status promosi karya gagal diperbarui:', e2); }
+      }
+      closePopup();
+      showToast('📨 Info promosi terkirim ke admin. Terima kasih!');
     } catch (err) {
       console.error('Pengajuan promosi gagal:', err);
       btn.disabled = false;
-      btn.innerHTML = '<i class="fas fa-paper-plane mr-2"></i>Kirim Pengajuan ke Admin';
-      error.textContent = 'Gagal mengirim. Periksa izin Firestore untuk koleksi promotionRequests, lalu coba lagi.';
+      btn.innerHTML = '<i class="fas fa-paper-plane mr-2"></i>Kirim ke Admin';
+      error.textContent = 'Gagal mengirim. Coba lagi, atau pilih "Nanti saja".';
       error.classList.remove('hidden');
     }
   };
 }
+// Alias lama agar pemanggil lama tetap berfungsi.
+async function openMandatoryPromotionRequest(workId) { return openPromotionSuggestion(workId); }
 
 function closeReviewModal() {
   document.getElementById('modalContainer').classList.add('hidden');
@@ -4884,7 +4909,7 @@ async function renderPage() {
       main.innerHTML = `<div class="card-bg rounded-2xl p-8 text-center">
         <i class="fas fa-lock text-4xl text-red-400 mb-4"></i>
         <h2 class="text-xl font-bold mb-2">Akses Kreator Belum Terbuka</h2>
-        <p class="text-sm text-slate-400 mb-3">Akun ini belum terbaca memiliki role Penulis atau Komikus. Jika pengajuan sudah diterima, kemungkinan data role belum tersinkron atau tersimpan di field berbeda.</p>
+        <p class="text-sm text-slate-400 mb-3">Akun ini belum terbaca memiliki role Novelis atau Komikus. Jika pengajuan sudah diterima, kemungkinan data role belum tersinkron atau tersimpan di field berbeda.</p>
         <p class="text-xs text-slate-500 mb-4">Role terbaca: ${escHtml(rolesShown.join(', ') || 'belum tersedia')}</p>
         <button class="bg-amber-500 text-black font-bold px-5 py-2 rounded-full" onclick="location.reload()">Muat Ulang Profil</button>
       </div>`;
@@ -5008,7 +5033,7 @@ async function renderJadiKreator(container) {
         <div class="card-bg rounded-2xl p-5 ${hasPenulis ? 'berlanjut-border' : ''}">
           <div class="flex items-center gap-3 mb-3">
             <div class="w-12 h-12 rounded-xl bg-yellow-500/20 flex items-center justify-center"><i class="fas fa-pen-fancy text-yellow-400 text-xl"></i></div>
-            <div><h3 class="font-bold">Penulis Novel</h3><p class="text-xs text-slate-400">Tulis cerita panjang</p></div>
+            <div><h3 class="font-bold">Novelis</h3><p class="text-xs text-slate-400">Tulis cerita panjang</p></div>
             ${hasPenulis ? '<span class="penulis-tag ml-auto">AKTIF</span>' : ''}
           </div>
           <p class="text-sm text-slate-400 mb-3">Menulis chapter teks panjang dengan alur cerita.</p>
@@ -5040,7 +5065,7 @@ window.requestRole = (role) => {
   if (!currentUser) { showToast('Login Google dulu!'); return; }
   const username = userProfile?.username || 'User';
   const uid = currentUser.uid;
-  const roleText = role === 'penulis' ? 'PENULIS NOVEL' : 'PEMBUAT KOMIK';
+  const roleText = role === 'penulis' ? 'NOVELIS' : 'PEMBUAT KOMIK';
   const pesan = `Halo Admin KomiNovel! 👋%0A%0ASaya ingin mengajukan permohonan menjadi *${roleText}* di KomiNovel.%0A%0A*Detail Akun:*%0A• Username: ${username}%0A• User ID: ${uid}%0A%0AMohon diaktifkan ya. Terima kasih! 🙏`;
   window.open(`https://wa.me/${WA_NUMBER.replace(/^0/,'62')}?text=${pesan}`, '_blank');
 };
@@ -5059,7 +5084,7 @@ async function renderPanduan(container) {
       <li>🧹 <b>PENYEDERHANAAN FITUR</b> — Chat Publik, Clan, Stiker, dan Pertemanan/DM sudah dihapus supaya KomiNovel fokus ke membaca komik &amp; novel, lebih ringan, dan lebih mudah dijaga keamanannya. Karya, bookmark, komentar, follow, level, minigame, dan notifikasi tetap ada seperti biasa.</li>
       <li>🔗 <b>LINK LEBIH BERSIH</b> — Alamat halaman sekarang tanpa tanda #, contoh <b>kominovel.vercel.app/reader/xxxx</b>. Link lama dengan # tetap bisa dibuka.</li>
       <li>🔔 <b>NOTIFIKASI PUSH</b> — Komik/novel baru, chapter/episode terbaru, dan berita langsung masuk ke HP/PC kamu, bahkan saat web ditutup. Aktifkan lewat ikon lonceng.</li>
-      <li>✅ <b>CENTANG PENULIS/KOMIKUS</b> — Centang kuning (penulis novel) &amp; oranye (komikus) tampil konsisten di kartu karya dan profil.</li>
+      <li>✅ <b>CENTANG PENULIS/KOMIKUS</b> — Centang kuning (novelis) &amp; oranye (komikus) tampil konsisten di kartu karya dan profil.</li>
       <li>⚡ <b>BANNER LEBIH RINGAN</b> — Banner beranda tetap berganti otomatis tapi tanpa animasi, supaya tidak lag di HP low-end.</li>
       <li>☀️ <b>TEMA TERANG DIPERBAIKI</b> — Bubble chat, panel, dan teks tidak lagi menghitam/transparan.</li>
       <li>🚨 <b>REPORT KARYA</b> — Laporkan karya yang melanggar! Jika report mencapai 10, karya otomatis di-takedown oleh sistem.</li>
@@ -5279,7 +5304,7 @@ async function renderAboutDev(container) {
       <h3><i class="fas fa-map-signs"></i> Panduan Update v1.14: Cara Menggunakan Fitur</h3>
       <p>Bagian ini untuk pengguna biasa dan kreator. Tidak membahas menu Admin atau Owner. Ikuti langkahnya satu per satu, tidak perlu mengerti kode website.</p>
       <details class="dev-faq" open><summary>1. Cara membuat karya baru <i class="fas fa-chevron-down text-xs"></i></summary>
-        <p>1) Login menggunakan Google. 2) Pastikan akunmu sudah mendapat peran Penulis atau Komikus. 3) Buka menu <b>Kreator</b>, lalu pilih <b>Buat Baru</b>. 4) Isi judul, teaser singkat, tipe karya, kategori, deskripsi, dan sampul. 5) Tekan <b>Buat Karya</b>. Karya baru belum langsung tampil untuk umum karena status awalnya <b>NONPUBLISH</b>.</p>
+        <p>1) Login menggunakan Google. 2) Pastikan akunmu sudah mendapat peran Novelis atau Komikus. 3) Buka menu <b>Kreator</b>, lalu pilih <b>Buat Baru</b>. 4) Isi judul, teaser singkat, tipe karya, kategori, deskripsi, dan sampul. 5) Tekan <b>Buat Karya</b>. Karya baru belum langsung tampil untuk umum karena status awalnya <b>NONPUBLISH</b>.</p>
       </details>
       <details class="dev-faq"><summary>2. Cara menerbitkan karya dan mengelola chapter/episode <i class="fas fa-chevron-down text-xs"></i></summary>
         <p>Buka <b>Kreator → Kelola</b>. Pilih karya yang ingin dikerjakan. Gunakan tombol tambah chapter/episode untuk menerbitkan bagian baru, tombol edit untuk memperbaiki bagian, dan tombol <b>Review &amp; Publish</b> untuk memeriksa hasil sebelum dipublikasikan. Ikuti pesan yang tampil jika ada bagian yang belum lengkap.</p>
@@ -5318,7 +5343,7 @@ async function renderAboutDev(container) {
     <div class="dev-section">
       <h3><i class="fas fa-question-circle"></i> Pertanyaan yang Sering Ditanyakan</h3>
       <details class="dev-faq"><summary>Apakah KomiNovel benar-benar gratis? <i class="fas fa-chevron-down text-xs"></i></summary><p>Ya. Membaca, menulis, dan menerbitkan karya di KomiNovel tidak dipungut biaya. Platform ini dibuat untuk membantu kreator lokal, bukan untuk membebani mereka.</p></details>
-      <details class="dev-faq"><summary>Bagaimana cara menjadi penulis atau komikus? <i class="fas fa-chevron-down text-xs"></i></summary><p>Masuk dengan akun Google, lalu buka menu <b>Daftar</b> di navigasi bawah untuk mengajukan peran Penulis atau Komikus. Setelah pengajuan diterima, kamu bisa membuka menu <b>Kreator</b> untuk mulai mengelola karya.</p></details>
+      <details class="dev-faq"><summary>Bagaimana cara menjadi novelis atau komikus? <i class="fas fa-chevron-down text-xs"></i></summary><p>Masuk dengan akun Google, lalu buka menu <b>Daftar</b> di navigasi bawah untuk mengajukan peran Penulis atau Komikus. Setelah pengajuan diterima, kamu bisa membuka menu <b>Kreator</b> untuk mulai mengelola karya.</p></details>
       <details class="dev-faq"><summary>Kenapa karya saya belum muncul di beranda? <i class="fas fa-chevron-down text-xs"></i></summary><p>Karya baru otomatis berstatus belum publish. Kamu perlu membuka halaman Kreator, memilih karya, lalu menekan tombol <b>Review &amp; Publish</b>. Setelah dipublikasikan, karya akan tampil untuk pembaca.</p></details>
       <details class="dev-faq"><summary>Saya menemukan bug atau error, harus bagaimana? <i class="fas fa-chevron-down text-xs"></i></summary><p>Kirimkan lewat menu <b>Kritik &amp; Saran</b> atau hubungi saya melalui WhatsApp. Ceritakan halaman mana yang bermasalah, apa yang kamu lakukan sebelum masalah muncul, dan jenis perangkat yang dipakai. Semakin jelas laporannya, semakin cepat masalah bisa diperbaiki.</p></details>
       <details class="dev-faq"><summary>Bagaimana cara melaporkan karya yang melanggar aturan? <i class="fas fa-chevron-down text-xs"></i></summary><p>Buka karya tersebut, lalu tekan tombol <b>Report</b> di halaman baca, pilih alasan yang sesuai, dan kirim. Satu pengguna hanya dapat melapor satu kali untuk satu karya.</p></details>
@@ -6731,7 +6756,8 @@ async function renderReader(container, novelId, chapterId = null) {
                 const novelText = currentChapter.content || '';
                 const wordCount = novelText.trim() ? novelText.trim().split(/\\s+/).length : 0;
                 const readMinutes = Math.max(1, Math.ceil(wordCount / 200));
-                return `<div class="novel-reader-tools" id="novelReaderTools">
+                return `<button type="button" id="readerToolsShow" class="novel-tools-chip" hidden><i class="fas fa-book-open"></i> Tampilkan mode membaca</button>
+                <div class="novel-reader-tools" id="novelReaderTools">
                   <div class="novel-reader-tools-top">
                     <span><i class="fas fa-book-open"></i> Mode membaca</span>
                     <div class="novel-reader-actions">
@@ -6740,6 +6766,7 @@ async function renderReader(container, novelId, chapterId = null) {
                       <button type="button" id="readerThemeToggle" aria-label="Ganti tema baca"><i class="fas fa-adjust"></i></button>
                       <button type="button" id="readerWidthToggle" aria-label="Ubah lebar teks"><i class="fas fa-align-center"></i></button>
                       <button type="button" id="readerFocusToggle" aria-label="Mode fokus"><i class="fas fa-expand"></i></button>
+                      <button type="button" id="readerToolsHide" aria-label="Sembunyikan mode membaca" title="Sembunyikan"><i class="fas fa-eye-slash"></i></button>
                     </div>
                   </div>
                   <div class="novel-reader-meta"><span><i class="fas fa-align-left"></i> ${formatCount(wordCount)} kata</span><span><i class="far fa-clock"></i> ±${readMinutes} menit baca</span><span id="readerProgressLabel">0% dibaca</span></div>
@@ -6799,6 +6826,8 @@ async function renderReader(container, novelId, chapterId = null) {
     let fontSize = Math.min(26, Math.max(14, Number(prefs.fontSize) || 18));
     let readingTheme = ['dark','sepia','light'].includes(prefs.theme) ? prefs.theme : 'dark';
     let wide = !!prefs.wide;
+    let toolsHidden = !!prefs.toolsHidden;
+    const showChipEl = document.getElementById('readerToolsShow');
     const applyReaderPrefs = () => {
       if (!textEl) return;
       textEl.style.fontSize = fontSize + 'px';
@@ -6806,13 +6835,20 @@ async function renderReader(container, novelId, chapterId = null) {
       textEl.classList.toggle('reader-light', readingTheme === 'light');
       textEl.classList.toggle('reader-wide', wide);
       toolsEl?.classList.toggle('reader-sepia', readingTheme === 'sepia');
-      try { localStorage.setItem(prefsKey, JSON.stringify({fontSize,theme:readingTheme,wide})); } catch(e) {}
+      if (toolsEl) toolsEl.hidden = toolsHidden;
+      if (showChipEl) showChipEl.hidden = !toolsHidden;
+      try { localStorage.setItem(prefsKey, JSON.stringify({fontSize,theme:readingTheme,wide,toolsHidden})); } catch(e) {}
     };
     document.getElementById('readerFontDown')?.addEventListener('click', () => { fontSize=Math.max(14,fontSize-1); applyReaderPrefs(); });
     document.getElementById('readerFontUp')?.addEventListener('click', () => { fontSize=Math.min(26,fontSize+1); applyReaderPrefs(); });
     document.getElementById('readerThemeToggle')?.addEventListener('click', () => { readingTheme=readingTheme==='dark'?'sepia':readingTheme==='sepia'?'light':'dark'; applyReaderPrefs(); });
     document.getElementById('readerWidthToggle')?.addEventListener('click', () => { wide=!wide; applyReaderPrefs(); });
     document.getElementById('readerFocusToggle')?.addEventListener('click', () => { textEl?.classList.toggle('reader-focus'); });
+    document.getElementById('readerToolsHide')?.addEventListener('click', () => {
+      document.getElementById('novelStopBtn')?.click();
+      toolsHidden = true; applyReaderPrefs();
+    });
+    showChipEl?.addEventListener('click', () => { toolsHidden = false; applyReaderPrefs(); });
     applyReaderPrefs();
     // Narasi otomatis: membedakan narasi dan dialog, lalu memperkirakan emosi dari konteks kalimat.
     if ('speechSynthesis' in window && textEl) {
@@ -7867,6 +7903,7 @@ async function renderCreatorDashboard(container) {
       const next = cs.docs.reduce((m, d) => Math.max(m, Number(d.data().number) || 0), 0) + 1;
       const groupId = document.getElementById('cg-' + sid)?.value || '';
       const supportUrl = (document.getElementById('chlink-' + sid)?.value || '').trim();
+      let addedChapterInfo = null;
       if (type === 'novel') {
         const c = document.getElementById('cc-' + sid).value.trim();
         if (!t) { showToast('Judul wajib'); return; }
@@ -7894,17 +7931,20 @@ async function renderCreatorDashboard(container) {
         } catch (followNotifError) { console.warn('Notifikasi pengikut karya gagal dibuat:', followNotifError); }
         await createChapterNotifications(wid, { id:newChapterRef.id, number:next, title:t });
         pushNotify({ kind: 'chapter', workId: wid, chapterId: newChapterRef.id });
+        addedChapterInfo = { chapterId: newChapterRef.id, chapterNumber: next, chapterTitle: t };
       } else {
         const images = getMultiImages('mi-' + sid);
         if (images.length === 0) { showToast('Pilih minimal 1 gambar'); return; }
         const newChapterRef = await addDoc(collection(db,'works',wid,'chapters'), { number: next, title: t, content: '', images: images, coverImage: images[0], groupId, supportUrl, supportLabel: 'Buka link', createdAt: serverTimestamp() });
         await createChapterNotifications(wid, { id:newChapterRef.id, number:next, title:t });
         pushNotify({ kind: 'chapter', workId: wid, chapterId: newChapterRef.id });
+        addedChapterInfo = { chapterId: newChapterRef.id, chapterNumber: next, chapterTitle: t };
         const workRef = doc(db, 'works', wid);
         const workSnap = await getDoc(workRef);
         if (workSnap.exists()) { const w = workSnap.data(); if (!w.coverURL || w.coverURL === '') await updateDoc(workRef, { coverURL: images[0] }); }
       }
       showToast('Ditambahkan'); loadManage();
+      if (addedChapterInfo) openPromotionSuggestion(wid, addedChapterInfo);
     });
   }
   document.getElementById('creatorTabUpload').onclick = loadUploadForm;
@@ -7958,7 +7998,7 @@ async function renderAdminPanel(container) {
             </div>
             <div class="flex flex-wrap gap-3 pl-12">
               <label class="flex items-center gap-2 text-xs"><input type="checkbox" class="role-checkbox role-toggle" data-uid="${u.id}" data-role="pembaca" ${roles.includes('pembaca') ? 'checked' : ''}><span>Pembaca</span></label>
-              <label class="flex items-center gap-2 text-xs"><input type="checkbox" class="role-checkbox role-toggle" data-uid="${u.id}" data-role="penulis" ${roles.includes('penulis') ? 'checked' : ''}><span class="text-yellow-400">Penulis</span></label>
+              <label class="flex items-center gap-2 text-xs"><input type="checkbox" class="role-checkbox role-toggle" data-uid="${u.id}" data-role="penulis" ${roles.includes('penulis') ? 'checked' : ''}><span class="text-yellow-400">Novelis</span></label>
               <label class="flex items-center gap-2 text-xs"><input type="checkbox" class="role-checkbox role-toggle" data-uid="${u.id}" data-role="komikus" ${roles.includes('komikus') ? 'checked' : ''}><span class="text-orange-400">Komikus</span></label>
               <label class="flex items-center gap-2 text-xs"><input type="checkbox" class="role-checkbox role-toggle" data-uid="${u.id}" data-role="admin" ${roles.includes('admin') ? 'checked' : ''}><span class="text-amber-400">Admin</span></label>
               <label class="flex items-center gap-2 text-xs"><input type="checkbox" class="role-checkbox role-toggle" data-uid="${u.id}" data-role="owner" ${roles.includes('owner') ? 'checked' : ''}><span class="text-red-400">Owner</span></label>
@@ -8427,7 +8467,7 @@ async function renderAdminPanel(container) {
         ${requests.map(r => `<article class="card-bg rounded-xl p-4">
           <div class="flex items-start justify-between gap-2">
             <div><h3 class="font-black text-amber-400">${escHtml(r.workTitle || 'Tanpa judul')}</h3>
-            <p class="text-xs text-slate-400 mt-1">${escHtml(r.authorName || 'Kreator')} • ${r.workType === 'komik' ? 'Komik' : 'Novel'}</p></div>
+            <p class="text-xs text-slate-400 mt-1">${escHtml(r.authorName || 'Kreator')} • ${r.workType === 'komik' ? 'Komik' : 'Novel'}${r.requestKind === 'chapter' ? ' • ' + (r.workType === 'komik' ? 'Chapter' : 'Episode') + ' ' + escHtml(String(r.chapterNumber || '')) + (r.chapterTitle ? ': ' + escHtml(r.chapterTitle) : '') : ''}</p></div>
             <span class="text-[10px] font-black px-2 py-1 rounded-full ${r.status === 'approved' ? 'bg-green-900 text-green-300' : r.status === 'rejected' ? 'bg-red-900 text-red-300' : 'bg-amber-900 text-amber-300'}">${escHtml(r.status || 'pending').toUpperCase()}</span>
           </div>
           <p class="text-sm text-slate-300 mt-3 whitespace-pre-wrap">${escHtml(r.reason || 'Tidak ada alasan')}</p>
