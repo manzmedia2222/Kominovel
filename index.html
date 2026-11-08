@@ -4072,7 +4072,7 @@ async function openPromotionSuggestion(workId, opts) {
         <option value="Media sosial KomiNovel">Media sosial KomiNovel</option>
         <option value="Semua kanal yang tersedia">Semua kanal yang tersedia</option>
       </select>
-      <button id="sendPromotionRequestBtn" type="submit" class="w-full bg-amber-500 text-black font-black py-3 rounded-full"><i class="fas fa-paper-plane mr-2"></i>Kirim ke Admin</button>
+      <button id="sendPromotionRequestBtn" type="submit" class="w-full bg-green-600 text-white font-black py-3 rounded-full"><i class="fab fa-whatsapp mr-2"></i>Kirim ke WhatsApp Admin</button>
       <button id="promotionLaterBtn" type="button" class="w-full bg-slate-700 text-slate-200 font-bold py-3 rounded-full">Nanti saja</button>
       <p id="promotionRequestError" class="hidden text-xs text-red-400"></p>
     </form>`;
@@ -4086,39 +4086,21 @@ async function openPromotionSuggestion(workId, opts) {
     const reason = typed || (isChapter ? `Ada ${chText} baru, mohon dipertimbangkan untuk dipromosikan.` : 'Karya baru dipublikasikan, mohon dipertimbangkan untuk dipromosikan.');
     const target = document.getElementById('promotionTarget').value;
     const error = document.getElementById('promotionRequestError');
-    btn.disabled = true;
-    btn.innerHTML = '<span class="uploading-spinner"></span>Mengirim...';
-    try {
-      const payload = {
-        workId, workTitle: work.title || 'Tanpa judul', workType: work.type || 'novel',
-        authorId: currentUser.uid, authorName: userProfile?.username || currentUser.displayName || 'Kreator',
-        authorEmail: currentUser.email || '', reason, target, status: 'pending',
-        requestKind: isChapter ? 'chapter' : 'work',
-        createdAt: serverTimestamp(), updatedAt: serverTimestamp()
-      };
-      if (isChapter) {
-        payload.chapterId = opts.chapterId;
-        payload.chapterNumber = opts.chapterNumber || null;
-        payload.chapterTitle = opts.chapterTitle || '';
-      }
-      const requestRef = await addDoc(collection(db, 'promotionRequests'), payload);
-      if (!isChapter) {
-        try {
-          await updateDoc(doc(db, 'works', workId), {
-            promotionRequestId: requestRef.id, promotionRequestStatus: 'pending',
-            promotionRequestedAt: serverTimestamp()
-          });
-        } catch (e2) { console.warn('Status promosi karya gagal diperbarui:', e2); }
-      }
-      closePopup();
-      showToast('📨 Info promosi terkirim ke admin. Terima kasih!');
-    } catch (err) {
-      console.error('Pengajuan promosi gagal:', err);
-      btn.disabled = false;
-      btn.innerHTML = '<i class="fas fa-paper-plane mr-2"></i>Kirim ke Admin';
-      error.textContent = 'Gagal mengirim. Coba lagi, atau pilih "Nanti saja".';
-      error.classList.remove('hidden');
-    }
+    const nama = userProfile?.username || currentUser.displayName || 'Kreator';
+    const jenis = work.type === 'komik' ? 'Komik' : 'Novel';
+    const link = location.origin + '/reader/' + encodeURIComponent(workId);
+    const pesan = [
+      'Halo Admin KomiNovel! Ada karya baru yang mau dipromosikan 📢', '',
+      '*' + (work.title || 'Tanpa judul') + '* (' + jenis + ')',
+      isChapter ? chText + ' baru terbit' : 'Karya baru dipublikasikan',
+      'Kreator: ' + nama,
+      'Target promosi: ' + target, '',
+      'Pesan: ' + reason, '',
+      'Link: ' + link
+    ].join('\n');
+    window.open('https://wa.me/' + WA_NUMBER.replace(/^0/, '62') + '?text=' + encodeURIComponent(pesan), '_blank');
+    closePopup();
+    showToast('📨 WhatsApp admin dibuka. Tekan kirim di WhatsApp ya!');
   };
 }
 // Alias lama agar pemanggil lama tetap berfungsi.
