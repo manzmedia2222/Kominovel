@@ -7290,7 +7290,7 @@ async function renderReleaseSchedule(container) {
     const worksSnap=await getDocs(collection(db,'works')); const items=[];
     for(const wd of worksSnap.docs){const w={id:wd.id,...wd.data()}; if(isTakedown(w)) continue; const cs=await getDocs(collection(db,'works',w.id,'chapters')); cs.forEach(cd=>{const ch={id:cd.id,...cd.data()};const dt=ch.releaseAt?.toDate?ch.releaseAt.toDate():(ch.releaseAt?new Date(ch.releaseAt):null);if(dt && dt.getTime()>Date.now() && ch.releaseStatus!=='published' && (!isNonPublish(w) || (currentUser && (currentUser.uid===w.authorId || isAdminUser(userProfile)))))items.push({w,ch,dt});});}
     items.sort((a,b)=>a.dt-b.dt);
-    list.innerHTML=items.length?items.map(({w,ch,dt})=>`<div class="card-bg rounded-xl p-4 flex gap-3 items-center"><img src="${escAttr(w.coverURL||'')}" class="w-14 h-20 object-cover rounded-lg" onerror="this.style.display='none'"><div class="min-w-0 flex-1"><p class="font-bold truncate">${escHtml(w.title||'Tanpa judul')}</p><p class="text-sm text-slate-400">${w.type==='novel'?'Chapter':'Episode'} ${ch.number||''}: ${escHtml(ch.title||'Tanpa judul')}</p><p class="text-xs text-amber-400 mt-1"><i class="far fa-clock mr-1"></i>${dt.toLocaleString('id-ID')}</p></div><span class="text-[10px] px-2 py-1 rounded bg-amber-500/15 text-amber-300">Terjadwal</span></div>`).join(''):'<div class="card-bg rounded-xl p-6 text-center text-slate-400">Belum ada rilis terjadwal.</div>';
+    list.innerHTML=items.length?items.map(({w,ch,dt})=>`<div class="card-bg rounded-xl p-4 flex gap-3 items-center"><img src="${escAttr(w.coverURL||'')}" class="w-14 h-20 object-cover rounded-lg" onerror="this.style.display='none'"><div class="min-w-0 flex-1"><p class="font-bold truncate">${escHtml(w.title||'Tanpa judul')}</p><p class="text-sm text-slate-400">${w.type==='novel'?'Chapter':'Episode'} ${ch.number||''}: ${escHtml(ch.title||'Tanpa judul')}</p><p class="text-xs text-amber-400 mt-1"><i class="far fa-clock mr-1"></i>${dt.toLocaleString('id-ID')}</p></div><span class="text-[10px] px-2 py-1 rounded bg-amber-500/15 text-amber-300">Terjadwal</span></div>`).join(''):'<div class="card-bg rounded-xl p-6 text-center"><i class="fas fa-calendar-check text-3xl text-slate-500 mb-3"></i><p class="font-semibold text-slate-200">Belum Ada Komik atau Novel yang Akan Rilis</p><p class="text-sm text-slate-400 mt-1">Saat ini belum ada chapter atau episode yang memiliki jadwal rilis. Silakan periksa kembali nanti.</p></div>';
   } catch(e){console.error(e);list.innerHTML='<p class="text-red-400">Jadwal belum dapat dimuat.</p>';}
 }
 
@@ -10188,6 +10188,75 @@ document.addEventListener('click', (e) => {
   e.preventDefault();
   navTo(href);
 });
+// Deteksi pembaruan file website setelah deployment tanpa meminta pembaca
+// menekan tombol refresh. Memeriksa validator dokumen secara berkala.
+(function initKomiNovelAutoUpdate() {
+  const checkUrl = new URL(location.href);
+  checkUrl.hash = '';
+  checkUrl.searchParams.set('__kn_update_check', '1');
+  let initialValidator = '';
+
+  async function readValidator() {
+    try {
+      const response = await fetch(checkUrl.toString(), {
+        method: 'HEAD',
+        cache: 'no-store',
+        headers: { 'Cache-Control': 'no-cache' }
+      });
+      if (!response.ok) return '';
+      return response.headers.get('etag') || response.headers.get('last-modified') || '';
+    } catch (error) {
+      return '';
+    }
+  }
+
+  async function checkForWebsiteUpdate() {
+    const validator = await readValidator();
+    if (!validator) return;
+    if (!initialValidator) {
+      initialValidator = validator;
+      return;
+    }
+    if (validator !== initialValidator) {
+      const freshUrl = new URL(location.href);
+      freshUrl.searchParams.set('__kn_refresh', String(Date.now()));
+      location.replace(freshUrl.toString());
+    }
+  }
+
+  checkForWebsiteUpdate();
+  window.setInterval(() => {
+    if (document.visibilityState === 'visible') checkForWebsiteUpdate();
+  }, 60000);
+})();
+
+// Deteksi perubahan file website setelah deployment dan muat versi terbaru otomatis.
+(function initKomiNovelAutoUpdate() {
+  const checkUrl = new URL(location.href);
+  checkUrl.hash = '';
+  checkUrl.searchParams.set('__kn_update_check', '1');
+  let initialValidator = '';
+  async function readValidator() {
+    try {
+      const response = await fetch(checkUrl.toString(), { method: 'HEAD', cache: 'no-store', headers: { 'Cache-Control': 'no-cache' } });
+      if (!response.ok) return '';
+      return response.headers.get('etag') || response.headers.get('last-modified') || '';
+    } catch (error) { return ''; }
+  }
+  async function checkForWebsiteUpdate() {
+    const validator = await readValidator();
+    if (!validator) return;
+    if (!initialValidator) { initialValidator = validator; return; }
+    if (validator !== initialValidator) {
+      const freshUrl = new URL(location.href);
+      freshUrl.searchParams.set('__kn_refresh', String(Date.now()));
+      location.replace(freshUrl.toString());
+    }
+  }
+  checkForWebsiteUpdate();
+  window.setInterval(() => { if (document.visibilityState === 'visible') checkForWebsiteUpdate(); }, 60000);
+})();
+
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.addEventListener('message', (e) => {
     if (e.data && e.data.type === 'kominovel-nav' && e.data.hash) navTo(e.data.hash);
