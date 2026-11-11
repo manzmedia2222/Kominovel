@@ -1677,6 +1677,7 @@ html[data-theme="light"] .skel-bar{background:linear-gradient(90deg,#f7e8c8 25%,
 <nav class="kn-topnav" aria-label="Navigasi utama">
 <button type="button" class="nav-bottom-item kn-topitem" data-nav="home" onclick="navTo('home')">Beranda</button>
 <button type="button" class="nav-bottom-item kn-topitem" data-nav="berita" onclick="navTo('berita')">Berita</button>
+<button type="button" class="nav-bottom-item kn-topitem" data-nav="jadwal-rilis" onclick="navTo('jadwal-rilis')">Jadwal Rilis</button>
 <button type="button" class="nav-bottom-item kn-topitem" data-nav="creator" onclick="navTo('creator')">Dashboard Kreator</button>
 <button type="button" class="nav-bottom-item kn-topitem" data-nav="jadi-kreator" onclick="navTo('jadi-kreator')">Jadi Kreator</button>
 <button type="button" class="nav-bottom-item kn-topitem" data-nav="leaderboard" onclick="navTo('leaderboard')">Leaderboard</button>
@@ -1748,6 +1749,7 @@ class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500 hover:
     <i class="fas fa-newspaper"></i><span>Berita</span>
     <span class="notif-badge hidden" id="notifBeritaBadge">0</span>
   </button>
+  <button class="nav-bottom-item" data-nav="jadwal-rilis" onclick="navTo('jadwal-rilis')"><i class="fas fa-calendar-alt"></i><span>Jadwal</span></button>
   <button class="nav-bottom-item" data-nav="jadi-kreator" onclick="navTo('jadi-kreator')">
     <i class="fas fa-star"></i><span>Daftar</span>
   </button>
@@ -3071,10 +3073,72 @@ function _loadImageForCompression(file) {
 function _canvasToBlob(canvas, type, quality) {
   return new Promise(resolve => canvas.toBlob(resolve, type, quality));
 }
+function buildNovelEditorHtml(id, initial = '') {
+  const initialText=String(initial||'');
+  const safeInitial=/<(?:p|div|br|img|strong|b|i|em|u|h2|h3|ul|ol|li|blockquote|figure|a)\b/i.test(initialText) ? sanitizeNovelHtml(initialText) : escHtml(initialText).replace(/\n/g,'<br>');
+  return `<div class="novel-editor-wrap border border-slate-700 rounded-xl overflow-hidden" data-editor="${id}">
+    <div class="flex flex-wrap gap-2 items-center p-2 bg-slate-900 border-b border-slate-700">
+      <button type="button" class="novel-ed-format px-3 py-1 rounded bg-slate-700 text-xs" data-cmd="bold"><b>B</b></button>
+      <button type="button" class="novel-ed-format px-3 py-1 rounded bg-slate-700 text-xs" data-cmd="italic"><i>I</i></button>
+      <button type="button" class="novel-ed-format px-3 py-1 rounded bg-slate-700 text-xs" data-cmd="underline"><u>U</u></button>
+      <button type="button" class="novel-ed-align px-3 py-1 rounded bg-slate-700 text-xs" data-align="left">Kiri</button>
+      <button type="button" class="novel-ed-align px-3 py-1 rounded bg-slate-700 text-xs" data-align="center">Tengah</button>
+      <button type="button" class="novel-ed-align px-3 py-1 rounded bg-slate-700 text-xs" data-align="right">Kanan</button>
+      <label class="px-3 py-1 rounded bg-amber-500 text-slate-950 text-xs font-bold cursor-pointer"><i class="fas fa-upload mr-1"></i>Upload gambar<input class="novel-ed-file hidden" type="file" accept="image/*" multiple></label>
+      <button type="button" class="novel-ed-url px-3 py-1 rounded bg-slate-700 text-xs">+ Link gambar</button>
+      <label class="text-xs text-slate-400">Ukuran <input class="novel-ed-size w-20 align-middle" type="range" min="20" max="100" value="100"><span class="novel-ed-size-label">100%</span></label>
+    </div>
+    <div id="${id}" contenteditable="true" data-placeholder="Tulis cerita di sini. Kamu bisa menyisipkan banyak gambar, mengatur ukuran, dan meratakan posisinya..." class="novel-editor-content min-h-[260px] p-4 text-sm leading-8 focus:outline-none" style="white-space:normal;overflow-wrap:anywhere">${safeInitial}</div>
+    <p class="text-[11px] text-slate-500 px-3 py-2 bg-slate-900">Gambar dapat disisipkan berkali-kali. Klik gambar untuk memilihnya, lalu atur ukuran dan posisi.</p>
+  </div>`;
+}
+function sanitizeNovelHtml(html) {
+  const doc = new DOMParser().parseFromString(String(html || ''), 'text/html');
+  const allowed = new Set(['P','BR','B','STRONG','I','EM','U','S','H2','H3','BLOCKQUOTE','UL','OL','LI','DIV','SPAN','FIGURE','IMG','A']);
+  doc.body.querySelectorAll('*').forEach(el => {
+    if (!allowed.has(el.tagName)) { el.replaceWith(...el.childNodes); return; }
+    [...el.attributes].forEach(a => {
+      const n=a.name.toLowerCase();
+      if (el.tagName==='IMG' && ['src','alt','loading'].includes(n)) return;
+      if (el.tagName==='A' && ['href','target','rel'].includes(n)) return;
+      if (n==='style') {
+        const safe=[]; const style=el.style;
+        const align=style.textAlign; if(['left','center','right','justify'].includes(align)) safe.push('text-align:'+align);
+        const width=style.width; if(/^\d{1,3}%$/.test(width) && parseInt(width)<=100) safe.push('width:'+width);
+        if(el.tagName==='IMG') { safe.push('max-width:100%','height:auto','border-radius:12px','display:block'); const margin=style.margin; if(/^16px auto$|^16px auto 16px 0$|^16px 0 16px auto$/.test(margin)) safe.push('margin:'+margin); }
+        if(safe.length) el.setAttribute('style',safe.join(';')); else el.removeAttribute('style');
+        return;
+      }
+      el.removeAttribute(a.name);
+    });
+    if (el.tagName==='IMG') {
+      const src=el.getAttribute('src') || '';
+      if (!/^https?:\/\//i.test(src)) { el.remove(); return; }
+      el.setAttribute('loading','lazy'); el.style.maxWidth='100%'; el.style.height='auto'; el.style.borderRadius='12px'; el.style.display='block'; el.style.margin='16px auto';
+    }
+    if (el.tagName==='A') { const href=el.getAttribute('href')||''; if(!/^https?:\/\//i.test(href)) el.removeAttribute('href'); else {el.setAttribute('target','_blank');el.setAttribute('rel','noopener noreferrer');} }
+  });
+  return doc.body.innerHTML;
+}
+function attachNovelEditor(id) {
+  const wrap=document.querySelector(`[data-editor="${id}"]`); if(!wrap) return;
+  const editor=document.getElementById(id); let selectedImage=null;
+  editor.addEventListener('click',e=>{ if(e.target?.tagName==='IMG'){ selectedImage=e.target; editor.querySelectorAll('img').forEach(x=>x.style.outline=''); selectedImage.style.outline='2px solid #f59e0b'; const size=wrap.querySelector('.novel-ed-size'); if(size){size.value=parseInt(selectedImage.style.width)||100;wrap.querySelector('.novel-ed-size-label').textContent=size.value+'%';} } });
+  wrap.querySelectorAll('.novel-ed-format').forEach(b=>b.onclick=()=>{editor.focus();document.execCommand(b.dataset.cmd,false,null);});
+  wrap.querySelectorAll('.novel-ed-align').forEach(b=>b.onclick=()=>{editor.focus(); if(selectedImage){selectedImage.style.display='block';selectedImage.style.margin=b.dataset.align==='left'?'16px auto 16px 0':b.dataset.align==='right'?'16px 0 16px auto':'16px auto';}else document.execCommand('justify'+b.dataset.align[0].toUpperCase()+b.dataset.align.slice(1),false,null);});
+  wrap.querySelector('.novel-ed-size').oninput=e=>{if(selectedImage){selectedImage.style.width=e.target.value+'%';selectedImage.style.maxWidth='100%';wrap.querySelector('.novel-ed-size-label').textContent=e.target.value+'%';}};
+  editor.querySelectorAll('img').forEach(img=>img.draggable=true);
+  editor.addEventListener('dragstart',e=>{if(e.target?.tagName==='IMG'){selectedImage=e.target;e.dataTransfer.setData('text/plain','novel-image');}});
+  editor.addEventListener('dragover',e=>{if(e.target?.tagName==='IMG')e.preventDefault();});
+  editor.addEventListener('drop',e=>{if(e.target?.tagName==='IMG' && selectedImage && selectedImage!==e.target){e.preventDefault();const target=e.target;const parent=target.parentNode;parent.insertBefore(selectedImage,target);}});
+  wrap.querySelector('.novel-ed-url').onclick=()=>{const url=prompt('Tempel link gambar (https://...)');if(url && /^https?:\/\//i.test(url)){editor.focus();document.execCommand('insertHTML',false,`<p><img draggable="true" src="${url.replace(/"/g,'&quot;')}" style="width:100%;max-width:100%;height:auto;border-radius:12px;display:block;margin:16px auto"></p><p><br></p>`);}};
+  wrap.querySelector('.novel-ed-file').onchange=async e=>{const files=[...(e.target.files||[])];if(!files.length)return;const btn=wrap.querySelector('.novel-ed-file').parentElement;const old=btn.innerHTML;btn.innerHTML='Mengunggah...';btn.style.opacity='.6';try{for(const file of files){const url=await uploadToImgbb(file);if(url){editor.focus();document.execCommand('insertHTML',false,`<p><img draggable="true" src="${String(url).replace(/"/g,'&quot;')}" style="width:100%;max-width:100%;height:auto;border-radius:12px;display:block;margin:16px auto"></p><p><br></p>`);}}showToast('Gambar berhasil ditambahkan');}catch(err){console.error(err);showToast('Gagal mengunggah gambar');}finally{btn.innerHTML=old;btn.style.opacity='1';e.target.value='';}};
+}
+
 async function optimizeImageFile(file) {
   if (!file || !file.type || !file.type.startsWith('image/')) return file;
-  // Jangan mengubah animasi GIF, SVG, atau file yang sudah cukup ringan.
-  if (file.size <= IMAGE_COMPRESS_THRESHOLD || /image\/(gif|svg\+xml)/i.test(file.type)) return file;
+  // Semua gambar raster lokal dicoba untuk dikompres; GIF animasi dan SVG dipertahankan agar tidak rusak.
+  if (/image\/(gif|svg\+xml)/i.test(file.type)) return file;
   let img;
   try { img = await _loadImageForCompression(file); }
   catch (e) { console.warn('Kompresi dilewati:', e); return file; }
@@ -4061,6 +4125,10 @@ window.openEditWorkModal = async (wid) => {
         <select id="editWType" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm">${opts}</select>
       </div>
       <div>
+        <label class="block text-sm font-semibold mb-1">Banner Komik/Novel (opsional)</label>
+        <input id="editWBanner" type="url" value="${escAttr(w.bannerURL || '')}" placeholder="Link banner khusus; kosong = gunakan cover" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm">
+      </div>
+      <div>
         <label class="block text-sm font-semibold mb-1">Status <span class="text-red-400">*</span></label>
         <select id="editWStatus" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm">
           <option value="publish" ${w.status !== 'nonpublish' ? 'selected' : ''}>✅ Publish (bisa dibaca)</option>
@@ -4240,7 +4308,7 @@ window.openEditWorkModal = async (wid) => {
     try {
       await updateDoc(doc(db, 'works', wid), {
         title, teaser, type, category, description: desc,
-        coverURL, status, isTamat,
+        coverURL, bannerURL: (document.getElementById('editWBanner')?.value || '').trim(), status, isTamat,
         saweriaLink: (document.getElementById('editWSaweria')?.value || '').trim(), saweria: (document.getElementById('editWSaweria')?.value || '').trim(),
         supportLink: { url:(document.getElementById('editWSaweria')?.value || '').trim(), platform:document.getElementById('editSupportPlatform')?.value || 'Saweria', label:(document.getElementById('editSupportLabel')?.value || '').trim() },
         updatedAt: serverTimestamp()
@@ -5562,6 +5630,7 @@ async function renderPage() {
   } else if (hash === 'baru') await renderBaru(main);
   else if (hash === 'baruupload') await renderBaruUpload(main);
   else if (hash === 'berita') await renderBerita(main);
+  else if (hash === 'jadwal-rilis') await renderReleaseSchedule(main);
   else if (hash === 'kategori') await renderKategori(main);
   else if (hash === 'leaderboard') await renderLeaderboard(main);
   else if (hash === 'followers') await renderTopFollowers(main);
@@ -7102,6 +7171,7 @@ async function renderPublicProfile(container, uid) {
     bdayDisplay = `<span class="user-birthday"><i class="fas fa-birthday-cake"></i> ${parseInt(dd)} ${monthNames[parseInt(mm)-1]}</span>`;
   }
   container.innerHTML = `
+    ${u.bannerURL ? `<div class="rounded-2xl overflow-hidden mb-5" style="height:clamp(120px,24vw,230px)"><img src="${escAttr(u.bannerURL)}" alt="Banner akun" style="width:100%;height:100%;object-fit:cover"></div>` : ''}
     <button onclick="history.back()" class="text-amber-400 mb-4 hover:text-amber-300 transition"><i class="fas fa-arrow-left mr-2"></i>Kembali</button>
     <div class="card-bg rounded-2xl p-6 mb-6 card-anim ${u.featuredCreator ? 'unggulan-border' : ''} ${isOwner ? 'owner-shine-card' : ''}">
       <div class="flex flex-col md:flex-row items-center md:items-start gap-4">
@@ -7213,6 +7283,17 @@ window.toggleFollowWork = toggleFollowWork;
 // ============================================================
 // ===== READER ===============================================
 // ============================================================
+async function renderReleaseSchedule(container) {
+  container.innerHTML='<div class="max-w-4xl mx-auto"><h2 class="text-2xl font-black mb-2"><i class="fas fa-calendar-alt text-amber-400 mr-2"></i>Jadwal Rilis</h2><p class="text-sm text-slate-400 mb-5">Lihat karya dan chapter yang memiliki jadwal terbit.</p><div id="releaseScheduleList" class="space-y-3">Memuat jadwal...</div></div>';
+  const list=document.getElementById('releaseScheduleList');
+  try {
+    const worksSnap=await getDocs(collection(db,'works')); const items=[];
+    for(const wd of worksSnap.docs){const w={id:wd.id,...wd.data()}; if(isTakedown(w)) continue; const cs=await getDocs(collection(db,'works',w.id,'chapters')); cs.forEach(cd=>{const ch={id:cd.id,...cd.data()};const dt=ch.releaseAt?.toDate?ch.releaseAt.toDate():(ch.releaseAt?new Date(ch.releaseAt):null);if(dt && dt.getTime()>Date.now() && ch.releaseStatus!=='published' && (!isNonPublish(w) || (currentUser && (currentUser.uid===w.authorId || isAdminUser(userProfile)))))items.push({w,ch,dt});});}
+    items.sort((a,b)=>a.dt-b.dt);
+    list.innerHTML=items.length?items.map(({w,ch,dt})=>`<div class="card-bg rounded-xl p-4 flex gap-3 items-center"><img src="${escAttr(w.coverURL||'')}" class="w-14 h-20 object-cover rounded-lg" onerror="this.style.display='none'"><div class="min-w-0 flex-1"><p class="font-bold truncate">${escHtml(w.title||'Tanpa judul')}</p><p class="text-sm text-slate-400">${w.type==='novel'?'Chapter':'Episode'} ${ch.number||''}: ${escHtml(ch.title||'Tanpa judul')}</p><p class="text-xs text-amber-400 mt-1"><i class="far fa-clock mr-1"></i>${dt.toLocaleString('id-ID')}</p></div><span class="text-[10px] px-2 py-1 rounded bg-amber-500/15 text-amber-300">Terjadwal</span></div>`).join(''):'<div class="card-bg rounded-xl p-6 text-center text-slate-400">Belum ada rilis terjadwal.</div>';
+  } catch(e){console.error(e);list.innerHTML='<p class="text-red-400">Jadwal belum dapat dimuat.</p>';}
+}
+
 async function renderReader(container, novelId, chapterId = null) {
   try { window.speechSynthesis?.cancel(); } catch(e) {}
   if (!novelId) { container.innerHTML = '<p>Karya tidak ditemukan</p>'; return; }
@@ -7255,7 +7336,7 @@ async function renderReader(container, novelId, chapterId = null) {
 
   let chaptersSnap = await chaptersPromise;
   if (!chaptersSnap) chaptersSnap = await getDocs(query(collection(db, 'works', novelId, 'chapters'), orderBy('number', 'asc')));
-  const chapters = []; chaptersSnap.forEach(d => chapters.push({ id: d.id, ...d.data() }));
+  const chapters = []; chaptersSnap.forEach(d => { const ch={ id:d.id, ...d.data() }; const releaseAt=ch.releaseAt?.toDate ? ch.releaseAt.toDate() : (ch.releaseAt ? new Date(ch.releaseAt) : null); const isDue=!!(releaseAt && releaseAt.getTime()<=Date.now()); const canSeeScheduled=canManage || !releaseAt || isDue || ch.releaseStatus==='published'; if(isDue && ch.releaseStatus==='scheduled') updateDoc(doc(db,'works',novelId,'chapters',ch.id),{releaseStatus:'published',publishedAt:serverTimestamp()}).catch(()=>{}); if(canSeeScheduled) chapters.push(ch); });
   let currentChapter = null;
   if (chapterId) currentChapter = chapters.find(c => c.id === chapterId);
   else if (chapters.length > 0) {
@@ -7326,6 +7407,7 @@ async function renderReader(container, novelId, chapterId = null) {
           <button id="readerLikeBtn" class="text-sm font-bold px-4 py-2 rounded-full transition ${isLiked ? 'bg-red-600 text-white' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'}"><i class="fas fa-heart mr-1"></i><span id="readerLikeCount" data-val="${work.likes || 0}">${formatCount(work.likes || 0)}</span></button>
         </div>
       </div>
+      <div class="reader-header mb-4 rounded-2xl overflow-hidden" style="height:clamp(110px,22vw,220px);background:#171727;"><img src="${escAttr(work.bannerURL || work.coverURL || '')}" alt="Banner ${escAttr(work.title || '')}" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.style.display='none'"></div>
       <div class="reader-header card-bg rounded-2xl p-4 md:p-6 mb-6 ${work.isTamat ? 'tamat-border' : 'berlanjut-border'} ${isUnggulanAuthor ? 'unggulan-border' : ''}">
         <div class="flex flex-col md:flex-row gap-4 md:gap-6">
           <div class="w-full md:w-48 h-64 bg-slate-800 rounded-xl overflow-hidden flex-shrink-0 relative">
@@ -7414,7 +7496,7 @@ async function renderReader(container, novelId, chapterId = null) {
                   </div>
                   <div class="novel-progress-track"><div id="novelProgressFill"></div></div>
                 </div>
-                <div id="novelChapterText" class="novel-chapter-text whitespace-pre-wrap">${novelText}</div>
+                <div id="novelChapterText" class="novel-chapter-text">${sanitizeNovelHtml(novelText).includes("<") ? sanitizeNovelHtml(novelText) : escHtml(novelText).replace(/\n/g,"<br>")}</div>
                 <div class="novel-reader-note">
                   <button type="button" id="readerNoteToggle"><i class="fas fa-sticky-note"></i> Catatan pribadi</button>
                   <div id="readerNotePanel" hidden><textarea id="readerNoteInput" rows="3" placeholder="Tulis catatanmu untuk chapter ini..."></textarea><div class="novel-note-footer"><span>Catatan tersimpan di perangkat ini</span><button type="button" id="readerNoteSave">Simpan catatan</button></div></div>
@@ -8139,6 +8221,7 @@ async function renderProfil(container) {
         </div>
         <div><label class="block text-sm font-semibold mb-1">Username</label><input id="profileUsername" type="text" value="${userProfile.username || ''}" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm"></div>
         <div><label class="block text-sm font-semibold mb-1">Bio <span class="text-xs text-slate-500">(maks 150)</span></label><textarea id="profileBio" rows="2" maxlength="150" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm">${bio}</textarea></div>
+        <div><label class="block text-sm font-semibold mb-1">Banner Akun (opsional)</label><input id="profileBannerURL" type="url" value="${escAttr(userProfile.bannerURL || '')}" placeholder="Link gambar banner akun" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm"><input id="profileBannerFile" type="file" accept="image/*" class="w-full text-xs text-slate-400 mt-2"><p id="profileBannerProgress" class="text-[11px] text-amber-400 mt-1">Upload gambar atau tempel link. Kosongkan jika tidak ingin banner.</p></div>
         <div>
           <label class="block text-sm font-semibold mb-1">Tanggal Lahir <span class="text-xs text-slate-500">(format: DD-MM, contoh 17-08)</span></label>
           <input id="profileBirthday" type="text" placeholder="DD-MM (contoh: 17-08)" value="${userProfile.birthday ? userProfile.birthday.split('-').reverse().join('-') : ''}" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm">
@@ -8208,15 +8291,20 @@ async function renderProfil(container) {
       if (progress) progress.textContent = 'Foto siap disimpan ✓';
     }
 
+    let newBannerURL=(document.getElementById('profileBannerURL')?.value || '').trim();
+    const bannerFile=document.getElementById('profileBannerFile')?.files?.[0];
+    if(bannerFile){const progress=document.getElementById('profileBannerProgress');if(progress)progress.textContent='Mengupload banner...';try{newBannerURL=await uploadToImgbb(bannerFile);if(progress)progress.textContent='Banner siap disimpan ✓';}catch(e){showToast('Gagal upload banner: '+e.message);return;}}
     await updateDoc(doc(db,'users',currentUser.uid), {
       username: nu || userProfile.username,
       bio: nb,
+      bannerURL: newBannerURL,
       birthday: bdayMMDD,
       photoURL: newPhotoURL,
       updatedAt: serverTimestamp()
     });
     userProfile.username = nu || userProfile.username;
     userProfile.bio = nb;
+    userProfile.bannerURL = newBannerURL;
     userProfile.birthday = bdayMMDD;
     userProfile.photoURL = newPhotoURL;
     showToast('Profil disimpan! Foto profil KomiNovel berhasil diperbarui.');
@@ -8300,6 +8388,7 @@ async function renderCreatorDashboard(container) {
       <div class="space-y-4">
         <div><label class="block text-sm font-semibold mb-1">Judul <span class="text-red-400">*</span></label><input id="uploadTitle" type="text" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm focus:border-amber-500 transition"></div>
         <div><label class="block text-sm font-semibold mb-1">Teaser <span class="text-red-400">*</span> <span class="text-xs text-slate-500">(maks 150)</span></label><input id="uploadTeaser" type="text" maxlength="150" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm focus:border-amber-500 transition"><p class="text-xs text-slate-500 mt-1"><span id="teaserCount">0</span>/150</p></div>
+        <div><label class="block text-sm font-semibold mb-1">Banner Komik/Novel (opsional)</label><input id="uploadWorkBanner" type="url" placeholder="Link banner khusus karya (kosong = gunakan cover)" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm"></div>
         <div><label class="block text-sm font-semibold mb-1">Tipe <span class="text-red-400">*</span></label><select id="uploadType" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm">${opts}</select></div>
         ${categoryChipsField('uploadCategories')}
         <div style="background:rgba(251,191,36,0.08); border:1px solid rgba(251,191,36,0.2); border-radius:12px; padding:12px;">
@@ -8336,7 +8425,7 @@ async function renderCreatorDashboard(container) {
       btn.disabled = true; btn.innerHTML = '<span class="uploading-spinner"></span>Menyimpan...';
       try {
         const createdWorkRef = await addDoc(collection(db,'works'), {
-          title, teaser, type, category, description: desc, coverURL, status: 'nonpublish',
+          title, teaser, type, category, description: desc, coverURL, bannerURL: (document.getElementById('uploadWorkBanner')?.value || '').trim(), status: 'nonpublish',
           authorId: currentUser.uid, authorName: userProfile.username || 'Kreator',
           authorPhotoURL: userProfile.photoURL || '', authorSosmed: userProfile.sosmed || {},
           authorLevel: userProfile.level || 1, authorFollowerCount: userProfile.followerCount || 0,
@@ -8434,8 +8523,9 @@ async function renderCreatorDashboard(container) {
         <div id="f-${sid}" class="hidden border-t border-slate-700 pt-4 space-y-3 mt-3">
           <input type="text" id="ct-${sid}" placeholder="${w.type === 'novel' ? 'Judul Chapter *' : 'Judul Eps (opsional)'}" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm">
           ${wGroups.length ? `<div><label class="block text-xs font-semibold text-amber-400 mb-1">Masukkan ke ${gl}</label>${groupSelectHtml('cg-' + sid, wGroups, wGroups[wGroups.length - 1].id, w.type)}</div>` : ''}
-          ${w.type === 'novel' ? `<textarea id="cc-${sid}" rows="10" placeholder="Isi cerita *" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm"></textarea>` : `${multiImageField('mi-' + sid)}`}
+          ${w.type === 'novel' ? `${buildNovelEditorHtml('cc-' + sid)}` : `${multiImageField('mi-' + sid)}`}
           <div><label class="block text-xs font-semibold mb-1 text-slate-300">Link pada ${w.type === 'novel' ? 'chapter' : 'episode'} (opsional)</label><input type="url" id="chlink-${sid}" placeholder="Tempel link apa saja (dukungan, sumber, media sosial, dll.)" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm"></div>
+          <div class="mt-3"><label class="block text-xs font-semibold mb-1">Jadwalkan rilis (opsional)</label><input type="datetime-local" id="release-${sid}" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm"><p class="text-[11px] text-slate-500 mt-1">Kosongkan untuk langsung terbit.</p></div>
           <div class="flex gap-2"><button class="subC bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-bold flex-1 hover:scale-105 transition" data-wid="${w.id}" data-type="${w.type}" data-sid="${sid}">Simpan</button><button class="canC bg-slate-700 text-slate-300 px-4 py-2 rounded-lg text-sm font-bold" data-sid="${sid}">Batal</button></div>
         </div>
       </div>`;
@@ -8494,13 +8584,15 @@ async function renderCreatorDashboard(container) {
             <div><label class="block text-sm font-semibold mb-1">Nomor</label><input id="editChNumber" type="number" min="0" value="${ch.number ?? ''}" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm"></div>
             <div class="col-span-2"><label class="block text-sm font-semibold mb-1">${groupLabel(type)}</label>${groupSelectHtml('editChGroup', editGroups, ch.groupId || '', type)}</div>
           </div>
-          ${type === 'novel' ? `<div><label class="block text-sm font-semibold mb-1">Isi Cerita *</label><textarea id="editChContent" rows="10" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm">${escHtml(ch.content || '')}</textarea></div>` : `
+          ${type === 'novel' ? `<div><label class="block text-sm font-semibold mb-1">Isi Cerita *</label>${buildNovelEditorHtml('editChContent', ch.content || '')}</div>` : `
             <div id="editExisting-${cid}"><label class="block text-sm font-semibold mb-1">Gambar Saat Ini (<span id="editExistingCount-${cid}">${(ch.images || []).length}</span>)</label><div id="editExistingPreview-${cid}" class="mt-2"></div></div>
             <div><label class="block text-sm font-semibold mb-1">Tambah Gambar Baru</label>${multiImageField('editAdd-' + cid)}</div>
           `}
+          <div class="mt-3"><label class="block text-xs font-semibold mb-1">Jadwalkan rilis (opsional)</label><input id="editChRelease" type="datetime-local" value="${ch.releaseAt?.toDate ? new Date(ch.releaseAt.toDate().getTime()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,16) : ''}" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm"></div>
           <div class="flex gap-2"><button id="saveEditCh" class="flex-1 bg-amber-500 text-black font-bold py-2 rounded-full hover:scale-105 transition">Simpan</button><button id="cancelEditCh" class="bg-slate-700 text-slate-300 px-4 py-2 rounded-full font-bold">Batal</button></div>
         </div>`;
       modal.classList.remove('hidden');
+      if (type === 'novel') attachNovelEditor('editChContent');
       if (type === 'komik') { attachMultiImageHandlers('editAdd-' + cid); attachExistingImagesHandler(cid, ch.images || []); }
       const close = () => modal.classList.add('hidden');
       document.getElementById('closeEditCh').onclick = close;
@@ -8511,15 +8603,18 @@ async function renderCreatorDashboard(container) {
         const extra = { groupId: document.getElementById('editChGroup').value || '', supportUrl: (document.getElementById('editChLink')?.value || '').trim(), supportLabel: 'Buka link' };
         if (!isNaN(numVal)) extra.number = numVal;
         if (type === 'novel') {
-          const newContent = document.getElementById('editChContent').value.trim();
+          const newContent = sanitizeNovelHtml(document.getElementById('editChContent').innerHTML).trim();
+          const editReleaseValue=document.getElementById('editChRelease')?.value || '';
+          const editReleaseAt=editReleaseValue ? new Date(editReleaseValue) : null;
+          if(editReleaseAt && editReleaseAt.getTime()<=Date.now()){showToast('Waktu rilis harus di masa depan');return;}
           if (!newTitle) { showToast('Judul wajib!'); return; }
           if (!newContent) { showToast('Isi wajib!'); return; }
-          await updateDoc(doc(db, 'works', wid, 'chapters', cid), { title: newTitle, content: newContent, ...extra, updatedAt: serverTimestamp() });
+          await updateDoc(doc(db, 'works', wid, 'chapters', cid), { title: newTitle, content: newContent, ...(editReleaseAt ? {releaseAt:editReleaseAt,releaseStatus:'scheduled'} : {releaseAt:null,releaseStatus:'published'}), ...extra, updatedAt: serverTimestamp() });
         } else {
           const existingImages = window[`_existing_${cid}_images`] || ch.images || [];
           const newImages = getMultiImages('editAdd-' + cid);
           const finalImages = [...existingImages, ...newImages];
-          await updateDoc(doc(db, 'works', wid, 'chapters', cid), { title: newTitle, ...extra, images: finalImages, coverImage: finalImages[0] || '', updatedAt: serverTimestamp() });
+          await updateDoc(doc(db, 'works', wid, 'chapters', cid), { title: newTitle, ...(editReleaseAt ? {releaseAt:editReleaseAt,releaseStatus:'scheduled'} : {releaseAt:null,releaseStatus:'published'}), ...extra, images: finalImages, coverImage: finalImages[0] || '', updatedAt: serverTimestamp() });
           if (finalImages.length > 0) {
             const workRef = doc(db, 'works', wid);
             const workSnap = await getDoc(workRef);
@@ -8529,6 +8624,7 @@ async function renderCreatorDashboard(container) {
         showToast('Tersimpan!'); close(); loadManage();
       };
     });
+    list.querySelectorAll('[data-editor]').forEach(el => attachNovelEditor(el.dataset.editor));
     list.querySelectorAll('.subC').forEach(b => b.onclick = async () => {
       const wid = b.dataset.wid, sid = b.dataset.sid, type = b.dataset.type;
       const t = document.getElementById('ct-' + sid).value.trim();
@@ -8536,12 +8632,15 @@ async function renderCreatorDashboard(container) {
       const next = cs.docs.reduce((m, d) => Math.max(m, Number(d.data().number) || 0), 0) + 1;
       const groupId = document.getElementById('cg-' + sid)?.value || '';
       const supportUrl = (document.getElementById('chlink-' + sid)?.value || '').trim();
+      const releaseValue = document.getElementById('release-' + sid)?.value || '';
+      const releaseAt = releaseValue ? new Date(releaseValue) : null;
+      if (releaseAt && releaseAt.getTime() <= Date.now()) { showToast('Waktu rilis harus di masa depan'); return; }
       let addedChapterInfo = null;
       if (type === 'novel') {
-        const c = document.getElementById('cc-' + sid).value.trim();
+        const c = sanitizeNovelHtml(document.getElementById('cc-' + sid).innerHTML).trim();
         if (!t) { showToast('Judul wajib'); return; }
         if (!c) { showToast('Isi wajib'); return; }
-        const newChapterRef = await addDoc(collection(db,'works',wid,'chapters'), { number: next, title: t, content: c, images: [], groupId, supportUrl, supportLabel: 'Buka link', createdAt: serverTimestamp() });
+        const newChapterRef = await addDoc(collection(db,'works',wid,'chapters'), { number: next, title: t, content: c, images: [], groupId, supportUrl, supportLabel: 'Buka link', ...(releaseAt ? {releaseAt, releaseStatus:'scheduled'} : {releaseStatus:'published'}), createdAt: serverTimestamp() });
         try {
           const workSnapForFollowers = await getDoc(doc(db, 'works', wid));
           if (workSnapForFollowers.exists()) {
@@ -8568,7 +8667,7 @@ async function renderCreatorDashboard(container) {
       } else {
         const images = getMultiImages('mi-' + sid);
         if (images.length === 0) { showToast('Pilih minimal 1 gambar'); return; }
-        const newChapterRef = await addDoc(collection(db,'works',wid,'chapters'), { number: next, title: t, content: '', images: images, coverImage: images[0], groupId, supportUrl, supportLabel: 'Buka link', createdAt: serverTimestamp() });
+        const newChapterRef = await addDoc(collection(db,'works',wid,'chapters'), { number: next, title: t, content: '', images: images, coverImage: images[0], groupId, supportUrl, supportLabel: 'Buka link', ...(releaseAt ? {releaseAt, releaseStatus:'scheduled'} : {releaseStatus:'published'}), createdAt: serverTimestamp() });
         await createChapterNotifications(wid, { id:newChapterRef.id, number:next, title:t });
         pushNotify({ kind: 'chapter', workId: wid, chapterId: newChapterRef.id });
         addedChapterInfo = { chapterId: newChapterRef.id, chapterNumber: next, chapterTitle: t };
@@ -8722,6 +8821,7 @@ async function renderAdminPanel(container) {
           <div class="flex gap-2 mt-2 flex-wrap">
             ${isTD ? `<button class="restoreBtn bg-green-600 text-white px-4 py-1.5 rounded-lg text-xs font-bold hover:scale-105 transition" data-wid="${w.id}"><i class="fas fa-undo mr-1"></i>Restore</button>` : `<button class="takedownBtn bg-red-600 text-white px-4 py-1.5 rounded-lg text-xs font-bold hover:scale-105 transition" data-wid="${w.id}" data-title="${escAttr(w.title)}"><i class="fas fa-ban mr-1"></i>Takedown</button>`}
             <button class="featureWorkBtn ${isUN ? 'bg-yellow-600' : 'bg-slate-700'} text-white px-4 py-1.5 rounded-lg text-xs font-bold hover:scale-105 transition" data-wid="${w.id}" data-featured="${isUN}"><i class="fas fa-star mr-1"></i>${isUN ? 'Hapus Unggulan' : 'Unggulan'}</button>
+            <button class="adminStatsBtn bg-purple-700 text-white px-4 py-1.5 rounded-lg text-xs font-bold hover:bg-purple-600 transition" data-wid="${w.id}"><i class="fas fa-sliders-h mr-1"></i>Atur likes/views</button>
             <button class="adminViewBtn bg-slate-700 text-slate-300 px-4 py-1.5 rounded-lg text-xs font-bold hover:scale-105 transition" data-wid="${w.id}"><i class="fas fa-eye mr-1"></i>Lihat</button>
             <button class="adminDownloadCover bg-blue-700 text-white px-4 py-1.5 rounded-lg text-xs font-bold hover:bg-blue-600 transition" data-wid="${w.id}"><i class="fas fa-download mr-1"></i>Download Cover</button>
             <button class="adminCopyDesc bg-indigo-700 text-white px-4 py-1.5 rounded-lg text-xs font-bold hover:bg-indigo-600 transition" data-wid="${w.id}"><i class="fas fa-copy mr-1"></i>Salin Deskripsi</button>
@@ -8742,6 +8842,7 @@ async function renderAdminPanel(container) {
         showToast(now ? 'Unggulan dihapus' : '⭐ Karya dijadikan Unggulan!');
         loadAdminWorks();
       });
+      list.querySelectorAll('.adminStatsBtn').forEach(b => b.onclick = async () => { const w=works.find(x=>x.id===b.dataset.wid); if(!w)return; const likes=prompt('Jumlah likes baru:',String(w.likes||0)); if(likes===null)return; const views=prompt('Jumlah views baru:',String(w.views||0)); if(views===null)return; const l=Number(likes),v=Number(views); if(!Number.isSafeInteger(l)||l<0||!Number.isSafeInteger(v)||v<0){showToast('Masukkan angka bulat positif');return;} await updateDoc(doc(db,'works',w.id),{likes:l,views:v,updatedAt:serverTimestamp()}); showToast('Statistik berhasil diperbarui'); loadAdminWorks(); });
       list.querySelectorAll('.adminViewBtn').forEach(b => b.onclick = () => { navTo('reader/' + b.dataset.wid); });
       list.querySelectorAll('.adminDownloadCover').forEach(b => b.onclick = async () => {
         const w = works.find(item => item.id === b.dataset.wid);
@@ -8902,6 +9003,7 @@ async function renderAdminPanel(container) {
       <div class="space-y-4">
         <input id="adminUploadTitle" type="text" placeholder="Judul *" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm">
         <input id="adminUploadTeaser" type="text" maxlength="150" placeholder="Teaser * (max 150)" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm">
+        <input id="adminUploadBanner" type="url" placeholder="Banner karya (opsional; kosong = cover)" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm">
         <select id="adminUploadType" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm"><option value="novel">Novel</option><option value="komik">Komik</option></select>
         ${categoryChipsField('adminUploadCategories')}
         <textarea id="adminUploadDesc" rows="3" placeholder="Deskripsi" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm"></textarea>
@@ -8920,7 +9022,7 @@ async function renderAdminPanel(container) {
       const coverURL = getCoverValue('adminUploadCover');
       if (!title || !teaser || cats.length === 0 || !coverURL) { showToast('Lengkapi'); return; }
       const newAdminWorkRef = await addDoc(collection(db,'works'), {
-        title, teaser, type, category, description: desc, coverURL, status: 'publish',
+        title, teaser, type, category, description: desc, coverURL, bannerURL: (document.getElementById('adminUploadBanner')?.value || '').trim(), status: 'publish',
         authorId: currentUser?.uid || 'admin', authorName: userProfile?.username || 'Admin',
         authorPhotoURL: userProfile?.photoURL || '', authorSosmed: userProfile?.sosmed || {},
         authorLevel: MAX_LEVEL, authorFollowerCount: userProfile?.followerCount || 0,
