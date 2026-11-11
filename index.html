@@ -273,7 +273,7 @@ body::before{content:'';position:fixed;inset:0;z-index:-1;background:
   -webkit-backdrop-filter:blur(16px) saturate(1.2);
   border-top:1px solid rgba(255,255,255,0.08);
   padding-bottom:var(--nav-safe-bottom);
-  display:grid; grid-template-columns:repeat(5,1fr);
+  display:grid; grid-template-columns:repeat(6,minmax(0,1fr));
   height:calc(var(--nav-height) + var(--nav-safe-bottom));
 }
 .nav-bottom-item{
@@ -1493,7 +1493,7 @@ input[type=checkbox],input[type=radio]{accent-color:var(--ac)}
 .kn-topnav{display:none!important}
 #app>header{justify-content:space-between}
 #bottomNav.nav-bottom{
-  display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr));align-items:stretch;
+  display:grid!important;grid-template-columns:repeat(6,minmax(0,1fr));align-items:stretch;
   position:fixed;left:50%!important;right:auto!important;
   bottom:calc(10px + env(safe-area-inset-bottom,0px))!important;
   width:min(calc(100% - 20px),560px)!important;height:68px!important;padding:6px!important;gap:2px;
