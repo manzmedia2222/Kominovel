@@ -2001,7 +2001,7 @@ async function sendCollabInvite(workId, username, role='co-author') {
   const already=await getDocs(query(collection(db,'collabInvites'),where('workId','==',workId),where('toUid','==',target.id),where('status','==','pending'),limit(1)));
   if(!already.empty) throw new Error(`Undangan untuk ${targetName} masih menunggu jawaban.`);
   await addDoc(collection(db,'collabInvites'),{workId,fromUid:currentUser.uid,toUid:target.id,role:role==='editor'?'editor':'co-author',status:'pending',createdAt:serverTimestamp()});
-  await addDoc(collection(db,'notifications'),{toUid:target.id,userId:target.id,kind:'collabInvite',workId,fromUid:currentUser.uid,title:'Undangan kolaborasi',body:`${userProfile?.username||'Kreator'} mengundangmu untuk berkolaborasi sebagai ${role==='editor'?'Editor':'Co-author'}.`,read:false,createdAt:serverTimestamp()});
+  await addDoc(collection(db,'notifications'),{recipientId:target.id,toUid:target.id,userId:target.id,type:'collab_invite',kind:'collabInvite',workId,fromUid:currentUser.uid,title:'Undangan kolaborasi',body:`${userProfile?.username||'Kreator'} mengundangmu untuk berkolaborasi sebagai ${role==='editor'?'Editor':'Co-author'}.`,read:false,createdAt:serverTimestamp()});
 }
 window.sendCollabInvite=sendCollabInvite;
 window.trackSupportClick=async function(workId){
@@ -2098,7 +2098,7 @@ window.respondCollabInvite=async function(inviteId,decision){
       if(!ws.exists())throw new Error('Karya sudah tidak tersedia.');
       const w=ws.data(), targetUser=await getDoc(doc(db,'users',currentUser.uid)), uname=targetUser.data()?.username||userProfile?.username||'';
       await updateDoc(wr,{collaborators:arrayUnion(uname),[`collaboratorAccess.${currentUser.uid}`]:{role:inv.role||'co-author',username:uname,active:true},updatedAt:serverTimestamp()});
-      await addDoc(collection(db,'notifications'),{toUid:inv.fromUid,userId:inv.fromUid,kind:'collabAccepted',workId:inv.workId,title:'Undangan diterima',body:`${uname} menerima undangan kolaborasi.`,read:false,createdAt:serverTimestamp()});
+      await addDoc(collection(db,'notifications'),{recipientId:inv.fromUid,toUid:inv.fromUid,userId:inv.fromUid,type:'collab_accepted',kind:'collabAccepted',workId:inv.workId,title:'Undangan diterima',body:`${uname} menerima undangan kolaborasi.`,read:false,createdAt:serverTimestamp()});
     }
     showToast(decision==='accept'?'Undangan diterima.':'Undangan ditolak.');
     const main=document.getElementById('mainContent');if(main)renderMyCollaborations(main);
@@ -3120,9 +3120,99 @@ function sanitizeNovelHtml(html) {
   });
   return doc.body.innerHTML;
 }
-function attachNovelEditor(id) {
+
+// ===== Draft otomatis, penghitung kata, peringatan belum tersimpan =====
+const KN_DRAFT_PREFIX = 'kominovel_draft_v1:';
+const KN_TARGET_KEY = 'kominovel_word_target';
+function knDraftKey(k) { return KN_DRAFT_PREFIX + ((typeof currentUser !== 'undefined' && currentUser && currentUser.uid) || 'anon') + ':' + k; }
+function knDraftGet(k) { try { const r = localStorage.getItem(knDraftKey(k)); return r ? JSON.parse(r) : null; } catch (e) { return null; } }
+function knDraftSet(k, v) { try { localStorage.setItem(knDraftKey(k), JSON.stringify(v)); return true; } catch (e) { return false; } }
+function knDraftClear(k) { try { localStorage.removeItem(knDraftKey(k)); } catch (e) {} }
+function knCountWords(html) {
+  const d = document.createElement('div'); d.innerHTML = sanitizeNovelHtml(html || '');
+  const t = (d.textContent || '').replace(/ /g, ' ').trim();
+  return t ? t.split(/\s+/).length : 0;
+}
+function knAgo(ts) {
+  const m = Math.max(0, Math.round((Date.now() - ts) / 60000));
+  if (m < 1) return 'baru saja'; if (m < 60) return m + ' menit lalu';
+  const h = Math.round(m / 60); if (h < 24) return h + ' jam lalu';
+  return Math.round(h / 24) + ' hari lalu';
+}
+function knEditorDirty(id) {
+  const el = document.getElementById(id); if (!el) return false;
+  return el.innerHTML.trim() !== (el.dataset.initial || '').trim() && knCountWords(el.innerHTML) + (el.querySelectorAll('img').length) > 0 && el.innerHTML.trim() !== (el.dataset.initial || '').trim();
+}
+function knHasUnsaved() {
+  return [...document.querySelectorAll('.novel-editor-content')].some(el => el.offsetParent !== null && knEditorDirty(el.id));
+}
+function knMarkSaved(id, draftKey) {
+  const el = document.getElementById(id); if (el) el.dataset.initial = el.innerHTML;
+  if (draftKey) knDraftClear(draftKey);
+}
+function knShowUpdateBanner() {
+  if (document.getElementById('knUpdateBanner')) return;
+  const b = document.createElement('div');
+  b.id = 'knUpdateBanner';
+  b.className = 'fixed bottom-4 left-1/2 -translate-x-1/2 z-[300] bg-slate-900 text-white border border-amber-400/50 rounded-2xl shadow-2xl px-4 py-3 flex items-center gap-3 text-sm max-w-[calc(100vw-24px)]';
+  b.innerHTML = '<span>Versi baru tersedia. Simpan tulisanmu dulu, lalu muat ulang.</span><button class="bg-amber-500 text-black font-bold px-3 py-1 rounded-full text-xs">Muat ulang</button>';
+  b.querySelector('button').onclick = () => location.reload();
+  document.body.appendChild(b);
+}
+window.addEventListener('beforeunload', e => { if (knHasUnsaved()) { e.preventDefault(); e.returnValue = ''; return ''; } });
+function knSetupEditorExtras(id, wrap, editor, opts) {
+  opts = opts || {};
+  editor.dataset.initial = editor.innerHTML;
+  const draftKey = opts.draftKey || ('add:' + id);
+  editor.dataset.draftKey = draftKey;
+  const titleEl = opts.titleId ? document.getElementById(opts.titleId) : null;
+  const bar = document.createElement('div');
+  bar.className = 'px-3 py-2 bg-slate-900 border-t border-slate-800 text-[11px] text-slate-400';
+  bar.innerHTML = '<div class="flex flex-wrap items-center gap-x-3 gap-y-1"><span><b class="kn-wc text-amber-400">0</b> kata</span><span>≈ <b class="kn-rt text-amber-400">0</b> menit baca</span><span class="kn-saved text-emerald-400"></span><label class="ml-auto flex items-center gap-1">Target <input type="number" min="0" step="100" class="kn-target w-20 bg-slate-800 border border-slate-700 rounded px-1 py-0.5 text-[11px]" placeholder="0"> kata</label></div><div class="kn-prog hidden mt-1 h-1.5 rounded-full bg-slate-800 overflow-hidden"><div class="kn-progbar h-full bg-amber-400 transition-all" style="width:0"></div></div>';
+  wrap.appendChild(bar);
+  const wcEl = bar.querySelector('.kn-wc'), rtEl = bar.querySelector('.kn-rt'), savedEl = bar.querySelector('.kn-saved');
+  const tgt = bar.querySelector('.kn-target'), prog = bar.querySelector('.kn-prog'), progBar = bar.querySelector('.kn-progbar');
+  try { const t = parseInt(localStorage.getItem(KN_TARGET_KEY) || '0', 10); if (t > 0) tgt.value = t; } catch (e) {}
+  function update() {
+    const n = knCountWords(editor.innerHTML);
+    wcEl.textContent = n.toLocaleString('id-ID');
+    rtEl.textContent = n ? Math.max(1, Math.ceil(n / 200)) : 0;
+    const t = parseInt(tgt.value || '0', 10);
+    if (t > 0) { prog.classList.remove('hidden'); const pc = Math.min(100, Math.round(n / t * 100)); progBar.style.width = pc + '%'; progBar.className = 'kn-progbar h-full transition-all ' + (n >= t ? 'bg-emerald-400' : 'bg-amber-400'); }
+    else prog.classList.add('hidden');
+    return n;
+  }
+  tgt.oninput = () => { try { localStorage.setItem(KN_TARGET_KEY, String(parseInt(tgt.value || '0', 10) || 0)); } catch (e) {} update(); };
+  let timer = null;
+  function save() {
+    if (!knEditorDirty(id)) { knDraftClear(draftKey); savedEl.textContent = ''; return; }
+    const ok = knDraftSet(draftKey, { html: editor.innerHTML, title: titleEl ? titleEl.value : '', ts: Date.now() });
+    savedEl.textContent = ok ? '✓ Draft tersimpan otomatis ' + new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) : '';
+  }
+  const onChange = () => { update(); clearTimeout(timer); timer = setTimeout(save, 800); };
+  editor.addEventListener('input', onChange);
+  if (titleEl) titleEl.addEventListener('input', onChange);
+  update();
+  // tawarkan lanjutkan draft
+  const d = knDraftGet(draftKey);
+  if (d && d.html && d.html.trim() !== editor.innerHTML.trim() && knCountWords(d.html) > 0) {
+    const ban = document.createElement('div');
+    ban.className = 'px-3 py-2 bg-amber-500/10 border-b border-amber-500/30 text-xs text-amber-200 flex flex-wrap items-center gap-2';
+    ban.innerHTML = '<span class="flex-1 min-w-[160px]"><i class="fas fa-file-pen mr-1"></i>Ada draft tersimpan (' + knCountWords(d.html).toLocaleString('id-ID') + ' kata, ' + knAgo(d.ts || Date.now()) + '). Lanjutkan?</span><button type="button" class="kn-d-yes bg-amber-500 text-black font-bold px-3 py-1 rounded-full">Lanjutkan</button><button type="button" class="kn-d-no bg-slate-700 text-slate-200 px-3 py-1 rounded-full">Buang</button>';
+    wrap.insertBefore(ban, editor);
+    ban.querySelector('.kn-d-yes').onclick = () => {
+      editor.innerHTML = sanitizeNovelHtml(d.html);
+      editor.querySelectorAll('img').forEach(img => img.draggable = true);
+      if (titleEl && d.title && !titleEl.value.trim()) titleEl.value = d.title;
+      ban.remove(); update(); savedEl.textContent = '✓ Draft dipulihkan';
+    };
+    ban.querySelector('.kn-d-no').onclick = () => { knDraftClear(draftKey); ban.remove(); };
+  }
+}
+function attachNovelEditor(id, opts) {
   const wrap=document.querySelector(`[data-editor="${id}"]`); if(!wrap) return;
   const editor=document.getElementById(id); let selectedImage=null;
+  if(!wrap.dataset.extras){ wrap.dataset.extras='1'; knSetupEditorExtras(id, wrap, editor, opts); }
   editor.addEventListener('click',e=>{ if(e.target?.tagName==='IMG'){ selectedImage=e.target; editor.querySelectorAll('img').forEach(x=>x.style.outline=''); selectedImage.style.outline='2px solid #f59e0b'; const size=wrap.querySelector('.novel-ed-size'); if(size){size.value=parseInt(selectedImage.style.width)||100;wrap.querySelector('.novel-ed-size-label').textContent=size.value+'%';} } });
   wrap.querySelectorAll('.novel-ed-format').forEach(b=>b.onclick=()=>{editor.focus();document.execCommand(b.dataset.cmd,false,null);});
   wrap.querySelectorAll('.novel-ed-align').forEach(b=>b.onclick=()=>{editor.focus(); if(selectedImage){selectedImage.style.display='block';selectedImage.style.margin=b.dataset.align==='left'?'16px auto 16px 0':b.dataset.align==='right'?'16px 0 16px auto':'16px auto';}else document.execCommand('justify'+b.dataset.align[0].toUpperCase()+b.dataset.align.slice(1),false,null);});
@@ -8537,7 +8627,7 @@ async function renderCreatorDashboard(container) {
     list.querySelectorAll('.editWorkBtn').forEach(b => b.onclick = () => window.openEditWorkModal(b.dataset.wid));
     list.querySelectorAll('.addC').forEach(b => b.onclick = () => document.getElementById('f-' + safeId(b.dataset.wid)).classList.toggle('hidden'));
     list.querySelectorAll('.manageG').forEach(b => b.onclick = () => window.openGroupManager(b.dataset.wid, b.dataset.type, loadManage));
-    list.querySelectorAll('.canC').forEach(b => b.onclick = () => document.getElementById('f-' + b.dataset.sid).classList.add('hidden'));
+    list.querySelectorAll('.canC').forEach(b => b.onclick = () => { if (knEditorDirty('cc-' + b.dataset.sid) && !confirm('Ada tulisan yang belum disimpan. Sembunyikan form?\n(Drafmu tetap tersimpan di perangkat ini.)')) return; document.getElementById('f-' + b.dataset.sid).classList.add('hidden'); });
     list.querySelectorAll('.tamatB').forEach(b => b.onclick = async () => { const n = b.dataset.t === 'true'; if (!confirm(n ? 'Batal?' : 'Tamatkan?')) return; await updateDoc(doc(db,'works',b.dataset.wid), { isTamat: !n, updatedAt: serverTimestamp() }); loadManage(); });
     list.querySelectorAll('.delW').forEach(b => b.onclick = async () => {
       if (!confirm(`Hapus "${b.dataset.title}"?`)) return;
@@ -8592,11 +8682,15 @@ async function renderCreatorDashboard(container) {
           <div class="flex gap-2"><button id="saveEditCh" class="flex-1 bg-amber-500 text-black font-bold py-2 rounded-full hover:scale-105 transition">Simpan</button><button id="cancelEditCh" class="bg-slate-700 text-slate-300 px-4 py-2 rounded-full font-bold">Batal</button></div>
         </div>`;
       modal.classList.remove('hidden');
-      if (type === 'novel') attachNovelEditor('editChContent');
+      if (type === 'novel') attachNovelEditor('editChContent', { draftKey: 'edit:' + wid + ':' + cid, titleId: 'editChTitle' });
       if (type === 'komik') { attachMultiImageHandlers('editAdd-' + cid); attachExistingImagesHandler(cid, ch.images || []); }
       const close = () => modal.classList.add('hidden');
-      document.getElementById('closeEditCh').onclick = close;
-      document.getElementById('cancelEditCh').onclick = close;
+      const guardClose = () => {
+        if (type === 'novel' && knEditorDirty('editChContent') && !confirm('Ada perubahan yang belum disimpan. Tutup tanpa menyimpan?\n(Drafmu tetap tersimpan di perangkat ini.)')) return;
+        close();
+      };
+      document.getElementById('closeEditCh').onclick = guardClose;
+      document.getElementById('cancelEditCh').onclick = guardClose;
       document.getElementById('saveEditCh').onclick = async () => {
         const newTitle = document.getElementById('editChTitle').value.trim();
         const numVal = parseInt(document.getElementById('editChNumber').value, 10);
@@ -8609,6 +8703,7 @@ async function renderCreatorDashboard(container) {
           if(editReleaseAt && editReleaseAt.getTime()<=Date.now()){showToast('Waktu rilis harus di masa depan');return;}
           if (!newTitle) { showToast('Judul wajib!'); return; }
           if (!newContent) { showToast('Isi wajib!'); return; }
+          knMarkSaved('editChContent', 'edit:' + wid + ':' + cid);
           await updateDoc(doc(db, 'works', wid, 'chapters', cid), { title: newTitle, content: newContent, ...(editReleaseAt ? {releaseAt:editReleaseAt,releaseStatus:'scheduled'} : {releaseAt:null,releaseStatus:'published'}), ...extra, updatedAt: serverTimestamp() });
         } else {
           const existingImages = window[`_existing_${cid}_images`] || ch.images || [];
@@ -8624,7 +8719,7 @@ async function renderCreatorDashboard(container) {
         showToast('Tersimpan!'); close(); loadManage();
       };
     });
-    list.querySelectorAll('[data-editor]').forEach(el => attachNovelEditor(el.dataset.editor));
+    list.querySelectorAll('[data-editor]').forEach(el => { const eid = el.dataset.editor; attachNovelEditor(eid, { draftKey: 'add:' + eid, titleId: 'ct-' + eid.replace(/^cc-/, '') }); });
     list.querySelectorAll('.subC').forEach(b => b.onclick = async () => {
       const wid = b.dataset.wid, sid = b.dataset.sid, type = b.dataset.type;
       const t = document.getElementById('ct-' + sid).value.trim();
@@ -8661,6 +8756,7 @@ async function renderCreatorDashboard(container) {
             }
           }
         } catch (followNotifError) { console.warn('Notifikasi pengikut karya gagal dibuat:', followNotifError); }
+        knMarkSaved('cc-' + sid, 'add:cc-' + sid);
         await createChapterNotifications(wid, { id:newChapterRef.id, number:next, title:t });
         pushNotify({ kind: 'chapter', workId: wid, chapterId: newChapterRef.id });
         addedChapterInfo = { chapterId: newChapterRef.id, chapterNumber: next, chapterTitle: t };
@@ -10218,6 +10314,8 @@ document.addEventListener('click', (e) => {
       return;
     }
     if (validator !== initialValidator) {
+      // Jangan reload paksa kalau ada tulisan yang belum disimpan: tampilkan banner saja.
+      if (typeof knHasUnsaved === 'function' && knHasUnsaved()) { knShowUpdateBanner(); return; }
       const freshUrl = new URL(location.href);
       freshUrl.searchParams.set('__kn_refresh', String(Date.now()));
       location.replace(freshUrl.toString());
@@ -10228,33 +10326,6 @@ document.addEventListener('click', (e) => {
   window.setInterval(() => {
     if (document.visibilityState === 'visible') checkForWebsiteUpdate();
   }, 60000);
-})();
-
-// Deteksi perubahan file website setelah deployment dan muat versi terbaru otomatis.
-(function initKomiNovelAutoUpdate() {
-  const checkUrl = new URL(location.href);
-  checkUrl.hash = '';
-  checkUrl.searchParams.set('__kn_update_check', '1');
-  let initialValidator = '';
-  async function readValidator() {
-    try {
-      const response = await fetch(checkUrl.toString(), { method: 'HEAD', cache: 'no-store', headers: { 'Cache-Control': 'no-cache' } });
-      if (!response.ok) return '';
-      return response.headers.get('etag') || response.headers.get('last-modified') || '';
-    } catch (error) { return ''; }
-  }
-  async function checkForWebsiteUpdate() {
-    const validator = await readValidator();
-    if (!validator) return;
-    if (!initialValidator) { initialValidator = validator; return; }
-    if (validator !== initialValidator) {
-      const freshUrl = new URL(location.href);
-      freshUrl.searchParams.set('__kn_refresh', String(Date.now()));
-      location.replace(freshUrl.toString());
-    }
-  }
-  checkForWebsiteUpdate();
-  window.setInterval(() => { if (document.visibilityState === 'visible') checkForWebsiteUpdate(); }, 60000);
 })();
 
 if ('serviceWorker' in navigator) {
