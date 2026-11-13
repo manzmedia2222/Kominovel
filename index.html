@@ -1802,6 +1802,7 @@ try {
 const googleProvider = new GoogleAuthProvider();
 
 const APP_VERSION = '1.16';
+const APP_BUILD_ID = 'e0f2c9c67de73e06';
 const APP_VERSION_NOTES = [
   'v1.16 — Narasi TTS otomatis mendeteksi dialog, tanda baca, dan perkiraan emosi; mode baca novel lebih nyaman serta satu link bebas per chapter/episode.',
   'v1.15 — Pengajuan promosi wajib setelah publish, antrean review promosi admin, perbaikan prioritas modal di atas navbar bawah, dukungan link embed berbagai image hosting, dan upload gambar paralel. v1.15.1 — Autocomplete username saat mengundang kolaborator, sehingga akun yang cocok muncul ketika username diketik. v1.14 — Kolaborasi memakai undangan yang harus diterima, dashboard Kolaborasi Saya, peran Co-author/Editor, pilihan link dukungan Saweria/Trakteer/Ko-fi/PayPal/Lainnya, statistik klik dukungan, laporan komentar, blokir pengguna, notifikasi kreator, fitur bagikan, panduan penggunaan yang lebih lengkap, dan perbaikan tema terang/gelap.',
@@ -3623,12 +3624,15 @@ document.getElementById('bottomMenuBtn')?.addEventListener('click', (e) => {
 // ===== FULLSCREEN READER ====================================
 // ============================================================
 window.toggleFullscreenReader = () => {
-  isFullscreenReader = !isFullscreenReader;
   const rc = document.getElementById('readerContent');
   const fb = document.getElementById('fullscreenBtn');
   if (!rc) return;
+  const savedTop = isFullscreenReader ? rc.scrollTop : (window.scrollY || document.documentElement.scrollTop || 0);
+  isFullscreenReader = !isFullscreenReader;
   if (isFullscreenReader) {
+    rc.dataset.savedScrollTop = String(savedTop);
     rc.classList.add('reader-fullscreen');
+    rc.style.overflowY = 'auto'; rc.style.height = '100dvh';
     if (fb) fb.classList.add('hidden');
     if (!document.getElementById('fullscreenClose')) {
       const btn = document.createElement('button');
@@ -3638,13 +3642,48 @@ window.toggleFullscreenReader = () => {
       document.body.appendChild(btn);
     }
     document.body.style.overflow = 'hidden';
+    requestAnimationFrame(() => { rc.scrollTop = Number(rc.dataset.savedScrollTop || 0); });
   } else {
+    const restoreTop = Number(rc.dataset.savedScrollTop || 0);
     rc.classList.remove('reader-fullscreen');
+    rc.style.overflowY = ''; rc.style.height = '';
     if (fb) fb.classList.remove('hidden');
     const cb = document.getElementById('fullscreenClose');
     if (cb) cb.remove();
     document.body.style.overflow = '';
+    requestAnimationFrame(() => window.scrollTo({ top: restoreTop, behavior: 'auto' }));
   }
+};
+
+let _knAutoScrollFrame = null, _knAutoScrollLast = 0, _knAutoScrollActive = false;
+window.toggleReaderAutoScroll = () => {
+  const btn = document.getElementById('autoScrollBtn');
+  if (_knAutoScrollActive) {
+    _knAutoScrollActive = false;
+    if (_knAutoScrollFrame) cancelAnimationFrame(_knAutoScrollFrame);
+    _knAutoScrollFrame = null;
+    if (btn) { btn.innerHTML = '<i class="fas fa-play"></i>'; btn.style.background = '#2563eb'; }
+    showToast('Auto scroll dihentikan');
+    return;
+  }
+  _knAutoScrollActive = true; _knAutoScrollLast = 0;
+  if (btn) { btn.innerHTML = '<i class="fas fa-pause"></i>'; btn.style.background = '#b45309'; }
+  showToast('Auto scroll dimulai');
+  const step = (ts) => {
+    if (!_knAutoScrollActive) return;
+    if (!_knAutoScrollLast) _knAutoScrollLast = ts;
+    const delta = Math.min(50, ts - _knAutoScrollLast); _knAutoScrollLast = ts;
+    const rc = document.getElementById('readerContent');
+    if (isFullscreenReader && rc) {
+      rc.scrollTop += delta * 0.035;
+      if (rc.scrollTop + rc.clientHeight >= rc.scrollHeight - 2) { window.toggleReaderAutoScroll(); showToast('Sudah sampai akhir bacaan'); return; }
+    } else {
+      window.scrollBy(0, delta * 0.035);
+      if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) { window.toggleReaderAutoScroll(); showToast('Sudah sampai akhir bacaan'); return; }
+    }
+    _knAutoScrollFrame = requestAnimationFrame(step);
+  };
+  _knAutoScrollFrame = requestAnimationFrame(step);
 };
 
 // ============================================================
@@ -4966,7 +5005,7 @@ async function initAuth() {
       startNotifListeners();
       document.getElementById('navAuthMobile').innerHTML = `<i class="fas fa-sign-out-alt"></i>`;
       renderPage();
-      setTimeout(() => { initNotifListener(); initChapterNotificationListener(); }, 1200);
+      setTimeout(() => { initNotifListener(); initChapterNotificationListener(); initGlobalReleaseNotifications(); }, 1200);
       setTimeout(() => { pushOnLogin(); }, 2200);
       setTimeout(() => checkBirthdays(), 1500);
       setTimeout(() => boostOwnerFollowers(), 2500);
@@ -7225,6 +7264,7 @@ async function renderPublicProfile(container, uid) {
   const u = snap.data();
   const isMe = currentUser && currentUser.uid === uid;
   const isFollowing = userProfile?.following?.includes(uid);
+  const adminIdentityHtml = isAdminUser(userProfile) ? `<div class="text-xs text-slate-500 mt-2 break-all"><i class="fas fa-fingerprint mr-1"></i>ID pengguna: <code>${escHtml(uid)}</code> <button class="ml-2 text-amber-400" onclick="navigator.clipboard?.writeText('${escAttr(uid)}');showToast('ID pengguna disalin')">Salin</button></div>` : '';
   const level = u.level || 1, golden = isGolden(level);
   const roles = u.roles || [u.role || 'pembaca'];
   const worksSnap = await getDocs(query(collection(db, 'works'), where('authorId', '==', uid)));
@@ -7241,6 +7281,7 @@ async function renderPublicProfile(container, uid) {
     bdayDisplay = `<span class="user-birthday"><i class="fas fa-birthday-cake"></i> ${parseInt(dd)} ${monthNames[parseInt(mm)-1]}</span>`;
   }
   container.innerHTML = `
+    ${adminIdentityHtml}
     ${u.bannerURL ? `<div class="rounded-2xl overflow-hidden mb-5" style="height:clamp(120px,24vw,230px)"><img src="${escAttr(u.bannerURL)}" alt="Banner akun" style="width:100%;height:100%;object-fit:cover"></div>` : ''}
     <button onclick="history.back()" class="text-amber-400 mb-4 hover:text-amber-300 transition"><i class="fas fa-arrow-left mr-2"></i>Kembali</button>
     <div class="card-bg rounded-2xl p-6 mb-6 card-anim ${u.featuredCreator ? 'unggulan-border' : ''} ${isOwner ? 'owner-shine-card' : ''}">
@@ -7598,7 +7639,7 @@ async function renderReader(container, novelId, chapterId = null) {
           </div>` : ''}
         </div>
       </div>
-      ${isKomik && currentChapter && currentChapter.images && currentChapter.images.length > 0 ? `<button id="fullscreenBtn" class="fullscreen-btn" onclick="toggleFullscreenReader()"><i class="fas fa-expand"></i></button>` : ''}
+      ${isKomik && currentChapter && currentChapter.images && currentChapter.images.length > 0 ? `<button id="autoScrollBtn" class="fullscreen-btn" style="bottom:162px;background:#2563eb;color:white" onclick="toggleReaderAutoScroll()" title="Auto scroll"><i class="fas fa-play"></i></button><button id="fullscreenBtn" class="fullscreen-btn" onclick="toggleFullscreenReader()"><i class="fas fa-expand"></i></button>` : ''}
     </div>`;
 
   // Kontrol kenyamanan membaca novel; preferensi dan catatan tersimpan lokal per pengguna/perangkat.
@@ -7844,7 +7885,7 @@ async function renderReader(container, novelId, chapterId = null) {
       const banner = document.createElement('div');
       banner.className = 'resume-banner';
       banner.innerHTML = `<i class="fas fa-bookmark"></i><span>Lanjut baca dari posisi terakhir?</span><button onclick="event.stopPropagation();this.parentElement.remove()" title="Tutup"><i class="fas fa-times"></i></button>`;
-      banner.onclick = () => { window.scrollTo({ top: savedPos.scrollY, behavior: 'smooth' }); banner.remove(); currentResumeBanner = null; showToast('📖 Melanjutkan bacaan...'); };
+      banner.onclick = () => { const reader = document.getElementById('readerContent'); if (isFullscreenReader && reader) reader.scrollTo({ top: savedPos.scrollY, behavior: 'smooth' }); else window.scrollTo({ top: savedPos.scrollY, behavior: 'smooth' }); banner.remove(); currentResumeBanner = null; showToast('📖 Melanjutkan bacaan...'); };
       document.body.appendChild(banner);
       currentResumeBanner = banner;
       setTimeout(() => { if (banner.parentElement) banner.remove(); if (currentResumeBanner === banner) currentResumeBanner = null; }, 8000);
@@ -7853,7 +7894,7 @@ async function renderReader(container, novelId, chapterId = null) {
 
   if (currentChapter) {
     let saveTimer = null;
-    const savePos = () => { const scrollY = window.scrollY || document.documentElement.scrollTop; if (scrollY > 100) saveReadingPos(novelId, currentChapter.id, scrollY); };
+    const savePos = () => { const reader = document.getElementById('readerContent'); const scrollY = isFullscreenReader && reader ? reader.scrollTop : (window.scrollY || document.documentElement.scrollTop); if (scrollY > 100) saveReadingPos(novelId, currentChapter.id, scrollY); };
     const scrollHandler = () => { if (saveTimer) clearTimeout(saveTimer); saveTimer = setTimeout(savePos, 500); };
     window.addEventListener('scroll', scrollHandler, { passive: true });
     window.addEventListener('beforeunload', savePos);
@@ -8797,10 +8838,10 @@ async function renderAdminPanel(container) {
           const isFeatured = u.featuredCreator === true;
           const isCreatorRole = roles.includes('penulis') || roles.includes('komikus');
           const isOwnerRole = roles.includes('owner');
-          return `<div class="card-bg rounded-xl p-3 user-row card-anim ${isFeatured ? 'unggulan-border' : ''} ${isOwnerRole ? 'owner-shine-card' : ''}" data-username="${(u.username || '').toLowerCase()}">
+          return `<div class="card-bg rounded-xl p-3 user-row card-anim ${isFeatured ? 'unggulan-border' : ''} ${isOwnerRole ? 'owner-shine-card' : ''}" data-username="${(u.username || '').toLowerCase()} ${String(u.id || '').toLowerCase()}">
             <div class="flex items-center gap-2 mb-2">
               <img src="${u.photoURL || 'https://ui-avatars.com/api/?name='+encodeURIComponent(u.username || 'U')}" class="w-10 h-10 rounded-full ${isFeatured ? 'border-2 border-amber-400' : ''} ${isOwnerRole ? 'owner-shine' : ''}">
-              <div class="flex-1"><p class="font-semibold text-sm">${u.username || 'User'}${getVerifiedBadge(u.followerCount || 0)}${getCreatorVerifiedBadge(u)}</p><p class="text-xs text-slate-400">${u.email || 'Guest'} • Lv.${u.level || 1} • ${formatCount(u.followerCount || 0)} followers</p></div>
+              <div class="flex-1 min-w-0"><p class="font-semibold text-sm">${u.username || 'User'}${getVerifiedBadge(u.followerCount || 0)}${getCreatorVerifiedBadge(u)}</p><p class="text-xs text-slate-400">${u.email || 'Guest'} • Lv.${u.level || 1} • ${formatCount(u.followerCount || 0)} followers</p><div class="mt-1 flex flex-wrap items-center gap-2"><span class="text-[11px] text-amber-400"><i class="fas fa-fingerprint mr-1"></i>ID Pengguna:</span><code class="text-[11px] text-slate-300 break-all select-all">${escHtml(u.id)}</code><button type="button" class="admin-copy-uid text-[11px] text-amber-400 hover:text-amber-300 underline" data-uid="${escAttr(u.id)}">Salin ID</button></div></div>
               ${isFeatured ? '<span class="unggulan-tag">⭐</span>' : ''}
               <button class="ban-btn ${u.banned ? 'bg-green-600' : 'bg-red-600'} text-white px-3 py-1 rounded-lg text-xs font-bold hover:scale-105 transition" data-uid="${u.id}" data-banned="${u.banned || false}">${u.banned ? 'Unban' : 'Ban'}</button>
             </div>
@@ -8819,6 +8860,14 @@ async function renderAdminPanel(container) {
           </div>`;
         }).join('')}
       </div>`;
+    aC.querySelectorAll('.admin-copy-uid').forEach(btn => btn.onclick = async () => {
+      const uid = btn.dataset.uid || '';
+      try {
+        if (navigator.clipboard?.writeText) await navigator.clipboard.writeText(uid);
+        else { const t=document.createElement('textarea'); t.value=uid; document.body.appendChild(t); t.select(); document.execCommand('copy'); t.remove(); }
+        showToast('ID pengguna berhasil disalin');
+      } catch(e) { showToast('Gagal menyalin ID pengguna'); }
+    });
     aC.querySelectorAll('.role-toggle').forEach(cb => cb.onchange = async () => {
       const ref = doc(db,'users',cb.dataset.uid);
       const s = await getDoc(ref);
@@ -10335,6 +10384,41 @@ document.addEventListener('visibilitychange', () => {
   migrateLegacyHash();
   renderPage();
   startAutoBoost();
+
+// Pemeriksaan file terbaru di hosting; perubahan sekecil apa pun menghasilkan build ID berbeda.
+async function checkDeployedBuild() {
+  try {
+    const u = new URL(location.href); u.searchParams.set('__kn_build_check', String(Date.now()));
+    const r = await fetch(u.toString(), { cache:'no-store', credentials:'same-origin', headers:{'Cache-Control':'no-cache'} });
+    if (!r.ok) return;
+    const html = await r.text();
+    const m = html.match(/const APP_BUILD_ID\s*=\s*['\"]([a-f0-9]+)['\"]/i);
+    if (!m || m[1] === APP_BUILD_ID || document.getElementById('knMandatoryUpdate')) return;
+    const el = document.createElement('div'); el.id='knMandatoryUpdate';
+    el.style.cssText='position:fixed;inset:0;z-index:2147483647;background:rgba(4,7,15,.97);display:flex;align-items:center;justify-content:center;padding:20px;color:white;font-family:Inter,system-ui,sans-serif';
+    el.innerHTML=`<div style="width:min(440px,100%);background:#171727;border:1px solid #fbbf24;border-radius:20px;padding:26px;text-align:center"><div style="font-size:34px;color:#fbbf24">↻</div><h2 style="font-size:20px;font-weight:800;margin:10px 0">Pembaruan KomiNovel tersedia</h2><p style="font-size:13px;color:#cbd5e1;line-height:1.7;margin-bottom:18px">File website telah berubah. Muat ulang halaman untuk melanjutkan. Pop-up ini tidak dapat ditutup.</p><button id="knMandatoryReload" style="width:100%;background:#fbbf24;color:#111827;border-radius:12px;padding:12px;font-weight:800">Muat ulang sekarang</button></div>`;
+    document.body.appendChild(el);
+    document.getElementById('knMandatoryReload').onclick=async()=>{try{const regs=await navigator.serviceWorker?.getRegistrations?.();for(const reg of (regs||[]))await reg.update();}catch(e){} location.reload();};
+    document.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();e.stopImmediatePropagation();}},true);
+  } catch(e) { console.warn('[KomiNovel] Cek versi gagal:',e); }
+}
+
+let _knGlobalWorksUnsub=null; const _knGlobalChapterUnsubs=new Map();
+const _knGlobalSeenWorks=new Set(), _knGlobalSeenChapters=new Set(); let _knGlobalInitialised=false;
+function initGlobalReleaseNotifications(){
+  if(_knGlobalWorksUnsub)return;
+  _knGlobalWorksUnsub=onSnapshot(query(collection(db,'works'),where('status','==','publish')),snap=>{
+    snap.forEach(wd=>{const w={id:wd.id,...wd.data()};
+      if(_knGlobalInitialised&&!_knGlobalSeenWorks.has(w.id)&&w.authorId!==currentUser?.uid) enqueueV111Notif({id:'all-work-'+w.id,kind:'work',label:'Karya baru',icon:'fa-book-open',title:'Karya baru di KomiNovel',body:`${w.type==='novel'?'Novel':'Komik'} baru: ${w.title||'Tanpa judul'}`,workId:w.id});
+      _knGlobalSeenWorks.add(w.id);
+      if(!_knGlobalChapterUnsubs.has(w.id)){let first=true;const unsub=onSnapshot(query(collection(db,'works',w.id,'chapters'),orderBy('number','asc')),cs=>{
+        cs.docChanges().forEach(change=>{if(change.type!=='added')return;const ch={id:change.doc.id,...change.doc.data()},key=w.id+':'+ch.id;if(first){_knGlobalSeenChapters.add(key);return;}if(_knGlobalSeenChapters.has(key)||ch.releaseStatus==='scheduled')return;_knGlobalSeenChapters.add(key);if(w.authorId!==currentUser?.uid)enqueueV111Notif({id:'all-ch-'+key,kind:'chapter',label:'Pembaruan karya',icon:'fa-book-open',title:w.type==='novel'?'Chapter baru':'Episode baru',body:`${w.title||'Karya'} • ${w.type==='novel'?'Chapter':'Episode'} ${ch.number||''}${ch.title?': '+ch.title:''}`,workId:w.id,hash:`reader/${w.id}/${ch.id}`});});first=false;
+      },e=>console.warn('[KomiNovel] Listener chapter global:',e));_knGlobalChapterUnsubs.set(w.id,unsub);}
+    }); _knGlobalInitialised=true;
+  },e=>console.warn('[KomiNovel] Listener karya global:',e));
+}
+
+  setTimeout(checkDeployedBuild, 1800);
   console.log(`%c🚀 KomiNovel v${APP_VERSION} loaded`, 'background:linear-gradient(135deg,#fbbf24,#d97706);color:#0f0f1a;font-weight:900;padding:4px 12px;border-radius:8px;');
   console.log('%c✨ Update v1.10:', 'color:#fbbf24;font-weight:bold;');
   APP_VERSION_NOTES.forEach(n => console.log('  •', n));
