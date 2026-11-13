@@ -273,7 +273,7 @@ body::before{content:'';position:fixed;inset:0;z-index:-1;background:
   -webkit-backdrop-filter:blur(16px) saturate(1.2);
   border-top:1px solid rgba(255,255,255,0.08);
   padding-bottom:var(--nav-safe-bottom);
-  display:grid; grid-template-columns:repeat(6,minmax(0,1fr));
+  display:grid; grid-template-columns:repeat(4,minmax(0,1fr));
   height:calc(var(--nav-height) + var(--nav-safe-bottom));
 }
 .nav-bottom-item{
@@ -1493,7 +1493,7 @@ input[type=checkbox],input[type=radio]{accent-color:var(--ac)}
 .kn-topnav{display:none!important}
 #app>header{justify-content:space-between}
 #bottomNav.nav-bottom{
-  display:grid!important;grid-template-columns:repeat(6,minmax(0,1fr));align-items:stretch;
+  display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr));align-items:stretch;
   position:fixed;left:50%!important;right:auto!important;
   bottom:calc(10px + env(safe-area-inset-bottom,0px))!important;
   width:min(calc(100% - 20px),560px)!important;height:68px!important;padding:6px!important;gap:2px;
@@ -1676,20 +1676,13 @@ html[data-theme="light"] .skel-bar{background:linear-gradient(90deg,#f7e8c8 25%,
 </div>
 <nav class="kn-topnav" aria-label="Navigasi utama">
 <button type="button" class="nav-bottom-item kn-topitem" data-nav="home" onclick="navTo('home')">Beranda</button>
-<button type="button" class="nav-bottom-item kn-topitem" data-nav="berita" onclick="navTo('berita')">Berita</button>
-<button type="button" class="nav-bottom-item kn-topitem" data-nav="jadwal-rilis" onclick="navTo('jadwal-rilis')">Jadwal Rilis</button>
 <button type="button" class="nav-bottom-item kn-topitem" data-nav="creator" onclick="navTo('creator')">Dashboard Kreator</button>
 <button type="button" class="nav-bottom-item kn-topitem" data-nav="jadi-kreator" onclick="navTo('jadi-kreator')">Jadi Kreator</button>
-<button type="button" class="nav-bottom-item kn-topitem" data-nav="leaderboard" onclick="navTo('leaderboard')">Leaderboard</button>
-<button type="button" class="nav-bottom-item kn-topitem" data-nav="panduan" onclick="navTo('panduan')">Panduan</button>
 <button type="button" class="kn-topitem kn-topmore" onclick="openMobileNav()" aria-label="Buka menu lengkap"><i class="fas fa-grip"></i> Lainnya</button>
 </nav>
 <div class="flex items-center gap-2">
 <button id="themeToggle" type="button" class="theme-toggle-btn" title="Ganti tema" aria-label="Ganti tema">
 <i id="themeToggleIcon" class="fas fa-sun"></i><span id="themeToggleText">Terang</span>
-</button>
-<button id="v111NotifBtn" class="v111-notif-btn" type="button" title="Notifikasi" aria-label="Notifikasi">
-<i class="fas fa-bell"></i><span id="v111NotifDot" class="v111-notif-dot hidden">0</span>
 </button>
 <button id="navAuthMobile" class="bg-amber-500 text-black font-bold py-2 px-3 rounded-full text-xs"><i class="fas fa-sign-in-alt"></i></button>
 </div>
@@ -1697,59 +1690,15 @@ html[data-theme="light"] .skel-bar{background:linear-gradient(90deg,#f7e8c8 25%,
 <main id="mainContent" class="min-h-[70vh]"></main>
 <footer class="mt-12 text-center text-xs text-slate-500 border-t border-slate-800 pt-6 space-y-3">
 <div class="flex items-center justify-center gap-2 flex-wrap">
-<span>&copy; <span id="footerYear">2026</span> KomiNovel</span>
+<span>&copy; 2026 KomiNovel. Semua Hak Cipta Dilindungi.</span>
 </div>
 
-<div class="max-w-2xl mx-auto px-3">
-<p class="text-sm font-bold text-amber-400 mb-2"><i class="fas fa-heart mr-1"></i> Dibuat untuk kreator lokal</p>
-<p class="text-xs leading-relaxed text-slate-400">
-KomiNovel hadir untuk membantu komikus dan novelis lokal yang kesulitan menemukan platform untuk membagikan karya mereka.
-Di sini, kreator bisa menerbitkan cerita dan komik tanpa biaya. Tidak perlu membayar sepeser pun untuk menggunakan KomiNovel.
-</p>
-</div>
 
-<details class="max-w-2xl mx-auto text-left rounded-xl border border-slate-700 bg-slate-900/40 p-3">
-<summary class="cursor-pointer list-none flex items-center justify-center gap-2 font-bold text-slate-300 hover:text-amber-400">
-<i class="fas fa-code text-amber-400"></i>
-<span>About Developer</span>
-<i class="fas fa-chevron-down text-[10px]"></i>
-</summary>
-<div class="pt-3 text-center space-y-2">
-<p class="text-sm font-bold text-slate-200">Hijrah Abdur Rahman</p>
-<p class="text-xs leading-relaxed text-slate-400">
-KomiNovel dibuat dengan tujuan sederhana: menyediakan ruang yang mudah dijangkau bagi komikus dan novelis lokal untuk memperkenalkan karya mereka kepada pembaca.
-Platform ini dibangun agar kreator bisa mulai berkarya dan membagikan cerita tanpa terbebani biaya platform.
-</p>
-<div class="flex flex-col sm:flex-row items-center justify-center gap-2 mt-2">
-<a href="https://hijrah-abdur-rahman-portofolio.vercel.app/" target="_blank" rel="noopener noreferrer"
-class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500 hover:bg-amber-400 text-black font-bold transition">
-<i class="fas fa-globe"></i> Kunjungi Portofolio Developer
-<i class="fas fa-arrow-up-right-from-square text-xs"></i>
-</a>
-<a href="https://saweriakominovel.pages.dev/" target="_blank" rel="noopener noreferrer" class="saweria-btn" style="max-width:320px;font-size:13px;padding:10px 18px">
-<i class="fas fa-coffee saweria-btn-heart" style="animation:none"></i><span class="saweria-btn-text">Dukung Developer dengan Saweria</span><i class="fas fa-external-link-alt saweria-btn-ext"></i>
-</a>
-</div>
-</div>
-</details>
-
-<!-- Tombol Saweria - Dukung Developer -->
-<div class="saweria-wrap">
-<a href="https://saweriakominovel.pages.dev/" target="_blank" rel="noopener noreferrer" class="saweria-btn">
-<i class="fas fa-heart saweria-btn-heart"></i><span class="saweria-btn-text">Dukung Developer dengan Saweria</span><i class="fas fa-external-link-alt saweria-btn-ext"></i>
-</a>
-<p class="saweria-note">Klik untuk memberi dukungan via Saweria</p>
-</div>
 
 </footer>
 </div>
 
 <nav id="bottomNav" class="nav-bottom">
-  <button class="nav-bottom-item" data-nav="berita" onclick="navTo('berita')">
-    <i class="fas fa-newspaper"></i><span>Berita</span>
-    <span class="notif-badge hidden" id="notifBeritaBadge">0</span>
-  </button>
-  <button class="nav-bottom-item" data-nav="jadwal-rilis" onclick="navTo('jadwal-rilis')"><i class="fas fa-calendar-alt"></i><span>Jadwal</span></button>
   <button class="nav-bottom-item" data-nav="jadi-kreator" onclick="navTo('jadi-kreator')">
     <i class="fas fa-star"></i><span>Daftar</span>
   </button>
@@ -1801,9 +1750,11 @@ try {
 } catch (e) { db = getFirestore(app); }
 const googleProvider = new GoogleAuthProvider();
 
-const APP_VERSION = '1.16';
-const APP_BUILD_ID = 'e0f2c9c67de73e06';
+const APP_VERSION = '1.18.1';
+const APP_BUILD_ID = 'kn-admin-decoy-20261113';
 const APP_VERSION_NOTES = [
+  'v1.18.1 — PEMISAHAN RUTE ADMIN: /admin menjadi halaman peringatan/decoy tanpa login dan tanpa pengalihan; login admin hanya melalui /muan. Menu Promosi, Upload, dan Ultah di panel admin dihapus; peringatan hukum tetap muncul sebelum dashboard dibuka.',
+  'v1.17 — PENGUATAN KEAMANAN: login admin wajib melalui Firebase Authentication dan role admin/owner yang sudah ditetapkan di Firestore; sesi admin tidak lagi dipercaya dari localStorage; URL gambar publik divalidasi sebelum ditampilkan.',
   'v1.16 — Narasi TTS otomatis mendeteksi dialog, tanda baca, dan perkiraan emosi; mode baca novel lebih nyaman serta satu link bebas per chapter/episode.',
   'v1.15 — Pengajuan promosi wajib setelah publish, antrean review promosi admin, perbaikan prioritas modal di atas navbar bawah, dukungan link embed berbagai image hosting, dan upload gambar paralel. v1.15.1 — Autocomplete username saat mengundang kolaborator, sehingga akun yang cocok muncul ketika username diketik. v1.14 — Kolaborasi memakai undangan yang harus diterima, dashboard Kolaborasi Saya, peran Co-author/Editor, pilihan link dukungan Saweria/Trakteer/Ko-fi/PayPal/Lainnya, statistik klik dukungan, laporan komentar, blokir pengguna, notifikasi kreator, fitur bagikan, panduan penggunaan yang lebih lengkap, dan perbaikan tema terang/gelap.',
   'v1.13 — PENYEDERHANAAN: Chat Publik, Clan, Stiker, dan Pertemanan/DM dihapus agar KomiNovel fokus ke baca komik & novel, lebih ringan, lebih cepat dibuka, dan lebih aman. Link kini bersih tanpa tanda #, contoh: kominovel.vercel.app/reader/xxxx, dan nama situs di Google menjadi "KomiNovel".',
@@ -1832,7 +1783,6 @@ const REPORT_REASONS = [
 ];
 
 let currentUser = null, userProfile = null;
-let isAdminSession = false, adminEmail = null;
 let currentContentType = 'komik', currentCategory = 'all', currentSearch = '';
 let selectedCategories = [];
 let worksUnsub = null;
@@ -1855,19 +1805,31 @@ let v111NotifShowing = false;
 let v111NotifInitialized = false;
 let dragMode = 'drag';
 let birthdayCheckInterval = null;
-let ownerFollowerInterval = null;
-let autoBoostInterval = null;
 let showAllCategories = false;
 
 let customCategories = [];
 let customCategoriesUnsub = null;
 
-let autoBoostEnabled = true;
-let autoBoostUnsub = null;
 
 let currentWorksData = {};
 let currentWorksOrder = [];
 let homeIsFirstRender = true;
+// Cache karya per jenis selama tab/browser masih terbuka. Halaman Semua dan
+// Proses Pengerjaan memakai data yang sama agar perpindahan halaman tidak
+// mengulang pembacaan Firestore untuk daftar yang sudah pernah dimuat.
+const allWorksPageCache = { komik: null, novel: null };
+
+async function getWorksByTypeCached(type) {
+  const normalizedType = type === 'novel' ? 'novel' : 'komik';
+  if (Array.isArray(allWorksPageCache[normalizedType])) {
+    return allWorksPageCache[normalizedType].slice();
+  }
+  const snap = await getDocs(query(collection(db, 'works'), where('type', '==', normalizedType)));
+  const works = [];
+  snap.forEach(d => works.push({ id: d.id, ...d.data() }));
+  allWorksPageCache[normalizedType] = works;
+  return works.slice();
+}
 
 let reviewWorkId = null;
 let reviewWorkData = null;
@@ -1903,12 +1865,7 @@ let notifListeners = [];
 
 const VERIFIED_GREEN = 1000;
 const VERIFIED_BLUE = 100000;
-const FOLLOWER_INTERVAL = 60 * 60 * 1000;
-const OWNER_FOLLOWER_RATE = 100000;
 
-const AUTO_BOOST_INTERVAL = 15 * 60 * 1000;
-const AUTO_VIEW_AMOUNT = 60;
-const AUTO_LIKE_AMOUNT = 60;
 
 const ALL_CATEGORIES = [
   'Action','Adventure','Romance','Fantasy','Slice of Life','Horror','Comedy','Mystery','Sci-Fi','Thriller',
@@ -1927,8 +1884,6 @@ const ROLE_LABELS = { pembaca:'Pembaca', penulis:'Novelis', komikus:'Pembuat Kom
 const LEVEL_TITLES = [{min:1,max:100,title:'Pemula'},{min:101,max:1000,title:'Pendekar'},{min:1001,max:5000,title:'Master'},{min:5001,max:Number.MAX_SAFE_INTEGER,title:'Dewa Mitos'}];
 const MAX_LEVEL = Number.MAX_SAFE_INTEGER;
 const EXP_PER_READ = 10, EXP_PER_CHAT = 2, EXP_PER_COMMENT = 5;
-const ADMIN_EMAIL = 'admin@kominovel.com', ADMIN_PASSWORD = 'admin123';
-const OWNER_EMAIL = 'owner@kominovel.com', OWNER_PASSWORD = 'owner123';
 const WA_NUMBER = '082254388144';
 const LOGO_URL = 'https://i.ibb.co.com/SDTthJ7m/Gemini-Generated-Image-fhupt4fhupt4fhup.jpg';
 
@@ -2132,12 +2087,34 @@ function isCreator(p) {
   return hasRole(p,'penulis') || hasRole(p,'komikus') ||
     String(p?.creatorStatus || p?.applicationStatus || '').trim().toLowerCase() === 'accepted';
 }
-function isAdminUser(p) { return hasRole(p,'admin') || hasRole(p,'owner') || isAdminSession; }
+function isAdminUser(p) { return hasRole(p,'admin') || hasRole(p,'owner'); }
 function isOwnerUser(p) { return hasRole(p,'owner'); }
 function safeId(s) { return String(s).replace(/[^a-zA-Z0-9_-]/g,''); }
 function escHtml(s) { return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function linkify(text){ return escHtml(text).replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener" class="text-amber-400 underline hover:text-amber-300">$1</a>'); }
 function escAttr(s) { return String(s || '').replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'&quot;'); }
+function safeImageSource(value, allowData = false) {
+  let raw = String(value == null ? '' : value).trim();
+  if (!raw || raw.length > 5000000) return '';
+  if (raw.startsWith('//')) raw = 'https:' + raw;
+
+  // Data URL hanya diperbolehkan untuk preview gambar raster lokal, bukan SVG/HTML.
+  if (allowData && /^data:image\/(?:png|jpe?g|gif|webp|avif);base64,[a-z0-9+/]+={0,2}$/i.test(raw)) {
+    return raw;
+  }
+
+  try {
+    const parsed = new URL(raw);
+    if (parsed.protocol !== 'https:' && parsed.protocol !== 'http:') return '';
+    if (parsed.username || parsed.password) return '';
+    return parsed.href;
+  } catch (e) {
+    return '';
+  }
+}
+function safeImageAttr(value, allowData = false) {
+  return escHtml(safeImageSource(value, allowData));
+}
 function formatCount(n) {
   if (!n || n === 0) return '0';
   if (n >= 1000000000) return (n/1000000000).toFixed(1) + 'B';
@@ -2146,7 +2123,7 @@ function formatCount(n) {
   return String(n);
 }
 // ===== ROUTING BERBASIS PATH (tanpa tanda #) =================
-// Alamat halaman: /reader/ID, /berita, /profil, dst. (beranda = /)
+// Alamat halaman: /reader/ID, /berita, /profil, dst. /admin = halaman peringatan; /muan = login admin (beranda = /)
 function migrateLegacyHash() {
   // Link lama bentuk /#reader/ID otomatis diubah menjadi /reader/ID
   try {
@@ -2189,8 +2166,7 @@ function normalizeImgCandidate(raw, stripTail) {
   if (stripTail) u = u.replace(/[>)\]"',;.]+$/, '');
   if (u.startsWith('//')) u = 'https:' + u;
   if (!/^https?:\/\//i.test(u)) return '';
-  try { new URL(u); } catch (e) { return ''; }
-  return u;
+  return safeImageSource(u);
 }
 function isImgViewerPage(u) {
   try { return IMG_VIEWER_HOST_RE.test(new URL(u).hostname); } catch (e) { return false; }
@@ -2581,7 +2557,7 @@ function isMaintenanceBlocked() {
   const hash = getHash();
   const base = hash.split('/')[0];
   if (base === 'berita') return false;
-  if (isAdminUser(userProfile) || isAdminSession) return false;
+  if (isAdminUser(userProfile)) return false;
   return true;
 }
 
@@ -2633,8 +2609,8 @@ function renderMaintenanceScreen(container) {
           <a href="${waUrl}" target="_blank" rel="noopener" class="maintenance-btn maintenance-btn-wa">
             <i class="fab fa-whatsapp"></i> Hubungi Admin
           </a>
-          ${isAdminSession || isAdminUser(userProfile) ? `
-          <button class="maintenance-btn maintenance-btn-admin" onclick="navTo('admin')">
+          ${isAdminUser(userProfile) ? `
+          <button class="maintenance-btn maintenance-btn-admin" onclick="navTo('muan')">
             <i class="fas fa-crown"></i> Buka Admin Panel
           </button>` : ''}
         </div>
@@ -2650,7 +2626,7 @@ function renderMaintenanceScreen(container) {
 function renderMaintenanceBanner() {
   if (!webMaintenance) return;
   if (maintenanceBannerDismissed) return;
-  if (isAdminUser(userProfile) || isAdminSession) return;
+  if (isAdminUser(userProfile)) return;
   const existing = document.getElementById('maintenanceBannerTop');
   if (existing) existing.remove();
   const banner = document.createElement('div');
@@ -2720,7 +2696,7 @@ function listenForceUpdate() {
   }, (e) => console.warn('[KomiNovel] Listener update wajib:', e));
 }
 window.knTriggerForceUpdate = async function (message) {
-  if (!hasRole(userProfile, 'owner') && !hasRole(userProfile, 'admin') && !isAdminSession) { showToast('Akses ditolak!'); return false; }
+  if (!hasRole(userProfile, 'owner') && !hasRole(userProfile, 'admin') && !isAdminUser(userProfile)) { showToast('Akses ditolak!'); return false; }
   const updateId = 'u' + Date.now().toString(36);
   try {
     await setDoc(doc(db, 'settings', 'forceUpdate'), {
@@ -2739,7 +2715,7 @@ window.knDisableForceUpdate = async function () {
 window.toggleMaintenance = async function(enable) {
   const isOwner = hasRole(userProfile, 'owner');
   const isAdmin = hasRole(userProfile, 'admin');
-  if (!isOwner && !isAdmin && !isAdminSession) {
+  if (!isOwner && !isAdmin && !isAdminUser(userProfile)) {
     showToast('Akses ditolak!');
     return;
   }
@@ -2778,7 +2754,7 @@ window.toggleMaintenance = async function(enable) {
         const reason = document.getElementById('maintReason').value.trim();
         const endTime = document.getElementById('maintEndTime').value.trim();
         if (!reason) { showToast('Alasan wajib diisi!'); return; }
-        const by = userProfile?.username || adminEmail || 'Admin';
+        const by = userProfile?.username || currentUser?.email || 'Admin';
         try {
           await setDoc(doc(db, 'settings', 'maintenance'), {
             enabled: true,
@@ -2800,7 +2776,7 @@ window.toggleMaintenance = async function(enable) {
           enabled: false,
           reason: '',
           endTime: '',
-          by: userProfile?.username || adminEmail || 'Admin',
+          by: userProfile?.username || currentUser?.email || 'Admin',
           at: serverTimestamp()
         }, { merge: true });
         document.querySelectorAll('.maintenance-overlay, .maintenance-banner-top').forEach(el => el.remove());
@@ -2897,7 +2873,7 @@ function workStatusBadge(work) {
   if (isUnggulan(work)) return '<span class="unggulan-tag absolute top-2 left-2">⭐ UNGGULAN</span>';
   return '';
 }
-document.getElementById('footerYear').textContent = new Date().getFullYear();
+
 
 function buildSocialLinks(profile) {
   if (!profile) return '';
@@ -2976,7 +2952,7 @@ window.showImgFullscreen = (src, label = '') => {
   overlay.onclick = (e) => { if (e.target === overlay) overlay.remove(); };
   overlay.innerHTML = `
     <button class="img-fullscreen-close" onclick="document.getElementById('imgFsOverlay').remove()"><i class="fas fa-times"></i></button>
-    <img src="${src}" alt="Preview" onclick="event.stopPropagation()">
+    <img src="${safeImageAttr(src, true)}" alt="Preview" onclick="event.stopPropagation()">
     ${label ? `<div class="img-fullscreen-info"><i class="fas fa-image mr-2"></i>${label}</div>` : ''}
   `;
   document.body.appendChild(overlay);
@@ -3286,8 +3262,8 @@ function attachNovelEditor(id, opts) {
   editor.addEventListener('dragstart',e=>{if(e.target?.tagName==='IMG'){selectedImage=e.target;e.dataTransfer.setData('text/plain','novel-image');}});
   editor.addEventListener('dragover',e=>{if(e.target?.tagName==='IMG')e.preventDefault();});
   editor.addEventListener('drop',e=>{if(e.target?.tagName==='IMG' && selectedImage && selectedImage!==e.target){e.preventDefault();const target=e.target;const parent=target.parentNode;parent.insertBefore(selectedImage,target);}});
-  wrap.querySelector('.novel-ed-url').onclick=()=>{const url=prompt('Tempel link gambar (https://...)');if(url && /^https?:\/\//i.test(url)){editor.focus();document.execCommand('insertHTML',false,`<p><img draggable="true" src="${url.replace(/"/g,'&quot;')}" style="width:100%;max-width:100%;height:auto;border-radius:12px;display:block;margin:16px auto"></p><p><br></p>`);}};
-  wrap.querySelector('.novel-ed-file').onchange=async e=>{const files=[...(e.target.files||[])];if(!files.length)return;const btn=wrap.querySelector('.novel-ed-file').parentElement;const old=btn.innerHTML;btn.innerHTML='Mengunggah...';btn.style.opacity='.6';try{for(const file of files){const url=await uploadToImgbb(file);if(url){editor.focus();document.execCommand('insertHTML',false,`<p><img draggable="true" src="${String(url).replace(/"/g,'&quot;')}" style="width:100%;max-width:100%;height:auto;border-radius:12px;display:block;margin:16px auto"></p><p><br></p>`);}}showToast('Gambar berhasil ditambahkan');}catch(err){console.error(err);showToast('Gagal mengunggah gambar');}finally{btn.innerHTML=old;btn.style.opacity='1';e.target.value='';}};
+  wrap.querySelector('.novel-ed-url').onclick=()=>{const url=prompt('Tempel link gambar (https://...)');if(url && /^https?:\/\//i.test(url)){editor.focus();document.execCommand('insertHTML',false,`<p><img draggable="true" src="${safeImageAttr(url, false)}" style="width:100%;max-width:100%;height:auto;border-radius:12px;display:block;margin:16px auto"></p><p><br></p>`);}};
+  wrap.querySelector('.novel-ed-file').onchange=async e=>{const files=[...(e.target.files||[])];if(!files.length)return;const btn=wrap.querySelector('.novel-ed-file').parentElement;const old=btn.innerHTML;btn.innerHTML='Mengunggah...';btn.style.opacity='.6';try{for(const file of files){const url=await uploadToImgbb(file);if(url){editor.focus();document.execCommand('insertHTML',false,`<p><img draggable="true" src="${safeImageAttr(url, false)}" style="width:100%;max-width:100%;height:auto;border-radius:12px;display:block;margin:16px auto"></p><p><br></p>`);}}showToast('Gambar berhasil ditambahkan');}catch(err){console.error(err);showToast('Gagal mengunggah gambar');}finally{btn.innerHTML=old;btn.style.opacity='1';e.target.value='';}};
 }
 
 async function optimizeImageFile(file) {
@@ -3360,140 +3336,6 @@ async function uploadToImgbb(file) {
   }
 }
 function compressImage(file) { return uploadToImgbb(file); }
-
-// ============================================================
-// ===== AUTO BOOST GLOBAL ====================================
-// ============================================================
-async function loadAutoBoostStateFromDB() {
-  try {
-    const snap = await getDoc(doc(db, 'settings', 'autoBoost'));
-    if (snap.exists()) {
-      autoBoostEnabled = snap.data().enabled !== false;
-    } else {
-      try {
-        await setDoc(doc(db, 'settings', 'autoBoost'), {
-          enabled: true,
-          updatedAt: serverTimestamp(),
-          updatedBy: 'system'
-        }, { merge: true });
-      } catch (e) {}
-      autoBoostEnabled = true;
-    }
-  } catch (e) {
-    console.warn('Gagal load auto boost state:', e.message);
-    autoBoostEnabled = true;
-  }
-}
-
-function listenAutoBoostState() {
-  if (autoBoostUnsub) { try { autoBoostUnsub(); } catch(e){} autoBoostUnsub = null; }
-  autoBoostUnsub = onSnapshot(doc(db, 'settings', 'autoBoost'), (snap) => {
-    if (!snap.exists()) return;
-    const newState = snap.data().enabled !== false;
-    const changed = newState !== autoBoostEnabled;
-    autoBoostEnabled = newState;
-    if (changed) {
-      const statusEl = document.getElementById('boostStatusLabel');
-      if (statusEl) {
-        const statusIcon = document.getElementById('boostStatusIcon');
-        const statusCard = document.getElementById('boostStatusCard');
-        const toggleBtn = document.getElementById('boostToggleBtn');
-        statusEl.textContent = autoBoostEnabled ? 'AKTIF' : 'NONAKTIF';
-        statusEl.className = autoBoostEnabled ? 'font-black text-green-400 text-lg' : 'font-black text-red-400 text-lg';
-        if (statusIcon) statusIcon.className = autoBoostEnabled ? 'fas fa-toggle-on text-green-400 text-4xl' : 'fas fa-toggle-off text-red-400 text-4xl';
-        if (statusCard) statusCard.className = autoBoostEnabled ? 'card-bg rounded-2xl p-6 card-anim berlanjut-border' : 'card-bg rounded-2xl p-6 card-anim tamat-border';
-        if (toggleBtn) {
-          toggleBtn.textContent = autoBoostEnabled ? '⏸️ Matikan Auto Boost' : '▶️ Jalankan Auto Boost';
-          toggleBtn.className = autoBoostEnabled
-            ? 'w-full bg-red-600 text-white font-bold py-3 rounded-full hover:scale-105 transition btn-glow'
-            : 'w-full bg-green-600 text-white font-bold py-3 rounded-full hover:scale-105 transition btn-glow';
-        }
-      }
-    }
-  }, (err) => {
-    console.warn('Auto boost listener error:', err.message);
-  });
-}
-
-async function autoBoostAllWorks() {
-  if (!autoBoostEnabled) return;
-  if (document.hidden) return;
-  try {
-    // Lease: cukup SATU klien per interval yang menjalankan boost (bukan semua user online)
-    const leaseRef = doc(db, 'settings', 'autoBoost');
-    const leaseSnap = await getDoc(leaseRef);
-    const lastRun = leaseSnap.exists() ? (leaseSnap.data().lastRunMs || 0) : 0;
-    if (Date.now() - lastRun < AUTO_BOOST_INTERVAL - 15000) return;
-    try { await updateDoc(leaseRef, { lastRunMs: Date.now() }); } catch (e) { return; } // tidak punya izin tulis -> jangan jalankan
-    const snap = await getDocs(collection(db, 'works'));
-    if (snap.empty) return;
-    const promises = [];
-    snap.forEach(d => {
-      const work = d.data();
-      if (isNonPublish(work) || isTakedown(work)) return;
-      promises.push(
-        updateDoc(doc(db, 'works', d.id), {
-          views: increment(AUTO_VIEW_AMOUNT),
-          likes: increment(AUTO_LIKE_AMOUNT),
-          updatedAt: serverTimestamp()
-        }).catch(() => {})
-      );
-    });
-    if (promises.length > 0) {
-      await Promise.allSettled(promises);
-    }
-  } catch (e) {
-    console.warn('Auto boost error:', e.message);
-  }
-}
-
-function startAutoBoost() {
-  if (autoBoostInterval) { clearInterval(autoBoostInterval); autoBoostInterval = null; }
-  if (!autoBoostEnabled) return;
-  setTimeout(() => { if (autoBoostEnabled) autoBoostAllWorks(); }, 3000);
-  autoBoostInterval = setInterval(() => { if (autoBoostEnabled) autoBoostAllWorks(); }, AUTO_BOOST_INTERVAL);
-}
-
-function stopAutoBoost() {
-  if (autoBoostInterval) { clearInterval(autoBoostInterval); autoBoostInterval = null; }
-}
-
-window.toggleAutoBoost = async function() {
-  const newState = !autoBoostEnabled;
-  try {
-    await setDoc(doc(db, 'settings', 'autoBoost'), {
-      enabled: newState,
-      updatedAt: serverTimestamp(),
-      updatedBy: userProfile?.username || adminEmail || 'Admin'
-    }, { merge: true });
-    autoBoostEnabled = newState;
-    if (newState) {
-      startAutoBoost();
-      showToast('✅ Auto boost GLOBAL DIAKTIFKAN');
-    } else {
-      stopAutoBoost();
-      showToast('⏸️ Auto boost GLOBAL DIMATIKAN');
-    }
-    const statusEl = document.getElementById('boostStatusLabel');
-    const statusIcon = document.getElementById('boostStatusIcon');
-    const statusCard = document.getElementById('boostStatusCard');
-    const toggleBtn = document.getElementById('boostToggleBtn');
-    if (statusEl) {
-      statusEl.textContent = autoBoostEnabled ? 'AKTIF' : 'NONAKTIF';
-      statusEl.className = autoBoostEnabled ? 'font-black text-green-400 text-lg' : 'font-black text-red-400 text-lg';
-    }
-    if (statusIcon) statusIcon.className = autoBoostEnabled ? 'fas fa-toggle-on text-green-400 text-4xl' : 'fas fa-toggle-off text-red-400 text-4xl';
-    if (statusCard) statusCard.className = autoBoostEnabled ? 'card-bg rounded-2xl p-6 card-anim berlanjut-border' : 'card-bg rounded-2xl p-6 card-anim tamat-border';
-    if (toggleBtn) {
-      toggleBtn.textContent = autoBoostEnabled ? '⏸️ Matikan Auto Boost' : '▶️ Jalankan Auto Boost';
-      toggleBtn.className = autoBoostEnabled
-        ? 'w-full bg-red-600 text-white font-bold py-3 rounded-full hover:scale-105 transition btn-glow'
-        : 'w-full bg-green-600 text-white font-bold py-3 rounded-full hover:scale-105 transition btn-glow';
-    }
-  } catch (e) {
-    showToast('Gagal ubah status boost: ' + e.message);
-  }
-};
 
 // ============================================================
 // ===== CUSTOM GENRE =========================================
@@ -3569,21 +3411,6 @@ async function toggleFollow(targetUid) {
 }
 window.toggleFollow = toggleFollow;
 
-async function boostOwnerFollowers() {
-  if (!currentUser || !userProfile) return;
-  if (!hasRole(userProfile, 'owner')) return;
-  const last = userProfile.lastOwnerBoost || 0;
-  const now = Date.now();
-  if (now - last < FOLLOWER_INTERVAL) return;
-  try {
-    const ref = doc(db, 'users', currentUser.uid);
-    const newCount = (userProfile.followerCount || 0) + OWNER_FOLLOWER_RATE;
-    await updateDoc(ref, { followerCount: newCount, lastOwnerBoost: now, updatedAt: serverTimestamp() });
-    userProfile.followerCount = newCount;
-    userProfile.lastOwnerBoost = now;
-  } catch (e) {}
-}
-
 // ============================================================
 // ===== BIRTHDAY =============================================
 // ============================================================
@@ -3636,17 +3463,11 @@ async function checkBirthdays() {
 // ===== NAVIGASI MOBILE ======================================
 // ============================================================
 const NAV_MAP = [
-  { id:'kategori', icon:'fa-tags', label:'Kategori' },
-  { id:'panduan', icon:'fa-book', label:'Panduan', color:'text-amber-300' },
-  { id:'minigame', icon:'fa-gamepad', label:'Mini Game', color:'text-purple-400' },
   { id:'bookmark', icon:'fa-bookmark', label:'Bookmark' },
-  { id:'followers', icon:'fa-users', label:'Top Followers' },
-  { id:'leaderboard', icon:'fa-trophy', label:'Leaderboard' },
-  { id:'notifikasi', icon:'fa-bell', label:'Notifikasi' },
   { id:'kritik', icon:'fa-envelope', label:'Kritik & Saran' },
   { id:'profil', icon:'fa-user-circle', label:'Profil' },
-  { id:'about-dev', icon:'fa-code', label:'About Dev', color:'text-sky-400' },
-  { id:'admin', icon:'fa-crown', label:'Admin Panel', color:'text-amber-400', roleCheck:() => isAdminUser(userProfile) }
+  { id:'about-dev', icon:'fa-code', label:'Tentang', color:'text-sky-400' },
+  { id:'muan', icon:'fa-crown', label:'Admin Panel', color:'text-amber-400', roleCheck:() => isAdminUser(userProfile) }
 ];
 function updateActiveNav() {
   const base = getHash().split('/')[0];
@@ -3973,8 +3794,8 @@ function attachCoverHandler(id) {
         window[`_${id}_cover`] = dataUrl;
         preview.innerHTML = `
           <div class="img-preview-wrap">
-            <img src="${dataUrl}" class="img-preview" style="width:96px;height:128px" onclick="event.stopPropagation();window.showImgFullscreen('${dataUrl}','Sampul / Cover')">
-            <span class="zoom-badge" onclick="event.stopPropagation();window.showImgFullscreen('${dataUrl}','Sampul / Cover')"><i class="fas fa-expand"></i></span>
+            <img src="${safeImageAttr(dataUrl, true)}" class="img-preview" style="width:96px;height:128px" onclick="event.stopPropagation();window.showImgFullscreen('${escAttr(safeImageSource(dataUrl, true))}','Sampul / Cover')">
+            <span class="zoom-badge" onclick="event.stopPropagation();window.showImgFullscreen('${escAttr(safeImageSource(dataUrl, true))}','Sampul / Cover')"><i class="fas fa-expand"></i></span>
           </div>
           <p class="text-xs text-green-400 mt-1">✅ Terupload ke ImgBB • Klik untuk fullscreen</p>
         `;
@@ -3985,11 +3806,11 @@ function attachCoverHandler(id) {
   urlInput.oninput = () => {
     const url = extractFirstImageUrl(urlInput.value);
     if (url) {
-      const safeUrl = escAttr(url);
+      const safeUrl = escAttr(safeImageSource(url));
       window[`_${id}_cover`] = url;
       preview.innerHTML = `
         <div class="img-preview-wrap">
-          <img src="${url}" class="img-preview" style="width:96px;height:128px" onerror="this.src='https://placehold.co/96x128/1a1a2e/64748b?text=Err'" onclick="event.stopPropagation();window.showImgFullscreen('${safeUrl}','Sampul / Cover')">
+          <img src="${safeImageAttr(url, false)}" class="img-preview" style="width:96px;height:128px" onerror="this.src='https://placehold.co/96x128/1a1a2e/64748b?text=Err'" onclick="event.stopPropagation();window.showImgFullscreen('${safeUrl}','Sampul / Cover')">
           <span class="zoom-badge" onclick="event.stopPropagation();window.showImgFullscreen('${safeUrl}','Sampul / Cover')"><i class="fas fa-expand"></i></span>
         </div>
       `;
@@ -4126,9 +3947,9 @@ function attachMultiImageHandlers(containerId) {
       const wrap = document.createElement('div');
       wrap.className = 'img-preview-wrap' + (mode === 'drag' ? ' no-fullscreen' : '');
       wrap.innerHTML = `
-        <img src="${f.preview || f.dataUrl}" class="img-preview" draggable="false" ${mode === 'fullscreen' ? `onclick="event.stopPropagation();window.showImgFullscreen('${f.dataUrl}','Gambar #${i+1} dari ${total}')"` : ''}>
+        <img src="${safeImageAttr(f.preview || f.dataUrl, true)}" class="img-preview" draggable="false" ${mode === 'fullscreen' ? `onclick="event.stopPropagation();window.showImgFullscreen('${escAttr(safeImageSource(f.dataUrl, true))}','Gambar #${i+1} dari ${total}')"` : ''}>
         <span class="order-num">#${i+1}</span>
-        ${mode === 'fullscreen' ? `<span class="zoom-badge" onclick="event.stopPropagation();window.showImgFullscreen('${f.dataUrl}','Gambar #${i+1} dari ${total}')"><i class="fas fa-expand"></i></span>` : ''}
+        ${mode === 'fullscreen' ? `<span class="zoom-badge" onclick="event.stopPropagation();window.showImgFullscreen('${escAttr(safeImageSource(f.dataUrl, true))}','Gambar #${i+1} dari ${total}')"><i class="fas fa-expand"></i></span>` : ''}
         <span class="remove-btn" onclick="event.stopPropagation();removeImg('${containerId}',${i})">×</span>
         ${mode === 'drag' ? `<span class="drag-handle" title="Tahan & geser"><i class="fas fa-arrows-alt"></i></span>` : ''}
       `;
@@ -4138,9 +3959,9 @@ function attachMultiImageHandlers(containerId) {
     urls.forEach((url, i) => {
       const wrap = document.createElement('div');
       wrap.className = 'img-preview-wrap' + (mode === 'drag' ? ' no-fullscreen' : '');
-      const safeUrl = escAttr(url);
+      const safeUrl = escAttr(safeImageSource(url));
       wrap.innerHTML = `
-        <img src="${url}" class="img-preview" draggable="false" onerror="this.src='https://placehold.co/80x80/1a1a2e/64748b?text=Err'" ${mode === 'fullscreen' ? `onclick="event.stopPropagation();window.showImgFullscreen('${safeUrl}','Gambar #${files.length + i + 1} dari ${total}')"` : ''}>
+        <img src="${safeImageAttr(url, false)}" class="img-preview" draggable="false" onerror="this.src='https://placehold.co/80x80/1a1a2e/64748b?text=Err'" ${mode === 'fullscreen' ? `onclick="event.stopPropagation();window.showImgFullscreen('${safeUrl}','Gambar #${files.length + i + 1} dari ${total}')"` : ''}>
         <span class="order-num">#${files.length + i + 1}</span>
         ${mode === 'fullscreen' ? `<span class="zoom-badge" onclick="event.stopPropagation();window.showImgFullscreen('${safeUrl}','Gambar #${files.length + i + 1} dari ${total}')"><i class="fas fa-expand"></i></span>` : ''}
         <span class="remove-btn" onclick="event.stopPropagation();removeUrl('${containerId}',${i})">×</span>
@@ -4218,7 +4039,7 @@ function attachExistingImagesHandler(cid, images) {
       const wrap = document.createElement('div');
       wrap.className = 'img-preview-wrap' + (mode === 'drag' ? ' no-fullscreen' : '');
       wrap.innerHTML = `
-        <img src="${img}" class="img-preview" draggable="false" onerror="this.src='https://placehold.co/80x80/1a1a2e/64748b?text=Err'" ${mode === 'fullscreen' ? `onclick="window.showImgFullscreen('${escAttr(img)}','Gambar #${i+1}')"` : ''}>
+        <img src="${safeImageAttr(img, false)}" class="img-preview" draggable="false" onerror="this.src='https://placehold.co/80x80/1a1a2e/64748b?text=Err'" ${mode === 'fullscreen' ? `onclick="window.showImgFullscreen('${escAttr(safeImageSource(img))}','Gambar #${i+1}')"` : ''}>
         <span class="order-num">#${i+1}</span>
         <span class="remove-btn" onclick="event.stopPropagation();window.removeExistingImage('${cid}',${i})">×</span>
       `;
@@ -4288,8 +4109,8 @@ window.openEditWorkModal = async (wid) => {
     showToast('Tidak punya akses edit karya ini');
     return;
   }
-  const canN = hasRole(userProfile,'penulis') || isAdminSession;
-  const canK = hasRole(userProfile,'komikus') || isAdminSession;
+  const canN = hasRole(userProfile,'penulis') || isAdminUser(userProfile);
+  const canK = hasRole(userProfile,'komikus') || isAdminUser(userProfile);
   let opts = ''; 
   if (canN) opts += `<option value="novel" ${w.type === 'novel' ? 'selected' : ''}>Novel</option>`; 
   if (canK) opts += `<option value="komik" ${w.type === 'komik' ? 'selected' : ''}>Komik</option>`;
@@ -4389,10 +4210,10 @@ window.openEditWorkModal = async (wid) => {
   
   function renderCoverPreview(url) {
     if (!url) { preview.innerHTML = ''; return; }
-    const safeUrl = escAttr(url);
+    const safeUrl = escAttr(safeImageSource(url));
     preview.innerHTML = `
       <div class="img-preview-wrap">
-        <img src="${url}" class="img-preview" style="width:96px;height:128px" onerror="this.src='https://placehold.co/96x128/1a1a2e/64748b?text=Err'" onclick="event.stopPropagation();window.showImgFullscreen('${safeUrl}','Sampul Baru')">
+        <img src="${safeImageAttr(url, false)}" class="img-preview" style="width:96px;height:128px" onerror="this.src='https://placehold.co/96x128/1a1a2e/64748b?text=Err'" onclick="event.stopPropagation();window.showImgFullscreen('${safeUrl}','Sampul Baru')">
         <span class="zoom-badge" onclick="event.stopPropagation();window.showImgFullscreen('${safeUrl}','Sampul Baru')"><i class="fas fa-expand"></i></span>
       </div>
       <p class="text-xs text-green-400 mt-1">✅ Sampul siap</p>`;
@@ -4488,8 +4309,11 @@ window.openEditWorkModal = async (wid) => {
     const cats = getSelectedCats('editWCategories');
     const category = cats.join(', ');
     const desc = document.getElementById('editWDesc').value.trim();
-    const coverURL = window[`_editWCover_cover`] || extractFirstImageUrl(urlInput.value);
+    const coverURL = safeImageSource(window[`_editWCover_cover`] || extractFirstImageUrl(urlInput.value));
+    const rawBannerURL = (document.getElementById('editWBanner')?.value || '').trim();
+    const bannerURL = rawBannerURL ? safeImageSource(rawBannerURL) : '';
 
+    if (rawBannerURL && !bannerURL) { showToast('URL banner harus menggunakan http:// atau https:// yang valid.'); return; }
     if (!title || !teaser || cats.length === 0 || !coverURL) {
       showToast('Lengkapi semua field bertanda *');
       return;
@@ -4501,7 +4325,7 @@ window.openEditWorkModal = async (wid) => {
     try {
       await updateDoc(doc(db, 'works', wid), {
         title, teaser, type, category, description: desc,
-        coverURL, bannerURL: (document.getElementById('editWBanner')?.value || '').trim(), status, isTamat,
+        coverURL, bannerURL, status, isTamat,
         saweriaLink: (document.getElementById('editWSaweria')?.value || '').trim(), saweria: (document.getElementById('editWSaweria')?.value || '').trim(),
         supportLink: { url:(document.getElementById('editWSaweria')?.value || '').trim(), platform:document.getElementById('editSupportPlatform')?.value || 'Saweria', label:(document.getElementById('editSupportLabel')?.value || '').trim() },
         updatedAt: serverTimestamp()
@@ -4579,7 +4403,7 @@ function renderReviewReaderModal() {
       <div class="review-card mb-4">
         <div class="flex items-start gap-3">
           <div class="w-16 h-22 bg-slate-800 rounded-lg overflow-hidden flex-shrink-0">
-            ${w.coverURL ? `<img src="${w.coverURL}" class="w-full h-full object-cover cover-clickable" onclick="window.showImgFullscreen('${escAttr(w.coverURL)}','Sampul: ${escAttr(w.title)}')">` : `<div class="flex items-center justify-center h-full"><i class="fas fa-image text-2xl text-slate-600"></i></div>`}
+            ${w.coverURL ? `<img src="${safeImageAttr(w.coverURL, false)}" class="w-full h-full object-cover cover-clickable" onclick="window.showImgFullscreen('${escAttr(safeImageSource(w.coverURL))}','Sampul: ${escAttr(w.title)}')">` : `<div class="flex items-center justify-center h-full"><i class="fas fa-image text-2xl text-slate-600"></i></div>`}
           </div>
           <div class="flex-1 min-w-0">
             <h3 class="font-bold text-sm">${escHtml(w.title)}</h3>
@@ -4621,7 +4445,7 @@ function renderReviewReaderModal() {
               ? `<div class="review-empty-hint"><i class="fas fa-images"></i><p class="text-sm">Belum ada gambar untuk ${label} ini.</p></div>`
               : currentImgs.map((img, idx) => `
                   <div class="relative group">
-                    <img src="${img}" alt="Gambar ${idx+1}" onerror="this.src='https://placehold.co/800x600/1a1a2e/64748b?text=Gambar+Error'">
+                    <img src="${safeImageAttr(img, false)}" alt="Gambar ${idx+1}" onerror="this.src='https://placehold.co/800x600/1a1a2e/64748b?text=Gambar+Error'">
                     <span class="absolute top-2 left-2 bg-black/70 text-amber-400 text-xs font-black px-2 py-1 rounded-full">#${idx+1}</span>
                   </div>
                 `).join('')
@@ -4830,8 +4654,8 @@ function renderReviewPanelContent() {
             : imgs.map((img, idx) => `
                 <div class="review-img-thumb ${mode === 'drag' ? 'drag-mode' : mode === 'fullscreen' ? 'fs-mode' : ''}" 
                      data-idx="${idx}" draggable="${mode === 'drag' ? 'true' : 'false'}">
-                  <img src="${img}" alt="Gambar ${idx+1}" 
-                       ${mode === 'fullscreen' ? `onclick="event.stopPropagation();window.showImgFullscreen('${escAttr(img)}','Gambar #${idx+1} dari ${imgs.length}')"` : ''}
+                  <img src="${safeImageAttr(img, false)}" alt="Gambar ${idx+1}" 
+                       ${mode === 'fullscreen' ? `onclick="event.stopPropagation();window.showImgFullscreen('${escAttr(safeImageSource(img))}','Gambar #${idx+1} dari ${imgs.length}')"` : ''}
                        onerror="this.src='https://placehold.co/70x70/1a1a2e/64748b?text=Err'">
                   <span class="order-num">#${idx+1}</span>
                   ${mode === 'drag' ? '<span class="drag-handle" title="Tahan & geser"><i class="fas fa-arrows-alt"></i></span>' : ''}
@@ -5072,9 +4896,6 @@ async function initAuth() {
       setTimeout(() => { initNotifListener(); initChapterNotificationListener(); initGlobalReleaseNotifications(); }, 1200);
       setTimeout(() => { pushOnLogin(); }, 2200);
       setTimeout(() => checkBirthdays(), 1500);
-      setTimeout(() => boostOwnerFollowers(), 2500);
-      if (ownerFollowerInterval) clearInterval(ownerFollowerInterval);
-      ownerFollowerInterval = setInterval(() => boostOwnerFollowers(), FOLLOWER_INTERVAL);
     } else {
       currentUser = null; userProfile = null;
       v111NotifItems = []; v111NotifQueue = []; v111NotifInitialized = false;
@@ -5108,8 +4929,6 @@ async function signInAsGuest() { try { await signInAnonymously(auth); showToast(
 async function logout() {
   try { await pushDetachToken(); } catch (e) {}
   await signOut(auth);
-  isAdminSession = false; adminEmail = null;
-  localStorage.removeItem('adminSession'); localStorage.removeItem('adminEmail'); localStorage.removeItem('ownerSession');
   notifPrivateUnsubs.forEach(u => { try { u(); } catch(e){} });
   notifPrivateUnsubs = [];
   notifListeners.forEach(u => { try { u(); } catch(e){} });
@@ -5119,7 +4938,6 @@ async function logout() {
   if (userProfileUnsub) { try { userProfileUnsub(); } catch(e){} userProfileUnsub = null; }
   if (v111NotifUnsub) { try { v111NotifUnsub(); } catch(e){} v111NotifUnsub = null; }
   if (usersCacheUnsub) { try { usersCacheUnsub(); } catch(e){} usersCacheUnsub = null; }
-  if (ownerFollowerInterval) clearInterval(ownerFollowerInterval);
   if (birthdayCheckInterval) clearInterval(birthdayCheckInterval);
   if (mgUnsubRoom) { try { mgUnsubRoom(); } catch(e){} mgUnsubRoom = null; }
   if (mgUnsubPlayers) { try { mgUnsubPlayers(); } catch(e){} mgUnsubPlayers = null; }
@@ -5130,39 +4948,43 @@ async function logout() {
 }
 
 async function adminLogin(email, pass) {
-  if (email === OWNER_EMAIL && pass === OWNER_PASSWORD) {
-    isAdminSession = true; adminEmail = email;
-    localStorage.setItem('adminSession','true'); localStorage.setItem('adminEmail',email); localStorage.setItem('ownerSession','true');
-    showToast('👑 Owner login!');
-    navTo('admin');
+  const normalizedEmail = String(email || '').trim().toLowerCase();
+  if (!normalizedEmail || !pass) {
+    showToast('Masukkan email dan sandi.');
     return;
   }
-  if (email === ADMIN_EMAIL && pass === ADMIN_PASSWORD) {
-    isAdminSession = true; adminEmail = email;
-    localStorage.setItem('adminSession','true'); localStorage.setItem('adminEmail',email);
-    showToast('Admin login!');
-    navTo('admin');
-    return;
-  }
+
   try {
-    const cred = await signInWithEmailAndPassword(auth, email, pass);
-    const userRef = doc(db,'users',cred.user.uid);
+    const cred = await signInWithEmailAndPassword(auth, normalizedEmail, pass);
+    const userRef = doc(db, 'users', cred.user.uid);
     const snap = await getDoc(userRef);
-    let roles = snap.data()?.roles || ['pembaca'];
-    if (!roles.includes('admin')) roles.push('admin');
-    await updateDoc(userRef,{role:'admin',roles,level:MAX_LEVEL,exp:MAX_LEVEL*20});
-    isAdminSession = true; adminEmail = email;
-    localStorage.setItem('adminSession','true'); localStorage.setItem('adminEmail',email);
-    showToast('Admin login!');
-    navTo('admin');
-  } catch (e) { showToast('Email/sandi salah!'); }
+
+    if (!snap.exists()) {
+      await signOut(auth);
+      showToast('Akun belum memiliki profil KomiNovel dan tidak diberi akses admin.');
+      return;
+    }
+
+    const profile = { uid: cred.user.uid, ...snap.data() };
+    if (!hasRole(profile, 'admin') && !hasRole(profile, 'owner')) {
+      await signOut(auth);
+      showToast('Akun ini tidak memiliki hak akses admin.');
+      return;
+    }
+
+    userProfile = profile;
+    showToast('Login admin berhasil!');
+    navTo('muan');
+  } catch (e) {
+    console.warn('[KomiNovel] Admin login gagal:', e);
+    showToast('Login gagal. Periksa email, sandi, dan hak akses admin.');
+  }
 }
-function adminLogout() {
-  isAdminSession = false; adminEmail = null;
-  localStorage.removeItem('adminSession'); localStorage.removeItem('adminEmail'); localStorage.removeItem('ownerSession');
+
+async function adminLogout() {
+  await logout();
   navTo('home');
 }
-if (localStorage.getItem('adminSession') === 'true') { isAdminSession = true; adminEmail = localStorage.getItem('adminEmail'); }
 
 async function addExp(amount) {
   if (!currentUser || !userProfile || isAdminUser(userProfile)) return;
@@ -5541,7 +5363,7 @@ async function createChapterNotifications(workId, chapterData) {
     const author = aSnap.exists() ? aSnap.data() : {};
     const followers = [...new Set((author.followers || []).filter(Boolean))];
     const chapterLabel = w.type === 'novel' ? 'chapter' : 'episode';
-    const title = `New ${chapterLabel}: ${w.title}`;
+    const title = `New ${chapterLabel}: ${w.title || ''}`;
     const body = `${w.type === 'novel' ? 'Chapter' : 'Episode'} ${chapterData.number}${chapterData.title ? ' • ' + chapterData.title : ''}`;
     const targets = followers.filter(uid => uid !== w.authorId);
     for (const uid of targets) {
@@ -5714,12 +5536,6 @@ window.__komiSkeleton = function () {
 };
 async function renderPage() {
   if (currentResumeBanner) { try { currentResumeBanner.remove(); } catch(e){} currentResumeBanner = null; }
-  if (Object.keys(usersCache).length === 0) {
-    const _m = document.getElementById('mainContent');
-    if (_m && !_m.firstElementChild) _m.innerHTML = window.__komiSkeleton();
-    // Tunggu maksimal 1,5 detik; sisanya lanjut di latar belakang
-    await Promise.race([loadAllUsersCache(), new Promise(r => setTimeout(r, 1500))]);
-  }
   if (isFullscreenReader) {
     isFullscreenReader = false; document.body.style.overflow = '';
     const cb = document.getElementById('fullscreenClose');
@@ -5742,6 +5558,23 @@ async function renderPage() {
   if (main) {
     main.innerHTML = window.__komiSkeleton();
     window.scrollTo(0, 0);
+  }
+
+  // /admin sengaja menjadi halaman peringatan publik (decoy), bukan pintu login.
+  // Jangan pernah mengalihkan pengunjung dari /admin ke /muan.
+  if (hash === 'admin') {
+    const bn = document.getElementById('bottomNav');
+    if (bn) bn.style.display = 'none';
+    document.body.style.paddingBottom = '0';
+    await renderAdminDecoy(main);
+    return;
+  }
+
+  // Halaman /admin dan /muan tidak perlu memuat cache seluruh pengguna.
+  // Data pengguna baru dimuat untuk halaman publik yang memang memerlukannya.
+  if (hash !== 'muan' && Object.keys(usersCache).length === 0) {
+    // Tunggu maksimal 1,5 detik; sisanya lanjut di latar belakang.
+    await Promise.race([loadAllUsersCache(), new Promise(r => setTimeout(r, 1500))]);
   }
 
   if (isMaintenanceBlocked()) {
@@ -5770,17 +5603,17 @@ async function renderPage() {
   if (base === 'berita') markNotifSeen('berita', Date.now());
 
   updateActiveNav();
-  if (hash.startsWith('admin')) {
-    if (!isAdminSession && !hasRole(userProfile, 'admin') && !hasRole(userProfile, 'owner')) { renderAdminLogin(main); return; }
-    await renderAdminPanel(main);
+  if (hash === 'muan') {
+    if (!isAdminUser(userProfile)) { renderAdminLogin(main); return; }
+    await renderAdminLegalNotice(main);
   } else if (hash.startsWith('creator')) {
-    if (currentUser && !currentUser.isAnonymous && !isCreator(userProfile) && !isAdminSession) {
+    if (currentUser && !currentUser.isAnonymous && !isCreator(userProfile) && !isAdminUser(userProfile)) {
       try {
         const freshProfile = await getDoc(doc(db, 'users', currentUser.uid));
         if (freshProfile.exists()) userProfile = { id: currentUser.uid, ...freshProfile.data() };
       } catch (err) { console.warn('Gagal menyegarkan profil kreator:', err); }
     }
-    if (!isCreator(userProfile) && !isAdminSession) {
+    if (!isCreator(userProfile) && !isAdminUser(userProfile)) {
       const rolesShown = [...normalizeRoleValue(userProfile?.roles), ...normalizeRoleValue(userProfile?.role)];
       main.innerHTML = `<div class="card-bg rounded-2xl p-8 text-center">
         <i class="fas fa-lock text-4xl text-red-400 mb-4"></i>
@@ -5800,7 +5633,11 @@ async function renderPage() {
     await renderFollowersPage(main, hash.replace('followers/',''), 'followers');
   } else if (hash.startsWith('following/')) {
     await renderFollowersPage(main, hash.replace('following/',''), 'following');
-  } else if (hash === 'baru') await renderBaru(main);
+  } else if (hash === 'baru') await renderBaru(main, currentContentType);
+  else if (hash === 'baru-komik') await renderBaru(main, 'komik');
+  else if (hash === 'baru-novel') await renderBaru(main, 'novel');
+  else if (hash === 'semua-komik') await renderSemuaKomik(main);
+  else if (hash === 'semua-novel') await renderSemuaNovel(main);
   else if (hash === 'baruupload') await renderBaruUpload(main);
   else if (hash === 'berita') await renderBerita(main);
   else if (hash === 'jadwal-rilis') await renderReleaseSchedule(main);
@@ -5821,8 +5658,8 @@ async function renderPage() {
 function renderAdminLogin(c) {
   c.innerHTML = `<div class="card-bg rounded-2xl p-6 md:p-8 max-w-md mx-auto card-anim">
     <div class="text-center mb-6">
-      <img src="${LOGO_URL}" class="w-20 h-20 mx-auto rounded-2xl mb-3 border-2 border-amber-500">
-      <h2 class="text-2xl font-black">Admin Login</h2>
+      <img src="${safeImageAttr(LOGO_URL, false)}" class="w-20 h-20 mx-auto rounded-2xl mb-3 border-2 border-amber-500">
+      <h2 class="text-2xl font-black">Admin Login</h2><p class="text-xs text-slate-400 mt-2">Gunakan akun Firebase yang sudah diberi role admin atau owner.</p>
     </div>
     <div class="space-y-4">
       <input id="adminEmailInput" type="email" placeholder="Email admin" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm">
@@ -5841,26 +5678,73 @@ function renderAdminLogin(c) {
   document.getElementById('adminLoginBtn').onclick = () => adminLogin(document.getElementById('adminEmailInput').value.trim(), pi.value);
 }
 
-async function renderBaru(container) {
+async function renderBaru(container, type = currentContentType) {
+  type = type === 'novel' ? 'novel' : 'komik';
+  currentContentType = type;
+  const label = type === 'novel' ? 'Novel' : 'Komik';
+  const icon = type === 'novel' ? 'fa-book-open' : 'fa-panorama';
+  const color = type === 'novel' ? 'text-amber-400' : 'text-blue-400';
   container.innerHTML = `
-    <h2 class="text-2xl font-bold mb-4"><i class="fas fa-clock text-blue-400 mr-2"></i>Proses Pengerjaan</h2>
-    <p class="text-sm text-slate-400 mb-6">Karya yang sedang dalam proses pembuatan (belum dipublish).</p>
+    <div class="mb-5">
+      <button type="button" onclick="navTo('home')" class="text-sm text-amber-400 hover:text-amber-300 mb-3"><i class="fas fa-arrow-left mr-2"></i>Kembali ke Beranda</button>
+      <h2 class="text-2xl font-bold mb-2"><i class="fas fa-clock ${color} mr-2"></i>Proses Pengerjaan ${label}</h2>
+      <p class="text-sm text-slate-400">${label} yang sedang dalam proses pembuatan dan belum dipublikasikan.</p>
+    </div>
     <div id="baruList" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-5"></div>`;
   const list = document.getElementById('baruList');
-  const snap = await getDocs(collection(db, 'works'));
-  let works = []; snap.forEach(d => works.push({ id: d.id, ...d.data() }));
-  works = works.filter(w => isNonPublish(w) && !isTakedown(w));
-  works.sort((a, b) => {
-    const aTime = a.updatedAt?.toDate?.() || a.createdAt?.toDate?.() || 0;
-    const bTime = b.updatedAt?.toDate?.() || b.createdAt?.toDate?.() || 0;
-    return bTime - aTime;
-  });
-  if (works.length === 0) {
-    list.innerHTML = `<div class="col-span-full card-bg rounded-2xl p-12 text-center"><i class="fas fa-clock text-5xl text-blue-400/50 mb-3"></i><p class="text-slate-300">Belum ada karya yang sedang dibuat.</p></div>`;
-    return;
+  try {
+    let works = await getWorksByTypeCached(type);
+    works = works.filter(w => (w.type || 'komik') === type && isNonPublish(w) && !isTakedown(w));
+    works.sort((a, b) => {
+      const aTime = a.updatedAt?.toDate?.() || a.createdAt?.toDate?.() || 0;
+      const bTime = b.updatedAt?.toDate?.() || b.createdAt?.toDate?.() || 0;
+      return bTime - aTime;
+    });
+    if (works.length === 0) {
+      list.innerHTML = `<div class="col-span-full card-bg rounded-2xl p-12 text-center"><i class="fas ${icon} text-5xl ${color}/50 mb-3"></i><p class="text-slate-300">Belum ada ${label.toLowerCase()} yang sedang dalam proses pengerjaan.</p></div>`;
+      return;
+    }
+    renderWorkList(list, works, new Set(), true);
+  } catch (e) {
+    console.error('Gagal memuat proses pengerjaan:', e);
+    list.innerHTML = `<div class="col-span-full card-bg rounded-2xl p-8 text-center text-slate-400">${label} gagal dimuat. Silakan coba lagi.</div>`;
   }
-  renderWorkList(list, works, new Set(), true);
 }
+
+async function renderSemuaKarya(container, type = 'komik') {
+  type = type === 'novel' ? 'novel' : 'komik';
+  currentContentType = type;
+  const label = type === 'novel' ? 'Novel' : 'Komik';
+  const icon = type === 'novel' ? 'fa-book-open' : 'fa-panorama';
+  const color = type === 'novel' ? 'text-amber-400' : 'text-orange-400';
+  const listId = type === 'novel' ? 'semuaNovelPageList' : 'semuaKomikPageList';
+  container.innerHTML = `
+    <div class="mb-5">
+      <button type="button" onclick="navTo('home')" class="text-sm text-amber-400 hover:text-amber-300 mb-3"><i class="fas fa-arrow-left mr-2"></i>Kembali ke Beranda</button>
+      <h2 class="text-2xl font-bold mb-2"><i class="fas ${icon} ${color} mr-2"></i>Semua ${label}</h2>
+      <p class="text-sm text-slate-400">Jelajahi seluruh ${label.toLowerCase()} yang sudah dipublikasikan di KomiNovel.</p>
+    </div>
+    <div id="${listId}" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-5">
+      <div class="col-span-full text-center py-10 text-slate-400"><i class="fas fa-spinner fa-spin mr-2"></i>Memuat ${label.toLowerCase()}...</div>
+    </div>`;
+  const list = document.getElementById(listId);
+  try {
+    let works = await getWorksByTypeCached(type);
+    works = works.filter(w => (w.type || 'komik') === type && !isNonPublish(w) && !isTakedown(w));
+    works.forEach(w => { currentWorksData[w.id] = w; });
+    works.sort((a,b) => (b.createdAt?.toDate?.()?.getTime?.() || 0) - (a.createdAt?.toDate?.()?.getTime?.() || 0));
+    if (!works.length) {
+      list.innerHTML = `<div class="col-span-full card-bg rounded-2xl p-12 text-center"><i class="fas ${icon} text-5xl ${color}/50 mb-3"></i><p class="text-slate-300">Belum ada ${label.toLowerCase()} yang dipublikasikan.</p></div>`;
+      return;
+    }
+    renderWorkList(list, works, new Set(), true);
+  } catch (e) {
+    console.error(`Gagal memuat semua ${label.toLowerCase()}:`, e);
+    list.innerHTML = `<div class="col-span-full card-bg rounded-2xl p-8 text-center text-slate-400">${label} gagal dimuat. Silakan coba lagi.</div>`;
+  }
+}
+async function renderSemuaKomik(container) { return renderSemuaKarya(container, 'komik'); }
+async function renderSemuaNovel(container) { return renderSemuaKarya(container, 'novel'); }
 
 async function renderBaruUpload(container) {
   container.innerHTML = `
@@ -5914,16 +5798,16 @@ async function renderJadiKreator(container) {
             ${hasPenulis ? '<span class="penulis-tag ml-auto">AKTIF</span>' : ''}
           </div>
           <p class="text-sm text-slate-400 mb-3">Menulis chapter teks panjang dengan alur cerita.</p>
-          ${hasPenulis ? `<button disabled class="w-full bg-slate-700 text-slate-400 font-bold py-2 rounded-full text-sm cursor-not-allowed">✓ Sudah Aktif</button>` : `<button onclick="requestRole('penulis')" class="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-2 rounded-full text-sm hover:scale-105 transition">Ajukan via WA</button>`}
+          ${hasPenulis ? `<button disabled class="w-full bg-slate-700 text-slate-400 font-bold py-2 rounded-full text-sm cursor-not-allowed">✓ Sudah Aktif</button>` : `<button onclick="requestRole('penulis')" class="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-2 rounded-full text-sm hover:scale-105 transition">Daftar</button>`}
         </div>
         <div class="card-bg rounded-2xl p-5 ${hasKomikus ? 'berlanjut-border' : ''}">
           <div class="flex items-center gap-3 mb-3">
             <div class="w-12 h-12 rounded-xl bg-orange-500/20 flex items-center justify-center"><i class="fas fa-palette text-orange-400 text-xl"></i></div>
-            <div><h3 class="font-bold">Pembuat Komik</h3><p class="text-xs text-slate-400">Buat komik bergambar</p></div>
+            <div><h3 class="font-bold">Komikus</h3><p class="text-xs text-slate-400">Buat komik bergambar</p></div>
             ${hasKomikus ? '<span class="komikus-tag ml-auto">AKTIF</span>' : ''}
           </div>
           <p class="text-sm text-slate-400 mb-3">Membuat episode komik dengan banyak gambar.</p>
-          ${hasKomikus ? `<button disabled class="w-full bg-slate-700 text-slate-400 font-bold py-2 rounded-full text-sm cursor-not-allowed">✓ Sudah Aktif</button>` : `<button onclick="requestRole('komikus')" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 rounded-full text-sm hover:scale-105 transition">Ajukan via WA</button>`}
+          ${hasKomikus ? `<button disabled class="w-full bg-slate-700 text-slate-400 font-bold py-2 rounded-full text-sm cursor-not-allowed">✓ Sudah Aktif</button>` : `<button onclick="requestRole('komikus')" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 rounded-full text-sm hover:scale-105 transition">Daftar</button>`}
         </div>
       </div>
       <div class="card-bg rounded-2xl p-6">
@@ -6106,33 +5990,6 @@ async function renderAboutDev(container) {
     </div>
 
     <div class="dev-section">
-      <h3><i class="fas fa-bullseye"></i> Visi &amp; Misi</h3>
-      <p><b>Visi:</b> Menjadi ruang berkarya yang ramah, gratis, dan mudah diakses bagi kreator cerita lokal, sekaligus tempat bagi pembaca menemukan karya-karya baru dari sesama anak bangsa.</p>
-      <p><b>Misi yang saya pegang saat mengembangkan KomiNovel:</b></p>
-      <ul>
-        <li><b>Gratis untuk semua.</b> Membaca, menulis, dan mempublikasikan karya tidak boleh terhalang biaya.</li>
-        <li><b>Mudah dipakai.</b> Tampilan dibuat sederhana dan nyaman, terutama untuk pengguna HP, karena sebagian besar pembaca membuka KomiNovel lewat ponsel.</li>
-        <li><b>Mendukung kreator lokal.</b> Karya, profil, jumlah pengikut, dan level kreator ditampilkan agar kerja keras mereka terlihat dan dihargai.</li>
-        <li><b>Aman dan nyaman.</b> Ada aturan konten, fitur laporan karya, dan peran Admin/Owner supaya lingkungan tetap sehat.</li>
-        <li><b>Terus berkembang.</b> Fitur baru ditambahkan dan masalah diperbaiki secara bertahap berdasarkan kebutuhan pengguna.</li>
-      </ul>
-    </div>
-
-    <div class="dev-section">
-      <h3><i class="fas fa-layer-group"></i> Yang Ada di KomiNovel</h3>
-      <p>Berikut gambaran singkat fitur utama yang saat ini tersedia di KomiNovel:</p>
-      <div class="dev-grid">
-        <div class="dev-stat"><i class="fas fa-book-open"></i><div class="t">Baca Novel &amp; Komik</div><div class="d">Karya dibagi per chapter/episode dengan mode baca yang nyaman dan layar penuh.</div></div>
-        <div class="dev-stat"><i class="fas fa-pen-fancy"></i><div class="t">Dashboard Kreator</div><div class="d">Tempat penulis dan komikus mengelola karya, chapter, dan status publikasi.</div></div>
-        <div class="dev-stat"><i class="fas fa-trophy"></i><div class="t">Leaderboard</div><div class="d">Peringkat pengguna dan kreator, serta daftar Top Followers.</div></div>
-        <div class="dev-stat"><i class="fas fa-gamepad"></i><div class="t">Mini Game</div><div class="d">Permainan seru bersama pengguna lain, seperti gambar dan tebak.</div></div>
-        <div class="dev-stat"><i class="fas fa-bell"></i><div class="t">Notifikasi Push</div><div class="d">Kabar karya baru, chapter terbaru, berita, dan pesan masuk langsung ke perangkatmu.</div></div>
-        <div class="dev-stat"><i class="fas fa-tags"></i><div class="t">Kategori &amp; Bookmark</div><div class="d">Cari karya berdasarkan kategori dan simpan favoritmu untuk dibaca lagi.</div></div>
-        <div class="dev-stat"><i class="fas fa-adjust"></i><div class="t">Tema Gelap &amp; Terang</div><div class="d">Pilih tampilan yang paling nyaman untuk matamu.</div></div>
-      </div>
-    </div>
-
-    <div class="dev-section">
       <h3><i class="fas fa-hand-holding-heart"></i> Komitmen untuk Kreator</h3>
       <p>Sebagai developer, saya ingin KomiNovel menjadi tempat yang adil bagi semua kreator, baik yang baru mulai maupun yang sudah punya banyak pembaca. Karena itu ada beberapa hal yang saya jaga:</p>
       <ul>
@@ -6144,108 +6001,25 @@ async function renderAboutDev(container) {
       </ul>
     </div>
 
-    <div class="dev-section">
-      <h3><i class="fas fa-shield-alt"></i> Keamanan &amp; Kenyamanan Komunitas</h3>
-      <p>Platform yang terbuka harus tetap aman. Itulah alasan KomiNovel punya aturan yang jelas di halaman <b>Panduan</b>. Konten dewasa 18+, kekerasan berlebihan, plagiarisme, SARA, ujaran kebencian, dan perundungan tidak diperbolehkan.</p>
-      <p>Jika kamu menemukan karya yang melanggar, gunakan tombol <b>Report</b> di halaman baca. Setiap laporan membantu menjaga KomiNovel tetap nyaman. Ketika laporan terhadap satu karya mencapai batas tertentu, sistem akan menurunkan karya tersebut secara otomatis, lalu Admin/Owner dapat meninjau lebih lanjut. Mohon gunakan fitur ini dengan jujur dan bijak, karena laporan palsu juga merugikan kreator.</p>
-    </div>
+    
 
-    <div class="dev-section">
-      <h3><i class="fas fa-cogs"></i> Teknologi di Balik KomiNovel</h3>
-      <p>Untuk kamu yang penasaran dengan sisi teknisnya, KomiNovel dibangun dengan teknologi web modern yang ringan dan bisa dijalankan di hampir semua perangkat:</p>
-      <ul>
-        <li><b>HTML, CSS, dan JavaScript</b> sebagai fondasi seluruh halaman.</li>
-        <li><b>Tailwind CSS</b> untuk membuat tampilan yang rapi dan responsif di layar HP maupun komputer.</li>
-        <li><b>Firebase Authentication</b> untuk sistem masuk dengan akun Google atau sebagai tamu.</li>
-        <li><b>Cloud Firestore</b> sebagai basis data realtime, sehingga chat, notifikasi, foto profil, dan data kreator bisa diperbarui langsung.</li>
-        <li><b>Firebase Cloud Messaging</b> untuk notifikasi push, bahkan ketika website sedang ditutup.</li>
-        <li><b>Font Awesome</b> untuk ikon dan <b>Inter</b> sebagai font utama.</li>
-        <li><b>Hosting di Vercel</b> agar website bisa dibuka dengan cepat.</li>
-      </ul>
-      <p>Tampilan sengaja dibuat ringan, misalnya banner beranda tanpa animasi berat, supaya tetap lancar di HP dengan spesifikasi sederhana.</p>
-    </div>
+    
 
-    <div class="dev-section">
-      <h3><i class="fas fa-history"></i> Perjalanan Pembaruan</h3>
-      <p>KomiNovel terus diperbarui. Berikut catatan pembaruan yang pernah dirilis, dari yang paling baru:</p>
-      <div class="mt-3">${verList}</div>
-    </div>
+    
 
-    <div class="dev-section">
-      <h3><i class="fas fa-route"></i> Rencana ke Depan</h3>
-      <p>Pengembangan KomiNovel belum selesai. Saya ingin terus memperbaiki pengalaman membaca dan menulis, menjaga kecepatan website, dan menambah fitur yang benar-benar berguna bagi pengguna. Arah pengembangan akan sangat dipengaruhi oleh masukan dari kamu, jadi jangan ragu menyampaikan ide lewat menu <b>Kritik &amp; Saran</b>.</p>
-      <p>Semua rencana tersebut tetap berpegang pada prinsip awal KomiNovel: gratis, mudah, dan berpihak pada kreator lokal.</p>
-    </div>
+    
 
-    <div class="dev-section" id="panduan-fitur-v114">
-      <h3><i class="fas fa-map-signs"></i> Panduan Update v1.14: Cara Menggunakan Fitur</h3>
-      <p>Bagian ini untuk pengguna biasa dan kreator. Tidak membahas menu Admin atau Owner. Ikuti langkahnya satu per satu, tidak perlu mengerti kode website.</p>
-      <details class="dev-faq" open><summary>1. Cara membuat karya baru <i class="fas fa-chevron-down text-xs"></i></summary>
-        <p>1) Login menggunakan Google. 2) Pastikan akunmu sudah mendapat peran Novelis atau Komikus. 3) Buka menu <b>Kreator</b>, lalu pilih <b>Buat Baru</b>. 4) Isi judul, teaser singkat, tipe karya, kategori, deskripsi, dan sampul. 5) Tekan <b>Buat Karya</b>. Karya baru belum langsung tampil untuk umum karena status awalnya <b>NONPUBLISH</b>.</p>
-      </details>
-      <details class="dev-faq"><summary>2. Cara menerbitkan karya dan mengelola chapter/episode <i class="fas fa-chevron-down text-xs"></i></summary>
-        <p>Buka <b>Kreator → Kelola</b>. Pilih karya yang ingin dikerjakan. Gunakan tombol tambah chapter/episode untuk menerbitkan bagian baru, tombol edit untuk memperbaiki bagian, dan tombol <b>Review &amp; Publish</b> untuk memeriksa hasil sebelum dipublikasikan. Ikuti pesan yang tampil jika ada bagian yang belum lengkap.</p>
-      </details>
-      <details class="dev-faq"><summary>3. Cara mengundang kolaborator <i class="fas fa-chevron-down text-xs"></i></summary>
-        <p>Kolaborasi hanya bisa dimulai oleh pemilik karya. Saat membuat atau mengedit karya, isi kolom <b>Kolaborator</b> dengan username orang yang ingin diajak, bukan nama tampilan atau alamat email. Jika mengundang lebih dari satu orang, pisahkan username dengan koma. Pastikan username benar dan akun tersebut memang ada.</p>
-        <p>Undangan <b>tidak langsung aktif</b>. Orang yang diundang harus login, membuka <b>Kreator → Kolaborasi Saya</b>, lalu menekan <b>Terima</b> atau <b>Tolak</b>. Sebelum diterima, orang itu belum mendapat akses kolaborasi. Kalau undangan tidak terlihat atau muncul pesan izin Firestore, laporkan ke developer; pengguna tidak perlu mengubah pengaturan database sendiri.</p>
-      </details>
-      <details class="dev-faq"><summary>4. Bedanya Co-author dan Editor <i class="fas fa-chevron-down text-xs"></i></summary>
-        <p><b>Co-author:</b> rekan penulis yang dapat membantu mengedit detail karya serta menambah atau menghapus chapter/episode.</p>
-        <p><b>Editor:</b> membantu menambah atau mengedit isi chapter/episode, tetapi tidak boleh mengganti judul, sampul, atau status publikasi karya.</p>
-        <p>Setelah undangan diterima, buka <b>Kreator → Kolaborasi Saya</b>. Karya yang aktif akan muncul di bagian <b>Karya kolaborasi yang aktif</b> dengan label peran. Tekan <b>Buka</b> untuk masuk ke karya. Jika karya belum muncul, muat ulang halaman dan periksa apakah undangan sudah berstatus diterima.</p>
-      </details>
-      <details class="dev-faq"><summary>5. Cara menambahkan atau mengganti link dukungan karya <i class="fas fa-chevron-down text-xs"></i></summary>
-        <p>Di <b>Kreator → Buat Baru</b> atau <b>Edit Karya</b>, cari bagian <b>Link Dukungan Karya</b>. Pilih platform yang benar: Saweria, Trakteer, Ko-fi, PayPal, atau Lainnya. Tempel link akun dukunganmu yang lengkap dengan <code>https://</code>. Kalau ingin tulisan tombol khusus, isi kolom label kustom. Jika tidak ingin menampilkan tombol dukungan, biarkan link kosong.</p>
-        <p>Sesudah karya dipublikasikan, pembaca bisa menekan tombol dukungan pada halaman baca. Klik yang tercatat menunjukkan tombol ditekan, bukan bukti bahwa pembayaran benar-benar dilakukan. Angka klik dapat dilihat pada dashboard/kartu karya jika statistik tersebut tersedia untuk akunmu.</p>
-      </details>
-      <details class="dev-faq"><summary>6. Cara melaporkan komentar atau memblokir pengguna <i class="fas fa-chevron-down text-xs"></i></summary>
-        <p>Jika menemukan komentar yang mengganggu, gunakan pilihan <b>Laporkan</b> pada komentar tersebut dan pilih alasan yang sesuai. Jangan mengirim laporan berkali-kali untuk komentar yang sama. Untuk menyembunyikan komentar seseorang dari tampilanmu, gunakan pilihan <b>Blokir pengguna</b> jika tombol itu tersedia.</p>
-        <p>Laporan dipakai untuk membantu pemeriksaan dan tidak menjamin tindakan otomatis pada setiap kasus. Jika pilihan Laporkan atau Blokir tidak terlihat, fitur tersebut mungkin belum tersedia di lokasi komentar itu.</p>
-      </details>
-      <details class="dev-faq"><summary>7. Cara memakai notifikasi <i class="fas fa-chevron-down text-xs"></i></summary>
-        <p>Tekan ikon lonceng di bagian atas untuk membuka notifikasi. Ketuk notifikasi yang berkaitan dengan karya untuk membuka halaman terkait. Kreator dapat menerima kabar aktivitas seperti komentar, rating, atau undangan kolaborasi jika jenis notifikasinya didukung dan izin Firestore sudah benar. Notifikasi browser juga mungkin meminta izin tambahan dari perangkat.</p>
-      </details>
-      <details class="dev-faq"><summary>8. Cara membagikan karya <i class="fas fa-chevron-down text-xs"></i></summary>
-        <p>Buka karya lalu tekan tombol <b>Bagikan</b>. Jika browser mendukung menu berbagi, pilih aplikasi seperti WhatsApp. Jika tidak, KomiNovel akan menyalin tautan agar bisa ditempel secara manual. Preview judul dan sampul di WhatsApp bergantung pada deployment fungsi share dan cache aplikasi; setelah mengubah cover, preview lama bisa tetap muncul sementara.</p>
-      </details>
-      <details class="dev-faq"><summary>9. Cara mengganti tema terang/gelap <i class="fas fa-chevron-down text-xs"></i></summary>
-        <p>Tekan tombol tema <b>Terang/Gelap</b> di bagian atas. Pilihan tema seharusnya diterapkan ke halaman, kartu, formulir, modal, dan navigasi. Jika ada bagian yang warnanya tidak ikut berubah, muat ulang halaman satu kali. Jika masalah terus muncul, kirim screenshot halaman dan sebutkan perangkat/browser yang dipakai lewat menu <b>Kritik &amp; Saran</b>.</p>
-      </details>
-      <details class="dev-faq"><summary>10. Jika Kolaborasi Saya menampilkan pesan error <i class="fas fa-chevron-down text-xs"></i></summary>
-        <p>Ini bukan kesalahan pengguna. Pastikan sudah login dengan akun Google. Jika tetap muncul pesan gagal memuat, kemungkinan aturan keamanan Firestore belum memberi izin pada koleksi <code>collabInvites</code> atau akses dokumen karya. Pengaturan itu hanya bisa diperbaiki oleh pemilik proyek website. Jangan mengubah atau membuka database sendiri.</p>
-      </details>
-    </div>
+    
 
-    <div class="dev-section">
-      <h3><i class="fas fa-question-circle"></i> Pertanyaan yang Sering Ditanyakan</h3>
-      <details class="dev-faq"><summary>Apakah KomiNovel benar-benar gratis? <i class="fas fa-chevron-down text-xs"></i></summary><p>Ya. Membaca, menulis, dan menerbitkan karya di KomiNovel tidak dipungut biaya. Platform ini dibuat untuk membantu kreator lokal, bukan untuk membebani mereka.</p></details>
-      <details class="dev-faq"><summary>Bagaimana cara menjadi novelis atau komikus? <i class="fas fa-chevron-down text-xs"></i></summary><p>Masuk dengan akun Google, lalu buka menu <b>Daftar</b> di navigasi bawah untuk mengajukan peran Penulis atau Komikus. Setelah pengajuan diterima, kamu bisa membuka menu <b>Kreator</b> untuk mulai mengelola karya.</p></details>
-      <details class="dev-faq"><summary>Kenapa karya saya belum muncul di beranda? <i class="fas fa-chevron-down text-xs"></i></summary><p>Karya baru otomatis berstatus belum publish. Kamu perlu membuka halaman Kreator, memilih karya, lalu menekan tombol <b>Review &amp; Publish</b>. Setelah dipublikasikan, karya akan tampil untuk pembaca.</p></details>
-      <details class="dev-faq"><summary>Saya menemukan bug atau error, harus bagaimana? <i class="fas fa-chevron-down text-xs"></i></summary><p>Kirimkan lewat menu <b>Kritik &amp; Saran</b> atau hubungi saya melalui WhatsApp. Ceritakan halaman mana yang bermasalah, apa yang kamu lakukan sebelum masalah muncul, dan jenis perangkat yang dipakai. Semakin jelas laporannya, semakin cepat masalah bisa diperbaiki.</p></details>
-      <details class="dev-faq"><summary>Bagaimana cara melaporkan karya yang melanggar aturan? <i class="fas fa-chevron-down text-xs"></i></summary><p>Buka karya tersebut, lalu tekan tombol <b>Report</b> di halaman baca, pilih alasan yang sesuai, dan kirim. Satu pengguna hanya dapat melapor satu kali untuk satu karya.</p></details>
-    </div>
+    
 
-    <div class="dev-section">
-      <h3><i class="fas fa-envelope-open-text"></i> Hubungi Developer</h3>
-      <p>Punya pertanyaan, ide fitur, laporan masalah, atau ingin bekerja sama? Kamu bisa menghubungi saya lewat cara berikut:</p>
-      <ul>
-        <li><b>WhatsApp:</b> ${escHtml(WA_NUMBER)} (tekan tombol hijau di bawah untuk langsung membuka chat)</li>
-        <li><b>Kritik &amp; Saran:</b> kirim lewat menu Kritik &amp; Saran di dalam KomiNovel</li>
-        <li><b>Portofolio:</b> lihat karya dan proyek saya yang lain di website portofolio</li>
-      </ul>
-      <div class="flex flex-wrap gap-2 mt-4">
-        <a class="dev-btn dev-btn-green" href="${waLink}" target="_blank" rel="noopener noreferrer"><i class="fab fa-whatsapp"></i> Chat WhatsApp</a>
-        <a class="dev-btn dev-btn-gold" href="${PORTFOLIO_URL}" target="_blank" rel="noopener noreferrer"><i class="fas fa-globe"></i> Buka Portofolio</a>
-        <button type="button" class="dev-btn" style="background:#334155;color:#e2e8f0" onclick="navTo('kritik')"><i class="fas fa-envelope"></i> Kritik &amp; Saran</button>
-      </div>
-    </div>
+    
 
     <div class="dev-section text-center">
       <h3 style="justify-content:center"><i class="fas fa-heart"></i> Terima Kasih</h3>
       <p>Terima kasih sudah menjadi bagian dari KomiNovel, baik sebagai pembaca yang setia maupun sebagai kreator yang berani membagikan karyanya. Tanpa kalian, KomiNovel hanyalah kumpulan kode. Karena kalian, tempat ini hidup.</p>
       <p><b>Selamat membaca, selamat berkarya, dan sampai jumpa di halaman cerita berikutnya!</b></p>
-      <p class="text-xs" style="opacity:.7">KomiNovel v${escHtml(APP_VERSION)} &mdash; Dibuat dengan <i class="fas fa-heart" style="color:#ef4444"></i> oleh Hijrah Abdur Rahman</p>
+      <p class="text-xs" style="opacity:.7">KomiNovel v${escHtml(APP_VERSION)}</p>
     </div>
 
   </div>`;
@@ -6492,7 +6266,7 @@ async function renderHome(container) {
       <div class="kn-search-row">
         <div class="kn-search">
           <i class="fas fa-search"></i>
-          <input id="searchInput" type="text" placeholder="Cari judul komik atau novel…" value="${escAttr(currentSearch)}" autocomplete="off">
+          <input id="searchInput" type="text" placeholder="Cari judul ${currentContentType === 'novel' ? 'novel' : 'komik'}…" value="${escAttr(currentSearch)}" autocomplete="off">
           <button id="searchBtn" type="button" aria-label="Cari"><span>Cari</span></button>
         </div>
         <div class="kn-seg" role="tablist">
@@ -6516,16 +6290,6 @@ async function renderHome(container) {
       <div class="slide-track" id="weeklyTrack"></div>
     </section>
 
-    <section class="card-bg rounded-2xl p-4 mb-7" id="sectionSearchTrending">
-      <div class="flex items-center justify-between gap-3 mb-3">
-        <div>
-          <h2 class="font-black text-amber-400"><i class="fas fa-magnifying-glass mr-1"></i>Paling Banyak Dicari</h2>
-          <p class="text-[10px] text-slate-500 mt-1">Top keyword 7 hari terakhir • minimal 10 user berbeda</p>
-        </div>
-      </div>
-      <div id="trendingSearchList" class="trending-search-wrap"></div>
-    </section>
-
     <section class="slide-section mb-8" id="sectionBaru">
       <div class="slide-header">
         <h2 class="text-green-400"><i class="fas fa-upload mr-1"></i>Baru Upload</h2>
@@ -6537,32 +6301,44 @@ async function renderHome(container) {
       <div class="slide-track" id="baruTrack"></div>
     </section>
 
-    <section class="slide-section mb-8" id="sectionSemuaKomik">
-      <div class="slide-header">
-        <div><h2 class="text-orange-400"><i class="fas fa-book-open mr-1"></i>Semua Komik</h2><p class="text-[10px] text-slate-500 mt-1">Semua komik yang sudah dipublikasikan.</p></div>
-        <div class="flex gap-1"><button class="slide-nav-btn" id="semuaPrev" title="Geser kiri"><i class="fas fa-chevron-left"></i></button><button class="slide-nav-btn" id="semuaNext" title="Geser kanan"><i class="fas fa-chevron-right"></i></button></div>
+    <section class="mb-8" id="homeAllWorksLinks">
+      <div class="mb-3">
+        <h2 class="text-lg font-bold"><i class="fas fa-layer-group text-amber-400 mr-2"></i>Jelajahi Semua Karya</h2>
+        <p class="text-xs text-slate-400">Daftar komik dan novel tersedia di halaman yang terpisah.</p>
       </div>
-      <div class="slide-track" id="semuaTrack"></div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <button type="button" id="homeAllKomik" class="card-bg rounded-2xl p-4 text-left hover:border-blue-400/50 border border-transparent transition cursor-pointer">
+          <span class="flex items-center gap-3"><i class="fas fa-panorama text-blue-400 text-xl"></i><span class="flex-1"><b class="block">Semua Komik</b><small class="text-slate-400">Lihat seluruh komik yang sudah dipublikasikan</small></span><i class="fas fa-chevron-right text-slate-500"></i></span>
+        </button>
+        <button type="button" id="homeAllNovel" class="card-bg rounded-2xl p-4 text-left hover:border-amber-400/50 border border-transparent transition cursor-pointer">
+          <span class="flex items-center gap-3"><i class="fas fa-book-open text-amber-400 text-xl"></i><span class="flex-1"><b class="block">Semua Novel</b><small class="text-slate-400">Lihat seluruh novel yang sudah dipublikasikan</small></span><i class="fas fa-chevron-right text-slate-500"></i></span>
+        </button>
+      </div>
     </section>
 
-    <section class="slide-section mb-8" id="sectionProses">
-      <div class="slide-header">
-        <h2 class="text-blue-400"><i class="fas fa-clock mr-1"></i>Proses Pengerjaan</h2>
-        <div class="flex gap-1">
-          <button class="slide-nav-btn" id="prosesPrev" title="Geser kiri"><i class="fas fa-chevron-left"></i></button>
-          <button class="slide-nav-btn" id="prosesNext" title="Geser kanan"><i class="fas fa-chevron-right"></i></button>
-        </div>
-      </div>
-      <div class="slide-track" id="prosesTrack"></div>
+    <section class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8" id="homeExploreLinks">
+      <button type="button" id="homeProcessKomik" class="card-bg rounded-2xl p-4 text-left hover:border-blue-400/50 border border-transparent transition cursor-pointer">
+        <span class="flex items-center gap-3"><i class="fas fa-clock text-blue-400 text-xl"></i><span class="flex-1"><b class="block">Proses Pengerjaan Komik</b><small class="text-slate-400">Lihat komik yang sedang dibuat kreator</small></span><i class="fas fa-chevron-right text-slate-500"></i></span>
+      </button>
+      <button type="button" id="homeProcessNovel" class="card-bg rounded-2xl p-4 text-left hover:border-amber-400/50 border border-transparent transition cursor-pointer">
+        <span class="flex items-center gap-3"><i class="fas fa-clock text-amber-400 text-xl"></i><span class="flex-1"><b class="block">Proses Pengerjaan Novel</b><small class="text-slate-400">Lihat novel yang sedang dibuat kreator</small></span><i class="fas fa-chevron-right text-slate-500"></i></span>
+      </button>
     </section>
 
     <div id="homeEmpty" class="hidden card-bg rounded-2xl p-12 text-center empty-animation mt-4">
       <i class="fas fa-book-open text-6xl text-amber-400/50 mb-4"></i>
       <h3 class="text-xl font-bold">Belum ada ${currentContentType === 'novel' ? 'Novel' : 'Komik'}.</h3>
       <p class="text-slate-400 mt-2">Jadilah yang pertama!</p>
-      ${isCreator(userProfile) || isAdminSession ? `<button class="mt-4 bg-amber-500 text-black px-6 py-2 rounded-full font-bold btn-glow" onclick="navTo('creator')">Upload Karya</button>` : `<button class="mt-4 bg-green-600 text-white px-6 py-2 rounded-full font-bold hover:scale-105 transition" onclick="navTo('jadi-kreator')"><i class="fas fa-star mr-1"></i>Jadi Kreator</button>`}
+      ${isCreator(userProfile) || isAdminUser(userProfile) ? `<button class="mt-4 bg-amber-500 text-black px-6 py-2 rounded-full font-bold btn-glow" onclick="navTo('creator')">Upload Karya</button>` : `<button class="mt-4 bg-green-600 text-white px-6 py-2 rounded-full font-bold hover:scale-105 transition" onclick="navTo('jadi-kreator')"><i class="fas fa-star mr-1"></i>Jadi Kreator</button>`}
     </div>
   `;
+
+  // Navigasi Proses Pengerjaan memakai listener di dalam module,
+  // bukan inline onclick yang tidak dapat membaca variabel module.
+  document.getElementById('homeAllKomik').addEventListener('click', () => navTo('semua-komik'));
+  document.getElementById('homeAllNovel').addEventListener('click', () => navTo('semua-novel'));
+  document.getElementById('homeProcessKomik').addEventListener('click', () => navTo('baru-komik'));
+  document.getElementById('homeProcessNovel').addEventListener('click', () => navTo('baru-novel'));
 
   document.getElementById('tabKomik').onclick = () => { currentContentType = 'komik'; renderPage(); };
   document.getElementById('tabNovel').onclick = () => { currentContentType = 'novel'; renderPage(); };
@@ -6586,15 +6362,14 @@ async function renderHome(container) {
 
   const weeklyTrack=document.getElementById('weeklyTrack');
   const baruTrack=document.getElementById('baruTrack');
-  const prosesTrack=document.getElementById('prosesTrack');
-  const semuaTrack=document.getElementById('semuaTrack');
   const homeEmpty=document.getElementById('homeEmpty');
 
   // Cache ranking hanya membaca 1 dokumen untuk masing-masing fitur.
   const [popularCache, searchCache]=await Promise.all([loadHomeCache('popular'),loadHomeCache('search')]);
   if (isAdminUser(userProfile)) refreshHomeCachesIfNeeded(false).catch(()=>{});
 
-  const q=query(collection(db,'works'),where('type','==',currentContentType));
+  const homeType = currentContentType;
+  const q=query(collection(db,'works'),where('type','==',homeType));
   let initialLoad=true, lastKnownIds=new Set();
 
   const renderHero = (allWorks) => {
@@ -6618,7 +6393,7 @@ async function renderHome(container) {
     if (hero.dataset.sig===heroSig && hero.firstElementChild) return;
     hero.dataset.sig=heroSig;
     if (!candidates.length) {
-      hero.innerHTML=`<div class="home-hero-slide active"><div class="home-hero-content"><span class="home-hero-type">KomiNovel</span><div class="home-hero-title">Baca & Tulis Karya Gratis</div><div class="home-hero-teaser">Temukan komik dan novel dari para kreator KomiNovel.</div></div></div>`;
+      hero.innerHTML=`<div class="home-hero-slide active"><div class="home-hero-content"><span class="home-hero-type">KomiNovel</span><div class="home-hero-title">Baca & Tulis Karya Gratis</div><div class="home-hero-teaser">Temukan ${homeType === 'novel' ? 'novel' : 'komik'} dari para kreator KomiNovel.</div></div></div>`;
       return;
     }
     if (homeBannerTimer) clearInterval(homeBannerTimer);
@@ -6628,13 +6403,13 @@ async function renderHome(container) {
       const photo=a.photo||`https://ui-avatars.com/api/?name=${encodeURIComponent(a.name)}`;
       const badge=getVerifiedBadge(a.followerCount)+getCreatorVerifiedBadge(a,w.type);
       return `<div class="home-hero-slide ${i===heroIndex?'active':''}" data-hero-index="${i}" onclick="navTo('reader/${w.id}')">
-        ${w.coverURL?`<img class="home-hero-cover" decoding="async" src="${escAttr(w.coverURL)}" onerror="this.style.display='none'">`:''}
+        ${w.coverURL?`<img class="home-hero-cover" decoding="async" src="${safeImageAttr(w.coverURL, false)}" onerror="this.style.display='none'">`:''}
         <div class="home-hero-content">
           <span class="home-hero-type">${w.type==='novel'?'Novel':'Komik'}</span>
           <div class="home-hero-title">${escHtml(w.title||'Tanpa Judul')}</div>
           <div class="home-hero-teaser">${escHtml(w.teaser||w.description||'Karya terbaru di KomiNovel')}</div>
           <div class="home-hero-author" onclick="event.stopPropagation();navTo('user/${w.authorId}')">
-            <img src="${escAttr(photo)}"><span>${escHtml(a.name)}${badge}</span>
+            <img src="${safeImageAttr(photo, false)}"><span>${escHtml(a.name)}${badge}</span>
           </div>
         </div>
       </div>`;
@@ -6657,6 +6432,9 @@ async function renderHome(container) {
 
   worksUnsub=onSnapshot(q,(snapshot)=>{
     let allWorks=[]; snapshot.forEach(d=>allWorks.push({id:d.id,...d.data()}));
+    // Data yang sudah diterima di beranda langsung dipakai oleh halaman Semua
+    // dan Proses Pengerjaan, tanpa getDocs ulang saat pengguna berpindah.
+    allWorksPageCache[homeType] = allWorks;
     const liveAuthors=[...new Set(allWorks.map(w=>w.authorId).filter(Boolean))];
     ensureAuthorProfiles(liveAuthors,()=>{
       if (!document.getElementById('homeHero')) return;
@@ -6686,13 +6464,6 @@ async function renderHome(container) {
       : [...published].sort((a,b)=>((b.views||0)-(a.views||0))+((b.likes||0)-(a.likes||0))*2);
     if(!cachedIds.length) populer=populer.slice(0,10);
     const baru=[...published].sort((a,b)=>(b.createdAt?.toDate?.()?.getTime?.()||0)-(a.createdAt?.toDate?.()?.getTime?.()||0)).slice(0,10);
-    const semua=[...published].filter(w=>w.type==='komik').sort((a,b)=>(b.createdAt?.toDate?.()?.getTime?.()||0)-(a.createdAt?.toDate?.()?.getTime?.()||0));
-    const proses=[...nonpublished].sort((a,b)=>{
-      const at=a.updatedAt?.toDate?.()?.getTime?.()||a.createdAt?.toDate?.()?.getTime?.()||0;
-      const bt=b.updatedAt?.toDate?.()?.getTime?.()||b.createdAt?.toDate?.()?.getTime?.()||0;
-      return bt-at;
-    }).slice(0,10);
-
     const searchList=document.getElementById('trendingSearchList');
     const items=searchCache?.items||[];
     if(searchList) searchList.innerHTML=items.length
@@ -6705,46 +6476,24 @@ async function renderHome(container) {
     const order=allWorks.map(w=>w.id);
     const structureChanged=initialLoad||order.length!==currentWorksOrder.length||order.some((id,i)=>id!==currentWorksOrder[i]);
     if(allWorks.length===0){
-      weeklyTrack.innerHTML='';baruTrack.innerHTML='';prosesTrack.innerHTML='';semuaTrack.innerHTML='';
+      weeklyTrack.innerHTML='';baruTrack.innerHTML='';
       homeEmpty.classList.remove('hidden');
       document.getElementById('sectionPopulerMinggu').style.display='none';
       document.getElementById('sectionBaru').style.display='none';
-      document.getElementById('sectionProses').style.display='none';
-      document.getElementById('sectionSemuaKomik').style.display='none';
       return;
     }
     homeEmpty.classList.add('hidden');
     document.getElementById('sectionPopulerMinggu').style.display='';
     document.getElementById('sectionBaru').style.display='';
-    document.getElementById('sectionProses').style.display='';
-    document.getElementById('sectionSemuaKomik').style.display='';
 
     if(structureChanged||initialLoad){
       weeklyTrack.innerHTML=populer.map((w,i)=>renderSlideCard(w,i,newIds)).join('')||'<p class="text-slate-500 text-xs italic px-2">Belum ada karya populer minggu ini.</p>';
       baruTrack.innerHTML=baru.map((w,i)=>renderSlideCard(w,i,newIds)).join('')||'<p class="text-slate-500 text-xs italic px-2">Belum ada karya baru.</p>';
-      prosesTrack.innerHTML=proses.map((w,i)=>renderSlideCard(w,i,newIds)).join('')||'<p class="text-slate-500 text-xs italic px-2">Belum ada karya dalam proses.</p>';
-      (function(){
-        const PAGE=16; let shown=Math.min(PAGE,semua.length);
-        semuaTrack.innerHTML=semua.slice(0,shown).map((w,i)=>renderSlideCard(w,i,newIds)).join('')||'<p class="text-slate-500 text-xs italic px-2">Belum ada komik yang dipublikasikan.</p>';
-        if (semuaTrack.__moreHandler) semuaTrack.removeEventListener('scroll',semuaTrack.__moreHandler);
-        const more=()=>{
-          if (shown>=semua.length) return;
-          if (semuaTrack.scrollLeft+semuaTrack.clientWidth<semuaTrack.scrollWidth-600) return;
-          const next=semua.slice(shown,shown+PAGE);
-          semuaTrack.insertAdjacentHTML('beforeend',next.map((w,i)=>renderSlideCard(w,i,new Set())).join(''));
-          shown+=next.length;
-        };
-        semuaTrack.__moreHandler=more;
-        semuaTrack.addEventListener('scroll',more,{passive:true});
-        const nextBtn=document.getElementById('semuaNext'); if (nextBtn) nextBtn.addEventListener('click',()=>setTimeout(more,450));
-      })();
       currentWorksOrder=order;
       currentWorksData={};allWorks.forEach(w=>currentWorksData[w.id]=w);
       lastKnownIds=new Set(order);initialLoad=false;
       attachSlideNav('weeklyPrev','weeklyNext','weeklyTrack');
       attachSlideNav('baruPrev','baruNext','baruTrack');
-      attachSlideNav('prosesPrev','prosesNext','prosesTrack');
-      attachSlideNav('semuaPrev','semuaNext','semuaTrack');
     } else {
       allWorks.forEach(w=>currentWorksData[w.id]=w);
       allWorks.forEach(w=>{
@@ -6864,7 +6613,7 @@ function renderSlideCard(work, idx, newIds = new Set()) {
     <div class="slide-card card-anim ${newClass}" data-work-id="${work.id}" style="${delayStyle}">
       <div class="card-bg hover-lift rounded-2xl overflow-hidden shadow-lg cursor-pointer ${borderClass} h-full" onclick="${isTD ? `showToast('⛔ Karya ini di-takedown')` : `navTo('reader/${work.id}')`}">
         <div class="h-36 md:h-44 bg-slate-800 flex items-center justify-center overflow-hidden relative">
-          ${work.coverURL ? `<img src="${work.coverURL}" class="w-full h-full object-cover ${isTD ? 'grayscale opacity-40' : isNP ? 'grayscale opacity-70' : ''}" onerror="this.style.display='none';">` : `<i class="fas fa-image text-4xl text-slate-600"></i>`}
+          ${work.coverURL ? `<img src="${safeImageAttr(work.coverURL, false)}" class="w-full h-full object-cover ${isTD ? 'grayscale opacity-40' : isNP ? 'grayscale opacity-70' : ''}" onerror="this.style.display='none';">` : `<i class="fas fa-image text-4xl text-slate-600"></i>`}
           ${workStatusBadge(work)}
           ${statusLabel(work.isTamat)}
           ${resumeBadge}
@@ -6875,15 +6624,15 @@ function renderSlideCard(work, idx, newIds = new Set()) {
           </div>
         </div>
         <div class="p-2.5">
-          <h3 class="font-bold text-xs md:text-sm truncate ${isTD ? 'text-slate-500 line-through' : ''}">${work.title}</h3>
+          <h3 class="font-bold text-xs md:text-sm truncate ${isTD ? 'text-slate-500 line-through' : ''}">${escHtml(work.title || '')}</h3>
           <div class="flex flex-wrap gap-1 mt-1.5">
-            ${cats.slice(0,2).map(c => `<span class="kn-cat text-[9px] bg-slate-700 px-1.5 py-0.5 rounded-full" title="${escAttr(c)}">${c}</span>`).join('')}${cats.length > 2 ? `<span class="kn-cat kn-cat-more text-[9px] bg-slate-700 px-1.5 py-0.5 rounded-full" title="${escAttr(cats.slice(2).join(', '))}">…</span>` : ''}
+            ${cats.slice(0,2).map(c => `<span class="kn-cat text-[9px] bg-slate-700 px-1.5 py-0.5 rounded-full" title="${escAttr(c)}">${escHtml(c)}</span>`).join('')}${cats.length > 2 ? `<span class="kn-cat kn-cat-more text-[9px] bg-slate-700 px-1.5 py-0.5 rounded-full" title="${escAttr(cats.slice(2).join(', '))}">…</span>` : ''}
           </div>
-          <p class="kn-teaser ${work.teaser ? '' : 'kn-teaser-empty'}">${work.teaser ? work.teaser : 'Belum ada teaser.'}</p>
+          <p class="kn-teaser ${work.teaser ? '' : 'kn-teaser-empty'}">${escHtml(work.teaser || 'Belum ada teaser.')}</p>
           <div class="mt-1.5 flex items-center gap-1 text-[10px] text-slate-500">
             <div class="flex items-center gap-1 flex-1 min-w-0 cursor-pointer hover:opacity-80" onclick="event.stopPropagation();navTo('user/${work.authorId}')">
-              <img src="${author.photo || 'https://ui-avatars.com/api/?name='+encodeURIComponent(author.name||'U')}" class="w-4 h-4 rounded-full border border-slate-700">
-              <span class="flex items-center min-w-0 hover:text-amber-400"><span class="truncate">${author.name || 'Anonim'}</span>${vBadge}</span>
+              <img src="${safeImageAttr(author.photo || 'https://ui-avatars.com/api/?name='+encodeURIComponent(author.name||'U'), false)}" class="w-4 h-4 rounded-full border border-slate-700">
+              <span class="flex items-center min-w-0 hover:text-amber-400"><span class="truncate">${escHtml(author.name || 'Anonim')}</span>${vBadge}</span>
             </div>
             <button class="like-btn ${liked ? 'liked' : 'text-slate-400'}" onclick="event.stopPropagation();toggleWorkLike('${work.id}')" ${isTD ? 'disabled' : ''}>
               <i class="fas fa-heart text-xs"></i>
@@ -6928,7 +6677,7 @@ function renderWorkList(container, works, newIds = new Set(), skipAnim = false) 
       <i class="fas fa-book-open text-6xl text-amber-400/50 mb-4"></i>
       <h3 class="text-xl font-bold">Belum ada ${currentContentType === 'novel' ? 'Novel' : 'Komik'}.</h3>
       <p class="text-slate-400 mt-2">Jadilah yang pertama!</p>
-      ${isCreator(userProfile) || isAdminSession ? `<button class="mt-4 bg-amber-500 text-black px-6 py-2 rounded-full font-bold btn-glow" onclick="navTo('creator')">Upload Karya</button>` : `<button class="mt-4 bg-green-600 text-white px-6 py-2 rounded-full font-bold hover:scale-105 transition" onclick="navTo('jadi-kreator')"><i class="fas fa-star mr-1"></i>Jadi Kreator</button>`}
+      ${isCreator(userProfile) || isAdminUser(userProfile) ? `<button class="mt-4 bg-amber-500 text-black px-6 py-2 rounded-full font-bold btn-glow" onclick="navTo('creator')">Upload Karya</button>` : `<button class="mt-4 bg-green-600 text-white px-6 py-2 rounded-full font-bold hover:scale-105 transition" onclick="navTo('jadi-kreator')"><i class="fas fa-star mr-1"></i>Jadi Kreator</button>`}
     </div>`;
     return;
   }
@@ -6952,7 +6701,7 @@ function renderWorkList(container, works, newIds = new Set(), skipAnim = false) 
     return `
     <div class="card-bg hover-lift rounded-2xl overflow-hidden shadow-lg cursor-pointer ${animClass} ${borderClass} ${newClass}" style="${delayStyle}" onclick="${isTD ? `showToast('⛔ Karya ini di-takedown')` : `navTo('reader/${work.id}')`}">
       <div class="h-40 md:h-48 bg-slate-800 flex items-center justify-center overflow-hidden relative">
-        ${work.coverURL ? `<img src="${work.coverURL}" class="w-full h-full object-cover ${isTD ? 'grayscale opacity-40' : isNP ? 'grayscale opacity-70' : ''}" onerror="this.style.display='none';">` : `<i class="fas fa-image text-5xl text-slate-600"></i>`}
+        ${work.coverURL ? `<img src="${safeImageAttr(work.coverURL, false)}" class="w-full h-full object-cover ${isTD ? 'grayscale opacity-40' : isNP ? 'grayscale opacity-70' : ''}" onerror="this.style.display='none';">` : `<i class="fas fa-image text-5xl text-slate-600"></i>`}
         ${workStatusBadge(work)}
         ${statusLabel(work.isTamat)}
         ${resumeBadge}
@@ -6963,15 +6712,15 @@ function renderWorkList(container, works, newIds = new Set(), skipAnim = false) 
         </div>
       </div>
       <div class="p-3 md:p-4">
-        <h3 class="font-bold text-sm md:text-lg truncate ${isTD ? 'text-slate-500 line-through' : ''}">${work.title}</h3>
+        <h3 class="font-bold text-sm md:text-lg truncate ${isTD ? 'text-slate-500 line-through' : ''}">${escHtml(work.title || '')}</h3>
         <div class="flex flex-wrap gap-1 mt-2">
-          ${cats.slice(0,2).map(c => `<span class="kn-cat text-[10px] md:text-xs bg-slate-700 px-1.5 py-0.5 rounded-full" title="${escAttr(c)}">${c}</span>`).join('')}${cats.length > 2 ? `<span class="kn-cat kn-cat-more text-[10px] md:text-xs bg-slate-700 px-1.5 py-0.5 rounded-full" title="${escAttr(cats.slice(2).join(', '))}">…</span>` : ''}
+          ${cats.slice(0,2).map(c => `<span class="kn-cat text-[10px] md:text-xs bg-slate-700 px-1.5 py-0.5 rounded-full" title="${escAttr(c)}">${escHtml(c)}</span>`).join('')}${cats.length > 2 ? `<span class="kn-cat kn-cat-more text-[10px] md:text-xs bg-slate-700 px-1.5 py-0.5 rounded-full" title="${escAttr(cats.slice(2).join(', '))}">…</span>` : ''}
         </div>
-        <p class="kn-teaser ${work.teaser ? '' : 'kn-teaser-empty'}">${work.teaser ? work.teaser : 'Belum ada teaser.'}</p>
+        <p class="kn-teaser ${work.teaser ? '' : 'kn-teaser-empty'}">${escHtml(work.teaser || 'Belum ada teaser.')}</p>
         <div class="mt-2 flex items-center gap-2 text-xs text-slate-500">
           <div class="flex items-center gap-1 flex-1 min-w-0 cursor-pointer hover:opacity-80" onclick="event.stopPropagation();navTo('user/${work.authorId}')">
-            <img src="${author.photo || 'https://ui-avatars.com/api/?name='+encodeURIComponent(author.name||'U')}" class="w-5 h-5 rounded-full border border-slate-700">
-            <span class="flex items-center min-w-0 hover:text-amber-400"><span class="truncate">${author.name || 'Anonim'}</span>${vBadge}</span>
+            <img src="${safeImageAttr(author.photo || 'https://ui-avatars.com/api/?name='+encodeURIComponent(author.name||'U'), false)}" class="w-5 h-5 rounded-full border border-slate-700">
+            <span class="flex items-center min-w-0 hover:text-amber-400"><span class="truncate">${escHtml(author.name || 'Anonim')}</span>${vBadge}</span>
             ${author.level > 1000 ? '<i class="fas fa-crown text-amber-400 text-[10px] badge-float"></i>' : ''}
           </div>
           <button class="like-btn ${liked ? 'liked' : 'text-slate-400'}" onclick="event.stopPropagation();toggleWorkLike('${work.id}')" title="${liked ? 'Unlike' : 'Like'}" ${isTD ? 'disabled' : ''}>
@@ -7070,7 +6819,7 @@ async function renderBerita(container) {
         <h3 class="font-bold text-lg mt-2">${escHtml(b.title)}</h3>
         <p class="text-xs text-slate-500 mb-2">${fmtDate(b.createdAt)} • oleh ${escHtml(b.authorName || 'Admin')}</p>
         <div class="text-sm text-slate-300 whitespace-pre-wrap">${linkify(b.content || '')}</div>
-        ${b.image ? `<img src="${b.image}" class="w-full rounded-lg mt-3 cursor-zoom-in" onclick="window.showImgFullscreen('${escAttr(b.image)}','Berita')">` : ''}
+        ${b.image ? `<img src="${safeImageAttr(b.image, false)}" class="w-full rounded-lg mt-3 cursor-zoom-in" onclick="window.showImgFullscreen('${escAttr(b.image)}','Berita')">` : ''}
         ${canManage ? `
         <div class="flex gap-2 mt-3 flex-wrap">
           <button class="pinBtn ${b.pinned ? 'bg-yellow-600' : 'bg-slate-700'} text-white px-3 py-1 rounded-lg text-xs font-bold" data-id="${b.id}" data-pinned="${b.pinned || false}">
@@ -7136,10 +6885,10 @@ async function openBeritaModal(id, container) {
     window[`_beritaCover_cover`] = data.image;
     const pv = document.getElementById('beritaCover-preview');
     if (pv) {
-      const safeUrl = escAttr(data.image);
+      const safeUrl = escAttr(safeImageSource(data.image));
       pv.innerHTML = `
         <div class="img-preview-wrap">
-          <img src="${data.image}" class="img-preview" style="width:96px;height:128px" onerror="this.src='https://placehold.co/96x128/1a1a2e/64748b?text=Err'" onclick="event.stopPropagation();window.showImgFullscreen('${safeUrl}','Gambar Berita')">
+          <img src="${safeImageAttr(data.image, false)}" class="img-preview" style="width:96px;height:128px" onerror="this.src='https://placehold.co/96x128/1a1a2e/64748b?text=Err'" onclick="event.stopPropagation();window.showImgFullscreen('${safeUrl}','Gambar Berita')">
           <span class="zoom-badge" onclick="event.stopPropagation();window.showImgFullscreen('${safeUrl}','Gambar Berita')"><i class="fas fa-expand"></i></span>
         </div>`;
     }
@@ -7227,7 +6976,7 @@ async function renderFollowersPage(container, uid, mode) {
     const isMe = currentUser && currentUser.uid === m.id;
     const isOwner = hasRole(m, 'owner');
     return `<div class="card-bg rounded-xl p-3 flex items-center gap-3 hover:bg-slate-800 transition cursor-pointer" onclick="navTo('user/${m.id}')">
-      <img src="${m.photoURL || 'https://ui-avatars.com/api/?name='+encodeURIComponent(m.username||'U')}" class="w-12 h-12 rounded-full border border-slate-700 ${isOwner ? 'owner-shine' : ''}">
+      <img src="${safeImageAttr(m.photoURL || 'https://ui-avatars.com/api/?name='+encodeURIComponent(m.username||'U'), false)}" class="w-12 h-12 rounded-full border border-slate-700 ${isOwner ? 'owner-shine' : ''}">
       <div class="flex-1 min-w-0">
         <div class="flex items-center gap-1 flex-wrap">
           <p class="font-bold text-sm flex items-center min-w-0"><span class="truncate">${m.username || 'User'}</span>${v}</p>
@@ -7300,7 +7049,7 @@ async function renderTopFollowers(container) {
       const unggulan = u.featuredCreator ? '<span class="unggulan-tag ml-1">⭐ UNGGULAN</span>' : '';
       return `<div class="card-bg hover-lift rounded-2xl p-4 flex items-center gap-4 cursor-pointer card-anim ${u.featuredCreator ? 'unggulan-border' : ''}" style="animation-delay:${i*0.03}s" onclick="navTo('user/${u.id}')">
         <div class="leaderboard-rank ${i < 3 ? rankColors[i] : 'bg-slate-700 text-slate-300'}">${i+1}</div>
-        <img src="${u.photoURL || 'https://ui-avatars.com/api/?name='+encodeURIComponent(u.username||'U')}" class="w-14 h-14 rounded-full border-2 ${u.featuredCreator ? 'border-amber-400' : isO?'border-red-500':isA?'border-amber-500':'border-slate-700'} ${isO ? 'owner-shine' : ''}">
+        <img src="${safeImageAttr(u.photoURL || 'https://ui-avatars.com/api/?name='+encodeURIComponent(u.username||'U'), false)}" class="w-14 h-14 rounded-full border-2 ${u.featuredCreator ? 'border-amber-400' : isO?'border-red-500':isA?'border-amber-500':'border-slate-700'} ${isO ? 'owner-shine' : ''}">
         <div class="flex-1 min-w-0">
           <div class="flex items-center gap-1 flex-wrap">
             <h3 class="font-bold flex items-center min-w-0"><span class="truncate">${u.username || 'User'}</span>${v}</h3>
@@ -7346,12 +7095,12 @@ async function renderPublicProfile(container, uid) {
   }
   container.innerHTML = `
     ${adminIdentityHtml}
-    ${u.bannerURL ? `<div class="rounded-2xl overflow-hidden mb-5" style="height:clamp(120px,24vw,230px)"><img src="${escAttr(u.bannerURL)}" alt="Banner akun" style="width:100%;height:100%;object-fit:cover"></div>` : ''}
+    ${u.bannerURL ? `<div class="rounded-2xl overflow-hidden mb-5" style="height:clamp(120px,24vw,230px)"><img src="${safeImageAttr(u.bannerURL, false)}" alt="Banner akun" style="width:100%;height:100%;object-fit:cover"></div>` : ''}
     <button onclick="history.back()" class="text-amber-400 mb-4 hover:text-amber-300 transition"><i class="fas fa-arrow-left mr-2"></i>Kembali</button>
     <div class="card-bg rounded-2xl p-6 mb-6 card-anim ${u.featuredCreator ? 'unggulan-border' : ''} ${isOwner ? 'owner-shine-card' : ''}">
       <div class="flex flex-col md:flex-row items-center md:items-start gap-4">
         <div class="relative">
-          <img src="${u.photoURL || 'https://ui-avatars.com/api/?name='+encodeURIComponent(u.username||'U')}" class="w-24 h-24 rounded-full border-4 ${u.featuredCreator ? 'border-amber-400' : golden ? 'border-amber-400' : 'border-slate-600'} ${isOwner ? 'owner-shine' : ''}">
+          <img src="${safeImageAttr(u.photoURL || 'https://ui-avatars.com/api/?name='+encodeURIComponent(u.username||'U'), false)}" class="w-24 h-24 rounded-full border-4 ${u.featuredCreator ? 'border-amber-400' : golden ? 'border-amber-400' : 'border-slate-600'} ${isOwner ? 'owner-shine' : ''}">
           ${u.featuredCreator ? '<i class="fas fa-crown absolute -top-2 -right-2 text-amber-400 text-2xl badge-float"></i>' : ''}
         </div>
         <div class="flex-1 text-center md:text-left">
@@ -7416,18 +7165,18 @@ function nonpublishBanner(work) {
       <p class="text-slate-400 text-sm mb-4">Karya ini belum dipublikasikan oleh kreator. Kamu bisa melihat sampul, teaser, dan deskripsinya, tetapi chapter/episode belum tersedia untuk dibaca.</p>
       <div class="flex flex-col md:flex-row gap-4 max-w-2xl mx-auto mt-6">
         <div class="w-full md:w-40 h-56 bg-slate-800 rounded-xl overflow-hidden flex-shrink-0 mx-auto">
-          ${work.coverURL ? `<img src="${work.coverURL}" class="w-full h-full object-cover grayscale opacity-70">` : `<div class="flex items-center justify-center h-full"><i class="fas fa-image text-4xl text-slate-600"></i></div>`}
+          ${work.coverURL ? `<img src="${safeImageAttr(work.coverURL, false)}" class="w-full h-full object-cover grayscale opacity-70">` : `<div class="flex items-center justify-center h-full"><i class="fas fa-image text-4xl text-slate-600"></i></div>`}
         </div>
         <div class="flex-1 text-left">
-          <h3 class="text-xl font-bold">${work.title}</h3>
-          <p class="text-amber-400/90 italic mt-2 text-sm">${work.teaser || ''}</p>
-          <p class="text-slate-400 mt-2 text-xs">${work.description || ''}</p>
+          <h3 class="text-xl font-bold">${escHtml(work.title || '')}</h3>
+          <p class="text-amber-400/90 italic mt-2 text-sm">${escHtml(work.teaser || '')}</p>
+          <p class="text-slate-400 mt-2 text-xs">${escHtml(work.description || '')}</p>
           <div class="flex flex-wrap gap-1 mt-3">
-            ${parseCategories(work.category).map(c => `<span class="bg-slate-700 px-2 py-0.5 rounded-full text-xs">${c}</span>`).join('')}
+            ${parseCategories(work.category).map(c => `<span class="bg-slate-700 px-2 py-0.5 rounded-full text-xs">${escHtml(c)}</span>`).join('')}
           </div>
           <div class="mt-3 flex items-center gap-2 cursor-pointer hover:opacity-80" onclick="navTo('user/${work.authorId}')">
-            <img src="${work.authorPhotoURL || 'https://ui-avatars.com/api/?name='+encodeURIComponent(work.authorName||'U')}" class="w-8 h-8 rounded-full border border-slate-700">
-            <span class="text-sm text-amber-400">${work.authorName || 'Anonim'}</span>
+            <img src="${safeImageAttr(work.authorPhotoURL || 'https://ui-avatars.com/api/?name='+encodeURIComponent(work.authorName||'U'), false)}" class="w-8 h-8 rounded-full border border-slate-700">
+            <span class="text-sm text-amber-400">${escHtml(work.authorName || 'Anonim')}</span>
           </div>
         </div>
       </div>
@@ -7494,7 +7243,7 @@ async function renderReleaseSchedule(container) {
     const worksSnap=await getDocs(collection(db,'works')); const items=[];
     for(const wd of worksSnap.docs){const w={id:wd.id,...wd.data()}; if(isTakedown(w)) continue; if(isNonPublish(w) && !(currentUser && (currentUser.uid===w.authorId || isAdminUser(userProfile)))) continue; const cs=await getDocs(collection(db,'works',w.id,'chapters')); cs.forEach(cd=>{const ch={id:cd.id,...cd.data()};const dt=ch.releaseAt?.toDate?ch.releaseAt.toDate():(ch.releaseAt?new Date(ch.releaseAt):null);if(dt && dt.getTime()>Date.now() && ch.releaseStatus!=='published' && (!isNonPublish(w) || (currentUser && (currentUser.uid===w.authorId || isAdminUser(userProfile)))))items.push({w,ch,dt});});}
     items.sort((a,b)=>a.dt-b.dt);
-    list.innerHTML=items.length?items.map(({w,ch,dt})=>`<div class="card-bg rounded-xl p-4 flex gap-3 items-center"><img src="${escAttr(w.coverURL||'')}" class="w-14 h-20 object-cover rounded-lg" onerror="this.style.display='none'"><div class="min-w-0 flex-1"><p class="font-bold truncate">${escHtml(w.title||'Tanpa judul')}</p><p class="text-sm text-slate-400">${w.type==='novel'?'Chapter':'Episode'} ${ch.number||''}: ${escHtml(ch.title||'Tanpa judul')}</p><p class="text-xs text-amber-400 mt-1"><i class="far fa-clock mr-1"></i>${dt.toLocaleString('id-ID')}</p></div><span class="text-[10px] px-2 py-1 rounded bg-amber-500/15 text-amber-300">Terjadwal</span></div>`).join(''):'<div class="card-bg rounded-xl p-6 text-center"><i class="fas fa-calendar-check text-3xl text-slate-500 mb-3"></i><p class="font-semibold text-slate-200">Belum Ada Komik atau Novel yang Akan Rilis</p><p class="text-sm text-slate-400 mt-1">Saat ini belum ada chapter atau episode yang memiliki jadwal rilis. Silakan periksa kembali nanti.</p></div>';
+    list.innerHTML=items.length?items.map(({w,ch,dt})=>`<div class="card-bg rounded-xl p-4 flex gap-3 items-center"><img src="${safeImageAttr(w.coverURL||'', false)}" class="w-14 h-20 object-cover rounded-lg" onerror="this.style.display='none'"><div class="min-w-0 flex-1"><p class="font-bold truncate">${escHtml(w.title||'Tanpa judul')}</p><p class="text-sm text-slate-400">${w.type==='novel'?'Chapter':'Episode'} ${ch.number||''}: ${escHtml(ch.title||'Tanpa judul')}</p><p class="text-xs text-amber-400 mt-1"><i class="far fa-clock mr-1"></i>${dt.toLocaleString('id-ID')}</p></div><span class="text-[10px] px-2 py-1 rounded bg-amber-500/15 text-amber-300">Terjadwal</span></div>`).join(''):'<div class="card-bg rounded-xl p-6 text-center"><i class="fas fa-calendar-check text-3xl text-slate-500 mb-3"></i><p class="font-semibold text-slate-200">Belum Ada Komik atau Novel yang Akan Rilis</p><p class="text-sm text-slate-400 mt-1">Saat ini belum ada chapter atau episode yang memiliki jadwal rilis. Silakan periksa kembali nanti.</p></div>';
   } catch(e){console.error(e);list.innerHTML='<p class="text-red-400">Jadwal belum dapat dimuat.</p>';}
 }
 
@@ -7610,27 +7359,27 @@ async function renderReader(container, novelId, chapterId = null) {
           <button id="readerLikeBtn" class="text-sm font-bold px-4 py-2 rounded-full transition ${isLiked ? 'bg-red-600 text-white' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'}"><i class="fas fa-heart mr-1"></i><span id="readerLikeCount" data-val="${work.likes || 0}">${formatCount(work.likes || 0)}</span></button>
         </div>
       </div>
-      <div class="reader-header mb-4 rounded-2xl overflow-hidden" style="height:clamp(110px,22vw,220px);background:#171727;"><img src="${escAttr(work.bannerURL || work.coverURL || '')}" alt="Banner ${escAttr(work.title || '')}" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.style.display='none'"></div>
+      <div class="reader-header mb-4 rounded-2xl overflow-hidden" style="height:clamp(110px,22vw,220px);background:#171727;"><img src="${safeImageAttr(work.bannerURL || work.coverURL || '', false)}" alt="Banner ${escAttr(work.title || '')}" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.style.display='none'"></div>
       <div class="reader-header card-bg rounded-2xl p-4 md:p-6 mb-6 ${work.isTamat ? 'tamat-border' : 'berlanjut-border'} ${isUnggulanAuthor ? 'unggulan-border' : ''}">
         <div class="flex flex-col md:flex-row gap-4 md:gap-6">
           <div class="w-full md:w-48 h-64 bg-slate-800 rounded-xl overflow-hidden flex-shrink-0 relative">
-            ${work.coverURL ? `<img src="${work.coverURL}" class="w-full h-full object-cover cover-clickable" onclick="window.showImgFullscreen('${escAttr(work.coverURL)}','Sampul: ${escAttr(work.title)}')" onerror="this.style.display='none';">` : `<div class="flex items-center justify-center h-full"><i class="fas fa-image text-5xl text-slate-600"></i></div>`}
+            ${work.coverURL ? `<img src="${safeImageAttr(work.coverURL, false)}" class="w-full h-full object-cover cover-clickable" onclick="window.showImgFullscreen('${escAttr(safeImageSource(work.coverURL))}','Sampul: ${escAttr(work.title)}')" onerror="this.style.display='none';">` : `<div class="flex items-center justify-center h-full"><i class="fas fa-image text-5xl text-slate-600"></i></div>`}
             ${statusLabel(work.isTamat)}
           </div>
           <div class="flex-1">
-            <h1 class="text-xl md:text-2xl font-black">${work.title}${isUnggulanAuthor ? ' <span class="unggulan-tag">⭐ UNGGULAN</span>' : ''}</h1>
-            <p class="text-amber-400/90 italic mt-2">${work.teaser || ''}</p>
+            <h1 class="text-xl md:text-2xl font-black">${escHtml(work.title || '')}${isUnggulanAuthor ? ' <span class="unggulan-tag">⭐ UNGGULAN</span>' : ''}</h1>
+            <p class="text-amber-400/90 italic mt-2">${escHtml(work.teaser || '')}</p>
             <button type="button" onclick="shareWork('${work.id}')" class="mt-3 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold shadow-lg">
               <i class="fas fa-share-alt"></i> Bagikan ${work.type === 'novel' ? 'Novel' : 'Komik'}
             </button>
             <button type="button" onclick="toggleFollowWork('${escAttr(novelId)}','${escAttr(work.title || 'karya')}')" class="follow-btn ${isFollowingThisWork ? 'following' : 'not-following'} mt-3 ml-2">
               <i class="fas fa-${isFollowingThisWork ? 'check' : 'bell'}"></i> ${isFollowingThisWork ? 'Mengikuti Karya' : 'Ikuti Karya & Notifikasi'}
             </button>
-            <p class="text-slate-400 mt-2 text-sm">${work.description || ''}</p>
-            <div class="flex items-center gap-3 mt-3 text-sm flex-wrap">${cats.map(c => `<span class="bg-slate-700 px-3 py-1 rounded-full text-xs">${c}</span>`).join('')}</div>
+            <p class="text-slate-400 mt-2 text-sm">${escHtml(work.description || '')}</p>
+            <div class="flex items-center gap-3 mt-3 text-sm flex-wrap">${cats.map(c => `<span class="bg-slate-700 px-3 py-1 rounded-full text-xs">${escHtml(c)}</span>`).join('')}</div>
             <div class="mt-3 flex items-center gap-2 cursor-pointer hover:opacity-80" onclick="navTo('user/${work.authorId}')">
-              <img src="${work.authorPhotoURL || 'https://ui-avatars.com/api/?name='+encodeURIComponent(work.authorName||'U')}" class="w-8 h-8 rounded-full border border-slate-700">
-              <span class="text-sm text-amber-400 hover:underline">${work.authorName || 'Anonim'}${vBadge}</span>
+              <img src="${safeImageAttr(work.authorPhotoURL || 'https://ui-avatars.com/api/?name='+encodeURIComponent(work.authorName||'U'), false)}" class="w-8 h-8 rounded-full border border-slate-700">
+              <span class="text-sm text-amber-400 hover:underline">${escHtml(work.authorName || 'Anonim')}${vBadge}</span>
               ${work.authorLevel > 1000 ? '<i class="fas fa-crown text-amber-400 badge-float"></i>' : ''}
             </div>
             <div class="flex items-center gap-3 mt-3 text-xs text-slate-400 flex-wrap">
@@ -7642,7 +7391,7 @@ async function renderReader(container, novelId, chapterId = null) {
             ${socialHtml ? `<div class="flex flex-wrap gap-1 mt-3">${socialHtml}</div>` : ''}
             ${(work.supportLink?.url || work.saweriaLink || work.saweria) ? (() => { const sl=work.supportLink||{url:work.saweriaLink||work.saweria,platform:'Saweria',label:''}; const platform=sl.platform||'Saweria'; return `
             <div style="margin-top:16px;">
-              <a href="${escAttr(sl.url)}" onclick="trackSupportClick('${escAttr(work.id)}')" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:9999px;background:#fbbf24;color:#000!important;font-weight:900;font-size:13px;box-shadow:0 6px 20px rgba(251,191,36,.4);text-decoration:none;">
+              <a href="${safeImageAttr(sl.url, false)}" onclick="trackSupportClick('${escAttr(work.id)}')" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:9999px;background:#fbbf24;color:#000!important;font-weight:900;font-size:13px;box-shadow:0 6px 20px rgba(251,191,36,.4);text-decoration:none;">
                 <i class="fas fa-mug-hot" style="color:#000;"></i><span style="color:#000;">${escHtml(sl.label || ('Dukung via ' + platform))}</span><i class="fas fa-external-link-alt" style="font-size:11px;color:#000;"></i>
               </a><p style="font-size:11px;color:#64748b;margin-top:6px;">Dukung kreator lewat ${escHtml(platform)}.</p>
             </div>`; })() : ''}
@@ -7704,7 +7453,7 @@ async function renderReader(container, novelId, chapterId = null) {
                   <button type="button" id="readerNoteToggle"><i class="fas fa-sticky-note"></i> Catatan pribadi</button>
                   <div id="readerNotePanel" hidden><textarea id="readerNoteInput" rows="3" placeholder="Tulis catatanmu untuk chapter ini..."></textarea><div class="novel-note-footer"><span>Catatan tersimpan di perangkat ini</span><button type="button" id="readerNoteSave">Simpan catatan</button></div></div>
                 </div>`;
-              })() : `<div class="reader-images grid grid-cols-1 gap-4">${(currentChapter.images || []).map(img => `<img src="${img}" class="w-full rounded-lg hover:shadow-2xl transition cover-clickable" onclick="window.showImgFullscreen('${escAttr(img)}','${escAttr(currentChapter.title || chapterLabel + ' ' + currentChapter.number)}')">`).join('')}</div>`}
+              })() : `<div class="reader-images grid grid-cols-1 gap-4">${(currentChapter.images || []).map(img => `<img src="${safeImageAttr(img, false)}" class="w-full rounded-lg hover:shadow-2xl transition cover-clickable" onclick="window.showImgFullscreen('${escAttr(safeImageSource(img))}','${escAttr(currentChapter.title || chapterLabel + ' ' + currentChapter.number)}')">`).join('')}</div>`}
             ` : '<p class="text-slate-400">Pilih chapter.</p>'}
           </div>
           ${currentChapter ? (() => {
@@ -8028,7 +7777,7 @@ async function renderReader(container, novelId, chapterId = null) {
           const uPhoto = u.photoURL || r.photoURL || '';
           const vB = getVerifiedBadge(u.followerCount || 0) + getCreatorVerifiedBadge(u);
           return `<div class="rating-display user-rating" title="${un} kasih ${r.rating} bintang">
-            <img src="${uPhoto || 'https://ui-avatars.com/api/?name='+encodeURIComponent(un)}" class="w-4 h-4 rounded-full">
+            <img src="${safeImageAttr(uPhoto || 'https://ui-avatars.com/api/?name='+encodeURIComponent(un), false)}" class="w-4 h-4 rounded-full">
             <span class="text-xs text-slate-300">${un}${vB}</span>
             ${getRoleTagsForUid(r.userId, u)}
             <span class="text-amber-400 font-bold">${r.rating}★</span>
@@ -8069,7 +7818,7 @@ async function renderReader(container, novelId, chapterId = null) {
       const avatarSize = depth ? 'w-6 h-6' : 'w-8 h-8';
       return `<div class="comment-card rounded-xl p-3 card-anim" data-commentid="${c.id}" style="${depth ? 'margin-left:12px;margin-top:8px;border-left:2px solid rgba(251,191,36,.55)' : ''}">
         <div class="flex items-start gap-2">
-          <img src="${c.photoURL || 'https://ui-avatars.com/api/?name='+encodeURIComponent(c.username||'U')}" class="${avatarSize} rounded-full cursor-pointer hover:scale-110 transition" onclick="navTo('user/${c.userId}')">
+          <img src="${safeImageAttr(c.photoURL || 'https://ui-avatars.com/api/?name='+encodeURIComponent(c.username||'U'), false)}" class="${avatarSize} rounded-full cursor-pointer hover:scale-110 transition" onclick="navTo('user/${c.userId}')">
           <div class="flex-1 min-w-0">
             <div class="flex items-center gap-2 text-xs mb-1 flex-wrap">
               <span class="${isGolden(c.userLevel) ? 'gold-glow font-bold' : 'text-slate-300 font-semibold'} cursor-pointer" onclick="navTo('user/${c.userId}')">${c.username || 'Anonim'}${vB}</span>
@@ -8303,8 +8052,8 @@ async function renderLeaderboard(container) {
   list.innerHTML = works.map((w,i) => `
     <div class="card-bg hover-lift rounded-2xl p-4 flex items-center gap-4 cursor-pointer card-anim ${isUnggulan(w) ? 'unggulan-border' : ''}" style="animation-delay:${i*0.05}s" onclick="navTo('reader/${w.id}')">
       <div class="leaderboard-rank ${i < 3 ? rankColors[i] : 'bg-slate-700 text-slate-300'}">${i+1}</div>
-      <div class="w-16 h-20 bg-slate-800 rounded-lg overflow-hidden">${w.coverURL ? `<img src="${w.coverURL}" class="w-full h-full object-cover">` : ''}</div>
-      <div class="flex-1 min-w-0"><h3 class="font-bold truncate">${w.title}${isUnggulan(w) ? ' ⭐' : ''}</h3><p class="text-xs text-slate-400 line-clamp-2">${w.teaser || ''}</p>
+      <div class="w-16 h-20 bg-slate-800 rounded-lg overflow-hidden">${w.coverURL ? `<img src="${safeImageAttr(w.coverURL, false)}" class="w-full h-full object-cover">` : ''}</div>
+      <div class="flex-1 min-w-0"><h3 class="font-bold truncate">${escHtml(w.title || '')}${isUnggulan(w) ? ' ⭐' : ''}</h3><p class="text-xs text-slate-400 line-clamp-2">${escHtml(w.teaser || '')}</p>
         <div class="flex gap-3 mt-1 text-[10px] text-slate-400">
           <span><i class="fas fa-eye text-amber-400"></i> ${formatCount(w.views || 0)}</span>
           <span><i class="fas fa-heart" style="color:#ef4444"></i> ${formatCount(w.likes || 0)}</span>
@@ -8321,7 +8070,7 @@ async function renderKritikSaran(container) {
   container.innerHTML = `
     <div class="card-bg rounded-2xl p-6 md:p-8 max-w-2xl mx-auto card-anim">
       <div class="text-center mb-6">
-        <img src="${LOGO_URL}" class="w-16 h-16 mx-auto rounded-xl mb-3 border-2 border-amber-500">
+        <img src="${safeImageAttr(LOGO_URL, false)}" class="w-16 h-16 mx-auto rounded-xl mb-3 border-2 border-amber-500">
         <h2 class="text-2xl font-black">Kritik & Saran</h2>
       </div>
       <div class="space-y-4">
@@ -8358,7 +8107,7 @@ async function renderKritikSaran(container) {
 async function renderProfil(container) {
   if (!currentUser || !userProfile) {
     container.innerHTML = `<div class="card-bg rounded-2xl p-8 text-center max-w-md mx-auto card-anim">
-      <img src="${LOGO_URL}" class="w-20 h-20 mx-auto rounded-2xl mb-4 border-2 border-amber-500">
+      <img src="${safeImageAttr(LOGO_URL, false)}" class="w-20 h-20 mx-auto rounded-2xl mb-4 border-2 border-amber-500">
       <h2 class="text-xl font-bold mb-4">Masuk KomiNovel</h2>
       <div class="flex flex-col gap-3">
         <button id="loginGoogle" class="bg-white text-black font-bold py-3 rounded-full hover:scale-105 transition"><i class="fab fa-google mr-2"></i>Google</button>
@@ -8390,7 +8139,7 @@ async function renderProfil(container) {
     <div class="card-bg rounded-2xl p-6 max-w-2xl mx-auto card-anim ${userProfile.featuredCreator ? 'unggulan-border' : ''} ${isOwner ? 'owner-shine-card' : ''}">
       <div class="flex flex-col items-center text-center">
         <div class="relative">
-          <img src="${userProfile.photoURL || 'https://ui-avatars.com/api/?name='+encodeURIComponent(userProfile.username||'U')}" class="w-24 h-24 rounded-full border-4 ${userProfile.featuredCreator ? 'border-amber-400' : golden ? 'border-amber-400' : 'border-slate-600'} ${isOwner ? 'owner-shine' : ''}">
+          <img src="${safeImageAttr(userProfile.photoURL || 'https://ui-avatars.com/api/?name='+encodeURIComponent(userProfile.username||'U'), false)}" class="w-24 h-24 rounded-full border-4 ${userProfile.featuredCreator ? 'border-amber-400' : golden ? 'border-amber-400' : 'border-slate-600'} ${isOwner ? 'owner-shine' : ''}">
           ${golden || userProfile.featuredCreator ? '<i class="fas fa-crown absolute -top-2 -right-2 text-amber-400 text-2xl badge-float"></i>' : ''}
         </div>
         <h2 class="text-2xl font-black mt-3 ${golden || userProfile.featuredCreator ? 'gold-glow' : ''}">${userProfile.username || 'User'}${verified}</h2>
@@ -8414,7 +8163,7 @@ async function renderProfil(container) {
         <div class="rounded-2xl border border-slate-700 bg-slate-900/40 p-4">
           <label class="block text-sm font-bold mb-2"><i class="fas fa-camera text-amber-400 mr-2"></i>Foto Profil</label>
           <div class="flex items-center gap-4">
-            <img id="profilePhotoPreview" src="${userProfile.photoURL || 'https://ui-avatars.com/api/?name='+encodeURIComponent(userProfile.username||'U')}" class="w-16 h-16 rounded-full object-cover border-2 border-amber-500">
+            <img id="profilePhotoPreview" src="${safeImageAttr(userProfile.photoURL || 'https://ui-avatars.com/api/?name='+encodeURIComponent(userProfile.username||'U'), false)}" class="w-16 h-16 rounded-full object-cover border-2 border-amber-500">
             <div class="flex-1">
               <input id="profilePhotoInput" type="file" accept="image/*" class="w-full text-xs text-slate-400">
               <p class="text-[11px] text-slate-500 mt-1">Foto ini hanya mengubah foto profil KomiNovel. Foto akun Google tetap tidak berubah.</p>
@@ -8494,22 +8243,24 @@ async function renderProfil(container) {
       if (progress) progress.textContent = 'Foto siap disimpan ✓';
     }
 
-    let newBannerURL=(document.getElementById('profileBannerURL')?.value || '').trim();
+    const rawBannerURL=(document.getElementById('profileBannerURL')?.value || '').trim();
+    let newBannerURL=rawBannerURL ? safeImageSource(rawBannerURL) : '';
+    if(rawBannerURL && !newBannerURL){showToast('URL banner harus menggunakan http:// atau https:// yang valid.');return;}
     const bannerFile=document.getElementById('profileBannerFile')?.files?.[0];
-    if(bannerFile){const progress=document.getElementById('profileBannerProgress');if(progress)progress.textContent='Mengupload banner...';try{newBannerURL=await uploadToImgbb(bannerFile);if(progress)progress.textContent='Banner siap disimpan ✓';}catch(e){showToast('Gagal upload banner: '+e.message);return;}}
+    if(bannerFile){const progress=document.getElementById('profileBannerProgress');if(progress)progress.textContent='Mengupload banner...';try{newBannerURL=safeImageSource(await uploadToImgbb(bannerFile));if(!newBannerURL)throw new Error('URL hasil upload tidak valid');if(progress)progress.textContent='Banner siap disimpan ✓';}catch(e){showToast('Gagal upload banner: '+e.message);return;}}
     await updateDoc(doc(db,'users',currentUser.uid), {
       username: nu || userProfile.username,
       bio: nb,
       bannerURL: newBannerURL,
       birthday: bdayMMDD,
-      photoURL: newPhotoURL,
+      photoURL: safeImageSource(newPhotoURL),
       updatedAt: serverTimestamp()
     });
     userProfile.username = nu || userProfile.username;
     userProfile.bio = nb;
     userProfile.bannerURL = newBannerURL;
     userProfile.birthday = bdayMMDD;
-    userProfile.photoURL = newPhotoURL;
+    userProfile.photoURL = safeImageSource(newPhotoURL);
     showToast('Profil disimpan! Foto profil KomiNovel berhasil diperbarui.');
     renderPage();
   };
@@ -8579,8 +8330,8 @@ async function renderCreatorDashboard(container) {
   const cC = document.getElementById('creatorContent');
 
   async function loadUploadForm() {
-    const canN = hasRole(userProfile,'penulis') || isAdminSession;
-    const canK = hasRole(userProfile,'komikus') || isAdminSession;
+    const canN = hasRole(userProfile,'penulis') || isAdminUser(userProfile);
+    const canK = hasRole(userProfile,'komikus') || isAdminUser(userProfile);
     let opts = ''; if (canN) opts += '<option value="novel">Novel</option>'; if (canK) opts += '<option value="komik">Komik</option>';
     if (!opts) opts = '<option value="novel">Novel</option>';
     cC.innerHTML = `<div class="card-bg rounded-2xl p-6 max-w-2xl mx-auto card-anim">
@@ -8621,14 +8372,17 @@ async function renderCreatorDashboard(container) {
       const cats = getSelectedCats('uploadCategories');
       const category = cats.join(', ');
       const desc = document.getElementById('uploadDesc').value.trim();
-      const coverURL = getCoverValue('uploadCover');
+      const coverURL = safeImageSource(getCoverValue('uploadCover'));
+      const rawBannerURL = (document.getElementById('uploadWorkBanner')?.value || '').trim();
+      const bannerURL = rawBannerURL ? safeImageSource(rawBannerURL) : '';
+      if (rawBannerURL && !bannerURL) { showToast('URL banner harus menggunakan http:// atau https:// yang valid.'); return; }
       if (!title || !teaser || cats.length === 0 || !coverURL) { showToast('Lengkapi field *'); return; }
       if (teaser.length > 150) { showToast('Teaser max 150'); return; }
       const btn = document.getElementById('uploadSubmit');
       btn.disabled = true; btn.innerHTML = '<span class="uploading-spinner"></span>Menyimpan...';
       try {
         const createdWorkRef = await addDoc(collection(db,'works'), {
-          title, teaser, type, category, description: desc, coverURL, bannerURL: (document.getElementById('uploadWorkBanner')?.value || '').trim(), status: 'nonpublish',
+          title, teaser, type, category, description: desc, coverURL, bannerURL, status: 'nonpublish',
           authorId: currentUser.uid, authorName: userProfile.username || 'Kreator',
           authorPhotoURL: userProfile.photoURL || '', authorSosmed: userProfile.sosmed || {},
           authorLevel: userProfile.level || 1, authorFollowerCount: userProfile.followerCount || 0,
@@ -8691,9 +8445,9 @@ async function renderCreatorDashboard(container) {
       const borderClass = isTD ? 'takedown-border' : isNP ? 'nonpublish-border' : isUN ? 'unggulan-border' : (w.isTamat ? 'tamat-border' : 'berlanjut-border');
       return `<div class="comment-card rounded-xl p-4 card-anim ${borderClass}">
         <div class="flex items-center gap-3 mb-3">
-          <div class="w-14 h-20 bg-slate-800 rounded-lg overflow-hidden relative">${w.coverURL ? `<img src="${w.coverURL}" class="w-full h-full object-cover ${isTD || isNP ? 'grayscale' : ''}">` : ''}${workStatusBadge(w)}${statusLabel(w.isTamat)}</div>
+          <div class="w-14 h-20 bg-slate-800 rounded-lg overflow-hidden relative">${w.coverURL ? `<img src="${safeImageAttr(w.coverURL, false)}" class="w-full h-full object-cover ${isTD || isNP ? 'grayscale' : ''}">` : ''}${workStatusBadge(w)}${statusLabel(w.isTamat)}</div>
           <div class="flex-1 min-w-0">
-            <h4 class="font-bold truncate ${isTD ? 'line-through text-slate-500' : ''}">${w.title}</h4>
+            <h4 class="font-bold truncate ${isTD ? 'line-through text-slate-500' : ''}">${escHtml(w.title || '')}</h4>
             <p class="text-xs text-slate-400">${w.chapters.length} ${lbl}${wGroups.length ? ' • ' + wGroups.length + ' ' + gl : ''}</p>
             <div class="flex gap-3 mt-1 text-[10px] text-slate-400">
               <span><i class="fas fa-eye text-amber-400"></i> ${formatCount(w.views || 0)}</span>
@@ -8895,6 +8649,136 @@ async function renderCreatorDashboard(container) {
 }
 
 // ============================================================
+// ===== ADMIN DECOY / PUBLIC WARNING PAGE ====================
+// /admin bukan halaman login dan tidak pernah mengarah ke /muan.
+// ============================================================
+async function renderAdminDecoy(container) {
+  if (!container) return;
+  container.innerHTML = `
+    <section class="max-w-3xl mx-auto card-bg rounded-2xl border border-red-500/50 p-5 md:p-8 card-anim mt-5">
+      <div class="text-center mb-6">
+        <div class="w-16 h-16 mx-auto rounded-2xl bg-red-500/15 border border-red-500/40 flex items-center justify-center mb-4">
+          <i class="fas fa-shield-alt text-red-400 text-3xl"></i>
+        </div>
+        <p class="text-xs font-black tracking-[.2em] text-red-400 mb-2">KOMINOVEL • PERINGATAN KEAMANAN</p>
+        <h1 class="text-2xl md:text-3xl font-black">AKSES TIDAK DIIZINKAN</h1>
+        <p class="text-sm text-slate-400 mt-3">Alamat ini bukan halaman login maupun panel pengelola KomiNovel.</p>
+      </div>
+
+      <div class="rounded-xl border border-red-500/40 bg-red-950/30 p-4 mb-4">
+        <h2 class="font-black text-red-300 mb-2"><i class="fas fa-ban mr-2"></i>DILARANG MELAKUKAN AKSI TANPA IZIN</h2>
+        <ul class="text-sm text-slate-200 space-y-2 list-disc pl-5">
+          <li>Mencoba masuk ke akun, panel, server, database, atau sistem milik pihak lain tanpa hak.</li>
+          <li>Menerobos autentikasi, mengeksploitasi celah, mencuri sesi atau token, maupun mengambil data pengguna.</li>
+          <li>Mengubah, menghapus, merusak, atau mengganggu data dan layanan KomiNovel tanpa kewenangan.</li>
+          <li>Mengunggah, menyalin, atau menyebarkan karya kreator tanpa izin pemegang hak cipta.</li>
+        </ul>
+      </div>
+
+      <div class="space-y-3 mb-5">
+        <article class="rounded-xl border border-amber-500/25 bg-amber-500/5 p-4">
+          <h3 class="font-bold text-amber-300 mb-1">1. Akses tanpa hak dan serangan siber</h3>
+          <p class="text-sm text-slate-300">UU Informasi dan Transaksi Elektronik, termasuk perubahan melalui UU No. 1 Tahun 2024. Pasal 30 mengatur larangan mengakses komputer atau sistem elektronik milik orang lain dengan sengaja dan tanpa hak, termasuk menerobos sistem pengamanan.</p>
+          <p class="text-xs text-slate-400 mt-2">Pasal 46 mengatur ancaman pidana sesuai unsur dan bentuk pelanggaran yang terbukti.</p>
+        </article>
+        <article class="rounded-xl border border-amber-500/25 bg-amber-500/5 p-4">
+          <h3 class="font-bold text-amber-300 mb-1">2. Pembajakan karya</h3>
+          <p class="text-sm text-slate-300">UU No. 28 Tahun 2014 tentang Hak Cipta melarang penggunaan dan pembajakan ciptaan tanpa hak. Ketentuan pidananya antara lain diatur dalam Pasal 113, sesuai jenis perbuatan dan unsur yang terpenuhi.</p>
+        </article>
+      </div>
+
+      <div class="rounded-xl bg-slate-900/70 border border-slate-700 p-4 mb-6">
+        <p class="text-sm font-bold text-slate-100 mb-1"><i class="fas fa-exclamation-triangle text-amber-400 mr-2"></i>Konsekuensi</p>
+        <p class="text-xs text-slate-400">Dugaan pelanggaran dapat ditindaklanjuti dengan pembatasan atau pencabutan akses, pelaporan kepada pihak berwenang, dan proses hukum apabila unsur pelanggaran terpenuhi. Sanksi ditentukan berdasarkan hukum dan proses oleh pihak yang berwenang.</p>
+        <p class="text-xs text-slate-400 mt-2">Jika menemukan celah keamanan, hentikan pengujian dan laporkan secara bertanggung jawab kepada pengelola. Jangan mengambil, mengubah, atau menyebarkan data.</p>
+      </div>
+
+      <div class="flex justify-center">
+        <button id="adminDecoyHome" type="button" class="bg-slate-700 text-white font-bold py-3 px-6 rounded-xl hover:bg-slate-600 transition">
+          <i class="fas fa-home mr-2"></i>Kembali ke Beranda
+        </button>
+      </div>
+      <p class="text-[10px] text-slate-500 text-center mt-4">Halaman ini bukan portal autentikasi. Jangan memasukkan email, kata sandi, atau informasi akun di sini.</p>
+    </section>`;
+
+  const homeButton = document.getElementById('adminDecoyHome');
+  if (homeButton) homeButton.onclick = () => navTo('home', { replace: true });
+}
+
+// ============================================================
+// ===== ADMIN LEGAL NOTICE ===================================
+// Ditampilkan setelah autentikasi dan pemeriksaan role admin.
+// ============================================================
+async function renderAdminLegalNotice(container) {
+  if (!isAdminUser(userProfile)) {
+    renderAdminLogin(container);
+    return;
+  }
+
+  container.innerHTML = `
+    <section class="max-w-3xl mx-auto card-bg rounded-2xl border border-red-500/40 p-5 md:p-8 card-anim">
+      <div class="text-center mb-6">
+        <div class="w-16 h-16 mx-auto rounded-2xl bg-red-500/15 border border-red-500/30 flex items-center justify-center mb-4">
+          <i class="fas fa-shield-alt text-red-400 text-3xl"></i>
+        </div>
+        <p class="text-xs font-black tracking-[.2em] text-red-400 mb-2">KOMINOVEL • AKSES TERBATAS</p>
+        <h2 class="text-2xl md:text-3xl font-black">PERINGATAN HUKUM & KEAMANAN</h2>
+        <p class="text-sm text-slate-400 mt-2">Baca sebelum melanjutkan ke panel pengelola.</p>
+      </div>
+
+      <div class="rounded-xl border border-red-500/30 bg-red-950/25 p-4 mb-4">
+        <h3 class="font-black text-red-300 mb-2"><i class="fas fa-ban mr-2"></i>DILARANG MELAKUKAN AKSI TANPA IZIN</h3>
+        <ul class="text-sm text-slate-200 space-y-2 list-disc pl-5">
+          <li>Mencoba masuk ke akun, panel, server, database, atau sistem milik pihak lain tanpa izin.</li>
+          <li>Menerobos autentikasi, mengeksploitasi celah, mencuri sesi/token, atau mengambil data pengguna.</li>
+          <li>Mengubah, menghapus, merusak, atau mengganggu data dan layanan KomiNovel tanpa kewenangan.</li>
+          <li>Mengunggah, menyalin, atau menyebarkan karya orang lain tanpa izin pemegang hak cipta.</li>
+          <li>Menggunakan akses kreator atau akun lain untuk menguji sistem tanpa persetujuan tertulis dari pengelola.</li>
+        </ul>
+      </div>
+
+      <div class="space-y-3 mb-5">
+        <article class="rounded-xl border border-amber-500/25 bg-amber-500/5 p-4">
+          <h3 class="font-bold text-amber-300 mb-1">1. Akses tanpa hak / serangan siber</h3>
+          <p class="text-sm text-slate-300">UU No. 11 Tahun 2008 tentang Informasi dan Transaksi Elektronik sebagaimana telah diubah, terakhir dengan UU No. 1 Tahun 2024. Pasal 30 mengatur larangan mengakses komputer atau sistem elektronik milik orang lain dengan sengaja dan tanpa hak, termasuk menerobos atau menjebol sistem pengamanan.</p>
+          <p class="text-xs text-slate-400 mt-2">Pasal 46 memuat ancaman pidana sesuai unsur perbuatannya: maksimum 6, 7, atau 8 tahun penjara dan/atau denda maksimum Rp600 juta, Rp700 juta, atau Rp800 juta.</p>
+        </article>
+        <article class="rounded-xl border border-amber-500/25 bg-amber-500/5 p-4">
+          <h3 class="font-bold text-amber-300 mb-1">2. Pembajakan karya</h3>
+          <p class="text-sm text-slate-300">UU No. 28 Tahun 2014 tentang Hak Cipta. Pasal 1 angka 23 menjelaskan pembajakan sebagai penggandaan ciptaan atau produk hak terkait secara tidak sah dan pendistribusiannya secara luas untuk memperoleh keuntungan ekonomi.</p>
+          <p class="text-xs text-slate-400 mt-2">Untuk perbuatan yang memenuhi unsur Pasal 113 ayat (3) dan dilakukan dalam bentuk pembajakan, Pasal 113 ayat (4) mengatur ancaman maksimum 10 tahun penjara dan/atau denda Rp4 miliar.</p>
+        </article>
+      </div>
+
+      <div class="rounded-xl bg-slate-900/70 border border-slate-700 p-4 mb-6">
+        <p class="text-sm font-bold text-slate-100 mb-1"><i class="fas fa-exclamation-triangle text-amber-400 mr-2"></i>Perhatian</p>
+        <p class="text-xs text-slate-400">Pelanggaran dapat mengakibatkan pencabutan akses, pembatasan atau penutupan akun, pelaporan kepada pihak berwenang, serta proses hukum apabila unsur pelanggaran terpenuhi. Besaran sanksi tidak otomatis berlaku untuk setiap kejadian; penilaian dan penerapannya mengikuti hukum serta proses yang berwenang.</p>
+        <p class="text-xs text-slate-400 mt-2">Jika menemukan celah keamanan, hentikan pengujian, jangan mengambil atau mengubah data, dan laporkan secara bertanggung jawab kepada pengelola KomiNovel.</p>
+      </div>
+
+      <div class="flex flex-col sm:flex-row gap-3">
+        <button id="adminLegalContinue" type="button" class="flex-1 bg-gradient-to-r from-amber-400 to-orange-500 text-slate-950 font-black py-3 px-5 rounded-xl hover:brightness-110 transition">
+          <i class="fas fa-check-circle mr-2"></i>Saya Mengerti & Lanjutkan
+        </button>
+        <button id="adminLegalExit" type="button" class="sm:w-40 bg-slate-700 text-white font-bold py-3 px-5 rounded-xl hover:bg-slate-600 transition">
+          <i class="fas fa-sign-out-alt mr-2"></i>Keluar
+        </button>
+      </div>
+      <p class="text-[10px] text-slate-500 text-center mt-4">Pemberitahuan ini merupakan ringkasan, bukan nasihat hukum. Akses panel hanya untuk pengelola yang diberi kewenangan.</p>
+    </section>`;
+
+  document.getElementById('adminLegalContinue').onclick = () => {
+    if (!isAdminUser(userProfile)) {
+      showToast('Akses admin tidak lagi terverifikasi.');
+      navTo('home', { replace: true });
+      return;
+    }
+    renderAdminPanel(container);
+  };
+  document.getElementById('adminLegalExit').onclick = () => navTo('home');
+}
+
+// ============================================================
 // ===== ADMIN PANEL ==========================================
 // ============================================================
 async function renderAdminPanel(container) {
@@ -8908,12 +8792,8 @@ async function renderAdminPanel(container) {
   <div class="flex flex-wrap gap-2 mb-6">
     <button id="adminTabUsers" class="px-4 py-2 rounded-full bg-amber-500 text-black font-bold text-sm hover:scale-105 transition">User</button>
     <button id="adminTabWorks" class="px-4 py-2 rounded-full bg-slate-800 text-slate-300 text-sm hover:bg-slate-700 transition">Karya</button>
-    <button id="adminTabPromotion" class="px-4 py-2 rounded-full bg-slate-800 text-slate-300 text-sm hover:bg-slate-700 transition"><i class="fas fa-bullhorn mr-1"></i>Promosi</button>
     <button id="adminTabReport" class="px-4 py-2 rounded-full bg-slate-800 text-slate-300 text-sm hover:bg-slate-700 transition"><i class="fas fa-flag mr-1"></i>Report</button>
-    <button id="adminTabUpload" class="px-4 py-2 rounded-full bg-slate-800 text-slate-300 text-sm hover:bg-slate-700 transition">Upload</button>
     <button id="adminTabKritik" class="px-4 py-2 rounded-full bg-slate-800 text-slate-300 text-sm hover:bg-slate-700 transition">Kritik</button>
-    <button id="adminTabBirthday" class="px-4 py-2 rounded-full bg-slate-800 text-slate-300 text-sm hover:bg-slate-700 transition">Ultah</button>
-    <button id="adminTabBoost" class="px-4 py-2 rounded-full bg-slate-800 text-slate-300 text-sm hover:bg-slate-700 transition"><i class="fas fa-rocket mr-1"></i>Boost</button>
     <button id="adminTabSettings" class="px-4 py-2 rounded-full bg-slate-800 text-slate-300 text-sm hover:bg-slate-700 transition">Setting</button>
   </div>
   <div id="adminContent"></div>`;
@@ -8932,7 +8812,7 @@ async function renderAdminPanel(container) {
           const isOwnerRole = roles.includes('owner');
           return `<div class="card-bg rounded-xl p-3 user-row card-anim ${isFeatured ? 'unggulan-border' : ''} ${isOwnerRole ? 'owner-shine-card' : ''}" data-username="${(u.username || '').toLowerCase()} ${String(u.id || '').toLowerCase()}">
             <div class="flex items-center gap-2 mb-2">
-              <img src="${u.photoURL || 'https://ui-avatars.com/api/?name='+encodeURIComponent(u.username || 'U')}" class="w-10 h-10 rounded-full ${isFeatured ? 'border-2 border-amber-400' : ''} ${isOwnerRole ? 'owner-shine' : ''}">
+              <img src="${safeImageAttr(u.photoURL || 'https://ui-avatars.com/api/?name='+encodeURIComponent(u.username || 'U'), false)}" class="w-10 h-10 rounded-full ${isFeatured ? 'border-2 border-amber-400' : ''} ${isOwnerRole ? 'owner-shine' : ''}">
               <div class="flex-1 min-w-0"><p class="font-semibold text-sm">${u.username || 'User'}${getVerifiedBadge(u.followerCount || 0)}${getCreatorVerifiedBadge(u)}</p><p class="text-xs text-slate-400">${u.email || 'Guest'} • Lv.${u.level || 1} • ${formatCount(u.followerCount || 0)} followers</p><div class="mt-1 flex flex-wrap items-center gap-2"><span class="text-[11px] text-amber-400"><i class="fas fa-fingerprint mr-1"></i>ID Pengguna:</span><code class="text-[11px] text-slate-300 break-all select-all">${escHtml(u.id)}</code><button type="button" class="admin-copy-uid text-[11px] text-amber-400 hover:text-amber-300 underline" data-uid="${escAttr(u.id)}">Salin ID</button></div></div>
               ${isFeatured ? '<span class="unggulan-tag">⭐</span>' : ''}
               <button class="ban-btn ${u.banned ? 'bg-green-600' : 'bg-red-600'} text-white px-3 py-1 rounded-lg text-xs font-bold hover:scale-105 transition" data-uid="${u.id}" data-banned="${u.banned || false}">${u.banned ? 'Unban' : 'Ban'}</button>
@@ -9022,16 +8902,16 @@ async function renderAdminPanel(container) {
         const reports = (w.reports || []).length;
         return `<div class="card-bg rounded-xl p-3 card-anim ${isTD ? 'takedown-border' : isNP ? 'nonpublish-border' : isUN ? 'unggulan-border' : ''}">
           <div class="flex items-center gap-3">
-            <div class="w-12 h-16 bg-slate-800 rounded overflow-hidden flex-shrink-0">${w.coverURL ? `<img src="${w.coverURL}" class="w-full h-full object-cover ${isTD || isNP ? 'grayscale' : ''}">` : ''}</div>
+            <div class="w-12 h-16 bg-slate-800 rounded overflow-hidden flex-shrink-0">${w.coverURL ? `<img src="${safeImageAttr(w.coverURL, false)}" class="w-full h-full object-cover ${isTD || isNP ? 'grayscale' : ''}">` : ''}</div>
             <div class="flex-1 min-w-0">
               <div class="flex items-center gap-2 flex-wrap">
-                <h4 class="font-bold text-sm truncate ${isTD ? 'line-through text-slate-500' : ''}">${w.title}</h4>
+                <h4 class="font-bold text-sm truncate ${isTD ? 'line-through text-slate-500' : ''}">${escHtml(w.title || '')}</h4>
                 <span class="text-[10px] px-2 py-0.5 rounded-full ${w.type === 'novel' ? 'bg-yellow-900/60 text-yellow-300' : 'bg-orange-900/60 text-orange-300'}">${(w.type || 'novel').toUpperCase()}</span>
                 ${isTD ? '<span class="text-[10px] bg-red-900/60 text-red-300 px-2 py-0.5 rounded-full font-bold">TAKEDOWN</span>' : isNP ? '<span class="text-[10px] bg-slate-700 text-slate-300 px-2 py-0.5 rounded-full font-bold">NONPUBLISH</span>' : '<span class="text-[10px] bg-green-900/60 text-green-300 px-2 py-0.5 rounded-full">AKTIF</span>'}
                 ${isUN ? '<span class="unggulan-tag text-[10px]">⭐</span>' : ''}
                 ${reports > 0 ? `<span class="text-[10px] bg-red-900/60 text-red-300 px-2 py-0.5 rounded-full font-bold"><i class="fas fa-flag"></i> ${reports}/10</span>` : ''}
               </div>
-              <p class="text-xs text-slate-400 truncate">oleh ${w.authorName || 'Anonim'}</p>
+              <p class="text-xs text-slate-400 truncate">oleh ${escHtml(w.authorName || 'Anonim')}</p>
               <p class="text-[10px] text-slate-500">${formatCount(w.views || 0)} views • ${formatCount(w.likes || 0)} likes</p>
             </div>
           </div>
@@ -9159,10 +9039,10 @@ async function renderAdminPanel(container) {
       const isTD = isTakedown(w);
       return `<div class="card-bg rounded-xl p-3 card-anim ${isTD ? 'takedown-border' : reports >= 7 ? 'tamat-border' : reports >= 4 ? 'unggulan-border' : ''}">
         <div class="flex items-center gap-3">
-          <div class="w-12 h-16 bg-slate-800 rounded overflow-hidden flex-shrink-0">${w.coverURL ? `<img src="${w.coverURL}" class="w-full h-full object-cover">` : ''}</div>
+          <div class="w-12 h-16 bg-slate-800 rounded overflow-hidden flex-shrink-0">${w.coverURL ? `<img src="${safeImageAttr(w.coverURL, false)}" class="w-full h-full object-cover">` : ''}</div>
           <div class="flex-1 min-w-0">
-            <h4 class="font-bold text-sm truncate">${w.title}</h4>
-            <p class="text-xs text-slate-400">oleh ${w.authorName || 'Anonim'}</p>
+            <h4 class="font-bold text-sm truncate">${escHtml(w.title || '')}</h4>
+            <p class="text-xs text-slate-400">oleh ${escHtml(w.authorName || 'Anonim')}</p>
             <div class="flex items-center gap-2 mt-1 flex-wrap">
               <span class="text-xs font-black ${reports >= 10 ? 'text-red-400' : reports >= 7 ? 'text-orange-400' : reports >= 4 ? 'text-yellow-400' : 'text-slate-400'}">
                 <i class="fas fa-flag"></i> ${reports}/${REPORT_AUTO_TAKEDOWN_THRESHOLD}
@@ -9208,7 +9088,7 @@ async function renderAdminPanel(container) {
     document.getElementById('confirmTD').onclick = async () => {
       const reason = document.getElementById('tdReason').value.trim();
       if (!reason) { showToast('Alasan wajib diisi!'); return; }
-      const adminName = userProfile?.username || (isAdminSession ? (adminEmail || 'Admin') : 'Admin');
+      const adminName = userProfile?.username || (currentUser?.email || 'Admin');
       await updateDoc(doc(db, 'works', wid), { takedown: { active: true, reason: sensor(reason), by: adminName, at: serverTimestamp() }, updatedAt: serverTimestamp() });
       showToast('⛔ Karya di-takedown');
       modal.classList.add('hidden'); loadAdminWorks();
@@ -9317,36 +9197,6 @@ async function renderAdminPanel(container) {
         </div>`;
       }).join('');
     }
-  }
-
-  async function loadBoost() {
-    const isOn = autoBoostEnabled;
-    aC.innerHTML = `
-      <div class="max-w-2xl mx-auto card-anim">
-        <div id="boostStatusCard" class="card-bg rounded-2xl p-6 mb-4 ${isOn ? 'berlanjut-border' : 'tamat-border'}">
-          <div class="flex items-center gap-4 mb-4">
-            <i id="boostStatusIcon" class="${isOn ? 'fas fa-toggle-on text-green-400' : 'fas fa-toggle-off text-red-400'} text-4xl"></i>
-            <div>
-              <h3 class="font-black text-lg">Auto Boost Views & Likes</h3>
-              <p id="boostStatusLabel" class="${isOn ? 'font-black text-green-400 text-lg' : 'font-black text-red-400 text-lg'}">${isOn ? 'AKTIF' : 'NONAKTIF'}</p>
-            </div>
-          </div>
-          <div class="bg-slate-900/60 rounded-xl p-4 text-sm space-y-2">
-            <p class="text-slate-300"><i class="fas fa-info-circle text-amber-400 mr-2"></i>Fitur ini otomatis menambah <b class="text-amber-400">+${AUTO_VIEW_AMOUNT} views</b> dan <b class="text-amber-400">+${AUTO_LIKE_AMOUNT} likes</b> ke setiap karya <b>yang sudah dipublish</b> (nonpublish & takedown tidak dapat boost) setiap <b>${AUTO_BOOST_INTERVAL / 60000} menit</b>.</p>
-            <p class="text-xs text-slate-400">💡 Tombol ini <b>GLOBAL</b> — begitu kamu matikan, <b>SEMUA device di dunia</b> yang buka website ini akan berhenti nambah views & likes.</p>
-          </div>
-        </div>
-        <button id="boostToggleBtn" class="${isOn ? 'w-full bg-red-600 text-white font-bold py-3 rounded-full hover:scale-105 transition btn-glow' : 'w-full bg-green-600 text-white font-bold py-3 rounded-full hover:scale-105 transition btn-glow'}">
-          ${isOn ? '⏸️ Matikan Auto Boost' : '▶️ Jalankan Auto Boost'}
-        </button>
-        <div class="mt-4 text-center text-xs text-slate-500">
-          <p>Status tersimpan di <b>Firestore</b>: <code class="bg-slate-800 px-2 py-0.5 rounded">settings/autoBoost</code></p>
-          <p class="mt-1">Interval: ${AUTO_BOOST_INTERVAL / 60000} menit • +${AUTO_VIEW_AMOUNT} views • +${AUTO_LIKE_AMOUNT} likes</p>
-          <p class="mt-1 text-green-400">🌍 Berlaku GLOBAL untuk semua device</p>
-          <p class="mt-1 text-amber-400">📖 Hanya karya publish yang dapat boost</p>
-        </div>
-      </div>`;
-    document.getElementById('boostToggleBtn').onclick = () => window.toggleAutoBoost();
   }
 
   async function loadSet() {
@@ -9459,7 +9309,7 @@ async function renderAdminPanel(container) {
         try {
           await updateDoc(doc(db, 'promotionRequests', btn.dataset.id), {
             status: btn.dataset.status, reviewedAt: serverTimestamp(),
-            reviewedBy: currentUser?.uid || adminEmail || 'admin'
+            reviewedBy: currentUser?.uid || 'admin'
           });
           showToast('Status pengajuan diperbarui.');
           loadPromotionRequests();
@@ -9476,12 +9326,8 @@ async function renderAdminPanel(container) {
 
   document.getElementById('adminTabUsers').onclick = loadUsers;
   document.getElementById('adminTabWorks').onclick = loadAdminWorks;
-  document.getElementById('adminTabPromotion').onclick = loadPromotionRequests;
   document.getElementById('adminTabReport').onclick = loadReportTab;
-  document.getElementById('adminTabUpload').onclick = loadUploadForm;
   document.getElementById('adminTabKritik').onclick = loadKritik;
-  document.getElementById('adminTabBirthday').onclick = loadBirthday;
-  document.getElementById('adminTabBoost').onclick = loadBoost;
   document.getElementById('adminTabSettings').onclick = loadSet;
   loadUsers();
 }
@@ -9706,7 +9552,7 @@ function renderMgWaiting(room) {
             const isMe = pid === currentUser.uid;
             const isRHost = pid === room.hostId;
             return `<div class="flex items-center gap-2 bg-slate-800/60 border border-slate-700 rounded-xl px-3 py-3 ${isMe ? 'border-amber-500' : ''} ${isRHost ? 'border-yellow-500' : ''} justify-center">
-              <img src="${pPhoto || 'https://ui-avatars.com/api/?name='+encodeURIComponent(pName)}" class="w-8 h-8 rounded-full border border-slate-600">
+              <img src="${safeImageAttr(pPhoto || 'https://ui-avatars.com/api/?name='+encodeURIComponent(pName), false)}" class="w-8 h-8 rounded-full border border-slate-600">
               <span class="truncate max-w-[80px] text-xs">${pName}${isRHost ? ' 👑' : ''}</span>
               ${isMe ? '<span class="text-[10px] text-amber-400">(Kamu)</span>' : ''}
             </div>`;
@@ -9835,7 +9681,7 @@ function renderMgPlaying(room) {
                   const isDrawerP = pid === room.drawerId;
                   return `<div class="flex items-center gap-2 ${isDrawerP ? 'bg-green-900/30 border-green-600/40' : (pid === currentUser.uid ? 'bg-amber-900/30 border-amber-600/40' : 'bg-slate-800/60 border-slate-700')} border rounded-xl px-2 py-1.5 justify-between">
                     <div class="flex items-center gap-2 min-w-0">
-                      <img src="${pPhoto || 'https://ui-avatars.com/api/?name='+encodeURIComponent(pName)}" class="w-6 h-6 rounded-full">
+                      <img src="${safeImageAttr(pPhoto || 'https://ui-avatars.com/api/?name='+encodeURIComponent(pName), false)}" class="w-6 h-6 rounded-full">
                       <span class="truncate text-xs">${pName}${pid === currentUser.uid ? ' (Kamu)' : ''}</span>
                     </div>
                     <div class="flex items-center gap-1">
@@ -9893,7 +9739,7 @@ function renderMgPlaying(room) {
         const isDrawerP = pid === room.drawerId;
         return `<div class="flex items-center gap-2 ${isDrawerP ? 'bg-green-900/30 border-green-600/40' : (pid === currentUser.uid ? 'bg-amber-900/30 border-amber-600/40' : 'bg-slate-800/60 border-slate-700')} border rounded-xl px-2 py-1.5 justify-between">
           <div class="flex items-center gap-2 min-w-0">
-            <img src="${pPhoto || 'https://ui-avatars.com/api/?name='+encodeURIComponent(pName)}" class="w-6 h-6 rounded-full">
+            <img src="${safeImageAttr(pPhoto || 'https://ui-avatars.com/api/?name='+encodeURIComponent(pName), false)}" class="w-6 h-6 rounded-full">
             <span class="truncate text-xs">${pName}${pid === currentUser.uid ? ' (Kamu)' : ''}</span>
           </div>
           <div class="flex items-center gap-1">
@@ -10269,7 +10115,7 @@ function renderMgFinished(room) {
             const rankColors = ['bg-gradient-to-br from-yellow-400 to-amber-600 text-black','bg-gradient-to-br from-slate-300 to-slate-500 text-black','bg-gradient-to-br from-amber-700 to-amber-900 text-white'];
             return `<div class="flex items-center gap-3 bg-slate-800/50 rounded-xl p-3 ${i === 0 ? 'border-2 border-amber-500' : ''}">
               <div class="leaderboard-rank ${i < 3 ? rankColors[i] : 'bg-slate-700 text-slate-300'}">${i+1}</div>
-              <img src="${pPhoto || 'https://ui-avatars.com/api/?name='+encodeURIComponent(pName)}" class="w-10 h-10 rounded-full border border-slate-600">
+              <img src="${safeImageAttr(pPhoto || 'https://ui-avatars.com/api/?name='+encodeURIComponent(pName), false)}" class="w-10 h-10 rounded-full border border-slate-600">
               <div class="flex-1 min-w-0">
                 <div class="flex items-center gap-2">
                   <span class="font-bold text-sm truncate">${pName}${pid === currentUser.uid ? ' (Kamu)' : ''}</span>
@@ -10404,7 +10250,7 @@ function handleAuthClick() {
   else {
     const m = document.getElementById('modalContainer');
     const c = document.getElementById('modalContent');
-    c.innerHTML = `<div class="text-center mb-4"><img src="${LOGO_URL}" class="w-20 h-20 mx-auto rounded-2xl mb-3 border-2 border-amber-500"><h3 class="text-xl font-bold">Masuk</h3></div>
+    c.innerHTML = `<div class="text-center mb-4"><img src="${safeImageAttr(LOGO_URL, false)}" class="w-20 h-20 mx-auto rounded-2xl mb-3 border-2 border-amber-500"><h3 class="text-xl font-bold">Masuk</h3></div>
       <div class="flex flex-col gap-3">
         <button id="mg" class="bg-white text-black font-bold py-3 rounded-full hover:scale-105 transition"><i class="fab fa-google mr-2"></i>Google</button>
         <button id="mgu" class="bg-slate-700 text-slate-300 font-bold py-2 rounded-full text-xs">Guest</button>
@@ -10450,12 +10296,9 @@ document.addEventListener('visibilitychange', () => {
   loadNotifState();
   updateBadges();
   await initAuth();
-  await loadAutoBoostStateFromDB();
-  listenAutoBoostState();
   startHomeCacheScheduler();
   migrateLegacyHash();
   renderPage();
-  startAutoBoost();
 
 let _knGlobalWorksUnsub=null; const _knGlobalChapterUnsubs=new Map();
 const _knGlobalSeenWorks=new Set(), _knGlobalSeenChapters=new Set(); let _knGlobalInitialised=false;
@@ -10515,26 +10358,7 @@ function initGlobalReleaseNotifications(){
 })();
 </script>
 
-<!-- ===== SAWERIA POPUP - DUKUNG DEVELOPER - FIXED VISIBLE ===== -->
-<div id="saweriaPopupOverlay" style="position:fixed; inset:0; z-index:99999; background:rgba(0,0,0,0.82); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); display:flex; align-items:center; justify-content:center; padding:16px; opacity:0; visibility:hidden; transition:opacity .3s ease, visibility .3s ease;">
-  <div id="saweriaPopupCard" style="position:relative; width:100%; max-width:360px; background:linear-gradient(135deg,#1e1e32 0%,#171727 100%); border:1px solid rgba(251,191,36,0.25); border-radius:24px; overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,0.7); transform:scale(.88) translateY(24px); transition:transform .4s cubic-bezier(.34,1.56,.64,1);">
-    <button id="saweriaPopupClose" aria-label="Tutup" style="position:absolute; top:12px; right:12px; width:32px; height:32px; border-radius:50%; background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.15); color:#e2e8f0; display:flex; align-items:center; justify-content:center; cursor:pointer; z-index:2;">
-      <i class="fas fa-times"></i>
-    </button>
-    <div style="background:#fbbf24; padding:22px 20px 24px; text-align:center;">
-      <div style="width:64px; height:64px; border-radius:18px; background:#000; display:inline-flex; align-items:center; justify-content:center; font-size:28px; color:#fbbf24; margin-bottom:12px;"><i class="fas fa-heart"></i></div>
-      <div style="color:#000; font-weight:900; font-size:20px; line-height:1.2;">Dukung Developer<br><span style="font-size:14px; font-weight:800;">dengan Saweria</span></div>
-    </div>
-    <div style="padding:20px; text-align:center; background:#171727;">
-      <div style="font-weight:900; font-size:17px; color:#fff; margin-bottom:6px;">Bantu KomiNovel Tetap Gratis! 🚀</div>
-      <p style="font-size:13px; line-height:1.6; color:#94a3b8; margin-bottom:16px;">KomiNovel 100% gratis untuk kreator. Dukunganmu sangat berarti.</p>
-      <a href="https://saweriakominovel.pages.dev/" target="_blank" rel="noopener noreferrer" id="saweriaPopupBtn" style="display:inline-flex; align-items:center; justify-content:center; gap:8px; width:100%; padding:14px 20px; border-radius:9999px; background:#fbbf24; color:#000 !important; font-weight:900; font-size:14px; box-shadow:0 8px 24px rgba(251,191,36,0.4); text-decoration:none;">
-        <i class="fas fa-coffee" style="color:#000;"></i> <span style="color:#000;">Dukung via Saweria</span> <i class="fas fa-external-link-alt" style="font-size:11px; color:#000;"></i>
-      </a>
-      <button id="saweriaPopupLater" style="margin-top:12px; background:none; border:none; color:#64748b; font-size:12px; font-weight:600; cursor:pointer; padding:6px 12px;">Nanti saja</button>
-    </div>
-  </div>
-</div>
+
 <style>#saweriaPopupOverlay.show{opacity:1 !important; visibility:visible !important;} #saweriaPopupOverlay.show #saweriaPopupCard{transform:scale(1) translateY(0) !important;}</style>
 <script>
 (function(){
