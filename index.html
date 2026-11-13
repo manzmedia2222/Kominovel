@@ -1802,10 +1802,7 @@ try {
 const googleProvider = new GoogleAuthProvider();
 
 const APP_VERSION = '1.16';
-const APP_BUILD_ID = '7fff3f2a767b4bda';
-// Sidik file awal diambil sebelum aplikasi merender konten dinamis.
-const APP_INITIAL_FILE_SIZE = 719879;
-const APP_INITIAL_LINE_COUNT = 10553;
+const APP_BUILD_ID = 'e0f2c9c67de73e06';
 const APP_VERSION_NOTES = [
   'v1.16 — Narasi TTS otomatis mendeteksi dialog, tanda baca, dan perkiraan emosi; mode baca novel lebih nyaman serta satu link bebas per chapter/episode.',
   'v1.15 — Pengajuan promosi wajib setelah publish, antrean review promosi admin, perbaikan prioritas modal di atas navbar bawah, dukungan link embed berbagai image hosting, dan upload gambar paralel. v1.15.1 — Autocomplete username saat mengundang kolaborator, sehingga akun yang cocok muncul ketika username diketik. v1.14 — Kolaborasi memakai undangan yang harus diterima, dashboard Kolaborasi Saya, peran Co-author/Editor, pilihan link dukungan Saweria/Trakteer/Ko-fi/PayPal/Lainnya, statistik klik dukungan, laporan komentar, blokir pengguna, notifikasi kreator, fitur bagikan, panduan penggunaan yang lebih lengkap, dan perbaikan tema terang/gelap.',
@@ -2299,12 +2296,7 @@ function getCreatorVerifiedBadge(profile, workType = '') {
   return (hasPenulis ? kuning('Novelis Terverifikasi') : '') + (hasKomikus ? oranye('Komikus Terverifikasi') : '');
 }
 function isTakedown(work) { return work && work.takedown && work.takedown.active === true; }
-function isNonPublish(work) {
-  if (!work) return false;
-  const status = String(work.status || '').trim().toLowerCase().replace(/[ _]/g, '-');
-  return ['nonpublish','non-publish','unpublished','draft','belum-publish','belum-terbit'].includes(status)
-    || work.isPublished === false || work.published === false;
-}
+function isNonPublish(work) { return work && work.status === 'nonpublish'; }
 function isUnggulan(work) { return work && work.featured === true; }
 function isKreatorUnggulan(user) { return user && user.featuredCreator === true; }
 
@@ -6616,9 +6608,12 @@ async function renderHome(container) {
       });
     });
 
-    // Karya nonpublish tidak pernah dimasukkan ke area publik, termasuk bagian "Dalam Proses".
     let published=allWorks.filter(w=>!isNonPublish(w)&&!isTakedown(w));
-    const nonpublished=[];
+    let nonpublished=allWorks.filter(w=>isNonPublish(w)&&!isTakedown(w));
+    if(currentSearch){
+      published=published.filter(w=>searchMatchesWork(w,currentSearch));
+      nonpublished=nonpublished.filter(w=>searchMatchesWork(w,currentSearch));
+    }
 
     const cachedIds=getCacheWorkIds(popularCache,currentContentType);
     const cachedMap=new Map(cachedIds.map((id,i)=>[id,i]));
@@ -6657,8 +6652,7 @@ async function renderHome(container) {
     homeEmpty.classList.add('hidden');
     document.getElementById('sectionPopulerMinggu').style.display='';
     document.getElementById('sectionBaru').style.display='';
-    document.getElementById('sectionProses').style.display='none';
-    prosesTrack.innerHTML='';
+    document.getElementById('sectionProses').style.display='';
     document.getElementById('sectionSemuaKomik').style.display='';
 
     if(structureChanged||initialLoad){
@@ -7415,16 +7409,11 @@ async function renderReleaseSchedule(container) {
 async function renderReader(container, novelId, chapterId = null) {
   try { window.speechSynthesis?.cancel(); } catch(e) {}
   if (!novelId) { container.innerHTML = '<p>Karya tidak ditemukan</p>'; return; }
-  // Ambil data karya terlebih dahulu. Daftar chapter tidak diminta sama sekali
-  // sebelum status publikasi dan hak akses pembaca dipastikan.
+  // Ambil karya & daftar chapter SEKALIGUS (sebelumnya satu per satu)
+  const chaptersPromise = getDocs(query(collection(db, 'works', novelId, 'chapters'), orderBy('number', 'asc'))).catch(() => null);
   const workSnap = await getDoc(doc(db, 'works', novelId));
   if (!workSnap.exists()) { container.innerHTML = '<p class="text-red-400">Karya tidak ditemukan.</p>'; return; }
   const work = { id: workSnap.id, ...workSnap.data() };
-  // Jangan tampilkan detail atau isi karya yang belum dipublikasikan melalui URL publik.
-  if (isNonPublish(work)) {
-    container.innerHTML = `<div class="card-bg rounded-2xl p-6 text-center"><i class="fas fa-lock text-3xl text-amber-400 mb-3"></i><h2 class="font-bold text-lg mb-2">Karya belum tersedia</h2><p class="text-sm text-slate-400 mb-4">Karya ini belum dipublikasikan oleh kreatornya.</p><button onclick="navTo('home')" class="bg-amber-500 text-black font-bold px-5 py-2 rounded-xl">Kembali ke beranda</button></div>`;
-    return;
-  }
   if (work.authorId) {
     try {
       const cachedAuthor = usersCache[work.authorId];
@@ -7452,16 +7441,11 @@ async function renderReader(container, novelId, chapterId = null) {
   const followedWorkIds = Array.isArray(userProfile?.followedWorks) ? userProfile.followedWorks : [];
   const isFollowingThisWork = !!(currentUser && followedWorkIds.includes(novelId));
 
-  const publicationState = String(work.status || '').trim().toLowerCase().replace(/[ _]/g, '-');
-  const readerMustHideChapters = (isNonPublish(work) || ['non-publish','unpublished','draft','belum-publish'].includes(publicationState)) && !canManage;
-  if (readerMustHideChapters) {
-    // Pengunjung hanya menerima metadata karya; jangan tampilkan daftar chapter,
-    // volume, episode, navigasi bacaan, atau isi chapter melalui URL langsung.
+  if (isNonPublish(work) && !canManage) {
     container.innerHTML = `<button onclick="navTo('home')" class="text-amber-400 mb-4 hover:text-amber-300 transition"><i class="fas fa-arrow-left mr-2"></i>Kembali</button>` + nonpublishBanner(work);
     return;
   }
 
-  const chaptersPromise = getDocs(query(collection(db, 'works', novelId, 'chapters'), orderBy('number', 'asc'))).catch(() => null);
   let chaptersSnap = await chaptersPromise;
   if (!chaptersSnap) chaptersSnap = await getDocs(query(collection(db, 'works', novelId, 'chapters'), orderBy('number', 'asc')));
   const chapters = []; chaptersSnap.forEach(d => { const ch={ id:d.id, ...d.data() }; const releaseAt=ch.releaseAt?.toDate ? ch.releaseAt.toDate() : (ch.releaseAt ? new Date(ch.releaseAt) : null); const isDue=!!(releaseAt && releaseAt.getTime()<=Date.now()); const canSeeScheduled=canManage || !releaseAt || isDue || ch.releaseStatus==='published'; if(isDue && ch.releaseStatus==='scheduled') updateDoc(doc(db,'works',novelId,'chapters',ch.id),{releaseStatus:'published',publishedAt:serverTimestamp()}).catch(()=>{}); if(canSeeScheduled) chapters.push(ch); });
@@ -10389,84 +10373,53 @@ document.addEventListener('visibilitychange', () => {
 // ===== INIT =================================================
 // ============================================================
 (async function init() {
-  // Render halaman lebih dahulu agar keterlambatan Firebase tidak membuat layar kosong.
   initTheme();
+  await loadMaintenanceState();
+  listenMaintenanceState();
+  loadNotifState();
+  updateBadges();
+  await initAuth();
+  await loadAutoBoostStateFromDB();
+  listenAutoBoostState();
+  startHomeCacheScheduler();
+  migrateLegacyHash();
+  renderPage();
+  startAutoBoost();
 
-  const withTimeout = (promise, ms, label) => Promise.race([
-    Promise.resolve(promise),
-    new Promise(resolve => setTimeout(() => {
-      console.warn(`[KomiNovel] ${label} melewati batas waktu ${ms} ms; aplikasi tetap dilanjutkan.`);
-      resolve(null);
-    }, ms))
-  ]);
-
+// Pemeriksaan file terbaru di hosting; perubahan sekecil apa pun menghasilkan build ID berbeda.
+async function checkDeployedBuild() {
   try {
-    await withTimeout(loadMaintenanceState(), 2500, 'Pemeriksaan maintenance');
-  } catch (e) {
-    console.warn('[KomiNovel] Status maintenance gagal dimuat:', e);
-  }
+    const u = new URL(location.href); u.searchParams.set('__kn_build_check', String(Date.now()));
+    const r = await fetch(u.toString(), { cache:'no-store', credentials:'same-origin', headers:{'Cache-Control':'no-cache'} });
+    if (!r.ok) return;
+    const html = await r.text();
+    const m = html.match(/const APP_BUILD_ID\s*=\s*['\"]([a-f0-9]+)['\"]/i);
+    if (!m || m[1] === APP_BUILD_ID || document.getElementById('knMandatoryUpdate')) return;
+    const el = document.createElement('div'); el.id='knMandatoryUpdate';
+    el.style.cssText='position:fixed;inset:0;z-index:2147483647;background:rgba(4,7,15,.97);display:flex;align-items:center;justify-content:center;padding:20px;color:white;font-family:Inter,system-ui,sans-serif';
+    el.innerHTML=`<div style="width:min(440px,100%);background:#171727;border:1px solid #fbbf24;border-radius:20px;padding:26px;text-align:center"><div style="font-size:34px;color:#fbbf24">↻</div><h2 style="font-size:20px;font-weight:800;margin:10px 0">Pembaruan KomiNovel tersedia</h2><p style="font-size:13px;color:#cbd5e1;line-height:1.7;margin-bottom:18px">File website telah berubah. Muat ulang halaman untuk melanjutkan. Pop-up ini tidak dapat ditutup.</p><button id="knMandatoryReload" style="width:100%;background:#fbbf24;color:#111827;border-radius:12px;padding:12px;font-weight:800">Muat ulang sekarang</button></div>`;
+    document.body.appendChild(el);
+    document.getElementById('knMandatoryReload').onclick=async()=>{try{const regs=await navigator.serviceWorker?.getRegistrations?.();for(const reg of (regs||[]))await reg.update();}catch(e){} location.reload();};
+    document.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();e.stopImmediatePropagation();}},true);
+  } catch(e) { console.warn('[KomiNovel] Cek versi gagal:',e); }
+}
 
-  try { listenMaintenanceState(); } catch (e) { console.warn(e); }
-  try { loadNotifState(); updateBadges(); } catch (e) { console.warn(e); }
+let _knGlobalWorksUnsub=null; const _knGlobalChapterUnsubs=new Map();
+const _knGlobalSeenWorks=new Set(), _knGlobalSeenChapters=new Set(); let _knGlobalInitialised=false;
+function initGlobalReleaseNotifications(){
+  if(_knGlobalWorksUnsub)return;
+  _knGlobalWorksUnsub=onSnapshot(query(collection(db,'works'),where('status','==','publish')),snap=>{
+    snap.forEach(wd=>{const w={id:wd.id,...wd.data()};
+      if(_knGlobalInitialised&&!_knGlobalSeenWorks.has(w.id)&&w.authorId!==currentUser?.uid) enqueueV111Notif({id:'all-work-'+w.id,kind:'work',label:'Karya baru',icon:'fa-book-open',title:'Karya baru di KomiNovel',body:`${w.type==='novel'?'Novel':'Komik'} baru: ${w.title||'Tanpa judul'}`,workId:w.id});
+      _knGlobalSeenWorks.add(w.id);
+      if(!_knGlobalChapterUnsubs.has(w.id)){let first=true;const unsub=onSnapshot(query(collection(db,'works',w.id,'chapters'),orderBy('number','asc')),cs=>{
+        cs.docChanges().forEach(change=>{if(change.type!=='added')return;const ch={id:change.doc.id,...change.doc.data()},key=w.id+':'+ch.id;if(first){_knGlobalSeenChapters.add(key);return;}if(_knGlobalSeenChapters.has(key)||ch.releaseStatus==='scheduled')return;_knGlobalSeenChapters.add(key);if(w.authorId!==currentUser?.uid)enqueueV111Notif({id:'all-ch-'+key,kind:'chapter',label:'Pembaruan karya',icon:'fa-book-open',title:w.type==='novel'?'Chapter baru':'Episode baru',body:`${w.title||'Karya'} • ${w.type==='novel'?'Chapter':'Episode'} ${ch.number||''}${ch.title?': '+ch.title:''}`,workId:w.id,hash:`reader/${w.id}/${ch.id}`});});first=false;
+      },e=>console.warn('[KomiNovel] Listener chapter global:',e));_knGlobalChapterUnsubs.set(w.id,unsub);}
+    }); _knGlobalInitialised=true;
+  },e=>console.warn('[KomiNovel] Listener karya global:',e));
+}
 
-  // Konten utama tidak menunggu proses autentikasi atau data tambahan.
-  try {
-    await renderPage();
-  } catch (e) {
-    console.error('[KomiNovel] Gagal merender halaman awal:', e);
-    const main = document.getElementById('mainContent');
-    if (main) main.innerHTML = `<div class="card-bg rounded-2xl p-6 m-4 text-center"><i class="fas fa-triangle-exclamation text-3xl text-amber-400 mb-3"></i><h2 class="font-bold text-lg mb-2">Halaman belum berhasil dimuat</h2><p class="text-sm text-slate-400 mb-4">Terjadi kendala saat memuat konten KomiNovel. Periksa koneksi internet lalu coba muat ulang.</p><button class="bg-amber-500 text-black font-bold px-5 py-2 rounded-xl" onclick="location.reload()">Muat ulang</button></div>`;
-  }
-
-  // Autentikasi dan data pendukung berjalan setelah halaman tampil.
-  try { initAuth(); } catch (e) { console.error('[KomiNovel] Inisialisasi autentikasi gagal:', e); }
-  try {
-    await withTimeout(loadAutoBoostStateFromDB(), 2500, 'Pemuatan data pendukung');
-  } catch (e) {
-    console.warn('[KomiNovel] Data pendukung gagal dimuat:', e);
-  }
-  try { listenAutoBoostState(); } catch (e) { console.warn(e); }
-  try { startHomeCacheScheduler(); } catch (e) { console.warn(e); }
-  try { migrateLegacyHash(); } catch (e) { console.warn(e); }
-  try { startAutoBoost(); } catch (e) { console.warn(e); }
-
-  // Pemeriksaan build hosting secara berkala. Build ID harus berbeda setiap file diperbarui.
-  async function checkDeployedBuild() {
-    try {
-      const u = new URL('/', location.origin);
-      u.searchParams.set('__kn_file_check', String(Date.now()));
-      const r = await fetch(u.toString(), {
-        method:'GET', cache:'no-store', credentials:'same-origin',
-        headers:{'Cache-Control':'no-cache, no-store, must-revalidate','Pragma':'no-cache'}
-      });
-      if (!r.ok) return;
-      const remoteHtml = await r.text();
-      const remoteSize = new TextEncoder().encode(remoteHtml).length;
-      const remoteLineCount = (remoteHtml.match(/\n/g) || []).length + 1;
-      const m = remoteHtml.match(/const APP_BUILD_ID\s*=\s*['"]([^'"]+)['"]/i);
-      const buildChanged = !!(m && m[1] !== APP_BUILD_ID);
-      const sizeChanged = APP_INITIAL_FILE_SIZE > 0 && remoteSize !== APP_INITIAL_FILE_SIZE;
-      const linesChanged = remoteLineCount !== APP_INITIAL_LINE_COUNT;
-
-      // Popup wajib muncul jika ukuran file berubah, jumlah baris berubah, atau build ID berubah.
-      if (!(buildChanged || sizeChanged || linesChanged) || document.getElementById('knMandatoryUpdate')) return;
-
-      const el = document.createElement('div');
-      el.id='knMandatoryUpdate';
-      el.style.cssText='position:fixed;inset:0;z-index:2147483647;background:rgba(4,7,15,.97);display:flex;align-items:center;justify-content:center;padding:20px;color:white;font-family:Inter,system-ui,sans-serif';
-      el.innerHTML=`<div style="width:min(440px,100%);background:#171727;border:1px solid #fbbf24;border-radius:20px;padding:26px;text-align:center"><div style="font-size:34px;color:#fbbf24">↻</div><h2 style="font-size:20px;font-weight:800;margin:10px 0">Pembaruan KomiNovel tersedia</h2><p style="font-size:13px;color:#cbd5e1;line-height:1.7;margin-bottom:18px">File website telah diperbarui. Muat ulang halaman untuk menggunakan versi terbaru. Pemberitahuan ini tidak dapat ditutup.</p><button id="knMandatoryReload" style="width:100%;background:#fbbf24;color:#111827;border-radius:12px;padding:12px;font-weight:800">Muat ulang sekarang</button></div>`;
-      document.body.appendChild(el);
-      document.getElementById('knMandatoryReload').onclick=async()=>{
-        try { const regs=await navigator.serviceWorker?.getRegistrations?.(); for(const reg of (regs||[])) await reg.update(); } catch(e) {}
-        location.reload();
-      };
-      document.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();e.stopImmediatePropagation();}},true);
-    } catch(e) { console.warn('[KomiNovel] Cek perubahan file gagal:',e); }
-  }
-
-  setTimeout(checkDeployedBuild, 1200);
-  setInterval(checkDeployedBuild, 20000);
-  document.addEventListener('visibilitychange', () => { if (!document.hidden) checkDeployedBuild(); });
+  setTimeout(checkDeployedBuild, 1800);
   console.log(`%c🚀 KomiNovel v${APP_VERSION} loaded`, 'background:linear-gradient(135deg,#fbbf24,#d97706);color:#0f0f1a;font-weight:900;padding:4px 12px;border-radius:8px;');
   console.log('%c✨ Update v1.10:', 'color:#fbbf24;font-weight:bold;');
   APP_VERSION_NOTES.forEach(n => console.log('  •', n));
