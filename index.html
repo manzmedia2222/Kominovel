@@ -7432,7 +7432,35 @@ function nonpublishBanner(work) {
         </div>
       </div>
       <div class="mt-5 rounded-xl border border-amber-500/30 bg-amber-500/10 p-4 text-left max-w-2xl mx-auto"><p class="text-amber-300 text-sm font-bold"><i class="fas fa-lock mr-2"></i>Chapter/episode belum bisa dilihat</p><p class="text-slate-400 text-xs mt-1">Bagian cerita akan tersedia setelah kreator memublikasikan karya ini.</p></div>
+      ${nonpublishBlurPreview(work)}
       <button onclick="navTo('home')" class="mt-6 bg-amber-500 text-black font-bold py-2 px-6 rounded-full hover:scale-105 transition"><i class="fas fa-home mr-1"></i>Kembali ke Beranda</button>
+    </div>`;
+}
+
+// Pratinjau buram untuk karya nonpublish. SEMUA isinya placeholder, bukan data chapter asli,
+// jadi tidak ada gambar/teks asli yang dikirim ke pengunjung biasa.
+function nonpublishBlurPreview(work) {
+  const isKomik = work.type === 'komik';
+  const label = isKomik ? 'Eps' : 'Chapter';
+  const noSel = 'user-select:none;-webkit-user-select:none;pointer-events:none;';
+  const list = Array.from({ length: 6 }, (_, i) => `<div class="px-3 py-2 rounded-lg bg-slate-800/70 text-sm text-left flex items-center gap-2"><span class="flex-1 truncate">${label} ${i + 1}: ${'▮'.repeat(6 + (i * 3) % 9)}</span><span class="text-[10px]">Belum dibaca</span></div>`).join('');
+  const bars = (n) => Array.from({ length: n }, (_, i) => `<div style="height:10px;margin:10px 0;border-radius:6px;background:#94a3b8;width:${60 + ((i * 37) % 40)}%"></div>`).join('');
+  const body = isKomik
+    ? [260, 320, 220, 300].map(h => `<div style="height:${h}px;margin:0 auto 10px;max-width:520px;border-radius:10px;background:linear-gradient(135deg,#64748b,#cbd5e1,#475569)"></div>`).join('')
+    : bars(18);
+  return `
+    <div class="mt-6 text-left max-w-2xl mx-auto" oncontextmenu="return false">
+      <p class="text-xs font-bold text-slate-400 mb-2"><i class="fas fa-list mr-1"></i>Daftar ${label}</p>
+      <div class="space-y-1" style="filter:blur(7px);opacity:.75;${noSel}" aria-hidden="true">${list}</div>
+      <p class="text-xs font-bold text-slate-400 mt-5 mb-2"><i class="fas fa-book-open mr-1"></i>Area baca</p>
+      <div class="relative rounded-2xl overflow-hidden card-bg" style="min-height:320px">
+        <div style="filter:blur(32px);transform:scale(1.15);opacity:.7;padding:20px;${noSel}" aria-hidden="true">${body}</div>
+        <div class="absolute inset-0 flex flex-col items-center justify-center text-center p-4" style="background:rgba(15,15,26,.55)">
+          <i class="fas fa-lock text-amber-400 text-3xl mb-2"></i>
+          <p class="text-slate-200 text-sm font-bold">Konten terkunci</p>
+          <p class="text-slate-400 text-xs mt-1">Tersedia setelah karya dipublikasikan.</p>
+        </div>
+      </div>
     </div>`;
 }
 
@@ -7464,7 +7492,7 @@ async function renderReleaseSchedule(container) {
   const list=document.getElementById('releaseScheduleList');
   try {
     const worksSnap=await getDocs(collection(db,'works')); const items=[];
-    for(const wd of worksSnap.docs){const w={id:wd.id,...wd.data()}; if(isTakedown(w)) continue; const cs=await getDocs(collection(db,'works',w.id,'chapters')); cs.forEach(cd=>{const ch={id:cd.id,...cd.data()};const dt=ch.releaseAt?.toDate?ch.releaseAt.toDate():(ch.releaseAt?new Date(ch.releaseAt):null);if(dt && dt.getTime()>Date.now() && ch.releaseStatus!=='published' && (!isNonPublish(w) || (currentUser && (currentUser.uid===w.authorId || isAdminUser(userProfile)))))items.push({w,ch,dt});});}
+    for(const wd of worksSnap.docs){const w={id:wd.id,...wd.data()}; if(isTakedown(w)) continue; if(isNonPublish(w) && !(currentUser && (currentUser.uid===w.authorId || isAdminUser(userProfile)))) continue; const cs=await getDocs(collection(db,'works',w.id,'chapters')); cs.forEach(cd=>{const ch={id:cd.id,...cd.data()};const dt=ch.releaseAt?.toDate?ch.releaseAt.toDate():(ch.releaseAt?new Date(ch.releaseAt):null);if(dt && dt.getTime()>Date.now() && ch.releaseStatus!=='published' && (!isNonPublish(w) || (currentUser && (currentUser.uid===w.authorId || isAdminUser(userProfile)))))items.push({w,ch,dt});});}
     items.sort((a,b)=>a.dt-b.dt);
     list.innerHTML=items.length?items.map(({w,ch,dt})=>`<div class="card-bg rounded-xl p-4 flex gap-3 items-center"><img src="${escAttr(w.coverURL||'')}" class="w-14 h-20 object-cover rounded-lg" onerror="this.style.display='none'"><div class="min-w-0 flex-1"><p class="font-bold truncate">${escHtml(w.title||'Tanpa judul')}</p><p class="text-sm text-slate-400">${w.type==='novel'?'Chapter':'Episode'} ${ch.number||''}: ${escHtml(ch.title||'Tanpa judul')}</p><p class="text-xs text-amber-400 mt-1"><i class="far fa-clock mr-1"></i>${dt.toLocaleString('id-ID')}</p></div><span class="text-[10px] px-2 py-1 rounded bg-amber-500/15 text-amber-300">Terjadwal</span></div>`).join(''):'<div class="card-bg rounded-xl p-6 text-center"><i class="fas fa-calendar-check text-3xl text-slate-500 mb-3"></i><p class="font-semibold text-slate-200">Belum Ada Komik atau Novel yang Akan Rilis</p><p class="text-sm text-slate-400 mt-1">Saat ini belum ada chapter atau episode yang memiliki jadwal rilis. Silakan periksa kembali nanti.</p></div>';
   } catch(e){console.error(e);list.innerHTML='<p class="text-red-400">Jadwal belum dapat dimuat.</p>';}
