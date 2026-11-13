@@ -1804,10 +1804,8 @@ const googleProvider = new GoogleAuthProvider();
 const APP_VERSION = '1.16';
 const APP_BUILD_ID = '7fff3f2a767b4bda';
 // Sidik file awal diambil sebelum aplikasi merender konten dinamis.
-const APP_INITIAL_HTML = document.documentElement.outerHTML;
-const APP_INITIAL_LINE_COUNT = (APP_INITIAL_HTML.match(/\\n/g) || []).length + 1;
-const APP_NAV_ENTRY = performance.getEntriesByType('navigation')[0];
-const APP_INITIAL_FILE_SIZE = Number(APP_NAV_ENTRY?.decodedBodySize || new TextEncoder().encode(APP_INITIAL_HTML).length);
+const APP_INITIAL_FILE_SIZE = 719879;
+const APP_INITIAL_LINE_COUNT = 10553;
 const APP_VERSION_NOTES = [
   'v1.16 — Narasi TTS otomatis mendeteksi dialog, tanda baca, dan perkiraan emosi; mode baca novel lebih nyaman serta satu link bebas per chapter/episode.',
   'v1.15 — Pengajuan promosi wajib setelah publish, antrean review promosi admin, perbaikan prioritas modal di atas navbar bawah, dukungan link embed berbagai image hosting, dan upload gambar paralel. v1.15.1 — Autocomplete username saat mengundang kolaborator, sehingga akun yang cocok muncul ketika username diketik. v1.14 — Kolaborasi memakai undangan yang harus diterima, dashboard Kolaborasi Saya, peran Co-author/Editor, pilihan link dukungan Saweria/Trakteer/Ko-fi/PayPal/Lainnya, statistik klik dukungan, laporan komentar, blokir pengguna, notifikasi kreator, fitur bagikan, panduan penggunaan yang lebih lengkap, dan perbaikan tema terang/gelap.',
