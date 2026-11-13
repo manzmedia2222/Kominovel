@@ -10378,61 +10378,76 @@ document.addEventListener('visibilitychange', () => {
 // ===== INIT =================================================
 // ============================================================
 (async function init() {
+  // Render halaman lebih dahulu agar keterlambatan Firebase tidak membuat layar kosong.
   initTheme();
-  await loadMaintenanceState();
-  listenMaintenanceState();
-  loadNotifState();
-  updateBadges();
-  await initAuth();
-  await loadAutoBoostStateFromDB();
-  listenAutoBoostState();
-  startHomeCacheScheduler();
-  migrateLegacyHash();
-  renderPage();
-  startAutoBoost();
 
-// Pemeriksaan build hosting secara berkala. Build ID harus berbeda setiap file diperbarui.
-async function checkDeployedBuild() {
+  const withTimeout = (promise, ms, label) => Promise.race([
+    Promise.resolve(promise),
+    new Promise(resolve => setTimeout(() => {
+      console.warn(`[KomiNovel] ${label} melewati batas waktu ${ms} ms; aplikasi tetap dilanjutkan.`);
+      resolve(null);
+    }, ms))
+  ]);
+
   try {
-    const u = new URL('/', location.origin);
-    u.searchParams.set('__kn_build_check', String(Date.now()));
-    const r = await fetch(u.toString(), {
-      method:'GET', cache:'no-store', credentials:'same-origin',
-      headers:{'Cache-Control':'no-cache, no-store, must-revalidate','Pragma':'no-cache'}
-    });
-    if (!r.ok) return;
-    const html = await r.text();
-    const m = html.match(/const APP_BUILD_ID\\s*=\\s*['\"]([a-f0-9]+)['\"]/i);
-    if (!m || m[1] === APP_BUILD_ID || document.getElementById('knMandatoryUpdate')) return;
-    const el = document.createElement('div');
-    el.id='knMandatoryUpdate';
-    el.style.cssText='position:fixed;inset:0;z-index:2147483647;background:rgba(4,7,15,.97);display:flex;align-items:center;justify-content:center;padding:20px;color:white;font-family:Inter,system-ui,sans-serif';
-    el.innerHTML=`<div style="width:min(440px,100%);background:#171727;border:1px solid #fbbf24;border-radius:20px;padding:26px;text-align:center"><div style="font-size:34px;color:#fbbf24">↻</div><h2 style="font-size:20px;font-weight:800;margin:10px 0">Pembaruan KomiNovel tersedia</h2><p style="font-size:13px;color:#cbd5e1;line-height:1.7;margin-bottom:18px">Versi website yang lebih baru sudah tersedia. Muat ulang halaman untuk melanjutkan. Pemberitahuan ini tidak dapat ditutup.</p><button id="knMandatoryReload" style="width:100%;background:#fbbf24;color:#111827;border-radius:12px;padding:12px;font-weight:800">Muat ulang sekarang</button></div>`;
-    document.body.appendChild(el);
-    document.getElementById('knMandatoryReload').onclick=async()=>{
-      try { const regs=await navigator.serviceWorker?.getRegistrations?.(); for(const reg of (regs||[])) await reg.update(); } catch(e) {}
-      location.replace(location.origin + location.pathname + location.search.replace(/([?&])__kn_build_check=[^&]*/,'$1').replace(/[?&]$/,''));
-    };
-    document.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();e.stopImmediatePropagation();}},true);
-  } catch(e) { console.warn('[KomiNovel] Cek versi gagal:',e); }
-}
+    await withTimeout(loadMaintenanceState(), 2500, 'Pemeriksaan maintenance');
+  } catch (e) {
+    console.warn('[KomiNovel] Status maintenance gagal dimuat:', e);
+  }
 
-let _knGlobalWorksUnsub=null; const _knGlobalChapterUnsubs=new Map();
-const _knGlobalSeenWorks=new Set(), _knGlobalSeenChapters=new Set(); let _knGlobalInitialised=false;
-function initGlobalReleaseNotifications(){
-  if(_knGlobalWorksUnsub)return;
-  _knGlobalWorksUnsub=onSnapshot(query(collection(db,'works'),where('status','==','publish')),snap=>{
-    snap.forEach(wd=>{const w={id:wd.id,...wd.data()};
-      if(_knGlobalInitialised&&!_knGlobalSeenWorks.has(w.id)&&w.authorId!==currentUser?.uid) enqueueV111Notif({id:'all-work-'+w.id,kind:'work',label:'Karya baru',icon:'fa-book-open',title:'Karya baru di KomiNovel',body:`${w.type==='novel'?'Novel':'Komik'} baru: ${w.title||'Tanpa judul'}`,workId:w.id});
-      _knGlobalSeenWorks.add(w.id);
-      if(!_knGlobalChapterUnsubs.has(w.id)){let first=true;const unsub=onSnapshot(query(collection(db,'works',w.id,'chapters'),orderBy('number','asc')),cs=>{
-        cs.docChanges().forEach(change=>{if(change.type!=='added')return;const ch={id:change.doc.id,...change.doc.data()},key=w.id+':'+ch.id;if(first){_knGlobalSeenChapters.add(key);return;}if(_knGlobalSeenChapters.has(key)||ch.releaseStatus==='scheduled')return;_knGlobalSeenChapters.add(key);if(w.authorId!==currentUser?.uid)enqueueV111Notif({id:'all-ch-'+key,kind:'chapter',label:'Pembaruan karya',icon:'fa-book-open',title:w.type==='novel'?'Chapter baru':'Episode baru',body:`${w.title||'Karya'} • ${w.type==='novel'?'Chapter':'Episode'} ${ch.number||''}${ch.title?': '+ch.title:''}`,workId:w.id,hash:`reader/${w.id}/${ch.id}`});});first=false;
-      },e=>console.warn('[KomiNovel] Listener chapter global:',e));_knGlobalChapterUnsubs.set(w.id,unsub);}
-    }); _knGlobalInitialised=true;
-  },e=>console.warn('[KomiNovel] Listener karya global:',e));
-}
+  try { listenMaintenanceState(); } catch (e) { console.warn(e); }
+  try { loadNotifState(); updateBadges(); } catch (e) { console.warn(e); }
 
-  setTimeout(checkDeployedBuild, 1200);\n  setInterval(checkDeployedBuild, 20000);\n  document.addEventListener('visibilitychange', () => { if (!document.hidden) checkDeployedBuild(); });
+  // Konten utama tidak menunggu proses autentikasi atau data tambahan.
+  try {
+    await renderPage();
+  } catch (e) {
+    console.error('[KomiNovel] Gagal merender halaman awal:', e);
+    const main = document.getElementById('mainContent');
+    if (main) main.innerHTML = `<div class="card-bg rounded-2xl p-6 m-4 text-center"><i class="fas fa-triangle-exclamation text-3xl text-amber-400 mb-3"></i><h2 class="font-bold text-lg mb-2">Halaman belum berhasil dimuat</h2><p class="text-sm text-slate-400 mb-4">Terjadi kendala saat memuat konten KomiNovel. Periksa koneksi internet lalu coba muat ulang.</p><button class="bg-amber-500 text-black font-bold px-5 py-2 rounded-xl" onclick="location.reload()">Muat ulang</button></div>`;
+  }
+
+  // Autentikasi dan data pendukung berjalan setelah halaman tampil.
+  try { initAuth(); } catch (e) { console.error('[KomiNovel] Inisialisasi autentikasi gagal:', e); }
+  try {
+    await withTimeout(loadAutoBoostStateFromDB(), 2500, 'Pemuatan data pendukung');
+  } catch (e) {
+    console.warn('[KomiNovel] Data pendukung gagal dimuat:', e);
+  }
+  try { listenAutoBoostState(); } catch (e) { console.warn(e); }
+  try { startHomeCacheScheduler(); } catch (e) { console.warn(e); }
+  try { migrateLegacyHash(); } catch (e) { console.warn(e); }
+  try { startAutoBoost(); } catch (e) { console.warn(e); }
+
+  // Pemeriksaan build hosting secara berkala. Build ID harus berbeda setiap file diperbarui.
+  async function checkDeployedBuild() {
+    try {
+      const u = new URL('/', location.origin);
+      u.searchParams.set('__kn_build_check', String(Date.now()));
+      const r = await fetch(u.toString(), {
+        method:'GET', cache:'no-store', credentials:'same-origin',
+        headers:{'Cache-Control':'no-cache, no-store, must-revalidate','Pragma':'no-cache'}
+      });
+      if (!r.ok) return;
+      const remoteHtml = await r.text();
+      const m = remoteHtml.match(/const APP_BUILD_ID\s*=\s*['"]([a-f0-9]+)['"]/i);
+      if (!m || m[1] === APP_BUILD_ID || document.getElementById('knMandatoryUpdate')) return;
+      const el = document.createElement('div');
+      el.id='knMandatoryUpdate';
+      el.style.cssText='position:fixed;inset:0;z-index:2147483647;background:rgba(4,7,15,.97);display:flex;align-items:center;justify-content:center;padding:20px;color:white;font-family:Inter,system-ui,sans-serif';
+      el.innerHTML=`<div style="width:min(440px,100%);background:#171727;border:1px solid #fbbf24;border-radius:20px;padding:26px;text-align:center"><div style="font-size:34px;color:#fbbf24">↻</div><h2 style="font-size:20px;font-weight:800;margin:10px 0">Pembaruan KomiNovel tersedia</h2><p style="font-size:13px;color:#cbd5e1;line-height:1.7;margin-bottom:18px">Versi website yang lebih baru sudah tersedia. Muat ulang halaman untuk melanjutkan. Pemberitahuan ini tidak dapat ditutup.</p><button id="knMandatoryReload" style="width:100%;background:#fbbf24;color:#111827;border-radius:12px;padding:12px;font-weight:800">Muat ulang sekarang</button></div>`;
+      document.body.appendChild(el);
+      document.getElementById('knMandatoryReload').onclick=async()=>{
+        try { const regs=await navigator.serviceWorker?.getRegistrations?.(); for(const reg of (regs||[])) await reg.update(); } catch(e) {}
+        location.reload();
+      };
+      document.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();e.stopImmediatePropagation();}},true);
+    } catch(e) { console.warn('[KomiNovel] Cek versi gagal:',e); }
+  }
+
+  setTimeout(checkDeployedBuild, 1200);
+  setInterval(checkDeployedBuild, 20000);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) checkDeployedBuild(); });
   console.log(`%c🚀 KomiNovel v${APP_VERSION} loaded`, 'background:linear-gradient(135deg,#fbbf24,#d97706);color:#0f0f1a;font-weight:900;padding:4px 12px;border-radius:8px;');
   console.log('%c✨ Update v1.10:', 'color:#fbbf24;font-weight:bold;');
   APP_VERSION_NOTES.forEach(n => console.log('  •', n));
