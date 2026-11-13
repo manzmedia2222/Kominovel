@@ -1802,7 +1802,7 @@ try {
 const googleProvider = new GoogleAuthProvider();
 
 const APP_VERSION = '1.16';
-const APP_BUILD_ID = 'e0f2c9c67de73e06';
+const APP_BUILD_ID = '7fff3f2a767b4bda';
 const APP_VERSION_NOTES = [
   'v1.16 — Narasi TTS otomatis mendeteksi dialog, tanda baca, dan perkiraan emosi; mode baca novel lebih nyaman serta satu link bebas per chapter/episode.',
   'v1.15 — Pengajuan promosi wajib setelah publish, antrean review promosi admin, perbaikan prioritas modal di atas navbar bawah, dukungan link embed berbagai image hosting, dan upload gambar paralel. v1.15.1 — Autocomplete username saat mengundang kolaborator, sehingga akun yang cocok muncul ketika username diketik. v1.14 — Kolaborasi memakai undangan yang harus diterima, dashboard Kolaborasi Saya, peran Co-author/Editor, pilihan link dukungan Saweria/Trakteer/Ko-fi/PayPal/Lainnya, statistik klik dukungan, laporan komentar, blokir pengguna, notifikasi kreator, fitur bagikan, panduan penggunaan yang lebih lengkap, dan perbaikan tema terang/gelap.',
@@ -7409,8 +7409,8 @@ async function renderReleaseSchedule(container) {
 async function renderReader(container, novelId, chapterId = null) {
   try { window.speechSynthesis?.cancel(); } catch(e) {}
   if (!novelId) { container.innerHTML = '<p>Karya tidak ditemukan</p>'; return; }
-  // Ambil karya & daftar chapter SEKALIGUS (sebelumnya satu per satu)
-  const chaptersPromise = getDocs(query(collection(db, 'works', novelId, 'chapters'), orderBy('number', 'asc'))).catch(() => null);
+  // Ambil data karya terlebih dahulu. Daftar chapter tidak diminta sama sekali
+  // sebelum status publikasi dan hak akses pembaca dipastikan.
   const workSnap = await getDoc(doc(db, 'works', novelId));
   if (!workSnap.exists()) { container.innerHTML = '<p class="text-red-400">Karya tidak ditemukan.</p>'; return; }
   const work = { id: workSnap.id, ...workSnap.data() };
@@ -7441,11 +7441,16 @@ async function renderReader(container, novelId, chapterId = null) {
   const followedWorkIds = Array.isArray(userProfile?.followedWorks) ? userProfile.followedWorks : [];
   const isFollowingThisWork = !!(currentUser && followedWorkIds.includes(novelId));
 
-  if (isNonPublish(work) && !canManage) {
+  const publicationState = String(work.status || '').trim().toLowerCase().replace(/[ _]/g, '-');
+  const readerMustHideChapters = (isNonPublish(work) || ['non-publish','unpublished','draft','belum-publish'].includes(publicationState)) && !canManage;
+  if (readerMustHideChapters) {
+    // Pengunjung hanya menerima metadata karya; jangan tampilkan daftar chapter,
+    // volume, episode, navigasi bacaan, atau isi chapter melalui URL langsung.
     container.innerHTML = `<button onclick="navTo('home')" class="text-amber-400 mb-4 hover:text-amber-300 transition"><i class="fas fa-arrow-left mr-2"></i>Kembali</button>` + nonpublishBanner(work);
     return;
   }
 
+  const chaptersPromise = getDocs(query(collection(db, 'works', novelId, 'chapters'), orderBy('number', 'asc'))).catch(() => null);
   let chaptersSnap = await chaptersPromise;
   if (!chaptersSnap) chaptersSnap = await getDocs(query(collection(db, 'works', novelId, 'chapters'), orderBy('number', 'asc')));
   const chapters = []; chaptersSnap.forEach(d => { const ch={ id:d.id, ...d.data() }; const releaseAt=ch.releaseAt?.toDate ? ch.releaseAt.toDate() : (ch.releaseAt ? new Date(ch.releaseAt) : null); const isDue=!!(releaseAt && releaseAt.getTime()<=Date.now()); const canSeeScheduled=canManage || !releaseAt || isDue || ch.releaseStatus==='published'; if(isDue && ch.releaseStatus==='scheduled') updateDoc(doc(db,'works',novelId,'chapters',ch.id),{releaseStatus:'published',publishedAt:serverTimestamp()}).catch(()=>{}); if(canSeeScheduled) chapters.push(ch); });
@@ -10386,20 +10391,28 @@ document.addEventListener('visibilitychange', () => {
   renderPage();
   startAutoBoost();
 
-// Pemeriksaan file terbaru di hosting; perubahan sekecil apa pun menghasilkan build ID berbeda.
+// Pemeriksaan build hosting secara berkala. Build ID harus berbeda setiap file diperbarui.
 async function checkDeployedBuild() {
   try {
-    const u = new URL(location.href); u.searchParams.set('__kn_build_check', String(Date.now()));
-    const r = await fetch(u.toString(), { cache:'no-store', credentials:'same-origin', headers:{'Cache-Control':'no-cache'} });
+    const u = new URL('/', location.origin);
+    u.searchParams.set('__kn_build_check', String(Date.now()));
+    const r = await fetch(u.toString(), {
+      method:'GET', cache:'no-store', credentials:'same-origin',
+      headers:{'Cache-Control':'no-cache, no-store, must-revalidate','Pragma':'no-cache'}
+    });
     if (!r.ok) return;
     const html = await r.text();
-    const m = html.match(/const APP_BUILD_ID\s*=\s*['\"]([a-f0-9]+)['\"]/i);
+    const m = html.match(/const APP_BUILD_ID\\s*=\\s*['\"]([a-f0-9]+)['\"]/i);
     if (!m || m[1] === APP_BUILD_ID || document.getElementById('knMandatoryUpdate')) return;
-    const el = document.createElement('div'); el.id='knMandatoryUpdate';
+    const el = document.createElement('div');
+    el.id='knMandatoryUpdate';
     el.style.cssText='position:fixed;inset:0;z-index:2147483647;background:rgba(4,7,15,.97);display:flex;align-items:center;justify-content:center;padding:20px;color:white;font-family:Inter,system-ui,sans-serif';
-    el.innerHTML=`<div style="width:min(440px,100%);background:#171727;border:1px solid #fbbf24;border-radius:20px;padding:26px;text-align:center"><div style="font-size:34px;color:#fbbf24">↻</div><h2 style="font-size:20px;font-weight:800;margin:10px 0">Pembaruan KomiNovel tersedia</h2><p style="font-size:13px;color:#cbd5e1;line-height:1.7;margin-bottom:18px">File website telah berubah. Muat ulang halaman untuk melanjutkan. Pop-up ini tidak dapat ditutup.</p><button id="knMandatoryReload" style="width:100%;background:#fbbf24;color:#111827;border-radius:12px;padding:12px;font-weight:800">Muat ulang sekarang</button></div>`;
+    el.innerHTML=`<div style="width:min(440px,100%);background:#171727;border:1px solid #fbbf24;border-radius:20px;padding:26px;text-align:center"><div style="font-size:34px;color:#fbbf24">↻</div><h2 style="font-size:20px;font-weight:800;margin:10px 0">Pembaruan KomiNovel tersedia</h2><p style="font-size:13px;color:#cbd5e1;line-height:1.7;margin-bottom:18px">Versi website yang lebih baru sudah tersedia. Muat ulang halaman untuk melanjutkan. Pemberitahuan ini tidak dapat ditutup.</p><button id="knMandatoryReload" style="width:100%;background:#fbbf24;color:#111827;border-radius:12px;padding:12px;font-weight:800">Muat ulang sekarang</button></div>`;
     document.body.appendChild(el);
-    document.getElementById('knMandatoryReload').onclick=async()=>{try{const regs=await navigator.serviceWorker?.getRegistrations?.();for(const reg of (regs||[]))await reg.update();}catch(e){} location.reload();};
+    document.getElementById('knMandatoryReload').onclick=async()=>{
+      try { const regs=await navigator.serviceWorker?.getRegistrations?.(); for(const reg of (regs||[])) await reg.update(); } catch(e) {}
+      location.replace(location.origin + location.pathname + location.search.replace(/([?&])__kn_build_check=[^&]*/,'$1').replace(/[?&]$/,''));
+    };
     document.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();e.stopImmediatePropagation();}},true);
   } catch(e) { console.warn('[KomiNovel] Cek versi gagal:',e); }
 }
@@ -10419,7 +10432,7 @@ function initGlobalReleaseNotifications(){
   },e=>console.warn('[KomiNovel] Listener karya global:',e));
 }
 
-  setTimeout(checkDeployedBuild, 1800);
+  setTimeout(checkDeployedBuild, 1200);\n  setInterval(checkDeployedBuild, 20000);\n  document.addEventListener('visibilitychange', () => { if (!document.hidden) checkDeployedBuild(); });
   console.log(`%c🚀 KomiNovel v${APP_VERSION} loaded`, 'background:linear-gradient(135deg,#fbbf24,#d97706);color:#0f0f1a;font-weight:900;padding:4px 12px;border-radius:8px;');
   console.log('%c✨ Update v1.10:', 'color:#fbbf24;font-weight:bold;');
   APP_VERSION_NOTES.forEach(n => console.log('  •', n));
