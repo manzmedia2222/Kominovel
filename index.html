@@ -4867,51 +4867,31 @@ async function openPromotionSuggestion(workId, opts) {
     <div class="text-center mb-4">
       <div class="w-16 h-16 rounded-2xl bg-amber-500/15 text-amber-400 flex items-center justify-center text-3xl mx-auto mb-3"><i class="fas fa-bullhorn"></i></div>
       <h2 class="text-xl font-black text-amber-400">${isChapter ? escHtml(chLabel) + ' baru terbit! 🎉' : 'Karya berhasil dipublikasikan! 🎉'}</h2>
-      <p class="text-sm text-slate-300 mt-2">Rekomendasi: kabari admin supaya ${isChapter ? escHtml(chLabel.toLowerCase()) + ' ini' : 'karyamu'} bisa dipromosikan. Ini opsional, boleh dilewati kapan saja.</p>
+      <p class="text-sm text-slate-300 mt-2">Bagikan informasi karya ini kepada admin melalui WhatsApp. Pesan promosi akan terisi otomatis dan bisa langsung dikirim.</p>
     </div>
     <div class="card-bg rounded-xl p-3 mb-4">
       <p class="font-bold">${escHtml(work.title || 'Tanpa judul')}</p>
       <p class="text-xs text-slate-400 mt-1">${work.type === 'komik' ? 'Komik' : 'Novel'}${chText ? ' • ' + escHtml(chText) : ''}</p>
     </div>
-    <form id="promotionRequestForm" class="space-y-3">
-      <label class="block text-sm font-bold text-amber-400">Pesan untuk admin (opsional)</label>
-      <textarea id="promotionReason" maxlength="700" rows="3" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm" placeholder="Contoh: chapter ini penuh kejutan, cocok dipromosikan."></textarea>
-      <label class="block text-sm font-bold text-amber-400">Target promosi</label>
-      <select id="promotionTarget" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm">
-        <option value="Beranda KomiNovel">Beranda KomiNovel</option>
-        <option value="Rekomendasi karya">Rekomendasi karya</option>
-        <option value="Media sosial KomiNovel">Media sosial KomiNovel</option>
-        <option value="Semua kanal yang tersedia">Semua kanal yang tersedia</option>
-      </select>
-      <button id="sendPromotionRequestBtn" type="submit" class="w-full bg-green-600 text-white font-black py-3 rounded-full"><i class="fab fa-whatsapp mr-2"></i>Kirim ke WhatsApp Admin</button>
+    <div class="space-y-3">
+      <button id="sendPromotionRequestBtn" type="button" class="w-full bg-green-600 text-white font-black py-3 rounded-full"><i class="fab fa-whatsapp mr-2"></i>Kirim Promosi ke WhatsApp</button>
       <button id="promotionLaterBtn" type="button" class="w-full bg-slate-700 text-slate-200 font-bold py-3 rounded-full">Nanti saja</button>
-      <p id="promotionRequestError" class="hidden text-xs text-red-400"></p>
-    </form>`;
+    </div>`;
   modal.classList.remove('hidden');
   document.getElementById('promotionCloseBtn').onclick = closePopup;
   document.getElementById('promotionLaterBtn').onclick = closePopup;
-  document.getElementById('promotionRequestForm').onsubmit = async (e) => {
-    e.preventDefault();
-    const btn = document.getElementById('sendPromotionRequestBtn');
-    const typed = document.getElementById('promotionReason').value.trim();
-    const reason = typed || (isChapter ? `Ada ${chText} baru, mohon dipertimbangkan untuk dipromosikan.` : 'Karya baru dipublikasikan, mohon dipertimbangkan untuk dipromosikan.');
-    const target = document.getElementById('promotionTarget').value;
-    const error = document.getElementById('promotionRequestError');
-    const nama = userProfile?.username || currentUser.displayName || 'Kreator';
-    const jenis = work.type === 'komik' ? 'Komik' : 'Novel';
+  document.getElementById('sendPromotionRequestBtn').onclick = () => {
+    const jenis = work.type === 'komik' ? 'komik' : 'novel';
     const link = location.origin + '/reader/' + encodeURIComponent(workId);
+    const teaser = String(work.teaser || '').trim();
     const pesan = [
-      'Halo Admin KomiNovel! Ada karya baru yang mau dipromosikan 📢', '',
-      '*' + (work.title || 'Tanpa judul') + '* (' + jenis + ')',
-      isChapter ? chText + ' baru terbit' : 'Karya baru dipublikasikan',
-      'Kreator: ' + nama,
-      'Target promosi: ' + target, '',
-      'Pesan: ' + reason, '',
-      'Link: ' + link
-    ].join('\n');
+      'Nama ' + jenis + ': ' + (work.title || 'Tanpa judul'),
+      teaser,
+      'Baca: ' + link
+    ].filter(Boolean).join('\n');
     window.open('https://wa.me/' + WA_NUMBER.replace(/^0/, '62') + '?text=' + encodeURIComponent(pesan), '_blank');
     closePopup();
-    showToast('📨 WhatsApp admin dibuka. Tekan kirim di WhatsApp ya!');
+    showToast('📨 WhatsApp terbuka dengan teks promosi otomatis. Tekan kirim di WhatsApp ya!');
   };
 }
 // Alias lama agar pemanggil lama tetap berfungsi.
