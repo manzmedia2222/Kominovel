@@ -6798,7 +6798,7 @@ function renderSlideCard(work, idx, newIds = new Set()) {
   const reportBadge = (!isTD && reportsCount > 0) ? `<div class="absolute bottom-8 right-1 bg-red-600/90 backdrop-blur text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full" title="${reportsCount} report"><i class="fas fa-flag"></i> ${reportsCount}/10</div>` : '';
   return `
     <div class="slide-card card-anim ${newClass}" data-work-id="${work.id}" style="${delayStyle}">
-      <div class="card-bg hover-lift rounded-2xl overflow-hidden shadow-lg cursor-pointer ${borderClass} h-full" onclick="${isTD ? `showToast('⛔ Karya ini di-takedown')` : isNP ? `showToast('🔒 Karya belum dipublish')` : `navTo('reader/${work.id}')`}">
+      <div class="card-bg hover-lift rounded-2xl overflow-hidden shadow-lg cursor-pointer ${borderClass} h-full" onclick="${isTD ? `showToast('⛔ Karya ini di-takedown')` : `navTo('reader/${work.id}')`}">
         <div class="h-36 md:h-44 bg-slate-800 flex items-center justify-center overflow-hidden relative">
           ${work.coverURL ? `<img src="${work.coverURL}" class="w-full h-full object-cover ${isTD ? 'grayscale opacity-40' : isNP ? 'grayscale opacity-70' : ''}" onerror="this.style.display='none';">` : `<i class="fas fa-image text-4xl text-slate-600"></i>`}
           ${workStatusBadge(work)}
@@ -6886,7 +6886,7 @@ function renderWorkList(container, works, newIds = new Set(), skipAnim = false) 
     const reportsCount = (work.reports || []).length;
     const reportBadge = (!isTD && reportsCount > 0) ? `<div class="absolute bottom-10 right-2 bg-red-600/90 backdrop-blur text-white text-[10px] font-bold px-2 py-1 rounded-full" title="${reportsCount} report"><i class="fas fa-flag"></i> ${reportsCount}/10</div>` : '';
     return `
-    <div class="card-bg hover-lift rounded-2xl overflow-hidden shadow-lg cursor-pointer ${animClass} ${borderClass} ${newClass}" style="${delayStyle}" onclick="${isTD ? `showToast('⛔ Karya ini di-takedown')` : isNP ? `showToast('🔒 Karya belum dipublish')` : `navTo('reader/${work.id}')`}">
+    <div class="card-bg hover-lift rounded-2xl overflow-hidden shadow-lg cursor-pointer ${animClass} ${borderClass} ${newClass}" style="${delayStyle}" onclick="${isTD ? `showToast('⛔ Karya ini di-takedown')` : `navTo('reader/${work.id}')`}">
       <div class="h-40 md:h-48 bg-slate-800 flex items-center justify-center overflow-hidden relative">
         ${work.coverURL ? `<img src="${work.coverURL}" class="w-full h-full object-cover ${isTD ? 'grayscale opacity-40' : isNP ? 'grayscale opacity-70' : ''}" onerror="this.style.display='none';">` : `<i class="fas fa-image text-5xl text-slate-600"></i>`}
         ${workStatusBadge(work)}
@@ -7349,7 +7349,7 @@ function nonpublishBanner(work) {
     <div class="card-bg rounded-2xl p-8 text-center border-2 border-slate-500">
       <div class="w-20 h-20 mx-auto rounded-full bg-slate-600/20 flex items-center justify-center mb-4"><i class="fas fa-eye-slash text-slate-400 text-4xl"></i></div>
       <h2 class="text-2xl font-black text-slate-300 mb-2">BELUM DIPUBLISH</h2>
-      <p class="text-slate-400 text-sm mb-4">Karya ini belum dipublish oleh kreator. Pembaca hanya bisa melihat informasi dasar.</p>
+      <p class="text-slate-400 text-sm mb-4">Karya ini belum dipublikasikan oleh kreator. Kamu bisa melihat sampul, teaser, dan deskripsinya, tetapi chapter/episode belum tersedia untuk dibaca.</p>
       <div class="flex flex-col md:flex-row gap-4 max-w-2xl mx-auto mt-6">
         <div class="w-full md:w-40 h-56 bg-slate-800 rounded-xl overflow-hidden flex-shrink-0 mx-auto">
           ${work.coverURL ? `<img src="${work.coverURL}" class="w-full h-full object-cover grayscale opacity-70">` : `<div class="flex items-center justify-center h-full"><i class="fas fa-image text-4xl text-slate-600"></i></div>`}
@@ -7367,6 +7367,7 @@ function nonpublishBanner(work) {
           </div>
         </div>
       </div>
+      <div class="mt-5 rounded-xl border border-amber-500/30 bg-amber-500/10 p-4 text-left max-w-2xl mx-auto"><p class="text-amber-300 text-sm font-bold"><i class="fas fa-lock mr-2"></i>Chapter/episode belum bisa dilihat</p><p class="text-slate-400 text-xs mt-1">Bagian cerita akan tersedia setelah kreator memublikasikan karya ini.</p></div>
       <button onclick="navTo('home')" class="mt-6 bg-amber-500 text-black font-bold py-2 px-6 rounded-full hover:scale-105 transition"><i class="fas fa-home mr-1"></i>Kembali ke Beranda</button>
     </div>`;
 }
