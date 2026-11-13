@@ -2672,6 +2672,70 @@ function renderMaintenanceBanner() {
   window.maintenanceBannerDismissed = () => { removeBanner(); maintenanceBannerDismissed = true; };
 }
 
+
+// ===== UPDATE WAJIB (admin-triggered, realtime, 1x per update) =====
+// Dokumen: settings/forceUpdate { enabled, updateId, message, by, updatedAt }
+const KN_ACK_KEY = 'kn_ack_update';
+let _knForceUnsub = null;
+(function knCleanUpdateParam() {
+  try {
+    const u = new URL(location.href);
+    if (u.searchParams.has('__kn_u')) {
+      u.searchParams.delete('__kn_u');
+      history.replaceState(history.state, '', u.pathname + u.search + u.hash);
+    }
+  } catch (e) {}
+})();
+function knGetAck() { try { return localStorage.getItem(KN_ACK_KEY) || ''; } catch (e) { return ''; } }
+function knSetAck(id) { try { localStorage.setItem(KN_ACK_KEY, id); } catch (e) {} }
+function knShowForceUpdate(data) {
+  if (document.getElementById('knMandatoryUpdate')) return;
+  const el = document.createElement('div');
+  el.id = 'knMandatoryUpdate';
+  el.setAttribute('role', 'alertdialog');
+  el.setAttribute('aria-modal', 'true');
+  el.style.cssText = 'position:fixed;inset:0;z-index:2147483647;background:rgba(4,7,15,.97);display:flex;align-items:center;justify-content:center;padding:20px;color:white;font-family:Inter,system-ui,sans-serif';
+  const msg = data.message ? escHtml(data.message) : 'Ada pembaruan terbaru KomiNovel. Kamu wajib memperbarui halaman untuk melanjutkan.';
+  el.innerHTML = `<div style="width:min(440px,100%);background:#171727;border:1px solid #fbbf24;border-radius:20px;padding:26px;text-align:center"><div style="font-size:34px;color:#fbbf24">↻</div><h2 style="font-size:20px;font-weight:800;margin:10px 0">Pembaruan KomiNovel Wajib</h2><p style="font-size:13px;color:#cbd5e1;line-height:1.7;margin-bottom:18px;white-space:pre-wrap">${msg}\n\nPop-up ini tidak dapat ditutup.</p><button id="knMandatoryReload" style="width:100%;background:#fbbf24;color:#111827;border-radius:12px;padding:12px;font-weight:800">Perbarui sekarang</button></div>`;
+  document.body.appendChild(el);
+  document.body.style.overflow = 'hidden';
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && document.getElementById('knMandatoryUpdate')) { e.preventDefault(); e.stopImmediatePropagation(); } }, true);
+  document.getElementById('knMandatoryReload').onclick = async function () {
+    this.disabled = true; this.textContent = 'Memperbarui...';
+    knSetAck(data.updateId);
+    try { if (window.caches) { const keys = await caches.keys(); await Promise.all(keys.map(k => caches.delete(k))); } } catch (e) {}
+    try { const regs = await navigator.serviceWorker?.getRegistrations?.(); for (const r of (regs || [])) await r.update(); } catch (e) {}
+    const u = new URL(location.href);
+    u.searchParams.set('__kn_u', data.updateId);
+    location.replace(u.toString());
+  };
+}
+function listenForceUpdate() {
+  if (_knForceUnsub) return;
+  _knForceUnsub = onSnapshot(doc(db, 'settings', 'forceUpdate'), (snap) => {
+    const d = snap.exists() ? snap.data() : null;
+    if (!d || d.enabled !== true || !d.updateId) return;
+    if (knGetAck() === d.updateId) return;
+    knShowForceUpdate({ updateId: String(d.updateId), message: d.message || '' });
+  }, (e) => console.warn('[KomiNovel] Listener update wajib:', e));
+}
+window.knTriggerForceUpdate = async function (message) {
+  if (!hasRole(userProfile, 'owner') && !hasRole(userProfile, 'admin') && !isAdminSession) { showToast('Akses ditolak!'); return false; }
+  const updateId = 'u' + Date.now().toString(36);
+  try {
+    await setDoc(doc(db, 'settings', 'forceUpdate'), {
+      enabled: true, updateId, message: (message || '').trim().slice(0, 300),
+      by: userProfile?.username || 'admin', updatedAt: serverTimestamp()
+    });
+    knSetAck(updateId); // admin yang menyalakan tidak ikut dipaksa
+    return true;
+  } catch (e) { console.error(e); showToast('Gagal mengaktifkan update wajib'); return false; }
+};
+window.knDisableForceUpdate = async function () {
+  try { await setDoc(doc(db, 'settings', 'forceUpdate'), { enabled: false, updatedAt: serverTimestamp() }, { merge: true }); return true; }
+  catch (e) { showToast('Gagal menonaktifkan'); return false; }
+};
+
 window.toggleMaintenance = async function(enable) {
   const isOwner = hasRole(userProfile, 'owner');
   const isAdmin = hasRole(userProfile, 'admin');
@@ -7410,7 +7474,7 @@ async function renderReader(container, novelId, chapterId = null) {
   try { window.speechSynthesis?.cancel(); } catch(e) {}
   if (!novelId) { container.innerHTML = '<p>Karya tidak ditemukan</p>'; return; }
   // Ambil karya & daftar chapter SEKALIGUS (sebelumnya satu per satu)
-  const chaptersPromise = getDocs(query(collection(db, 'works', novelId, 'chapters'), orderBy('number', 'asc'))).catch(() => null);
+  // Chapter baru diambil SETELAH cek nonpublish (agar gambar/teks tidak bocor ke non-manager)
   const workSnap = await getDoc(doc(db, 'works', novelId));
   if (!workSnap.exists()) { container.innerHTML = '<p class="text-red-400">Karya tidak ditemukan.</p>'; return; }
   const work = { id: workSnap.id, ...workSnap.data() };
@@ -7446,8 +7510,7 @@ async function renderReader(container, novelId, chapterId = null) {
     return;
   }
 
-  let chaptersSnap = await chaptersPromise;
-  if (!chaptersSnap) chaptersSnap = await getDocs(query(collection(db, 'works', novelId, 'chapters'), orderBy('number', 'asc')));
+  let chaptersSnap = await getDocs(query(collection(db, 'works', novelId, 'chapters'), orderBy('number', 'asc')));
   const chapters = []; chaptersSnap.forEach(d => { const ch={ id:d.id, ...d.data() }; const releaseAt=ch.releaseAt?.toDate ? ch.releaseAt.toDate() : (ch.releaseAt ? new Date(ch.releaseAt) : null); const isDue=!!(releaseAt && releaseAt.getTime()<=Date.now()); const canSeeScheduled=canManage || !releaseAt || isDue || ch.releaseStatus==='published'; if(isDue && ch.releaseStatus==='scheduled') updateDoc(doc(db,'works',novelId,'chapters',ch.id),{releaseStatus:'published',publishedAt:serverTimestamp()}).catch(()=>{}); if(canSeeScheduled) chapters.push(ch); });
   let currentChapter = null;
   if (chapterId) currentChapter = chapters.find(c => c.id === chapterId);
@@ -9289,6 +9352,22 @@ async function renderAdminPanel(container) {
         </button>
       </div>
 
+      <!-- ===== UPDATE WAJIB ===== -->
+      <div class="card-bg rounded-2xl p-6 mb-4 berlanjut-border">
+        <div class="flex items-center gap-4 mb-3">
+          <i class="fas fa-sync-alt text-amber-400 text-4xl"></i>
+          <div>
+            <h3 class="font-black text-lg">Update Wajib</h3>
+            <p class="text-xs text-slate-400">Pop-up tidak bisa ditutup untuk semua user, tampil 1x per update, realtime.</p>
+          </div>
+        </div>
+        <textarea id="forceUpdateMsg" maxlength="300" rows="2" placeholder="Pesan (opsional), mis. Ada fitur baru!" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm mb-3"></textarea>
+        <div class="flex gap-2">
+          <button id="forceUpdateOn" class="flex-1 bg-amber-500 text-black font-bold py-3 rounded-full hover:scale-105 transition">Nyalakan Update Wajib</button>
+          <button id="forceUpdateOff" class="bg-slate-700 text-white font-bold px-5 py-3 rounded-full">Matikan</button>
+        </div>
+      </div>
+
       <!-- ===== VERSION INFO ===== -->
       <div class="card-bg rounded-2xl p-6 max-w-lg mx-auto card-anim">
         <h3 class="font-bold mb-4">Info & Setting</h3>
@@ -9312,6 +9391,13 @@ async function renderAdminPanel(container) {
     };
     document.getElementById('toggleMaintenanceBtn').onclick = () => {
       window.toggleMaintenance(!isOn);
+    };
+    document.getElementById('forceUpdateOn').onclick = async () => {
+      if (!confirm('Semua user yang sedang online maupun yang datang nanti akan dipaksa memperbarui halaman. Lanjutkan?')) return;
+      if (await window.knTriggerForceUpdate(document.getElementById('forceUpdateMsg').value)) showToast('Update wajib aktif untuk semua user');
+    };
+    document.getElementById('forceUpdateOff').onclick = async () => {
+      if (await window.knDisableForceUpdate()) showToast('Update wajib dimatikan');
     };
   }
 
@@ -10314,50 +10400,6 @@ document.addEventListener('click', (e) => {
   e.preventDefault();
   navTo(href);
 });
-// Deteksi pembaruan file website setelah deployment tanpa meminta pembaca
-// menekan tombol refresh. Memeriksa validator dokumen secara berkala.
-(function initKomiNovelAutoUpdate() {
-  const checkUrl = new URL(location.href);
-  checkUrl.hash = '';
-  checkUrl.searchParams.set('__kn_update_check', '1');
-  let initialValidator = '';
-
-  async function readValidator() {
-    try {
-      const response = await fetch(checkUrl.toString(), {
-        method: 'HEAD',
-        cache: 'no-store',
-        headers: { 'Cache-Control': 'no-cache' }
-      });
-      if (!response.ok) return '';
-      return response.headers.get('etag') || response.headers.get('last-modified') || '';
-    } catch (error) {
-      return '';
-    }
-  }
-
-  async function checkForWebsiteUpdate() {
-    const validator = await readValidator();
-    if (!validator) return;
-    if (!initialValidator) {
-      initialValidator = validator;
-      return;
-    }
-    if (validator !== initialValidator) {
-      // Jangan reload paksa kalau ada tulisan yang belum disimpan: tampilkan banner saja.
-      if (typeof knHasUnsaved === 'function' && knHasUnsaved()) { knShowUpdateBanner(); return; }
-      const freshUrl = new URL(location.href);
-      freshUrl.searchParams.set('__kn_refresh', String(Date.now()));
-      location.replace(freshUrl.toString());
-    }
-  }
-
-  checkForWebsiteUpdate();
-  window.setInterval(() => {
-    if (document.visibilityState === 'visible') checkForWebsiteUpdate();
-  }, 60000);
-})();
-
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.addEventListener('message', (e) => {
     if (e.data && e.data.type === 'kominovel-nav' && e.data.hash) navTo(e.data.hash);
@@ -10376,6 +10418,7 @@ document.addEventListener('visibilitychange', () => {
   initTheme();
   await loadMaintenanceState();
   listenMaintenanceState();
+  listenForceUpdate();
   loadNotifState();
   updateBadges();
   await initAuth();
@@ -10385,24 +10428,6 @@ document.addEventListener('visibilitychange', () => {
   migrateLegacyHash();
   renderPage();
   startAutoBoost();
-
-// Pemeriksaan file terbaru di hosting; perubahan sekecil apa pun menghasilkan build ID berbeda.
-async function checkDeployedBuild() {
-  try {
-    const u = new URL(location.href); u.searchParams.set('__kn_build_check', String(Date.now()));
-    const r = await fetch(u.toString(), { cache:'no-store', credentials:'same-origin', headers:{'Cache-Control':'no-cache'} });
-    if (!r.ok) return;
-    const html = await r.text();
-    const m = html.match(/const APP_BUILD_ID\s*=\s*['\"]([a-f0-9]+)['\"]/i);
-    if (!m || m[1] === APP_BUILD_ID || document.getElementById('knMandatoryUpdate')) return;
-    const el = document.createElement('div'); el.id='knMandatoryUpdate';
-    el.style.cssText='position:fixed;inset:0;z-index:2147483647;background:rgba(4,7,15,.97);display:flex;align-items:center;justify-content:center;padding:20px;color:white;font-family:Inter,system-ui,sans-serif';
-    el.innerHTML=`<div style="width:min(440px,100%);background:#171727;border:1px solid #fbbf24;border-radius:20px;padding:26px;text-align:center"><div style="font-size:34px;color:#fbbf24">↻</div><h2 style="font-size:20px;font-weight:800;margin:10px 0">Pembaruan KomiNovel tersedia</h2><p style="font-size:13px;color:#cbd5e1;line-height:1.7;margin-bottom:18px">File website telah berubah. Muat ulang halaman untuk melanjutkan. Pop-up ini tidak dapat ditutup.</p><button id="knMandatoryReload" style="width:100%;background:#fbbf24;color:#111827;border-radius:12px;padding:12px;font-weight:800">Muat ulang sekarang</button></div>`;
-    document.body.appendChild(el);
-    document.getElementById('knMandatoryReload').onclick=async()=>{try{const regs=await navigator.serviceWorker?.getRegistrations?.();for(const reg of (regs||[]))await reg.update();}catch(e){} location.reload();};
-    document.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();e.stopImmediatePropagation();}},true);
-  } catch(e) { console.warn('[KomiNovel] Cek versi gagal:',e); }
-}
 
 let _knGlobalWorksUnsub=null; const _knGlobalChapterUnsubs=new Map();
 const _knGlobalSeenWorks=new Set(), _knGlobalSeenChapters=new Set(); let _knGlobalInitialised=false;
@@ -10419,7 +10444,6 @@ function initGlobalReleaseNotifications(){
   },e=>console.warn('[KomiNovel] Listener karya global:',e));
 }
 
-  setTimeout(checkDeployedBuild, 1800);
   console.log(`%c🚀 KomiNovel v${APP_VERSION} loaded`, 'background:linear-gradient(135deg,#fbbf24,#d97706);color:#0f0f1a;font-weight:900;padding:4px 12px;border-radius:8px;');
   console.log('%c✨ Update v1.10:', 'color:#fbbf24;font-weight:bold;');
   APP_VERSION_NOTES.forEach(n => console.log('  •', n));
