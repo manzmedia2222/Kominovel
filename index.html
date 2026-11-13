@@ -1803,6 +1803,11 @@ const googleProvider = new GoogleAuthProvider();
 
 const APP_VERSION = '1.16';
 const APP_BUILD_ID = '7fff3f2a767b4bda';
+// Sidik file awal diambil sebelum aplikasi merender konten dinamis.
+const APP_INITIAL_HTML = document.documentElement.outerHTML;
+const APP_INITIAL_LINE_COUNT = (APP_INITIAL_HTML.match(/\\n/g) || []).length + 1;
+const APP_NAV_ENTRY = performance.getEntriesByType('navigation')[0];
+const APP_INITIAL_FILE_SIZE = Number(APP_NAV_ENTRY?.decodedBodySize || new TextEncoder().encode(APP_INITIAL_HTML).length);
 const APP_VERSION_NOTES = [
   'v1.16 — Narasi TTS otomatis mendeteksi dialog, tanda baca, dan perkiraan emosi; mode baca novel lebih nyaman serta satu link bebas per chapter/episode.',
   'v1.15 — Pengajuan promosi wajib setelah publish, antrean review promosi admin, perbaikan prioritas modal di atas navbar bawah, dukungan link embed berbagai image hosting, dan upload gambar paralel. v1.15.1 — Autocomplete username saat mengundang kolaborator, sehingga akun yang cocok muncul ketika username diketik. v1.14 — Kolaborasi memakai undangan yang harus diterima, dashboard Kolaborasi Saya, peran Co-author/Editor, pilihan link dukungan Saweria/Trakteer/Ko-fi/PayPal/Lainnya, statistik klik dukungan, laporan komentar, blokir pengguna, notifikasi kreator, fitur bagikan, panduan penggunaan yang lebih lengkap, dan perbaikan tema terang/gelap.',
@@ -2296,7 +2301,12 @@ function getCreatorVerifiedBadge(profile, workType = '') {
   return (hasPenulis ? kuning('Novelis Terverifikasi') : '') + (hasKomikus ? oranye('Komikus Terverifikasi') : '');
 }
 function isTakedown(work) { return work && work.takedown && work.takedown.active === true; }
-function isNonPublish(work) { return work && work.status === 'nonpublish'; }
+function isNonPublish(work) {
+  if (!work) return false;
+  const status = String(work.status || '').trim().toLowerCase().replace(/[ _]/g, '-');
+  return ['nonpublish','non-publish','unpublished','draft','belum-publish','belum-terbit'].includes(status)
+    || work.isPublished === false || work.published === false;
+}
 function isUnggulan(work) { return work && work.featured === true; }
 function isKreatorUnggulan(user) { return user && user.featuredCreator === true; }
 
@@ -6608,12 +6618,9 @@ async function renderHome(container) {
       });
     });
 
+    // Karya nonpublish tidak pernah dimasukkan ke area publik, termasuk bagian "Dalam Proses".
     let published=allWorks.filter(w=>!isNonPublish(w)&&!isTakedown(w));
-    let nonpublished=allWorks.filter(w=>isNonPublish(w)&&!isTakedown(w));
-    if(currentSearch){
-      published=published.filter(w=>searchMatchesWork(w,currentSearch));
-      nonpublished=nonpublished.filter(w=>searchMatchesWork(w,currentSearch));
-    }
+    const nonpublished=[];
 
     const cachedIds=getCacheWorkIds(popularCache,currentContentType);
     const cachedMap=new Map(cachedIds.map((id,i)=>[id,i]));
@@ -6652,7 +6659,8 @@ async function renderHome(container) {
     homeEmpty.classList.add('hidden');
     document.getElementById('sectionPopulerMinggu').style.display='';
     document.getElementById('sectionBaru').style.display='';
-    document.getElementById('sectionProses').style.display='';
+    document.getElementById('sectionProses').style.display='none';
+    prosesTrack.innerHTML='';
     document.getElementById('sectionSemuaKomik').style.display='';
 
     if(structureChanged||initialLoad){
@@ -7414,6 +7422,11 @@ async function renderReader(container, novelId, chapterId = null) {
   const workSnap = await getDoc(doc(db, 'works', novelId));
   if (!workSnap.exists()) { container.innerHTML = '<p class="text-red-400">Karya tidak ditemukan.</p>'; return; }
   const work = { id: workSnap.id, ...workSnap.data() };
+  // Jangan tampilkan detail atau isi karya yang belum dipublikasikan melalui URL publik.
+  if (isNonPublish(work)) {
+    container.innerHTML = `<div class="card-bg rounded-2xl p-6 text-center"><i class="fas fa-lock text-3xl text-amber-400 mb-3"></i><h2 class="font-bold text-lg mb-2">Karya belum tersedia</h2><p class="text-sm text-slate-400 mb-4">Karya ini belum dipublikasikan oleh kreatornya.</p><button onclick="navTo('home')" class="bg-amber-500 text-black font-bold px-5 py-2 rounded-xl">Kembali ke beranda</button></div>`;
+    return;
+  }
   if (work.authorId) {
     try {
       const cachedAuthor = usersCache[work.authorId];
@@ -10423,26 +10436,34 @@ document.addEventListener('visibilitychange', () => {
   async function checkDeployedBuild() {
     try {
       const u = new URL('/', location.origin);
-      u.searchParams.set('__kn_build_check', String(Date.now()));
+      u.searchParams.set('__kn_file_check', String(Date.now()));
       const r = await fetch(u.toString(), {
         method:'GET', cache:'no-store', credentials:'same-origin',
         headers:{'Cache-Control':'no-cache, no-store, must-revalidate','Pragma':'no-cache'}
       });
       if (!r.ok) return;
       const remoteHtml = await r.text();
-      const m = remoteHtml.match(/const APP_BUILD_ID\s*=\s*['"]([a-f0-9]+)['"]/i);
-      if (!m || m[1] === APP_BUILD_ID || document.getElementById('knMandatoryUpdate')) return;
+      const remoteSize = new TextEncoder().encode(remoteHtml).length;
+      const remoteLineCount = (remoteHtml.match(/\n/g) || []).length + 1;
+      const m = remoteHtml.match(/const APP_BUILD_ID\s*=\s*['"]([^'"]+)['"]/i);
+      const buildChanged = !!(m && m[1] !== APP_BUILD_ID);
+      const sizeChanged = APP_INITIAL_FILE_SIZE > 0 && remoteSize !== APP_INITIAL_FILE_SIZE;
+      const linesChanged = remoteLineCount !== APP_INITIAL_LINE_COUNT;
+
+      // Popup wajib muncul jika ukuran file berubah, jumlah baris berubah, atau build ID berubah.
+      if (!(buildChanged || sizeChanged || linesChanged) || document.getElementById('knMandatoryUpdate')) return;
+
       const el = document.createElement('div');
       el.id='knMandatoryUpdate';
       el.style.cssText='position:fixed;inset:0;z-index:2147483647;background:rgba(4,7,15,.97);display:flex;align-items:center;justify-content:center;padding:20px;color:white;font-family:Inter,system-ui,sans-serif';
-      el.innerHTML=`<div style="width:min(440px,100%);background:#171727;border:1px solid #fbbf24;border-radius:20px;padding:26px;text-align:center"><div style="font-size:34px;color:#fbbf24">↻</div><h2 style="font-size:20px;font-weight:800;margin:10px 0">Pembaruan KomiNovel tersedia</h2><p style="font-size:13px;color:#cbd5e1;line-height:1.7;margin-bottom:18px">Versi website yang lebih baru sudah tersedia. Muat ulang halaman untuk melanjutkan. Pemberitahuan ini tidak dapat ditutup.</p><button id="knMandatoryReload" style="width:100%;background:#fbbf24;color:#111827;border-radius:12px;padding:12px;font-weight:800">Muat ulang sekarang</button></div>`;
+      el.innerHTML=`<div style="width:min(440px,100%);background:#171727;border:1px solid #fbbf24;border-radius:20px;padding:26px;text-align:center"><div style="font-size:34px;color:#fbbf24">↻</div><h2 style="font-size:20px;font-weight:800;margin:10px 0">Pembaruan KomiNovel tersedia</h2><p style="font-size:13px;color:#cbd5e1;line-height:1.7;margin-bottom:18px">File website telah diperbarui. Muat ulang halaman untuk menggunakan versi terbaru. Pemberitahuan ini tidak dapat ditutup.</p><button id="knMandatoryReload" style="width:100%;background:#fbbf24;color:#111827;border-radius:12px;padding:12px;font-weight:800">Muat ulang sekarang</button></div>`;
       document.body.appendChild(el);
       document.getElementById('knMandatoryReload').onclick=async()=>{
         try { const regs=await navigator.serviceWorker?.getRegistrations?.(); for(const reg of (regs||[])) await reg.update(); } catch(e) {}
         location.reload();
       };
       document.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();e.stopImmediatePropagation();}},true);
-    } catch(e) { console.warn('[KomiNovel] Cek versi gagal:',e); }
+    } catch(e) { console.warn('[KomiNovel] Cek perubahan file gagal:',e); }
   }
 
   setTimeout(checkDeployedBuild, 1200);
